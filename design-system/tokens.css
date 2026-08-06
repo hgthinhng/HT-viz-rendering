@@ -1,0 +1,196 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   THƯ VIỆN COMPONENT KỂ CHUYỆN — BÁO CÁO TÀI CHÍNH / NGÀNH
+   Nhóm B: component không phải chart, HTML/CSS thuần, print-safe.
+
+   BẢN 3 — CHỐT THEO reference-kimi.html (báo cáo thật operator đánh giá cao
+   nhất, đúng thể loại nghiên cứu thị trường/tài chính). Bản 2 từng hoà theo
+   tokens.css (StoiX) nhưng đó là token của pipeline CFA study notes — khác
+   thể loại (sách giáo khoa đọc dài, không phải research report). Ba nguồn
+   độc lập hội tụ cùng bộ màu ink-navy/electric-blue: reference-kimi.html,
+   huashu-design/references/design-styles.md (mục Two-Font Consulting,
+   McKinsey deep-blue), và một giáo trình thiết kế operator đưa thêm — không
+   ai chép ai, đây là bằng chứng mạnh nhất nên chốt theo bộ này. Toàn bộ hex
+   dưới đây lấy TRỰC TIẾP từ reference-kimi.html (đã đọc source thật ở đầu
+   phiên làm việc), không suy diễn. Font: Spectral + IBM Plex Mono cũng lấy
+   từ chính reference-kimi.html (dòng comment "Spectral (serif) + IBM Plex
+   Mono · vietnamese + latin-ext + latin subsets").
+   Giữ NGUYÊN không đổi từ bản 2: shadow con dấu offset cứng (đã verify thực
+   nghiệm blur=0 an toàn khi in), thang spacing 8 bậc, thang radius nhỏ gần
+   phẳng, 30 dòng print CSS, khối điểm mấu chốt, cách sửa a11y bằng
+   aria-hidden + bản thay thế thật.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. DESIGN TOKENS ─────────────────────────────────────────────────── */
+:root {
+  /* Màu — lấy nguyên xi từ reference-kimi.html (biến gốc trong ngoặc []),
+     đổi tên cho khớp hệ 22 component. --accent = electric-blue (Kimi gọi là
+     --red do lịch sử đặt tên "LEGACY ACCENT SLOT" nhưng giá trị thật luôn là
+     xanh điện #2251FF trong toàn bộ report). --accent-warm = --copper/--gold
+     của Kimi (dùng cho badge nguồn "broker", tách biệt khỏi accent chính,
+     dùng tiết chế theo đúng chỉ đạo). --pos dùng CỰC TIẾT CHẾ theo chỉ đạo —
+     xem ghi chú tại từng component dùng --pos (statgrid trend up, risk thấp). */
+  --paper: #FFFFFF;         /* Kimi [--paper] */
+  --paper-hi: #F7F9FC;      /* Kimi [--paper-hi] — panel/hover */
+  --paper-hair: #EEF1F6;    /* Kimi [--line-lo] dùng làm nền ô rỗng/hatch */
+  --paper-elev: #F7F9FC;    /* không có card "nổi khối" riêng trong Kimi, dùng lại paper-hi */
+  --ink: #051C2C;           /* Kimi [--ink], = huashu-design McKinsey deep-blue, = dòng 88 giáo trình */
+  --ink-md: #42566A;        /* Kimi [--ink-md] */
+  --ink-lo: #8595A6;        /* Kimi [--ink-lo] */
+  --ink-faint: #AAB8C4;     /* dẫn xuất nhạt hơn ink-lo, chỉ dùng trang trí — Kimi không có bậc này */
+  --line: #DBE2EA;          /* Kimi [--line] */
+  --line-lo: #EEF1F6;       /* Kimi [--line-lo] */
+  --accent: #2251FF;        /* Kimi [--red], electric-blue — nhấn chính, kicker, MUST */
+  --accent-hi: #1233B8;     /* Kimi [--red-hi] = [--blue], deep blue — hover/emphasis */
+  --accent-soft: #7D9BFF;   /* Kimi [--blue-soft] — chuỗi phụ, tertiary */
+  --pos: #008A6D;           /* Kimi [--green] — DÙNG CỰC TIẾT CHẾ theo chỉ đạo operator */
+  --neg: #C22F4E;           /* Kimi [--neg] */
+  --neg-soft: color-mix(in srgb, var(--neg) 45%, var(--paper)); /* dẫn xuất, Kimi không có bậc soft riêng cho neg */
+  --warn: #B07A10;          /* Kimi [--copper] = [--gold] — cảnh báo/SHOULD, tách khỏi accent chính */
+
+  /* Spacing và radius: đã xoá khỏi khối này (fix round 1). Khối :root thứ
+     hai bên dưới (bắt nguồn từ components.css) đã khai đủ space-1 tới
+     space-8 và radius-0 tới radius-3; khai lại ở đây là trùng tên, và vì
+     hai khối :root cùng specificity nên khối sau luôn thắng trong cascade,
+     nghĩa là giá trị của khối này chưa bao giờ thắng khi render thật. Bậc
+     1-5 giá trị giống hệt khối sau (không đổi hành vi), nhưng bậc 6-8 từng
+     khác nhau (24/32/48px ở đây so với 28/40/56px ở khối sau) và người
+     dùng đã phân xử giữ bộ 28/40/56px của khối sau. Xem test
+     test_khong_bien_nao_bi_khai_hai_lan_trong_root trong
+     tests/consistency/tokens_test.py bắt đúng lớp lỗi trùng tên này. */
+
+  /* Shadow con dấu: blur PHẢI bằng 0. Blur lớn hơn 0 bị Chromium nướng bitmap khi in.
+     Đã đo: offset cứng cho 0 ảnh raster, có blur cho 1 ảnh raster.
+     Màu viết dạng rgba(R G B / A) (CSS Color 4, không dấu phẩy trong ngoặc)
+     thay vì rgba(R, G, B, A) cổ điển: cùng giá trị số, nhưng tránh dấu phẩy
+     bên trong ngoặc màu làm hỏng phép tách val.split(",") theo lớp shadow
+     trong tokens_test.py::test_shadow_khong_co_blur. Đã verify parse được
+     bằng tinycss2 và render được bằng WeasyPrint 69.0 cài trong repo.
+     --shadow-1 đã khai ở khối :root thứ hai bên dưới với hai lớp offset,
+     là bản thắng trong cascade; không khai lại ở đây để tránh trùng tên. */
+  --shadow-2: 2px 2px 0px rgba(5 28 44 / 0.08), -1px -1px 0px rgba(5 28 44 / 0.04);
+  --shadow-3: 3px 3px 0px rgba(5 28 44 / 0.10), -1px -1px 0px rgba(5 28 44 / 0.05);
+  --shadow-none: 0px 0px 0px rgba(0 0 0 / 0);
+
+  color-scheme: light dark;
+}
+
+/* Dark mode: reference-kimi.html KHÔNG có bản tối (thuần light/paper, đúng
+   chất "báo cáo in"). Khối dưới đây là SUY DIỄN của tôi (không có trong
+   nguồn gốc) để vẫn tôn trọng prefers-color-scheme của người đọc màn hình —
+   giữ đúng tinh thần "navy + xanh điện", không bịa tông màu khác họ. Nói rõ
+   ranh giới này trong README vì đây là phần KHÔNG được ba nguồn xác nhận. */
+[data-theme="dark"] {
+  --paper: #0A1420;
+  --paper-hi: #101E2E;
+  --paper-hair: #16283A;
+  --paper-elev: #101E2E;
+  --ink: #EAF0F6;
+  --ink-md: #B7C4D1;
+  --ink-lo: #7E93A6;
+  --ink-faint: #5A6E80;
+  --line: #223449;
+  --line-lo: #1A2A3B;
+  --accent: #5B87FF;
+  --accent-hi: #7D9BFF;
+  --accent-soft: #3A5CC7;
+  --pos: #35A98A;
+  --neg: #E0637C;
+  --neg-soft: color-mix(in srgb, var(--neg) 45%, var(--paper));
+  --warn: #D4A247;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0A1420; --paper-hi: #101E2E; --paper-hair: #16283A; --paper-elev: #101E2E;
+    --ink: #EAF0F6; --ink-md: #B7C4D1; --ink-lo: #7E93A6; --ink-faint: #5A6E80;
+    --line: #223449; --line-lo: #1A2A3B;
+    --accent: #5B87FF; --accent-hi: #7D9BFF; --accent-soft: #3A5CC7;
+    --pos: #35A98A; --neg: #E0637C; --neg-soft: color-mix(in srgb, var(--neg) 45%, var(--paper));
+    --warn: #D4A247;
+  }
+}
+
+:root {
+  /* Font — Spectral cho MỌI vai trò chữ (tiêu đề + thân bài, không tách
+     display/serif nữa như bản 2 dùng Fraunces/EB Garamond). --font-display
+     và --font-serif trỏ CÙNG một font-stack — giữ 2 biến để không phải sửa
+     lại mọi selector đã gán var(--font-display) (h1-h3, sg-value, t-abbr),
+     chỉ đổi GIÁ TRỊ bên dưới. --font-mono (IBM Plex Mono) giữ nguyên vai trò
+     cũ: số liệu + MỌI nhãn kỹ thuật/trạng thái (kicker, badge, status chip —
+     đúng cách reference-kimi.html dùng mono cho toàn bộ nhãn loại này, xem
+     mục "revert font-sans→font-mono" trong README). --font-sans (IBM Plex
+     Sans) là bổ sung MỚI, vai trò HẸP: chỉ ô bảng dữ liệu dày đặc (table.dt,
+     opt-compare, heatmatrix, thẻ swimlane) khi khổ hẹp cần chữ đặc hơn serif,
+     KHÔNG dùng cho tiêu đề hay thân bài — xem khối 12/13/5/4 trong file này. */
+  --font-display: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  --font-sans: "IBM Plex Sans", "Noto Sans", -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Thang chữ — tỉ lệ 1.333 (quart), gốc thân bài 17px. Line-height heading
+     giữ 1.28 (KHÔNG cần nâng lên 1.32 như bản EB Garamond — đo lại bằng
+     Canvas measureText với Spectral thật xác nhận dư biên đủ rộng, xem mục
+     "đo lại" trong README/báo cáo). */
+  --fs-caption: 0.735rem;    /* 12.5px */
+  --fs-small:   0.825rem;    /* 14px   */
+  --fs-body:    1rem;        /* 17px (root 17px, xem body) */
+  --fs-dek:     1.15rem;     /* 19.5px, deck/lede in nghiêng */
+  --fs-h3:      1.333rem;    /* 22.7px */
+  --fs-h2:      1.777rem;    /* 30.2px */
+  --fs-h1:      2.369rem;    /* 40.3px, dùng trong clamp() ở H1 thật */
+  --fs-mono-lg: 2.1rem;      /* số liệu lớn dạng mono khi cần độ chính xác kỹ thuật */
+
+  --lh-body: 1.7;            /* Latin có dấu chồng cần cao hơn Latin thường ~0.1-0.15 */
+  --lh-heading: 1.28;        /* về lại 1.28 (bản Spectral gốc) — xem đo Canvas measureText trong README xác nhận đủ biên */
+  --lh-tight: 1.15;
+
+  /* Spacing scale — KHOẢNG TRỐNG tokens.css không có, tự thiết kế: lưới 4/8px,
+     8 bậc đủ cho mọi padding/gap trong 22 component (đối chiếu ngược: mọi
+     giá trị padding/gap cứng trong bản nháp đầu đều rơi đúng vào 1 trong 8
+     bậc này, ví dụ 14px≈space-4, 18-20px≈space-5). */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 28px;
+  --space-7: 40px;
+  --space-8: 56px;
+
+  /* Radius scale — CỐ Ý nhỏ/gần phẳng, khác hẳn đăng ký "bo tròn 12-13px" thấy
+     trong complete-html-examples/lo-trinh-cfa-l2.html (.tile/.stat/.node).
+     Lý do KHÔNG theo mẫu đó: lo-trinh-cfa-l2.html là trang roadmap/slide
+     tuyến tính (thể loại gần landing page), bo tròn lớn hợp; 22 component ở
+     đây phục vụ BÁO CÁO TÀI CHÍNH mật độ cao, bo tròn lớn + border-left màu
+     là đúng dấu hiệu "AI slop" đã đọc trong content-guidelines.md — giữ góc
+     gần vuông là lựa chọn có chủ đích, không phải thiếu sót. */
+  --radius-0: 0;
+  --radius-1: 2px;   /* badge, chip nhỏ */
+  --radius-2: 3px;   /* card mặc định (giữ nguyên --radius cũ) */
+  --radius-3: 6px;   /* hiếm dùng, chỉ ô tròn số bước (xem step-chain nâng cấp) */
+  --radius: var(--radius-2); /* alias giữ tương thích ngược */
+
+  /* Shadow scale — ĐO THỰC NGHIỆM: box-shadow có blur-radius > 0 bị Chromium
+     "nướng bitmap" khi in (xem báo cáo, test 3 biến thể qua playwright+pymupdf:
+     shadow blur 20px → 1 ảnh raster; shadow 0-blur (kể cả 2 lớp) → 0 ảnh).
+     Kết luận: bỏ HẲN shadow có blur khỏi hệ thống, dùng "stamped hard shadow"
+     (offset cứng, blur=0) làm NGÔN NGỮ ĐỘ NỔI DUY NHẤT — vừa an toàn khi in
+     tuyệt đối (không cần override @media print nữa), vừa hợp giọng "con dấu
+     mực trên giấy" của bảng màu walnut/gold hơn drop-shadow mềm kiểu SaaS. */
+  /* Cú pháp màu đổi sang rgba(R G B / A), không dấu phẩy trong ngoặc, để
+     tránh hỏng phép tách val.split(",") theo lớp shadow trong
+     tests/consistency/tokens_test.py (bug thật đã tái hiện ở vòng trước).
+     Giá trị màu, alpha và blur giữ nguyên với bản gốc trong components.css,
+     chỉ đổi cách viết hàm màu. Đã kiểm lại bằng tay: blur mọi lớp bằng 0. */
+  --shadow-1: 2px 2px 0px rgba(5 28 44 / 0.12), -1px -1px 0px rgba(255 255 255 / 0.6);
+  --shadow-hairline: 0px 1px 0px rgba(5 28 44 / 0.35);
+}
+[data-theme="dark"] {
+  --shadow-1: 2px 2px 0px rgba(0 0 0 / 0.45), -1px -1px 0px rgba(255 255 255 / 0.03);
+  --shadow-hairline: 0px 1px 0px rgba(0 0 0 / 0.5);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --shadow-1: 2px 2px 0px rgba(0 0 0 / 0.45), -1px -1px 0px rgba(255 255 255 / 0.03);
+    --shadow-hairline: 0px 1px 0px rgba(0 0 0 / 0.5);
+  }
+}

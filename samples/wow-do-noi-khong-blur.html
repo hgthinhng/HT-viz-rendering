@@ -1,0 +1,280 @@
+<!doctype html>
+<!--
+  MINH HOẠ: trang catalog kỹ thuật tạo độ nổi (elevation) mà KHÔNG dùng
+  blur-radius lớn hơn 0 ở bất kỳ đâu — bài toán kỹ thuật thật của repo này,
+  vì Chromium nướng bitmap mọi box-shadow có blur khi in PDF (đã đo, xem
+  memory.md và tokens.css). Bốn kỹ thuật trình bày cạnh nhau để so sánh.
+
+  NGUỒN CẢM HỨNG (xem FINDINGS.md mục 8):
+  - "Simulating The Letterpress" (Smashing Magazine, 2012): chữ nổi/chìm
+    bằng hai lớp text-shadow đối hướng, blur = 0 tuyệt đối.
+  - "Getting Deep Into Shadows" (CSS-Tricks): xếp lớp nhiều box-shadow để
+    tạo cảm giác tách lớp, và dùng box-shadow inset như một "veil" phủ màu
+    lên trên chính nền của element thay vì tạo lõm.
+  - tokens.css của chính repo: "stamped hard shadow" offset cứng đã là
+    NGÔN NGỮ ĐỘ NỔI DUY NHẤT đang dùng — trang này bổ sung thêm 3 biến thể
+    chưa thấy dùng, không thay thế biến thể đã có.
+
+  CANH BẠC: chứng minh rằng "không dùng blur" không đồng nghĩa với "phẳng
+  và chán" — offset cứng, chồng lớp, và veil bán trong suốt đều tạo được
+  cảm giác phân lớp thị giác thật, chỉ khác GIỌNG so với drop-shadow mềm
+  kiểu SaaS (giọng "con dấu mực trên giấy" thay vì "thẻ nổi trên kính").
+  THUA nếu dùng quá nhiều kỹ thuật cùng lúc trên một trang thật — ở đây
+  cố ý gộp cả 4 để SO SÁNH, không phải mẫu cách dùng thật cho một trang báo
+  cáo (một trang thật nên chọn 1-2 kỹ thuật, không phải cả 4).
+
+  KHI NÀO KHÔNG NÊN DÙNG (từng kỹ thuật, chi tiết trong ô tương ứng):
+  - Letterpress trên nền có màu (không phải --paper trắng thuần): highlight
+    trắng phía trên có thể lộ thành viền sáng trông như lỗi render.
+  - Veil inset trên nhiều ô liên tiếp: quá 3-4 ô liền kề sẽ trông "vằn vện"
+    kiểu Excel tô màu cảnh báo, mất chất báo cáo xuất bản.
+  - Xếp lớp offset nhiều tầng (>3 lớp): tăng độ phức tạp render mà mắt
+    thường không phân biệt được lớp thứ 3 trở đi, phí công không phí ích.
+
+  RÀNG BUỘC IN: MỌI box-shadow và text-shadow trong file này có blur-radius
+  bằng 0, đã tự kiểm bằng mắt từng khai báo. Không filter, không
+  backdrop-filter. Không dùng font nhúng của repo (xem FINDINGS.md mục 0).
+  Không gauge/radar, không em-dash/en-dash, @media dùng từ khoá screen.
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Độ nổi không blur, mẫu tham khảo HT-viz-rendering</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --accent: #2251FF;
+    --warn: #B07A10;
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ECEFF3; }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 12px auto;
+    background: var(--paper);
+    padding: 16mm 16mm 14mm;
+    font-family: var(--font-serif);
+    color: var(--ink);
+  }
+  h1 {
+    font-size: 26px;
+    margin: 0 0 4px;
+  }
+  .sub {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-lo);
+    margin: 0 0 22px;
+    letter-spacing: 0.03em;
+  }
+  /* Dùng flexbox thay vì CSS Grid đa cột: đã thực nghiệm CSS Grid nhiều cột
+     bị WeasyPrint tính sai kích thước track khi một item chứa bảng dày đặc
+     (min-content tràn), làm mất 2 card và tràn trang. Flexbox với width cố
+     định render đúng và ổn định hơn cho engine in này. */
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10mm;
+  }
+  .card {
+    width: calc(50% - 5mm);
+    border: 1px solid var(--line);
+    padding: 16px 18px 18px;
+    box-sizing: border-box;
+  }
+  .full-width {
+    width: 100%;
+  }
+  .card h2 {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  .demo {
+    background: var(--paper-hi);
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    padding: 10px;
+  }
+  .note {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-md);
+    margin: 0;
+  }
+  code {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    background: var(--paper-hi);
+    padding: 1px 4px;
+  }
+
+  /* ── 1. Stamped hard shadow (đã có trong tokens.css, để đối chiếu) ── */
+  .demo-stamp .chip {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 10px 22px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: 2px 2px 0px rgba(5,28,44,0.12), -1px -1px 0px rgba(255,255,255,0.6);
+  }
+
+  /* ── 2. Letterpress: chữ nổi bằng text-shadow 2 lớp, blur 0 ── */
+  .demo-letterpress .word {
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--paper-hi);
+    background: var(--ink);
+    padding: 14px 26px;
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.55), -1px -1px 0px rgba(255,255,255,0.12);
+  }
+
+  /* ── 3. Veil: inset shadow blur 0 phủ màu lên nền chính nó ── */
+  .demo-veil table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  .demo-veil td, .demo-veil th {
+    padding: 7px 10px;
+    text-align: right;
+    font-family: var(--font-mono);
+    border-bottom: 1px solid var(--line);
+  }
+  .demo-veil th { text-align: left; color: var(--ink-lo); font-weight: 400; }
+  .demo-veil td:first-child, .demo-veil th:first-child { text-align: left; font-family: var(--font-serif); }
+  .demo-veil tr.flag td {
+    box-shadow: inset 0 0 0 999px rgba(176,122,16,0.08);
+  }
+
+  /* ── 4. Xếp lớp offset (3 tầng, tăng dần) để mô phỏng độ sâu ── */
+  .demo-stack {
+    position: relative;
+    height: 96px;
+    width: 160px;
+  }
+  .demo-stack .layer {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-lo);
+  }
+  .demo-stack .l1 { transform: translate(10px, 10px); }
+  .demo-stack .l2 { transform: translate(5px, 5px); }
+  .demo-stack .l3 {
+    background: var(--paper);
+    color: var(--ink);
+    font-weight: 600;
+    box-shadow: 3px 3px 0px rgba(5,28,44,0.10), -1px -1px 0px rgba(5,28,44,0.05);
+  }
+
+  .rule {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 4px 0 2px;
+  }
+  .verdict {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink-md);
+  }
+  .verdict strong { color: var(--ink); }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 8vw 6vw; }
+    .card { width: 100%; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <h1>Bốn cách tạo độ nổi khi blur-radius bắt buộc bằng 0</h1>
+    <p class="sub">Catalog kỹ thuật, không phải trang báo cáo thật · một trang thật chỉ nên chọn 1-2 trong 4</p>
+
+    <div class="grid">
+      <div class="card">
+        <h2>1. Stamped hard shadow (đã dùng trong tokens.css)</h2>
+        <div class="demo demo-stamp"><span class="chip">150 tỷ</span></div>
+        <p class="note">
+          Hai lớp <code>box-shadow</code> offset cứng, một lớp tối lệch
+          xuống-phải, một lớp sáng lệch lên-trái. Đây là ngôn ngữ độ nổi
+          chính của repo, dùng cho thẻ, badge, ô nhấn.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>2. Letterpress: chữ khắc bằng text-shadow hai lớp</h2>
+        <div class="demo demo-letterpress"><span class="word">9,2%</span></div>
+        <p class="note">
+          <code>text-shadow: 1px 1px 0 rgba(0,0,0,.55), -1px -1px 0 rgba(255,255,255,.12)</code>.
+          Dùng cho số liệu hero trên nền tối. Chỉ an toàn trên nền phẳng
+          một màu, không dùng trên nền có hoạ tiết vì highlight sẽ lộ viền.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>3. Veil: inset shadow phủ màu không cần thêm biến màu mới</h2>
+        <div class="demo demo-veil">
+          <table>
+            <thead><tr><th>Mốc</th><th>Chỉ số</th></tr></thead>
+            <tbody>
+              <tr><td>Quý 4/2026</td><td>60%</td></tr>
+              <tr class="flag"><td>Quý 2/2027</td><td>Bắt buộc kích hoạt</td></tr>
+              <tr><td>Bất kỳ thời điểm</td><td>Theo dõi liên tục</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">
+          <code>box-shadow: inset 0 0 0 999px rgba(176,122,16,.08)</code> tô
+          nổi một dòng trong bảng dày đặc mà không cần thêm màu nền rời rạc
+          ngoài token đã chốt. Quá 3-4 dòng liền kề sẽ trông vằn vện.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>4. Xếp lớp offset ba tầng, mô phỏng độ sâu</h2>
+        <div class="demo">
+          <div class="demo-stack">
+            <div class="layer l1"></div>
+            <div class="layer l2"></div>
+            <div class="layer l3">Lớp trên cùng</div>
+          </div>
+        </div>
+        <p class="note">
+          Ba khối cùng kích thước, lệch nhau 5px mỗi lớp, không blur. Dùng
+          khi cần gợi ý "còn nhiều mục phía sau" (ví dụ chồng tài liệu, chồng
+          kịch bản) mà không dựng shadow drop mềm.
+        </p>
+      </div>
+
+      <hr class="rule full-width">
+      <p class="verdict full-width">
+        <strong>Kết luận dùng thật:</strong> ưu tiên kỹ thuật 1 (đã chuẩn hoá
+        trong token) cho mọi trường hợp thông thường. Dùng kỹ thuật 2 chỉ ở
+        trang một-con-số trên nền tối. Dùng kỹ thuật 3 khi cần nhấn đúng một
+        dòng trong bảng dài. Kỹ thuật 4 hiếm dùng, chỉ khi ẩn dụ "chồng lớp"
+        đúng với nội dung thật.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

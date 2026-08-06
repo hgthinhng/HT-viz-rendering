@@ -1,0 +1,222 @@
+<!--
+  Ý MINH HOẠ: radar/spider chart bóp méo nhận thức bằng hai cơ chế đo được:
+  (1) diện tích đa giác tăng theo BÌNH PHƯƠNG giá trị trên mỗi trục (không tuyến tính),
+  (2) hình dạng đa giác phụ thuộc vào THỨ TỰ xếp trục quanh vòng tròn, dù dữ liệu
+  không đổi. Bên trái chứng minh (2) bằng thực nghiệm: hai radar dùng ĐÚNG 5 con số
+  giống hệt nhau, chỉ đổi thứ tự gán vào trục, ra hai "ấn tượng hình dạng" khác hẳn.
+  Bên phải là bản thay thế đúng nghĩa: Cleveland dot plot, mã hoá bằng VỊ TRÍ trên
+  1 trục chung, đọc chính xác và không phụ thuộc thứ tự trình bày.
+
+  NGUỒN CẢM HỨNG: Observable "Why you should avoid radar charts"
+  (https://observablehq.com/blog/avoid-radar-charts), Highcharts "Radar chart explained"
+  (https://www.highcharts.com/blog/tutorials/radar-chart-explained-when-they-work-when-they-fail-and-how-to-use-them-right/),
+  nghiên cứu Cleveland & McGill (1984) về thang bậc chính xác đọc mã hoá vị trí vs góc.
+
+  KHI NÀO KHÔNG NÊN DÙNG: radar KHÔNG bao giờ nên dùng trong báo cáo xuất bản của repo
+  này (đã là ràng buộc cứng, xem CLAUDE.md "Cấm gauge và radar"). File này CHỈ tồn tại
+  trong research/samples để giải thích cơ chế lừa bằng bằng chứng trực quan, không phải
+  một preset được phép copy vào charts/. Panel "SAI" cố ý vẽ nhỏ, mờ, có gạch chéo đỏ.
+
+  Dữ liệu: 5 chỉ số của 1 ngân hàng giả định, quy về percentile 0-100 để vẽ trên
+  cùng 1 thang trục radar. SỐ MINH HOẠ, không phải số thật của bất kỳ ngân hàng nào.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Radar chart nói dối bằng thứ tự trục, so với Cleveland dot plot</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #2251FF; --negative: #C22F4E; --warn: #B07A10;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 1rem; font-style: italic; margin: 0 0 28px; max-width: 68ch; }
+  .grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 28px; align-items: start; }
+  @media screen and (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid var(--line); padding: 18px 20px 20px; }
+  .panel-bad { background: #FAFAFA; }
+  .panel-good { background: var(--paper); border-color: var(--ink); border-width: 1.5px; }
+  .tag {
+    display: inline-block; font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; margin-bottom: 10px;
+  }
+  .tag-bad { color: var(--negative); border: 1px solid var(--negative); }
+  .tag-good { color: var(--accent); border: 1px solid var(--accent); }
+  .panel h2 { font-size: 1.05rem; margin: 0 0 4px; }
+  .panel .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.75rem; color: var(--ink-md); line-height: 1.55; margin: 10px 0 0;
+  }
+  .mini-row { display: flex; gap: 10px; justify-content: center; }
+  .mini-cap {
+    text-align: center; font-family: "IBM Plex Mono", monospace; font-size: 0.66rem;
+    color: var(--ink-md); margin-top: 2px;
+  }
+  .source {
+    margin-top: 30px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Cùng 5 con số, đổi thứ tự trục, ra hai "hình dạng" khác nhau</h1>
+  <p class="dek">Đây là lý do radar chart bị cấm trong báo cáo của repo này: diện tích đa giác không phải một đại lượng có nghĩa, nó phụ thuộc vào việc người vẽ xếp trục theo thứ tự nào. Số liệu minh hoạ, không phải số thật.</p>
+
+  <div class="grid">
+    <div class="panel panel-bad">
+      <span class="tag tag-bad">Sai, đã cấm</span>
+      <h2>Radar: cùng dữ liệu, đổi thứ tự trục</h2>
+      <div class="mini-row">
+        <div>
+          <svg viewBox="0 0 160 155" width="220" height="212" role="img">
+            <title>Radar A</title>
+            <desc>Radar 5 truc voi thu tu NIM, CAR, ROE, CASA, No xau nguoc</desc>
+            <g stroke="#DBE2EA" stroke-width="1" fill="none">
+              <polygon points="80,20 132.3,58.0 112.3,119.5 47.7,119.5 27.7,58.0" />
+              <polygon points="80,33.75 119.23,62.25 104.26,108.37 55.74,108.37 40.77,62.25" />
+              <polygon points="80,47.5 106.15,66.5 96.17,97.25 63.83,97.25 53.85,66.5" />
+              <polygon points="80,61.25 93.07,70.75 88.09,86.12 71.91,86.12 66.93,70.75" />
+            </g>
+            <g stroke="#AAB8C4" stroke-width="0.75">
+              <line x1="80" y1="75" x2="80" y2="20" />
+              <line x1="80" y1="75" x2="132.3" y2="58.0" />
+              <line x1="80" y1="75" x2="112.3" y2="119.5" />
+              <line x1="80" y1="75" x2="47.7" y2="119.5" />
+              <line x1="80" y1="75" x2="27.7" y2="58.0" />
+            </g>
+            <polygon points="80,35.4 124.45,60.55 99.4,101.7 62.21,99.47 32.93,59.71"
+              fill="#C22F4E" fill-opacity="0.18" stroke="#C22F4E" stroke-width="1.6" />
+            <g font-family="IBM Plex Mono, monospace" font-size="8" fill="#42566A" text-anchor="middle">
+              <text x="80" y="13">NIM</text>
+              <text x="140" y="55">CAR</text>
+              <text x="116" y="132">ROE</text>
+              <text x="44" y="132">CASA</text>
+              <text x="20" y="55">Nợ xấu ngược</text>
+            </g>
+            <line x1="10" y1="145" x2="150" y2="10" stroke="#C22F4E" stroke-width="1.4" stroke-dasharray="4 3" />
+          </svg>
+          <div class="mini-cap">Thứ tự A</div>
+        </div>
+        <div>
+          <svg viewBox="0 0 160 155" width="220" height="212" role="img">
+            <title>Radar B</title>
+            <desc>Cung 5 con so A, doi thu tu gan truc: ROE, NIM, No xau nguoc, CAR, CASA</desc>
+            <g stroke="#DBE2EA" stroke-width="1" fill="none">
+              <polygon points="80,20 132.3,58.0 112.3,119.5 47.7,119.5 27.7,58.0" />
+              <polygon points="80,33.75 119.23,62.25 104.26,108.37 55.74,108.37 40.77,62.25" />
+              <polygon points="80,47.5 106.15,66.5 96.17,97.25 63.83,97.25 53.85,66.5" />
+              <polygon points="80,61.25 93.07,70.75 88.09,86.12 71.91,86.12 66.93,70.75" />
+            </g>
+            <g stroke="#AAB8C4" stroke-width="0.75">
+              <line x1="80" y1="75" x2="80" y2="20" />
+              <line x1="80" y1="75" x2="132.3" y2="58.0" />
+              <line x1="80" y1="75" x2="112.3" y2="119.5" />
+              <line x1="80" y1="75" x2="47.7" y2="119.5" />
+              <line x1="80" y1="75" x2="27.7" y2="58.0" />
+            </g>
+            <polygon points="80,42 117.66,62.76 109.1,115.05 52.51,112.82 51.23,65.65"
+              fill="#C22F4E" fill-opacity="0.18" stroke="#C22F4E" stroke-width="1.6" />
+            <g font-family="IBM Plex Mono, monospace" font-size="8" fill="#42566A" text-anchor="middle">
+              <text x="80" y="13">ROE</text>
+              <text x="140" y="55">NIM</text>
+              <text x="116" y="132">Nợ xấu ngược</text>
+              <text x="44" y="132">CAR</text>
+              <text x="20" y="55">CASA</text>
+            </g>
+            <line x1="10" y1="145" x2="150" y2="10" stroke="#C22F4E" stroke-width="1.4" stroke-dasharray="4 3" />
+          </svg>
+          <div class="mini-cap">Thứ tự B (đổi vị trí trục)</div>
+        </div>
+      </div>
+      <p class="note">
+        Cả hai radar dùng ĐÚNG 5 số: NIM 72, CAR 85, ROE 60, CASA 55, nợ xấu ngược 90
+        (percentile, 0-100). Chỉ đổi trục nào nhận số nào. Diện tích và "hình dạng lệch"
+        đổi hẳn dù không một con số nào thay đổi. Nếu diện tích/hình dạng là thứ người đọc
+        dùng để phán đoán "ngân hàng này khoẻ hay yếu", họ đang phán đoán dựa trên một
+        lựa chọn trình bày ngẫu nhiên, không dựa trên dữ liệu.
+      </p>
+    </div>
+
+    <div class="panel panel-good">
+      <span class="tag tag-good">Đúng</span>
+      <h2>Cleveland dot plot: mã hoá bằng vị trí trên 1 trục chung</h2>
+      <svg viewBox="0 0 620 260" width="100%" height="auto" role="img" style="max-width:620px">
+        <title>Dot plot 5 chi so</title>
+        <desc>5 chi so tren cung mot truc gia tri percentile 0-100, sap theo gia tri giam dan</desc>
+        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#8595A6">
+          <line x1="150" y1="20" x2="150" y2="225" stroke="#DBE2EA" stroke-width="1" />
+          <line x1="290" y1="20" x2="290" y2="225" stroke="#DBE2EA" stroke-width="1" />
+          <line x1="430" y1="20" x2="430" y2="225" stroke="#DBE2EA" stroke-width="1" />
+          <line x1="570" y1="20" x2="570" y2="225" stroke="#DBE2EA" stroke-width="1" />
+          <text x="150" y="240" text-anchor="middle">25</text>
+          <text x="290" y="240" text-anchor="middle">50</text>
+          <text x="430" y="240" text-anchor="middle">75</text>
+          <text x="570" y="240" text-anchor="middle">100</text>
+        </g>
+        <!-- 5 hang, sap giam dan: No xau nguoc 90, CAR 85, NIM 72, ROE 60, CASA 55 -->
+        <g font-family="Spectral, Georgia, serif" font-size="13" fill="#051C2C">
+          <text x="10" y="44">Nợ xấu ngược*</text>
+          <text x="10" y="90">CAR</text>
+          <text x="10" y="136">NIM</text>
+          <text x="10" y="182">ROE</text>
+          <text x="10" y="228">CASA</text>
+        </g>
+        <g stroke="#DBE2EA" stroke-width="1">
+          <line x1="150" y1="38" x2="10" y2="38" />
+          <line x1="150" y1="84" x2="10" y2="84" />
+          <line x1="150" y1="130" x2="10" y2="130" />
+          <line x1="150" y1="176" x2="10" y2="176" />
+          <line x1="150" y1="222" x2="10" y2="222" />
+        </g>
+        <!-- gia tri: value/100 * (570-150) + 150 -->
+        <g stroke="#8595A6" stroke-width="1.5">
+          <line x1="150" y1="38" x2="527.6" y2="38" />
+          <line x1="150" y1="84" x2="507.6" y2="84" />
+          <line x1="150" y1="130" x2="452.4" y2="130" />
+          <line x1="150" y1="176" x2="401.6" y2="176" />
+          <line x1="150" y1="222" x2="381.0" y2="222" />
+        </g>
+        <g fill="#2251FF" stroke="#FFFFFF" stroke-width="1.5">
+          <circle cx="527.6" cy="38" r="6.5" />
+          <circle cx="507.6" cy="84" r="6.5" />
+          <circle cx="452.4" cy="130" r="6.5" />
+          <circle cx="401.6" cy="176" r="6.5" />
+          <circle cx="381.0" cy="222" r="6.5" />
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700" fill="#051C2C">
+          <text x="537" y="42">90</text>
+          <text x="517" y="88">85</text>
+          <text x="462" y="134">72</text>
+          <text x="411" y="180">60</text>
+          <text x="391" y="226">55</text>
+        </g>
+      </svg>
+      <p class="note">
+        Mỗi chỉ số nằm trên đúng 1 trục percentile chung. Sắp theo giá trị giảm dần nên
+        không cần đếm vòng tròn hay so góc: đọc thứ tự bằng cách nhìn từ trên xuống, đọc
+        giá trị bằng cách nhìn vị trí chấm trên trục ngang. Đổi thứ tự liệt kê 5 hàng
+        (từ trên xuống) không làm đổi VỊ TRÍ của bất kỳ chấm nào trên trục giá trị,
+        khác hẳn radar. *Nợ xấu ngược = 100 trừ tỷ lệ nợ xấu, quy percentile để cùng chiều
+        "cao hơn = tốt hơn" với 4 chỉ số còn lại, chỉ để minh hoạ đọc dễ hơn, không phải
+        quy ước bắt buộc.
+      </p>
+    </div>
+  </div>
+
+  <p class="source">
+    Nguồn: Observable "Why you should avoid radar charts", Highcharts "Radar chart explained: when they work, when they fail" &middot;
+    Số liệu minh hoạ, không phải số thật của tổ chức nào &middot; Xem cơ chế đầy đủ trong research/03-chart-doctrine/FINDINGS.md &sect;3
+  </p>
+</div>
+</body>
+</html>

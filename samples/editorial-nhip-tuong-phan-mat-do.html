@@ -1,0 +1,247 @@
+<!--
+  MINH HOẠ: "cái gì làm một trang trông ĐẮT" - nhịp mật độ biến thiên có chủ đích (mở thoáng,
+  giữa dồn dập, kết thoáng lại), kỷ luật phá thang chữ tối đa 1 lần mỗi trang, khoảng trắng lề
+  trên lớn ở trang mở, và rule mảnh thay khung/card kín.
+
+  LẤY CẢM HỨNG TỪ:
+  - The Pudding: nguyên lý trừu tượng "cung tường thuật hình chữ V lệch" (bắt đầu cụ thể/thoáng,
+    dồn dập ở giữa, kết lại) - CƠ CHẾ CUỘN GỐC KHÔNG CHUYỂN SANG PDF, chỉ chuyển nguyên lý mật độ
+    - https://www.storybench.org/pudding-structures-stories-visual-essays/
+  - Stripe Press: mỗi ấn phẩm bespoke nhưng cùng một bộ nguyên tắc nền (lưới, margin, số trang)
+  - Bloomberg Businessweek (Richard Turley) dùng làm ví dụ NGƯỢC có chọn lọc: giữ kỷ luật lưới
+    nghiêm ngặt bên dưới, KHÔNG chuyển lớp biểu hiện bề mặt pop-art sang báo cáo định chế
+  - Quyết định đã chốt trong design-system/tokens.css: bo góc gần phẳng, không border-left màu
+    kiểu "card thông báo" (dòng 159-165 gọi thẳng đó là dấu hiệu AI slop)
+
+  Chi tiết đầy đủ, gồm các con số đo được cụ thể: research/01-editorial/FINDINGS.md muc 2.2, 3.2, 6.
+
+  KHI NÀO ĐỪNG DÙNG kiểu nhịp mật độ biến thiên này:
+  - Báo cáo dạng tra cứu/phụ lục (bảng tổng hợp nhiều công ty, bảng số liệu tham chiếu nhanh)
+    cần mật độ ĐỀU và tiên đoán được để quét nhanh - biến thiên mật độ sẽ gây khó tra cứu.
+  - Đừng phá thang chữ quá 1 lần mỗi trang - từ 2 con số hero trở lên cạnh tranh kích thước sẽ
+    làm người đọc không biết cái nào quan trọng hơn.
+
+  Số liệu và công ty "CTCP Nông sản Cửu Long" / mã "CLF*" là HƯ CẤU. Không phải khuyến nghị
+  đầu tư.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>CLF* - Khuyến nghị và nhịp trang</title>
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --line-lo: #EEF1F6;
+    --accent: #2251FF;
+    --pos: #008A6D;
+    --neg: #C22F4E;
+    --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem;
+    --fs-small: 0.825rem;
+    --fs-body: 1rem;
+    --fs-h3: 1.333rem;
+    --fs-h2: 1.777rem;
+    --fs-h1: 2.369rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 24px auto;
+    background: var(--paper); box-shadow: 4px 4px 0 rgba(5,28,44,0.18);
+    padding: 20mm; position: relative;
+  }
+  .furniture {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: var(--fs-caption);
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-lo);
+    border-bottom: 1px solid var(--line); padding-bottom: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+
+  .density-tag {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--paper); background: var(--ink-md);
+    display: inline-block; padding: 2px 8px; margin: var(--space-4) 0 var(--space-2) 0;
+  }
+  .density-tag.loose { background: var(--pos); }
+  .density-tag.dense { background: var(--neg); }
+
+  /* ══ ĐOẠN 1: MỞ THOÁNG - nhiều khoảng trắng, một con số hero, kỷ luật phá
+     thang chữ đúng 1 lần trên toàn trang này ═════════════════════════════ */
+  .section-open { padding: var(--space-8) 0 var(--space-7) 0; }
+  .kicker {
+    font-family: var(--font-mono); font-size: var(--fs-small);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 var(--space-4) 0;
+  }
+  h1.headline { font-size: var(--fs-h1); font-weight: 600; line-height: 1.15; margin: 0 0 var(--space-6) 0; max-width: 24ch; }
+  .hero-num {
+    font-family: var(--font-mono); font-weight: 500; font-size: 5.8rem; line-height: 0.85;
+    color: var(--ink); letter-spacing: -0.02em; margin-bottom: var(--space-4);
+  }
+  p.verdict { font-size: 1.15rem; line-height: 1.6; max-width: 48ch; color: var(--ink-md); }
+  p.verdict b { color: var(--accent); font-weight: 600; }
+
+  /* ══ ĐOẠN 2: GIỮA DỒN DẬP - lưới hẹp, bảng dày, khoảng cách co lại,
+     KHÔNG phá thang chữ thêm lần nào ở đoạn này ═══════════════════════════ */
+  .section-dense {
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: var(--space-4) 0;
+  }
+  .dense-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--space-5); }
+  .dense-grid h2 { font-size: var(--fs-h3); font-weight: 600; margin: 0 0 var(--space-2) 0; }
+  .dense-grid p { font-size: 0.9rem; line-height: 1.55; margin: 0 0 var(--space-2) 0; }
+
+  table.dense-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  table.dense-table th, table.dense-table td {
+    padding: 3px var(--space-2); text-align: right; border-bottom: 1px solid var(--line-lo);
+  }
+  table.dense-table th:first-child, table.dense-table td:first-child { text-align: left; }
+  table.dense-table thead th {
+    font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; color: var(--ink-lo);
+    border-bottom: 1px solid var(--ink);
+  }
+  table.dense-table td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  table.dense-table tr.flag td { color: var(--neg); font-weight: 600; }
+
+  .risk-list { margin: 0; padding: 0; list-style: none; font-size: 0.86rem; line-height: 1.5; }
+  .risk-list li { padding: 3px 0; border-bottom: 1px solid var(--line-lo); display: flex; justify-content: space-between; gap: var(--space-2); }
+  .risk-list .risk-val { font-family: var(--font-mono); color: var(--ink-md); white-space: nowrap; }
+
+  /* ══ ĐOẠN 3: KẾT THOÁNG LẠI - khuyến nghị ngắn, khoảng trắng rộng trở lại ═ */
+  .section-close { padding: var(--space-8) 0 var(--space-6) 0; text-align: left; }
+  .section-close .rec-kicker {
+    font-family: var(--font-mono); font-size: var(--fs-small); text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-lo); margin-bottom: var(--space-3);
+  }
+  .section-close p.rec {
+    font-size: 1.3rem; line-height: 1.5; max-width: 44ch; font-style: italic; color: var(--ink);
+  }
+
+  /* ══ THANH ĐO MẬT ĐỘ hiện trên màn hình để MINH HOẠ khái niệm, ẩn khi in ═ */
+  .density-meter {
+    display: flex; align-items: stretch; height: 28px; margin: var(--space-6) 0;
+    border: 1px solid var(--line); font-family: var(--font-mono); font-size: 9px;
+    color: var(--paper); text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .density-meter div { display: flex; align-items: center; justify-content: center; }
+  .density-meter .m1 { flex: 3; background: var(--pos); }
+  .density-meter .m2 { flex: 5; background: var(--neg); }
+  .density-meter .m3 { flex: 3; background: var(--pos); }
+
+  .checklist {
+    margin-top: var(--space-7); padding-top: var(--space-4); border-top: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-md); line-height: 1.7;
+  }
+  .checklist b { color: var(--ink); }
+
+  .research-tag {
+    position: absolute; top: 8px; right: 8px;
+    font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper);
+    padding: 2px 8px; letter-spacing: 0.04em; z-index: 5;
+  }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+    .dense-grid { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; box-shadow: none; padding: 0; }
+    .research-tag, .density-tag, .density-meter { display: none; }
+    @page { size: A4; margin: 18mm; }
+    .section-dense { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">NHỊP MẬT ĐỘ: THOÁNG - DỒN DẬP - THOÁNG</span>
+
+  <div class="furniture">
+    <span>CLF* &middot; Cập nhật quý 2/2026 &middot; Kết luận</span>
+    <span>Trang 14</span>
+  </div>
+
+  <!-- thanh minh hoạ nhịp mật độ, chỉ để giải thích khái niệm, ẩn khi in -->
+  <div class="density-meter">
+    <div class="m1">Thoáng</div><div class="m2">Dồn dập</div><div class="m3">Thoáng</div>
+  </div>
+
+  <!-- ĐOẠN 1: MỞ THOÁNG -->
+  <div class="section-open">
+    <span class="density-tag loose">Mật độ thấp &middot; ~70% khoảng trắng</span>
+    <p class="kicker">Kết luận</p>
+    <h1 class="headline">Giữ khuyến nghị theo dõi, chưa nâng lên mua</h1>
+    <div class="hero-num">21%</div>
+    <p class="verdict">Đây là con số hero duy nhất của trang, phá thang chữ đúng <b>1 lần</b>:
+    mức chiết khấu P/E của CLF* so với bình quân ngành. Luận điểm: mức chiết khấu này phản ánh
+    đúng rủi ro tồn kho, chưa phải cơ hội định giá sai.</p>
+  </div>
+
+  <!-- ĐOẠN 2: GIỮA DỒN DẬP -->
+  <div class="section-dense">
+    <span class="density-tag dense">Mật độ cao &middot; đoạn phức tạp nhất báo cáo</span>
+    <div class="dense-grid">
+      <div>
+        <h2>Chu kỳ tiền mặt theo quý</h2>
+        <table class="dense-table">
+          <thead><tr><th>Quý</th><th>DIO</th><th>DSO</th><th>DPO</th><th>CCC</th></tr></thead>
+          <tbody>
+            <tr><td>Q3/2025</td><td class="num">79</td><td class="num">44</td><td class="num">36</td><td class="num">87</td></tr>
+            <tr><td>Q4/2025</td><td class="num">85</td><td class="num">43</td><td class="num">35</td><td class="num">93</td></tr>
+            <tr><td>Q1/2026</td><td class="num">82</td><td class="num">42</td><td class="num">34</td><td class="num">90</td></tr>
+            <tr class="flag"><td>Q2/2026</td><td class="num">96</td><td class="num">41</td><td class="num">35</td><td class="num">112</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.82rem;color:var(--ink-lo);margin-top:var(--space-2)">DIO/DSO/DPO/CCC tính bằng ngày. Nguồn: báo cáo tài chính CLF* (minh hoạ).</p>
+      </div>
+      <div>
+        <h2>Rủi ro cần theo dõi quý 3</h2>
+        <ul class="risk-list">
+          <li><span>Vòng quay tồn kho không cải thiện</span><span class="risk-val">Cao</span></li>
+          <li><span>Giá gạo xuất khẩu đảo chiều giảm</span><span class="risk-val">Trung bình</span></li>
+          <li><span>Lãi suất vay ngắn hạn tăng thêm</span><span class="risk-val">Trung bình</span></li>
+          <li><span>Tập trung khách hàng xuất khẩu</span><span class="risk-val">Trung bình</span></li>
+          <li><span>Thời tiết bất lợi vụ Hè Thu</span><span class="risk-val">Thấp</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ĐOẠN 3: KẾT THOÁNG LẠI -->
+  <div class="section-close">
+    <span class="density-tag loose">Mật độ thấp &middot; khoảng trắng rộng trở lại</span>
+    <p class="rec-kicker">Khuyến nghị</p>
+    <p class="rec">Theo dõi thêm một quý. Nếu vòng quay tồn kho quay về dưới 85 ngày trong quý
+    3/2026 như phát biểu của ban lãnh đạo, mức chiết khấu định giá hiện tại trở thành cơ hội.</p>
+  </div>
+
+  <div class="checklist">
+    Kiểm tra nhanh những gì làm trang này "đắt" (đo được, không phải cảm tính, xem
+    research/01-editorial/FINDINGS.md muc 6): <b>1</b> điểm phá thang chữ trên toàn trang (con
+    số 21%), <b>2</b> mức mật độ tương phản rõ rệt (thoáng/dồn dập/thoáng) thay vì đều tăm tắp,
+    <b>0</b> khung/card bo góc kín (chỉ dùng hairline rule), <b>1</b> màu nhấn duy nhất
+    (--accent) cho đúng 1 con số quan trọng nhất mỗi đoạn.
+  </div>
+</section>
+</body>
+</html>

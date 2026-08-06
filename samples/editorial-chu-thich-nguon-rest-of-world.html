@@ -1,0 +1,280 @@
+<!--
+  MINH HOẠ: hệ thống chú thích/tín dụng nguồn theo kiểu mono (Rest of World), đánh số hình/bảng
+  nhất quán, chữ số bảng biểu (tabular figures) cho bảng tài chính, và một mô-típ đồ hoạ nhỏ tự
+  thiết kế dùng làm neo tham chiếu chéo xuyên suốt báo cáo.
+
+  LẤY CẢM HỨNG TỪ:
+  - Rest of World, style guide: dùng Input Mono riêng cho chú thích/tín dụng, luôn ghi tác giả
+    và nguồn trong chú thích - https://restofworld.org/style-guide/
+  - MIT Technology Review (Pentagram, 2018): một mô-típ đồ hoạ lặp lại xuyên suốt ấn phẩm dùng
+    làm "ngôn ngữ điều hướng" - https://www.pentagram.com/work/mit-technology-review/story
+    (LƯU Ý: mô-típ trong file này là TỰ THIẾT KẾ, không sao chép dấu "T/r" là tài sản thương
+    hiệu của MIT, chỉ mượn NGUYÊN LÝ "một dấu hiệu nhỏ lặp lại nhất quán")
+  - Tabular figures cho bảng tài chính - https://typenetwork.com/articles/opentype-at-work-figure-styles
+  - Nguyên lý "The Wall Street Journal Guide to Information Graphics" (Dona Wong, cựu giám đốc
+    đồ hoạ WSJ, học trò của Tufte) về kỷ luật sourcing và tính toàn vẹn dữ liệu trong bảng biểu.
+
+  Chi tiết đầy đủ: research/01-editorial/FINDINGS.md muc 1.4, 3.3, 5.1.
+
+  KHI NÀO ĐỪNG DÙNG:
+  - Mô-típ tham chiếu chéo: đừng phát minh mô-típ mới cho từng báo cáo - giá trị nằm ở việc lặp
+    lại xuyên suốt NHIỀU báo cáo để độc giả quen mắt.
+  - Chú thích mono: đừng dùng cho câu dài hơn 8-10 từ, mono đọc mỏi hơn serif ở đoạn dài.
+  - Tabular figures: đừng dùng cho số lẻ nằm giữa câu văn xuôi - chỉ dùng cho bảng/cột cần dóng
+    hàng thật sự.
+
+  Số liệu và công ty "CTCP Nông sản Cửu Long" / mã "CLF*" là HƯ CẤU. Không phải khuyến nghị
+  đầu tư. Ảnh trong file này là hình minh hoạ vẽ bằng CSS/SVG thuần, không phải ảnh chụp thật.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>CLF* - Định giá và so sánh ngành</title>
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --line-lo: #EEF1F6;
+    --accent: #2251FF;
+    --pos: #008A6D;
+    --neg: #C22F4E;
+    --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem;
+    --fs-small: 0.825rem;
+    --fs-body: 1rem;
+    --fs-h3: 1.333rem;
+    --fs-h2: 1.777rem;
+    --fs-h1: 2.369rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 24px auto;
+    background: var(--paper); box-shadow: 4px 4px 0 rgba(5,28,44,0.18);
+    padding: 20mm; position: relative;
+  }
+  .furniture {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: var(--fs-caption);
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-lo);
+    border-bottom: 1px solid var(--line); padding-bottom: var(--space-2);
+    margin-bottom: var(--space-5);
+  }
+  .kicker {
+    font-family: var(--font-mono); font-size: var(--fs-small);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 var(--space-2) 0;
+  }
+  h1.headline { font-size: var(--fs-h1); font-weight: 600; line-height: 1.15; margin: 0 0 var(--space-6) 0; max-width: 22ch; }
+
+  /* ── MÔ-TÍP THAM CHIẾU CHÉO TỰ THIẾT KẾ: ngoặc góc hở, dùng SVG inline ──
+     Ý tưởng mượn từ MIT Tech Review (một dấu hiệu nhỏ lặp lại xuyên suốt),
+     hình dạng do agent này tự vẽ, không sao chép logo T/r của MIT. */
+  .xref-mark {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-family: var(--font-mono); font-size: var(--fs-caption);
+    color: var(--accent); font-weight: 600; white-space: nowrap;
+  }
+  .xref-mark svg { display: block; }
+
+  h2.section-title { font-size: var(--fs-h2); font-weight: 600; margin: var(--space-7) 0 var(--space-4) 0; }
+
+  p.body-text { font-size: var(--fs-body); line-height: 1.7; max-width: 68ch; margin: 0 0 var(--space-4) 0; }
+
+  /* ── HÌNH THU VÀO CỘT: minh hoạ bổ sung cho một câu cụ thể ─────────────── */
+  figure.inset {
+    float: right;
+    width: 62mm;
+    margin: 0 0 var(--space-4) var(--space-5);
+  }
+  figure.inset .figbox {
+    background: var(--paper-hi); border: 1px solid var(--line);
+    padding: var(--space-3); height: 90px; position: relative;
+  }
+  figure.inset .spark { display: flex; align-items: flex-end; gap: 3px; height: 100%; }
+  figure.inset .spark div { flex: 1; background: var(--accent); opacity: 0.85; }
+  figcaption {
+    font-family: var(--font-mono); font-size: var(--fs-caption); line-height: 1.55;
+    color: var(--ink-md); margin-top: var(--space-2);
+  }
+  figcaption .fig-num { color: var(--ink); font-weight: 600; }
+  figcaption .fig-source { color: var(--ink-lo); display: block; margin-top: 2px; }
+
+  /* ── HÌNH TRÀN LỀ: điểm chốt luận điểm của trang ───────────────────────── */
+  figure.bleed { clear: both; width: 100%; margin: var(--space-6) 0; }
+  figure.bleed .figbox {
+    background: var(--paper-hi); border: 1px solid var(--line); padding: var(--space-5);
+  }
+
+  /* ── BẢNG SO SÁNH ĐỊNH GIÁ: chữ số tabular qua font mono ───────────────── */
+  table.comps {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--font-serif); font-size: 0.92rem;
+  }
+  table.comps caption { text-align: left; caption-side: top; margin-bottom: var(--space-3); }
+  table.comps th, table.comps td { padding: var(--space-2) var(--space-3); text-align: right; border-bottom: 1px solid var(--line-lo); }
+  table.comps th:first-child, table.comps td:first-child { text-align: left; }
+  table.comps thead th {
+    font-family: var(--font-mono); font-size: var(--fs-caption); text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--ink-lo); font-weight: 600;
+    border-bottom: 1px solid var(--ink);
+  }
+  /* số liệu trong ô dùng mono: tự động tabular (mọi ký tự rộng bằng nhau),
+     không cần font-variant-numeric riêng - xem FINDINGS.md muc 3.3 */
+  table.comps td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  table.comps tr.self { background: var(--paper-hi); }
+  table.comps tr.self td:first-child { font-weight: 600; color: var(--accent); }
+  table.comps tr.total td { border-top: 2px solid var(--ink); border-bottom: none; font-weight: 600; }
+  table.comps td.unit-row, table.comps th.unit-row { font-family: var(--font-mono); font-size: 10px; color: var(--ink-lo); font-style: normal; }
+
+  .source-line {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo);
+    margin-top: var(--space-3);
+  }
+  .source-line .credit { color: var(--ink-md); }
+
+  .research-tag {
+    position: absolute; top: 8px; right: 8px;
+    font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper);
+    padding: 2px 8px; letter-spacing: 0.04em; z-index: 5;
+  }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+    figure.inset { float: none; width: 100%; margin-left: 0; }
+    table.comps { font-size: 0.82rem; }
+  }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; box-shadow: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 18mm; }
+    figure.bleed, table.comps { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">CHÚ THÍCH MONO + XREF MOTIF + TABULAR FIGURES</span>
+
+  <div class="furniture">
+    <span>CLF* &middot; Cập nhật quý 2/2026 &middot; Phần 4</span>
+    <span>Trang 11</span>
+  </div>
+
+  <p class="kicker">Định giá</p>
+  <h1 class="headline">Mức chiết khấu 21% so với bình quân ngành có hợp lý</h1>
+
+  <figure class="inset">
+    <div class="figbox">
+      <div class="spark">
+        <div style="height:38%"></div><div style="height:44%"></div><div style="height:35%"></div>
+        <div style="height:50%"></div><div style="height:62%"></div><div style="height:58%"></div>
+        <div style="height:70%"></div><div style="height:64%"></div><div style="height:80%"></div>
+        <div style="height:76%"></div><div style="height:90%"></div><div style="height:100%"></div>
+      </div>
+    </div>
+    <figcaption>
+      <span class="fig-num">Hình 4.</span> Giá gạo xuất khẩu bình quân FOB của CLF*, 12 tháng
+      gần nhất, quy về chỉ số 100 tại tháng cao nhất.
+      <span class="fig-source">Nguồn: báo cáo IR CLF* (minh hoạ) &middot; Phòng Phân tích, 06/08/2026</span>
+    </figcaption>
+  </figure>
+
+  <p class="body-text">P/E giả định của CLF* hiện ở mức 8,2 lần, thấp hơn bình quân nhóm so
+  sánh 10,5 lần. Câu hỏi đặt ra là mức chiết khấu 21% này phản ánh đúng rủi ro tồn kho đã nêu ở
+  Phần 2 <span class="xref-mark"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 1 L1 4 M1 1 L4 1" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M9 9 L9 6 M9 9 L6 9" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>Xem Hình 2</span>, hay là định giá đang bỏ sót phần cải thiện biên lợi nhuận đã trình bày ở
+  Phần 1.</p>
+
+  <p class="body-text">So với 4 doanh nghiệp gạo xuất khẩu niêm yết còn lại trong nhóm so sánh,
+  CLF* có biên lợi nhuận gộp cao thứ hai nhưng vòng quay tồn kho lại chậm nhất
+  <span class="xref-mark"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 1 L1 4 M1 1 L4 1" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M9 9 L9 6 M9 9 L6 9" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>Xem Bảng 3</span>. Bảng dưới đây trình bày đầy đủ bộ chỉ số so sánh.</p>
+
+  <figure class="bleed">
+    <table class="comps">
+      <caption>
+        <span class="fig-num">Bảng 3.</span> So sánh định giá và chỉ số vận hành, nhóm doanh
+        nghiệp gạo xuất khẩu niêm yết
+      </caption>
+      <thead>
+        <tr>
+          <th>Doanh nghiệp (mã giả định)</th>
+          <th>P/E (x)</th>
+          <th>Biên LN gộp</th>
+          <th>Vòng quay TK (ngày)</th>
+          <th>ROE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="self">
+          <td>CTCP Nông sản Cửu Long (CLF*)</td>
+          <td class="num">8,2</td>
+          <td class="num">18,4%</td>
+          <td class="num">96</td>
+          <td class="num">14,1%</td>
+        </tr>
+        <tr>
+          <td>CTCP Lương thực An Thới (LAT*)</td>
+          <td class="num">9,6</td>
+          <td class="num">16,7%</td>
+          <td class="num">71</td>
+          <td class="num">15,8%</td>
+        </tr>
+        <tr>
+          <td>CTCP Xuất khẩu Tây Nam (TNX*)</td>
+          <td class="num">10,8</td>
+          <td class="num">19,9%</td>
+          <td class="num">64</td>
+          <td class="num">17,2%</td>
+        </tr>
+        <tr>
+          <td>CTCP Nông nghiệp Hậu Giang (HGA*)</td>
+          <td class="num">11,4</td>
+          <td class="num">15,2%</td>
+          <td class="num">83</td>
+          <td class="num">12,4%</td>
+        </tr>
+        <tr>
+          <td>CTCP Thực phẩm Miền Tây (MTF*)</td>
+          <td class="num">10,2</td>
+          <td class="num">17,5%</td>
+          <td class="num">77</td>
+          <td class="num">13,9%</td>
+        </tr>
+        <tr class="total">
+          <td>Bình quân nhóm (không tính CLF*)</td>
+          <td class="num">10,5</td>
+          <td class="num">17,3%</td>
+          <td class="num">74</td>
+          <td class="num">14,8%</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="source-line">Số liệu quý 2/2026, toàn bộ mã trong bảng là <b>giả định/hư cấu</b>,
+    không đại diện cho doanh nghiệp niêm yết thật nào &middot;
+    <span class="credit">Tổng hợp: Phòng Phân tích &middot; 06/08/2026</span></p>
+  </figure>
+
+  <p class="body-text">Đọc bảng theo hàng, không theo cột: CLF* không phải doanh nghiệp có P/E
+  thấp nhất nhóm một cách ngẫu nhiên, mà là doanh nghiệp duy nhất có cả biên lợi nhuận gộp trên
+  trung bình VÀ vòng quay tồn kho dưới trung bình cùng lúc, đúng như rủi ro đã nêu ở
+  <span class="xref-mark"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 1 L1 4 M1 1 L4 1" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M9 9 L9 6 M9 9 L6 9" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>Phần 2</span>. Thị trường đang định giá đúng rủi ro này, chưa phải định giá sai.</p>
+</section>
+</body>
+</html>

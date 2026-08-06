@@ -1,0 +1,155 @@
+<!doctype html>
+<!--
+  MINH HOẠ: trang "một con số kể chuyện" — đúng MỘT chỉ số, cỡ chữ áp đảo,
+  đúng MỘT câu ngữ cảnh, không thẻ (card), không icon, không khung bo tròn,
+  không đồng hồ đo. Sức nặng đến từ cỡ chữ và khoảng trắng, không phải từ
+  trang trí xung quanh.
+
+  NGUỒN CẢM HỨNG (xem FINDINGS.md mục 5):
+  - Nicholas Felton / Feltron Annual Report: một con số luôn đi kèm ngữ cảnh
+    đo lường cụ thể (so với năm trước, so với ngưỡng), không đứng trần trụi
+    và không đứng CHUNG với nhiều con số khác cùng lúc.
+  - Giorgia Lupi, "Data Humanism": phản đối cách trình bày dữ liệu như thể
+    nó tự đủ nghĩa mà không cần người đọc hiểu vì sao nó quan trọng.
+
+  CANH BẠC: tước bỏ MỌI con số khác trên trang buộc người đọc dừng đủ lâu ở
+  con số còn lại để nhớ nó — đặt cược rằng một trang "nghèo thông tin" theo
+  số lượng lại "giàu thông tin" theo mức ghi nhớ. THUA nếu con số được chọn
+  không thực sự là con số quan trọng nhất của báo cáo: người đọc sẽ nhớ số,
+  nhưng nhớ sai trọng tâm.
+
+  DẤU HIỆU RẺ TIỀN cần tránh (xem ANTI-SLOP.md #1): thêm icon mũi tên, thêm
+  khung bo tròn, thêm nền đổ màu — biến nó thành "stat card" dashboard SaaS.
+  Trang này CỐ Ý không có khung nào bao quanh con số.
+
+  KHI NÀO KHÔNG NÊN DÙNG:
+  - Khi cần trình bày 3-5 chỉ số cùng lúc để so sánh ngang hàng (dùng
+    statgrid nhiều cột trong components/, không phải mẫu này).
+  - Khi con số một mình dễ gây hiểu lầm nếu thiếu chỉ số đối chứng ngay bên
+    cạnh (ví dụ tỷ lệ nợ/vốn cần thấy cùng lúc với ngành để có nghĩa).
+  - Số liệu trong file là MINH HỌA, tiếp nối bối cảnh trái phiếu xanh CTCP
+    Vận tải Biển Á Châu đã dùng ở wow-bia-mo-dau.html, không phải dữ liệu
+    doanh nghiệp thật.
+
+  RÀNG BUỘC IN: không dùng font nhúng của repo (xem lý do trong
+  wow-bia-mo-dau.html và FINDINGS.md mục 0). Shadow offset cứng, blur = 0.
+  Không gauge/radar, không em-dash/en-dash, @media dùng từ khoá screen.
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trang một con số, mẫu tham khảo HT-viz-rendering</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --paper: #FFFFFF;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --accent: #2251FF;
+    --pos: #008A6D;
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ECEFF3; }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    margin: 12px auto;
+    background: var(--paper);
+    position: relative;
+    padding: 18mm 20mm;
+    font-family: var(--font-serif);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-lo);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 0;
+  }
+  .stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .num-label {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    color: var(--pos);
+    margin: 0 0 8px 4px;
+  }
+  .num-hero {
+    font-size: 210px;
+    font-weight: 600;
+    line-height: 0.9;
+    margin: 0;
+    letter-spacing: -0.015em;
+    /* Chữ khắc (impressed), hướng ngược với hero ở trang bìa để hai trang
+       không trông giống hệt nhau dù cùng kỹ thuật gốc — xem FINDINGS.md 8.1. */
+    text-shadow: -1px -1px 0px rgba(5,28,44,0.10), 1px 1px 0px rgba(255,255,255,0.85);
+  }
+  .num-context {
+    max-width: 460px;
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--ink-md);
+    margin: 26px 0 0 4px;
+  }
+  .num-context strong { color: var(--ink); }
+  .num-context .delta {
+    font-family: var(--font-mono);
+    color: var(--pos);
+    font-weight: 600;
+  }
+  .footer {
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-lo);
+  }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; height: auto; min-height: 100vh; padding: 8vw 6vw; }
+    .num-hero { font-size: 26vw; }
+    .stage { padding: 10vh 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="eyebrow">CTCP Vận tải Biển Á Châu · Chương 3, tác động công suất</div>
+
+    <div class="stage">
+      <p class="num-label">Công suất khai thác tăng thêm dự kiến</p>
+      <p class="num-hero">+30%</p>
+      <p class="num-context">
+        Khi hai tàu container feeder mới thay thế đội tàu trên 20 năm tuổi,
+        công suất khai thác dự kiến tăng <span class="delta">30%</span> so
+        với mức công ty đang xin phê duyệt, đưa hoạt động vượt hẳn nhóm tàu
+        cũ đang chờ đánh giá đăng kiểm lại từ 2027.
+      </p>
+    </div>
+
+    <div class="footer">
+      <span>Số liệu minh hoạ, không phải dự báo chính thức</span>
+      <span>Dữ liệu chốt 2026-08-01</span>
+    </div>
+  </div>
+</body>
+</html>

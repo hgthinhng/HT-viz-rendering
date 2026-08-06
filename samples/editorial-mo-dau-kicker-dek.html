@@ -1,0 +1,343 @@
+<!--
+  MINH HOẠ: kiến trúc "trang mở đầu khác trang thân bài" + bộ khung kicker/headline/dek/nut-graf.
+
+  LẤY CẢM HỨNG TỪ:
+  - Financial Times, redesign 2014 (lưới 8 cột giảm còn 6 cột để trang "thở" hơn, phân tách rõ
+    tin tức và phân tích) - https://www.poynter.org/reporting-editing/2014/financial-times-a-classic-redesign-for-the-digital-age/
+  - Guardian, redesign 2018 (lưới 8 cột giảm còn 5 cột khi chuyển từ Berliner sang tabloid)
+    - https://www.designweek.co.uk/issues/15-21-january-2018/guardian-introduces-tabloid-format-redesigns-platforms/
+  - NYT Magazine, phỏng vấn Gail Bichler (page furniture chuyển lên đầu trang, mở rộng lề trên,
+    "using the space more intentionally") - https://www.itsnicethat.com/features/gail-bichler-the-new-york-times-magazine-redesign-publication-spotlight-080426
+  - Bộ khung kicker/headline/dek/nut-graf: quy ước báo chí Anh-Mỹ chuẩn (Poynter)
+
+  Chi tiết đầy đủ, gồm lý do và trích dẫn: research/01-editorial/FINDINGS.md muc 1.1, 1.2, 2.1.
+
+  KHI NÀO ĐỪNG DÙNG kiểu trang mở này:
+  - Báo cáo ngắn dưới 4 trang: không đủ dài để người đọc cảm nhận "chuyển cảnh" giữa trang mở
+    và trang thân, một lưới nhất quán xuyên suốt sẽ hợp lý hơn.
+  - Ghi chú nội bộ nhanh, không phải báo cáo gửi khách hàng: 4 lớp kicker/headline/dek/nut-graf
+    là thừa cho một trang ghi chú 1 mặt giấy.
+  - Đừng lặp lại khoảng trắng lớn này ở MỌI trang trong báo cáo, chỉ dành cho trang mở đầu và
+    mở mỗi phần lớn (2-4 lần trong cả tài liệu).
+
+  Số liệu trong file này là MINH HOẠ, công ty "CTCP Nông sản Cửu Long" và mã "CLF*" là HƯ CẤU,
+  không tồn tại trên sàn giao dịch thật. Không phải khuyến nghị đầu tư.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>CLF* - Cập nhật quý 2/2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --line-lo: #EEF1F6;
+    --accent: #2251FF;
+    --accent-hi: #1233B8;
+    --pos: #008A6D;
+    --neg: #C22F4E;
+    --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem;
+    --fs-small: 0.825rem;
+    --fs-body: 1rem;
+    --fs-dek: 1.15rem;
+    --fs-h3: 1.333rem;
+    --fs-h2: 1.777rem;
+    --fs-h1: 2.369rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body {
+    margin: 0;
+    font-family: var(--font-serif);
+    color: var(--ink);
+    background: var(--ink-lo);
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 24px auto;
+    background: var(--paper);
+    box-shadow: 4px 4px 0 rgba(5,28,44,0.18);
+    padding: 26mm 20mm 20mm 20mm;
+    position: relative;
+  }
+
+  /* ── TRANG MỞ ĐẦU: lưới 1 cột, khoảng trắng lớn ở lề trên ─────────────── */
+  .cover .furniture {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-lo);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-8);
+  }
+
+  /* khoảng trắng "hít vào" trước headline, khoảng 28% chiều cao vùng nội
+     dung của trang mở, đo theo tỷ lệ FT/NYT Magazine (mục 6.1 FINDINGS.md) */
+  .cover .breathing-room { height: 64px; }
+
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  h1.headline {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    /* WeasyPrint 69.0 không hỗ trợ clamp()/min()/max() (đã kiểm chứng thật,
+       xem FINDINGS.md phần "Phát hiện kỹ thuật"): dùng cỡ cố định cho bản in,
+       thu nhỏ riêng ở @media screen bên dưới cho màn hình hẹp thay vì co giãn
+       liên tục bằng hàm toán học CSS. */
+    font-size: var(--fs-h1);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 var(--space-5) 0;
+    max-width: 15ch;
+  }
+
+  p.dek {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--fs-dek);
+    line-height: 1.5;
+    color: var(--ink-md);
+    max-width: 46ch;
+    margin: 0 0 var(--space-6) 0;
+  }
+
+  .byline-row {
+    display: flex;
+    gap: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-lo);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: var(--space-3) 0;
+    margin-bottom: var(--space-7);
+  }
+  .byline-row b { color: var(--ink-md); font-weight: 600; }
+
+  /* con số hero, phá thang chữ có chủ đích, đúng 1 lần trên trang này
+     (mục 3.2 FINDINGS.md: tối đa 1 con số hero mỗi trang) */
+  .hero-stat {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-5);
+    margin-bottom: var(--space-7);
+  }
+  .hero-stat .num {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 5.4rem;
+    line-height: 0.9;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .hero-stat .label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--ink-md);
+    max-width: 22ch;
+    line-height: 1.5;
+  }
+  .hero-stat .label .delta { color: var(--pos); font-weight: 600; }
+
+  /* nut graf: đoạn đầu tiên nêu thẳng luận điểm, không mở đầu bằng lịch sử
+     công ty (mục 1.1 FINDINGS.md) */
+  p.nut-graf {
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    max-width: 62ch;
+    margin: 0 0 var(--space-7) 0;
+  }
+  p.nut-graf .anchor { color: var(--accent); font-weight: 600; }
+
+  .cover-foot {
+    position: absolute;
+    left: 20mm; right: 20mm; bottom: 14mm;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-lo);
+    border-top: 1px solid var(--line-lo);
+    padding-top: var(--space-2);
+  }
+
+  /* ── TRANG THÂN BÀI: lưới 2 cột hẹp, mật độ cao hơn hẳn trang mở ───────── */
+  .body-page {
+    margin-top: 24px;
+  }
+  .body-page .furniture {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-lo);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+  h2.section-title {
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    margin: 0 0 var(--space-5) 0;
+  }
+  .two-col {
+    columns: 2;
+    column-gap: var(--space-6);
+    column-rule: 1px solid var(--line);
+    font-size: var(--fs-body);
+    line-height: 1.7;
+  }
+  .two-col p { margin: 0 0 var(--space-4) 0; }
+  .two-col p b.anchor-num { color: var(--ink); font-weight: 600; }
+
+  .note-callout {
+    break-inside: avoid;
+    background: var(--paper-hi);
+    border-left: 3px solid var(--accent);
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: 1.6;
+    color: var(--ink-md);
+    margin: var(--space-2) 0 var(--space-4) 0;
+  }
+
+  /* ── nhãn "tại sao trang mở khác trang thân" hiện trên màn hình, ẩn khi in */
+  .research-tag {
+    position: absolute;
+    top: 8px; right: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    background: var(--accent);
+    color: var(--paper);
+    padding: 2px 8px;
+    letter-spacing: 0.04em;
+  }
+
+  @media screen and (max-width: 880px) {
+    .page { width: 100%; padding: 16px; }
+    .two-col { columns: 1; }
+    h1.headline { font-size: 1.9rem; }
+  }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page {
+      width: auto; min-height: auto; margin: 0; box-shadow: none;
+      padding: 0;
+    }
+    .research-tag { display: none; }
+    .page + .page { page-break-before: always; }
+    @page { size: A4; margin: 20mm 18mm; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- TRANG 1: MỞ ĐẦU -->
+  <section class="page cover">
+    <span class="research-tag">TRANG MỞ - LƯỚI 1 CỘT</span>
+    <div class="furniture">
+      <span>Phân tích cổ phiếu / Nông sản xuất khẩu</span>
+      <span>Trang 01</span>
+    </div>
+
+    <div class="breathing-room"></div>
+
+    <p class="kicker">Cập nhật quý 2/2026 &middot; CTCP Nông sản Cửu Long (mã giả định CLF*)</p>
+
+    <h1 class="headline">Biên lợi nhuận gộp phục hồi về 18,4% khi giá gạo xuất khẩu tạo đáy mới</h1>
+
+    <p class="dek">Sau hai quý giá đầu vào tăng bào mòn biên lãi, quý 2/2026 là quý đầu tiên
+    CLF* cho thấy chi phí nguyên liệu ổn định trở lại đủ lâu để phản ánh vào giá bán.</p>
+
+    <div class="byline-row">
+      <span><b>Phòng Phân tích</b></span>
+      <span>Ngày 06/08/2026</span>
+      <span>Giá tham chiếu (giả định): 24.500đ</span>
+      <span>P/E giả định: 8,2x</span>
+    </div>
+
+    <div class="hero-stat">
+      <span class="num">18,4%</span>
+      <span class="label">Biên lợi nhuận gộp quý 2/2026,<br><span class="delta">+3,3 điểm %</span> so với quý 1/2026 (15,1%)</span>
+    </div>
+
+    <p class="nut-graf">Doanh thu thuần quý 2/2026 đạt <b class="anchor">2.184 tỷ đồng</b>, tăng
+    14,2% so với cùng kỳ. Luận điểm chính của báo cáo này: đáy giá gạo xuất khẩu bình quân
+    478 USD/tấn hồi quý 4/2025 đã đi qua, giá quý 2/2026 phục hồi lên 512 USD/tấn, và mức phục
+    hồi này đủ để biên lợi nhuận gộp quay lại vùng 18-20% duy trì trong ít nhất hai quý tới nếu
+    không có cú sốc thời tiết mới ở đồng bằng sông Cửu Long.</p>
+
+    <div class="cover-foot">
+      <span>Số liệu minh hoạ cho doanh nghiệp hư cấu, không phải khuyến nghị đầu tư thật &middot; HT-viz-rendering / research 01-editorial</span>
+    </div>
+  </section>
+
+  <!-- TRANG 2: THÂN BÀI, lưới khác hẳn trang mở -->
+  <section class="page body-page">
+    <span class="research-tag">TRANG THÂN - LƯỚI 2 CỘT</span>
+    <div class="furniture">
+      <span>CLF* &middot; Cập nhật quý 2/2026</span>
+      <span>Trang 02</span>
+    </div>
+
+    <h2 class="section-title">Vì sao biên lợi nhuận phục hồi đúng lúc này</h2>
+
+    <div class="two-col">
+      <p>Giá lúa nguyên liệu đầu vào bình quân khu vực đồng bằng sông Cửu Long giảm về
+      <b class="anchor-num">6.850 đồng/kg</b> trong quý 2/2026, từ đỉnh 7.900 đồng/kg hồi
+      quý 4/2025. Đây là mức giảm liên tục quý thứ hai, cho thấy áp lực nguồn cung đã hạ nhiệt
+      sau vụ Đông Xuân được mùa.</p>
+
+      <div class="note-callout">
+        Ghi chú phương pháp: giá lúa nguyên liệu lấy bình quân gia quyền theo sản lượng thu mua
+        thực tế của CLF*, không phải giá niêm yết Hiệp hội Lương thực. Chênh lệch hai nguồn
+        thường trong khoảng 2-4%.
+      </div>
+
+      <p>Ở đầu ra, giá gạo xuất khẩu bình quân của CLF* đạt <b class="anchor-num">512 USD/tấn</b>
+      FOB trong quý 2/2026, tăng từ đáy 478 USD/tấn quý 4/2025. Khoảng cách giữa thời điểm chi
+      phí đầu vào giảm và thời điểm giá bán đầu ra phục hồi thường lệch pha 1-2 quý do hợp đồng
+      xuất khẩu đã ký trước, và đây chính là quý đầu tiên độ lệch pha này thu hẹp lại.</p>
+
+      <p>Tồn kho cuối quý 2/2026 ở mức <b class="anchor-num">890 tỷ đồng</b>, tương đương vòng
+      quay tồn kho 96 ngày, cao hơn mức bình quân ngành khoảng 78 ngày. Đây là điểm cần theo dõi
+      ở phần rủi ro, vì tồn kho cao kéo dài chu kỳ tiền mặt lên 112 ngày.</p>
+
+      <p>Cơ cấu doanh thu quý 2/2026 nghiêng về khu vực đồng bằng sông Cửu Long với tỷ trọng
+      58%, Miền Trung 22%, và kênh xuất khẩu trực tiếp 20%. Tỷ trọng xuất khẩu trực tiếp tăng
+      nhẹ so với mức 17% cùng kỳ, phản ánh nỗ lực giảm phụ thuộc vào thương lái trung gian.</p>
+    </div>
+  </section>
+
+</body>
+</html>

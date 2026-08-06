@@ -1,0 +1,165 @@
+<!doctype html>
+<!--
+  MINH HOẠ: trang ngăn chương vừa nghỉ mắt vừa tải thông tin — tên chương,
+  một câu định vị (không phải mục lục chi tiết), và hai con số neo THẬT sẽ
+  xuất hiện lại trong chính chương đó. Không trắng trơn (lãng phí một
+  trang), không nhồi nhét (thì không còn là chỗ nghỉ mắt).
+
+  NGUỒN CẢM HỨNG (xem FINDINGS.md mục 4):
+  - Wired magazine: trang mở chương dùng lề rộng bất thường và cột văn bản
+    hẹp hơn hẳn phần thân — tín hiệu "chậm lại" bằng NHỊP ĐỌC, không phải
+    bằng cách để trống trang.
+  - The Book Designer, nguyên tắc chapter/part opener: trang ngăn tốt vừa
+    cho mắt nghỉ vừa định hướng người đọc về nội dung sắp tới.
+
+  CANH BẠC: đặt cược người đọc sẽ nhớ RÕ tên chương và số neo hơn nếu nó
+  đứng một mình trên một trang, dùng như "mục lục mở rộng" để quyết định có
+  đọc kỹ chương này không — đúng hành vi thật của người đọc báo cáo dài (ít
+  khi đọc tuyến tính). THUA nếu số neo không được nhắc lại nhất quán khi nó
+  xuất hiện thật trong chương — trang ngăn sẽ thành lời hứa suông.
+
+  DẤU HIỆU RẺ TIỀN cần tránh (xem ANTI-SLOP.md #5): tên chương to đùng giữa
+  trang trắng không số không câu, kiểu "trang đệm PowerPoint" chiếm diện
+  tích in mà không trả lại giá trị đọc.
+
+  KHI NÀO KHÔNG NÊN DÙNG:
+  - Báo cáo ngắn dưới 8 trang: chi phí một trang ngăn riêng không đáng so
+    với việc chỉ cần một tiêu đề mục (H2) trong dòng chảy chính.
+  - Khi các chương phụ thuộc chặt vào nhau (không đọc rời được), việc mời
+    người đọc "nhảy chương" qua trang ngăn có thể phản tác dụng.
+  - Số liệu là MINH HỌA, tiếp nối bối cảnh trái phiếu xanh CTCP Vận tải
+    Biển Á Châu dùng xuyên suốt các mẫu wow-layer khác trong samples/.
+
+  RÀNG BUỘC IN: không dùng font nhúng của repo (xem FINDINGS.md mục 0).
+  Shadow offset cứng, blur = 0. Không gauge/radar, không em-dash/en-dash,
+  @media dùng từ khoá screen.
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trang ngăn chương, mẫu tham khảo HT-viz-rendering</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --accent: #2251FF;
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ECEFF3; }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    margin: 12px auto;
+    background: var(--paper);
+    position: relative;
+    padding: 24mm 22mm 20mm 34mm;
+    font-family: var(--font-serif);
+    color: var(--ink);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+  .chnum {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .chtitle {
+    font-size: 52px;
+    font-weight: 600;
+    line-height: 1.12;
+    margin: 10px 0 0;
+    max-width: 460px;
+  }
+  .dek {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink-md);
+    max-width: 420px;
+    margin-top: 20px;
+  }
+  .anchors {
+    display: flex;
+    gap: 48px;
+    align-self: center;
+    padding: 28px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .anchor-num {
+    font-family: var(--font-mono);
+    font-size: 46px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .anchor-lbl {
+    font-size: 13px;
+    color: var(--ink-lo);
+    margin-top: 8px;
+    max-width: 210px;
+    line-height: 1.5;
+  }
+  .see-also {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-lo);
+    letter-spacing: 0.03em;
+  }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-lo);
+  }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; height: auto; min-height: 100vh; padding: 10vw 6vw; }
+    .chtitle { font-size: 12vw; max-width: none; }
+    .anchors { flex-direction: column; gap: 20px; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div>
+      <div class="chnum">Chương 03</div>
+      <h1 class="chtitle">Dòng tiền và khả năng trả nợ</h1>
+      <p class="dek">
+        Rủi ro không nằm ở khoản nợ đang có, mà ở việc công ty có thể chịu
+        được cú sốc khi hai tàu mới đi vào khai thác trước khi dòng tiền
+        tăng công suất kịp bù đắp chi phí lãi vay tăng thêm.
+      </p>
+    </div>
+
+    <div class="anchors">
+      <div>
+        <p class="anchor-num">212</p>
+        <p class="anchor-lbl">Tỷ đồng dòng tiền hoạt động 2025, số sẽ được đối chiếu lại ở mục 3.2</p>
+      </div>
+      <div>
+        <p class="anchor-num">3,4×</p>
+        <p class="anchor-lbl">Hệ số bao phủ lãi vay hiện tại, trước khi cộng thêm khoản vay mua tàu mới</p>
+      </div>
+    </div>
+
+    <div>
+      <p class="see-also">Hai số này quay lại ở bảng 3.2 và biểu đồ 3.4 trong chương này</p>
+      <div class="footer">
+        <span>CTCP Vận tải Biển Á Châu</span>
+        <span>Số liệu minh hoạ · dữ liệu chốt 2026-08-01</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

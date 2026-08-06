@@ -1,0 +1,178 @@
+<!--
+  Ý MINH HOẠ: cùng 1 dữ liệu (lợi suất TPCP kỳ hạn 5 năm và 10 năm, 6 tháng), vẽ
+  2 lần. Bản trái dùng legend cổ điển phía dưới: mắt phải làm 2 việc tách rời (đọc
+  màu ở legend, tìm lại đúng màu đó trên đường). Bản phải dùng nhãn trực tiếp ở
+  cuối mỗi đường, kèm 1 chú giải chỉ thẳng vào sự kiện quan trọng, không có legend.
+  Panel thứ ba (dưới) chứng minh chiều ngược lại: khi số chuỗi nhiều (6 trở lên),
+  nhãn trực tiếp bắt đầu chồng chéo, legend hoặc small multiples thắng.
+
+  NGUỒN CẢM HỨNG: phong cách The Economist và BBC News (BBC rcookbook), Datawrapper
+  blog "New: Annotations in bar, range, and dot charts" (dùng chú giải trực tiếp
+  thay legend khi có thể) và "How to design a useful color key" (khi nào legend
+  vẫn cần thiết).
+
+  KHI NÀO KHÔNG NÊN DÙNG annotation-first: khi số chuỗi > 5-6 trên cùng 1 mặt phẳng
+  (panel dưới minh hoạ), khi biểu đồ là 1 trong nhiều ô của small multiples (đặt
+  legend 1 lần dùng chung hiệu quả hơn lặp lại nhãn), hoặc khi người đọc cần tra
+  cứu lặp lại nhiều lần qua nhiều lượt xem (dashboard tương tác, legend là điểm
+  neo ổn định hơn nhãn di chuyển theo dữ liệu).
+
+  Dữ liệu: lợi suất TPCP kỳ hạn 5 và 10 năm qua 6 tháng, số minh hoạ, không phải
+  số liệu công bố thật của Bộ Tài chính hay VBMA.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Annotation trực tiếp so với legend: khi nào cái nào thắng</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #2251FF; --negative: #C22F4E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 28px; max-width: 70ch; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  @media screen and (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid var(--line); padding: 16px 18px 18px; }
+  .tag {
+    display: inline-block; font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; margin-bottom: 8px; color: var(--ink-md); border: 1px solid var(--ink-md);
+  }
+  .tag-good { color: var(--accent); border-color: var(--accent); }
+  .panel h2 { font-size: 0.98rem; margin: 0 0 10px; }
+  .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.74rem; color: var(--ink-md); line-height: 1.6; margin: 10px 0 0;
+  }
+  .source {
+    margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Nhãn trực tiếp thắng khi ít chuỗi, legend thắng khi nhiều chuỗi</h1>
+  <p class="dek">Cùng dữ liệu lợi suất TPCP 5 năm và 10 năm, vẽ 2 cách. Số liệu minh hoạ.</p>
+
+  <div class="grid2">
+    <div class="panel">
+      <span class="tag">Legend cổ điển</span>
+      <h2>Đọc mất 2 bước: dò màu ở legend, rồi tìm lại trên đường</h2>
+      <svg viewBox="0 0 300 220" width="100%" height="auto" role="img">
+        <title>Loi suat TPCP, legend duoi</title>
+        <desc>2 duong loi suat TPCP 5 nam va 10 nam qua 6 thang, chu giai mau dat o duoi</desc>
+        <g stroke="#DBE2EA" stroke-width="0.8">
+          <line x1="30" y1="180" x2="290" y2="180" />
+          <line x1="30" y1="126.67" x2="290" y2="126.67" />
+          <line x1="30" y1="73.33" x2="290" y2="73.33" />
+          <line x1="30" y1="20" x2="290" y2="20" />
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="8" fill="#8595A6" text-anchor="end">
+          <text x="26" y="183">2,8%</text>
+          <text x="26" y="130">3,1%</text>
+          <text x="26" y="76">3,4%</text>
+          <text x="26" y="23">3,7%</text>
+        </g>
+        <polyline points="40,171.11 88,162.22 136,153.33 184,126.67 232,135.56 280,117.78" fill="none" stroke="#2251FF" stroke-width="2" />
+        <polyline points="40,108.89 88,100 136,82.22 184,46.67 232,55.56 280,28.89" fill="none" stroke="#42566A" stroke-width="2" />
+        <g font-family="Spectral, Georgia, serif" font-size="9" fill="#8595A6" text-anchor="middle">
+          <text x="40" y="198">T1</text><text x="88" y="198">T2</text><text x="136" y="198">T3</text>
+          <text x="184" y="198">T4</text><text x="232" y="198">T5</text><text x="280" y="198">T6</text>
+        </g>
+        <!-- legend duoi -->
+        <g font-family="Spectral, Georgia, serif" font-size="9.5" fill="#051C2C">
+          <rect x="60" y="210" width="12" height="3" fill="#2251FF" /><text x="76" y="214">Kỳ hạn 5 năm</text>
+          <rect x="180" y="210" width="12" height="3" fill="#42566A" /><text x="196" y="214">Kỳ hạn 10 năm</text>
+        </g>
+      </svg>
+      <p class="note">
+        Muốn biết đường nào là "10 năm" tại T4, mắt phải rời khỏi điểm dữ liệu, đọc
+        legend phía dưới, rồi quay lại tìm đúng màu đó trên hình. Mỗi lần "tra cứu
+        chéo" này tốn thời gian phản ứng đo được.
+      </p>
+    </div>
+
+    <div class="panel" style="border-color:var(--ink); border-width:1.5px;">
+      <span class="tag tag-good">Annotation trực tiếp</span>
+      <h2>Đọc 1 bước: tên chuỗi nằm ngay tại điểm dữ liệu</h2>
+      <svg viewBox="0 0 300 220" width="100%" height="auto" role="img">
+        <title>Loi suat TPCP, nhan truc tiep</title>
+        <desc>Cung du lieu, nhan ten chuoi dat ngay cuoi duong, chu giai su kien tai T4</desc>
+        <g stroke="#DBE2EA" stroke-width="0.8">
+          <line x1="30" y1="180" x2="272" y2="180" />
+          <line x1="30" y1="126.67" x2="272" y2="126.67" />
+          <line x1="30" y1="73.33" x2="272" y2="73.33" />
+          <line x1="30" y1="20" x2="272" y2="20" />
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="8" fill="#8595A6" text-anchor="end">
+          <text x="26" y="183">2,8%</text>
+          <text x="26" y="130">3,1%</text>
+          <text x="26" y="76">3,4%</text>
+          <text x="26" y="23">3,7%</text>
+        </g>
+        <polyline points="40,171.11 88,162.22 136,153.33 184,126.67 232,135.56 272,120.5" fill="none" stroke="#2251FF" stroke-width="2" />
+        <polyline points="40,108.89 88,100 136,82.22 184,46.67 232,55.56 272,32" fill="none" stroke="#42566A" stroke-width="2" />
+        <text x="278" y="122" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700" fill="#2251FF">5 năm</text>
+        <text x="278" y="34" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700" fill="#42566A">10 năm</text>
+        <g font-family="Spectral, Georgia, serif" font-size="9" fill="#8595A6" text-anchor="middle">
+          <text x="40" y="198">T1</text><text x="88" y="198">T2</text><text x="136" y="198">T3</text>
+          <text x="184" y="198">T4</text><text x="232" y="198">T5</text><text x="280" y="198">T6</text>
+        </g>
+        <!-- chu giai su kien tai T4 -->
+        <path d="M 184 46.67 L 184 34 L 165 24" stroke="#C22F4E" stroke-width="1" fill="none" />
+        <text x="162" y="21" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="8" fill="#C22F4E">NHNN tăng lãi suất điều hành</text>
+      </svg>
+      <p class="note">
+        Tên chuỗi nằm ngay cuối đường, không cần legend. Sự kiện quan trọng (NHNN
+        tăng lãi suất điều hành tại T4) được chỉ thẳng bằng 1 đường dẫn, không phải
+        chú thích rời rạc phía dưới mà người đọc phải tự khớp thời điểm.
+      </p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="tag">Khi legend vẫn thắng</span>
+    <h2>6 chuỗi trở lên: nhãn trực tiếp chồng chéo, quay lại dùng legend</h2>
+    <svg viewBox="0 0 620 140" width="100%" height="auto" role="img">
+      <title>6 chuoi cung luc, nhan truc tiep khong con doc duoc</title>
+      <desc>Minh hoa 6 duong gan nhau ve gia tri cuoi ky, nhan truc tiep se chong len nhau</desc>
+      <g stroke="#DBE2EA" stroke-width="0.8"><line x1="20" y1="120" x2="560" y2="120" /></g>
+      <g fill="none" stroke-width="1.6">
+        <polyline points="30,90 150,70 270,55 390,40 510,44" stroke="#2251FF" />
+        <polyline points="30,95 150,78 270,60 390,46 510,50" stroke="#1233B8" />
+        <polyline points="30,100 150,84 270,66 390,52 510,56" stroke="#7D9BFF" />
+        <polyline points="30,105 150,90 270,72 390,58 510,62" stroke="#42566A" />
+        <polyline points="30,110 150,96 270,78 390,64 510,68" stroke="#8595A6" />
+        <polyline points="30,115 150,102 270,84 390,70 510,74" stroke="#C22F4E" />
+      </g>
+      <text x="530" y="35" font-family="IBM Plex Mono, monospace" font-size="10" fill="#C22F4E">6 nhãn cuối đường sẽ đè lên nhau ở đây</text>
+      <path d="M 512 44 L 528 32" stroke="#C22F4E" stroke-width="1" />
+      <path d="M 512 50 L 528 40" stroke="#C22F4E" stroke-width="1" />
+      <path d="M 512 56 L 528 46" stroke="#C22F4E" stroke-width="1" />
+    </svg>
+    <p class="note">
+      Khi 6 mã cổ phiếu cùng ngành hội tụ về vùng giá trị gần nhau ở cuối kỳ, nhãn
+      trực tiếp không còn chỗ để đặt mà không chồng lên nhau. Ở tình huống này, quay
+      lại dùng legend, hoặc tốt hơn, tách thành small multiples (xem
+      charts/echarts/07-small-multiples.mjs trong repo) thay vì cố nhồi 6 nhãn vào
+      1 mặt phẳng.
+    </p>
+  </div>
+
+  <p class="source">
+    Nguồn: BBC Visual and Data Journalism rcookbook &middot; Datawrapper blog, "New: Annotations in bar, range, and dot charts" và "How to design a useful color key" &middot;
+    Số liệu minh hoạ &middot; Xem research/03-chart-doctrine/FINDINGS.md &sect;4
+  </p>
+</div>
+</body>
+</html>

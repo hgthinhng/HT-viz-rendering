@@ -1,0 +1,160 @@
+<!--
+  Ý MINH HOẠ: con người đọc SAI góc quạt tốt hơn nhiều so với đọc SAI vị trí trên 1
+  trục thẳng. Panel trái là 1 phép thử trực tiếp: che số, chỉ hỏi "miếng B hay miếng
+  C lớn hơn" (chênh nhau 2 điểm phần trăm thị phần). Panel phải là cùng dữ liệu vẽ
+  bằng bar ngang, câu trả lời rõ ràng ngay lập tức không cần đoán.
+
+  NGUỒN CẢM HỨNG: Data-to-viz, "The issue with pie chart"
+  (https://www.data-to-viz.com/caveat/pie.html), Observable, "Everything you think
+  you know about pie charts is wrong" (https://observablehq.com/blog/truth-about-pie-charts).
+
+  KHÔNG PHẢI RÀNG BUỘC CỨNG: pie/donut không nằm trong danh sách cấm của CLAUDE.md
+  (khác gauge/radar). Ngưỡng thực dụng đề xuất: pie/donut còn chấp nhận được khi
+  <=3 lát VÀ mục đích là "1 phần chiếm áp đảo phần còn lại" (ví dụ 68% so với 32%,
+  không cần so sánh chính xác giữa các lát nhỏ). Từ 4 lát trở lên, hoặc khi cần so
+  sánh chính xác thứ hạng giữa các lát gần bằng nhau (như ví dụ này), chuyển sang
+  bar ngang xếp theo giá trị giảm dần.
+
+  KHI NÀO KHÔNG NÊN DÙNG bar để thay pie: khi mục đích KHÔNG phải so sánh giữa các
+  phần mà là cảm nhận "phần này chiếm hầu hết tổng thể" một cách tức thời (ví dụ
+  1 phần chiếm 91%) — lúc đó pie/donut đơn giản 2 lát truyền tải cảm giác đó nhanh
+  hơn 1 bar dài kèm số.
+
+  Dữ liệu: thị phần cho vay bán lẻ minh hoạ giữa 6 ngân hàng giả định, không phải
+  số liệu thị trường thật.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Miếng nào lớn hơn: phép thử góc quạt so với bar</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #2251FF; --negative: #C22F4E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 26px; max-width: 72ch; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media screen and (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid var(--line); padding: 16px 18px 18px; }
+  .tag {
+    display: inline-block; font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; margin-bottom: 8px; color: var(--negative); border: 1px solid var(--negative);
+  }
+  .tag-good { color: var(--accent); border-color: var(--accent); }
+  .panel h2 { font-size: 0.95rem; margin: 0 0 10px; }
+  .challenge {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; color: var(--negative);
+    text-align: center; margin: 10px 0 0; font-weight: 700;
+  }
+  .reveal {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.74rem; color: var(--ink-md);
+    text-align: center; margin: 4px 0 0;
+  }
+  .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.74rem; color: var(--ink-md); line-height: 1.6; margin: 22px 0 0; max-width: 76ch;
+  }
+  .source {
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Thị phần cho vay bán lẻ: miếng B hay miếng C lớn hơn?</h1>
+  <p class="dek">Chênh lệch giữa 2 miếng chỉ 2 điểm phần trăm. Nhìn hình trước khi đọc số bên dưới. Số liệu minh hoạ.</p>
+
+  <div class="grid2">
+    <div class="panel">
+      <span class="tag">Khó so sánh bằng mắt</span>
+      <h2>Thị phần theo pie, không nhãn số trên lát B và C</h2>
+      <svg viewBox="0 0 300 300" width="100%" height="auto" role="img" style="max-width:280px; display:block; margin:0 auto;">
+        <title>Thi phan cho vay ban le theo pie</title>
+        <desc>6 lat thi phan, lat B 19% va lat C 17% khong ghi so de thu thach nguoi xem so sanh bang mat</desc>
+        <path d="M150,150 L150,40 A110,110 0 0,1 258.05,129.39 Z" fill="#2251FF" />
+        <path d="M150,150 L258.05,129.39 A110,110 0 0,1 208.94,242.87 Z" fill="#1233B8" />
+        <path d="M150,150 L208.94,242.87 A110,110 0 0,1 97.0,246.39 Z" fill="#7D9BFF" />
+        <path d="M150,150 L97.0,246.39 A110,110 0 0,1 40.87,163.78 Z" fill="#42566A" />
+        <path d="M150,150 L40.87,163.78 A110,110 0 0,1 69.81,74.70 Z" fill="#8595A6" />
+        <path d="M150,150 L69.81,74.70 A110,110 0 0,1 150,40 Z" fill="#DBE2EA" />
+        <g font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          <text x="205" y="95">A</text>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          <text x="230" y="170">B?</text>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700" fill="#051C2C" text-anchor="middle">
+          <text x="150" y="225">C?</text>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle">
+          <text x="80" y="185">D</text>
+          <text x="85" y="105">E</text>
+          <text x="120" y="60">Khác</text>
+        </g>
+      </svg>
+      <p class="challenge">Khoanh vùng lớn hơn trước khi đọc tiếp: B hay C?</p>
+      <p class="reveal">Đáp án: B = 19%, C = 17%. Nếu bạn không chắc chỉ bằng mắt, đó chính xác là vấn đề của mã hoá theo góc.</p>
+    </div>
+
+    <div class="panel" style="border-color:var(--ink); border-width:1.5px;">
+      <span class="tag tag-good">Trả lời ngay không cần đoán</span>
+      <h2>Cùng dữ liệu, bar ngang xếp giảm dần</h2>
+      <svg viewBox="0 0 320 260" width="100%" height="auto" role="img">
+        <title>Thi phan cho vay ban le theo bar</title>
+        <desc>Cung 6 muc thi phan, bar ngang tu 0, xep giam dan, de so sanh chinh xac</desc>
+        <line x1="70" y1="14" x2="70" y2="250" stroke="#051C2C" stroke-width="1" />
+        <g font-family="Spectral, Georgia, serif" font-size="12" fill="#051C2C">
+          <text x="10" y="30">NH A</text>
+          <text x="10" y="68">NH B</text>
+          <text x="10" y="106">NH C</text>
+          <text x="10" y="144">NH D</text>
+          <text x="10" y="182">NH E</text>
+          <text x="10" y="220">Khác</text>
+        </g>
+        <g fill="#2251FF">
+          <rect x="70" y="18" width="176" height="18" />
+          <rect x="70" y="56" width="152" height="18" fill="#1233B8" />
+          <rect x="70" y="94" width="136" height="18" fill="#7D9BFF" />
+          <rect x="70" y="132" width="120" height="18" fill="#42566A" />
+          <rect x="70" y="170" width="112" height="18" fill="#8595A6" />
+          <rect x="70" y="208" width="104" height="18" fill="#DBE2EA" />
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#051C2C">
+          <text x="252" y="31">22%</text>
+          <text x="228" y="69">19%</text>
+          <text x="212" y="107">17%</text>
+          <text x="196" y="145">15%</text>
+          <text x="188" y="183">14%</text>
+          <text x="180" y="221">13%</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <p class="note">
+    Cơ chế: con người có xu hướng overestimate góc tù, underestimate góc nhọn, và
+    sai số tăng theo số lát. Bar giải quyết bằng cách đưa mọi giá trị về CÙNG 1 trục
+    tuyến tính, so sánh trở thành so ĐỘ DÀI, việc não người làm chính xác hơn hẳn so
+    góc. Đây không phải ràng buộc cứng như gauge/radar, mà là ngưỡng thực dụng: pie
+    còn ổn khi &le;3 lát và mục đích là "1 phần áp đảo", chuyển sang bar khi cần so
+    sánh chính xác thứ hạng giữa nhiều lát gần bằng nhau.
+  </p>
+
+  <p class="source">
+    Nguồn: Data-to-viz, "The issue with pie chart" &middot; Observable, "Everything you think you know about pie charts is wrong" &middot;
+    Số liệu minh hoạ &middot; Xem research/03-chart-doctrine/FINDINGS.md &sect;3
+  </p>
+</div>
+</body>
+</html>

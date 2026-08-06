@@ -1,0 +1,303 @@
+<!--
+  MINH HOẠ: lưới module co giãn theo nội dung (module rộng cho hình/bảng lớn, module hẹp cho
+  văn bản), quy tắc "khi nào hình tràn lề / khi nào thu vào cột", và "wall" small multiples để
+  so sánh nhiều thực thể cùng lúc.
+
+  LẤY CẢM HỨNG TỪ:
+  - Der Spiegel: lưới không cố định một độ rộng cột, infographic được cấp độ rộng/kích thước
+    thay đổi theo nhu cầu nội dung để "tích hợp hài hoà hơn"
+    - https://devspiegel.medium.com/wie-wir-den-gedruckten-spiegel-dezent-neu-gedacht-haben-cd7603071d09
+  - Financial Times / Guardian: giảm số cột lưới để trang "thở" hơn, phân tách rõ khối chức năng
+  - Edward Tufte / thực hành graphics desk Reuters: small multiples - cùng trục, cùng tỷ lệ,
+    xếp theo thứ tự có logic, để so sánh nhanh nhiều thực thể
+    - https://www.juiceanalytics.com/writing/better-know-visualization-small-multiples
+
+  Chi tiết đầy đủ: research/01-editorial/FINDINGS.md muc 1.3, 4.1, 4.2.
+
+  Biểu đồ trong file này CHỈ ở mức bố cục trang (bao nhiêu ô, xếp thế nào, độ rộng module) -
+  phần thiết kế màu sắc/trục/gridline chi tiết bên trong mỗi biểu đồ thuộc phạm vi nghiên cứu
+  chart doctrine (research/03-chart-doctrine/), không lặp lại ở đây. Bar chart dựng bằng div
+  thuần CSS, không dùng gauge, không dùng radar (đúng ràng buộc cứng của repo).
+
+  KHI NÀO ĐỪNG DÙNG:
+  - Đừng có quá 3 mức độ rộng module khác nhau trong một báo cáo (hẹp/chuẩn/tràn) - nhiều hơn
+    sẽ làm trang trông lộn xộn thay vì có tổ chức.
+  - Đừng tràn lề một hình chỉ vì nó "đẹp" - độ rộng phải phản ánh tầm quan trọng của luận điểm.
+  - Small multiples: dưới 3 thực thể so sánh thì dùng biểu đồ nhóm cột thông thường đơn giản
+    hơn; trên 9-12 ô thì cân nhắc bảng số liệu thay vì tường biểu đồ.
+
+  Số liệu và công ty "CTCP Nông sản Cửu Long" / mã "CLF*" là HƯ CẤU. Không phải khuyến nghị
+  đầu tư.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>CLF* - Cơ cấu doanh thu theo vùng</title>
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --line-lo: #EEF1F6;
+    --accent: #2251FF;
+    --accent-soft: #7D9BFF;
+    --pos: #008A6D;
+    --neg: #C22F4E;
+    --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem;
+    --fs-small: 0.825rem;
+    --fs-body: 1rem;
+    --fs-h3: 1.333rem;
+    --fs-h2: 1.777rem;
+    --fs-h1: 2.369rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 24px auto;
+    background: var(--paper); box-shadow: 4px 4px 0 rgba(5,28,44,0.18);
+    padding: 20mm; position: relative;
+  }
+
+  .furniture {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: var(--fs-caption);
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-lo);
+    border-bottom: 1px solid var(--line); padding-bottom: var(--space-2);
+    margin-bottom: var(--space-5);
+  }
+
+  .kicker {
+    font-family: var(--font-mono); font-size: var(--fs-small);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 var(--space-2) 0;
+  }
+  h1.headline { font-size: var(--fs-h1); font-weight: 600; line-height: 1.15; margin: 0 0 var(--space-2) 0; max-width: 22ch; }
+  p.dek { font-style: italic; color: var(--ink-md); max-width: 56ch; margin: 0 0 var(--space-6) 0; font-size: 1.05rem; line-height: 1.5; }
+
+  /* ── LƯỚI 12 ĐƠN VỊ dùng chung cho toàn trang, module xin số cột theo nhu cầu ── */
+  .grid12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-5); }
+
+  .module { position: relative; }
+  .module-label {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--accent-soft);
+    margin-bottom: var(--space-2); display: block;
+  }
+
+  /* MODULE TRÀN LỀ: chiếm cả 12 cột - dành cho biểu đồ chốt luận điểm */
+  .span-12 { grid-column: span 12; }
+  /* MODULE CHUẨN: chiếm 7 cột - văn bản phân tích đi kèm */
+  .span-7 { grid-column: span 7; }
+  .span-5 { grid-column: span 5; }
+  /* MODULE HẸP: chiếm 4 cột trong tường small-multiples */
+  .span-4 { grid-column: span 4; }
+
+  h3.module-title { font-size: var(--fs-h3); font-weight: 600; margin: 0 0 var(--space-3) 0; }
+  p.module-text { font-size: 0.94rem; line-height: 1.65; margin: 0 0 var(--space-3) 0; color: var(--ink); }
+  p.module-text b { color: var(--accent); }
+
+  /* ── BIỂU ĐỒ HERO TRÀN LỀ: cột dọc, một chuỗi duy nhất, dựng bằng div ──── */
+  .hero-chart {
+    background: var(--paper-hi);
+    border: 1px solid var(--line);
+    padding: var(--space-5) var(--space-5) var(--space-3) var(--space-5);
+  }
+  .hero-bars {
+    display: flex; align-items: flex-end; gap: var(--space-4);
+    height: 150px; border-bottom: 1px solid var(--ink-lo);
+    margin-bottom: var(--space-2);
+  }
+  .hero-bars .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .hero-bars .bar { width: 62%; background: var(--accent-soft); }
+  .hero-bars .bar-col.is-current .bar { background: var(--accent); }
+  .hero-bars .bar-value {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-md);
+    margin-bottom: var(--space-1);
+  }
+  .hero-bars .bar-col.is-current .bar-value { color: var(--accent); font-weight: 600; }
+  .hero-labels { display: flex; gap: var(--space-4); }
+  .hero-labels span { flex: 1; text-align: center; font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo); }
+
+  /* ── TƯỜNG SMALL MULTIPLES: cùng trục, cùng tỷ lệ, chỉ khác dữ liệu ────── */
+  .wall { grid-column: span 12; display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); margin-top: var(--space-2); }
+  .sm-cell {
+    border: 1px solid var(--line);
+    padding: var(--space-3);
+  }
+  .sm-cell h4 {
+    font-family: var(--font-mono); font-size: var(--fs-caption); text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--ink-md); margin: 0 0 var(--space-2) 0; font-weight: 600;
+  }
+  .sm-bars { display: flex; align-items: flex-end; gap: 6px; height: 64px; border-bottom: 1px solid var(--line-lo); }
+  /* cùng chiều cao tối đa (max-height 64px = 100% trục) cho MỌI ô, để so sánh
+     hình dạng công bằng - đây là quy tắc bắt buộc của small multiples */
+  .sm-bars .b { flex: 1; background: var(--accent-soft); }
+  .sm-bars .b.hi { background: var(--accent); }
+  .sm-foot { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; color: var(--ink-lo); margin-top: var(--space-1); }
+  .sm-share { font-family: var(--font-mono); font-size: var(--fs-small); color: var(--ink); margin-top: var(--space-2); }
+  .sm-share b { color: var(--accent); }
+
+  /* ── TRANG NGĂN PHẦN: một con số duy nhất chiếm gần hết trang ──────────── */
+  .divider {
+    margin-top: var(--space-8);
+    padding-top: var(--space-8);
+    border-top: 2px solid var(--ink);
+    text-align: left;
+  }
+  .divider .divider-kicker {
+    font-family: var(--font-mono); font-size: var(--fs-small); text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ink-lo); margin-bottom: var(--space-4);
+  }
+  .divider .divider-num {
+    font-family: var(--font-mono); font-weight: 500; font-size: 6.5rem; line-height: 0.85;
+    color: var(--ink); letter-spacing: -0.02em;
+  }
+  .divider .divider-text { max-width: 46ch; font-size: 1.1rem; line-height: 1.6; margin-top: var(--space-4); color: var(--ink-md); }
+
+  .research-tag {
+    position: absolute; top: 8px; right: 8px;
+    font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper);
+    padding: 2px 8px; letter-spacing: 0.04em; z-index: 5;
+  }
+
+  .source-line {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo);
+    margin-top: var(--space-2);
+  }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+    .grid12 { grid-template-columns: repeat(4, 1fr); }
+    .span-12, .span-7, .span-5, .span-4 { grid-column: span 4; }
+    .wall { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; box-shadow: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 18mm; }
+    .hero-chart, .sm-cell, .divider { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">LƯỚI MODULE 12 CỘT: TRÀN LỀ + THU VÀO CỘT + WALL</span>
+
+  <div class="furniture">
+    <span>CLF* &middot; Cập nhật quý 2/2026 &middot; Phần 3</span>
+    <span>Trang 08</span>
+  </div>
+
+  <p class="kicker">Cơ cấu doanh thu</p>
+  <h1 class="headline">Xuất khẩu trực tiếp tăng tỷ trọng bốn quý liên tiếp</h1>
+  <p class="dek">Doanh thu vẫn tập trung ở đồng bằng sông Cửu Long, nhưng kênh xuất khẩu trực
+  tiếp đang giành thị phần từ kênh thương lái trung gian.</p>
+
+  <div class="grid12">
+
+    <!-- MODULE TRÀN LỀ (span-12): đây là biểu đồ CHỐT luận điểm của trang, nên
+         được cấp toàn bộ chiều rộng, đúng 1 lần trên trang này -->
+    <div class="module span-12">
+      <span class="module-label">Module tràn lề &middot; 12/12 cột &middot; biểu đồ chốt luận điểm</span>
+      <div class="hero-chart">
+        <div class="hero-bars">
+          <div class="bar-col"><span class="bar-value">2,4%</span><div class="bar" style="height:24px"></div></div>
+          <div class="bar-col"><span class="bar-value">6,1%</span><div class="bar" style="height:35px"></div></div>
+          <div class="bar-col"><span class="bar-value">11,8%</span><div class="bar" style="height:58px"></div></div>
+          <div class="bar-col"><span class="bar-value">17,0%</span><div class="bar" style="height:76px"></div></div>
+          <div class="bar-col is-current"><span class="bar-value">20,0%</span><div class="bar" style="height:96px"></div></div>
+        </div>
+        <div class="hero-labels">
+          <span>Q2/24</span><span>Q4/24</span><span>Q2/25</span><span>Q4/25</span><span>Q2/26</span>
+        </div>
+      </div>
+      <p class="source-line">Tỷ trọng doanh thu kênh xuất khẩu trực tiếp trên tổng doanh thu, theo quý &middot; Nguồn: báo cáo tài chính CLF* (minh hoạ)</p>
+    </div>
+
+    <!-- MODULE CHUẨN (span-7 + span-5): văn bản đi kèm biểu đồ tràn lề ở trên,
+         thu vào cột hẹp hơn vì đây là giải thích bổ sung, không phải luận điểm chốt -->
+    <div class="module span-7">
+      <span class="module-label">Module chuẩn &middot; 7/12 cột &middot; giải thích</span>
+      <h3 class="module-title">Vì sao tỷ trọng xuất khẩu trực tiếp tăng đều</h3>
+      <p class="module-text">CLF* ký thêm hai hợp đồng khung với nhà nhập khẩu Philippines
+      trong quý 1/2026, chuyển một phần sản lượng vốn bán qua thương lái sang bán trực tiếp.
+      Biên lợi nhuận kênh trực tiếp cao hơn kênh thương lái khoảng <b>3-4 điểm phần trăm</b> do
+      cắt được khâu trung gian.</p>
+    </div>
+    <div class="module span-5">
+      <span class="module-label">Module chuẩn &middot; 5/12 cột</span>
+      <h3 class="module-title">Rủi ro đi kèm</h3>
+      <p class="module-text">Tập trung vào ít khách hàng hơn làm tăng rủi ro tập trung: hai
+      khách hàng lớn nhất hiện chiếm <b>34%</b> doanh thu xuất khẩu trực tiếp.</p>
+    </div>
+
+    <!-- TƯỜNG SMALL MULTIPLES: 3 ô cùng trục, cùng tỷ lệ, chỉ khác vùng -->
+    <div class="module span-12">
+      <span class="module-label">Wall small multiples &middot; 3 ô cùng trục &middot; so sánh 4 quý theo vùng</span>
+      <div class="wall">
+        <div class="sm-cell">
+          <h4>Đồng bằng sông Cửu Long</h4>
+          <div class="sm-bars">
+            <div class="b" style="height:52px"></div>
+            <div class="b" style="height:56px"></div>
+            <div class="b" style="height:58px"></div>
+            <div class="b hi" style="height:60px"></div>
+          </div>
+          <div class="sm-foot"><span>Q3/25</span><span>Q4/25</span><span>Q1/26</span><span>Q2/26</span></div>
+          <p class="sm-share">Tỷ trọng hiện tại: <b>58%</b></p>
+        </div>
+        <div class="sm-cell">
+          <h4>Miền Trung</h4>
+          <div class="sm-bars">
+            <div class="b" style="height:30px"></div>
+            <div class="b" style="height:28px"></div>
+            <div class="b" style="height:24px"></div>
+            <div class="b hi" style="height:22px"></div>
+          </div>
+          <div class="sm-foot"><span>Q3/25</span><span>Q4/25</span><span>Q1/26</span><span>Q2/26</span></div>
+          <p class="sm-share">Tỷ trọng hiện tại: <b>22%</b></p>
+        </div>
+        <div class="sm-cell">
+          <h4>Xuất khẩu trực tiếp</h4>
+          <div class="sm-bars">
+            <div class="b" style="height:18px"></div>
+            <div class="b" style="height:20px"></div>
+            <div class="b" style="height:22px"></div>
+            <div class="b hi" style="height:24px"></div>
+          </div>
+          <div class="sm-foot"><span>Q3/25</span><span>Q4/25</span><span>Q1/26</span><span>Q2/26</span></div>
+          <p class="sm-share">Tỷ trọng hiện tại: <b>20%</b></p>
+        </div>
+      </div>
+      <p class="source-line">Cả ba ô dùng chung trục hoành thời gian và chung tỷ lệ chiều cao tối đa (60px = 100%), để hình dạng có thể so sánh trực tiếp bằng mắt &middot; Nguồn: báo cáo tài chính CLF* (minh hoạ)</p>
+    </div>
+  </div>
+
+  <!-- TRANG NGĂN PHẦN: lưới đổi hẳn, một con số chiếm ưu thế -->
+  <div class="divider">
+    <p class="divider-kicker">Mở đầu phần 4 &middot; Định giá</p>
+    <div class="divider-num">8,2x</div>
+    <p class="divider-text">P/E giả định của CLF* tại giá tham chiếu 24.500đ, thấp hơn bình quân
+    nhóm doanh nghiệp gạo xuất khẩu niêm yết khoảng 10,5x. Phần tiếp theo phân tích liệu mức
+    chiết khấu này có hợp lý hay là cơ hội.</p>
+  </div>
+</section>
+</body>
+</html>

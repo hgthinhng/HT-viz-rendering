@@ -1,0 +1,285 @@
+<!--
+  MINH HOẠ: sidenote kiểu Tufte thay footnote, drop cap mở đoạn, pull-quote không rẻ tiền,
+  và cách neo số quan trọng bằng màu tiết chế trong văn xuôi.
+
+  LẤY CẢM HỨNG TỪ:
+  - Edward Tufte / Tufte-CSS: ghi chú đặt ngay lề phải ngang đúng đoạn văn liên quan, không đẩy
+    xuống cuối trang - https://edwardtufte.github.io/tufte-css/ và https://gwern.net/sidenote
+  - NYT Magazine: dùng font khác cho pull-quote/caption thay vì chỉ dựa vào chữ nghiêng
+    - https://fontsinuse.com/tags/3713/pull-quotes
+  - Quy ước drop cap xuất bản cổ điển (Helen Yentus) - https://hyentus.com/blog/how-to-use-drop-caps-effectively-in-editorial-design
+  - The Economist: nguyên lý "direct labeling", chỉ nhấn số quan trọng nhất, không nhấn mọi số
+
+  Chi tiết đầy đủ: research/01-editorial/FINDINGS.md muc 2.3, 2.4, 5.1, 5.2, 5.3.
+
+  KHI NÀO ĐỪNG DÙNG:
+  - Sidenote: nếu một trang có hơn 4-5 ghi chú dày đặc trong cùng khung nhìn, cột lề phụ sẽ rối
+    hơn cả footnote nó thay thế - quay lại footnote cuối trang hoặc bảng chú thích riêng.
+  - Sidenote: đừng dùng ở khổ trang hẹp (A5, slide 16:9) - không đủ chỗ cho lề phụ mà không bóp
+    cột chính xuống dưới ~50 ký tự/dòng.
+  - Drop cap: đừng dùng cho đoạn dưới 3 dòng, và đừng dùng khi đoạn mở đầu bằng số liệu
+    (không phóng to được chữ số theo quy ước này).
+  - Pull-quote: CHỈ dùng khi có trích dẫn THẬT từ nguồn xác thực. Câu trích trong file này là hư
+    cấu minh hoạ (đánh dấu rõ) vì công ty là hư cấu - không được dùng làm mẫu để bịa trích dẫn
+    thật trong báo cáo thật.
+
+  Số liệu và công ty "CTCP Nông sản Cửu Long" / mã "CLF*" là HƯ CẤU. Không phải khuyến nghị
+  đầu tư.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>CLF* - Rủi ro tồn kho và chu kỳ tiền mặt</title>
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --line-lo: #EEF1F6;
+    --accent: #2251FF;
+    --pos: #008A6D;
+    --neg: #C22F4E;
+    --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem;
+    --fs-small: 0.825rem;
+    --fs-body: 1.02rem;
+    --fs-dek: 1.15rem;
+    --fs-h3: 1.333rem;
+    --fs-h2: 1.777rem;
+    --fs-h1: 2.369rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 24px auto;
+    background: var(--paper);
+    box-shadow: 4px 4px 0 rgba(5,28,44,0.18);
+    padding: 22mm 60mm 20mm 20mm; /* lề phải rộng để chứa cột sidenote */
+    position: relative;
+  }
+
+  .furniture {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-lo);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 var(--space-3) 0;
+  }
+  h1.headline {
+    font-size: var(--fs-h1);
+    font-weight: 600;
+    line-height: 1.15;
+    margin: 0 0 var(--space-6) 0;
+    max-width: 20ch;
+  }
+
+  /* ── VÙNG VĂN BẢN CHÍNH, độ rộng ~62-68 ký tự/dòng ─────────────────────── */
+  .article {
+    max-width: 62ch;
+    font-size: var(--fs-body);
+    line-height: 1.7;
+  }
+  .article p { margin: 0 0 var(--space-4) 0; }
+
+  /* Drop cap: ::first-letter + float, KHÔNG dùng initial-letter property vì
+     hỗ trợ của WeasyPrint chưa chắc chắn (xem FINDINGS.md muc 2.3) */
+  .article p.lede::first-letter {
+    float: left;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 3.8em;
+    line-height: 0.82;
+    padding-right: var(--space-2);
+    padding-top: 0.04em;
+    color: var(--ink);
+  }
+
+  .anchor-hi { color: var(--accent); font-weight: 600; }
+
+  /* ── SIDENOTE: float right + margin-right âm để kéo ra khỏi cột chính ─── */
+  .sidenote-ref {
+    font-family: var(--font-mono);
+    font-size: 0.7em;
+    vertical-align: super;
+    color: var(--accent);
+    cursor: default;
+  }
+  .sidenote {
+    float: right;
+    clear: right;
+    width: 34mm;
+    margin-right: -40mm;
+    margin-top: 0.15em;
+    margin-bottom: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    line-height: 1.55;
+    color: var(--ink-md);
+    border-left: 1px solid var(--line);
+    padding-left: var(--space-2);
+  }
+  .sidenote b { color: var(--ink); font-weight: 600; }
+
+  /* ── PULL QUOTE: cột hẹp hơn thân bài, hairline rule, không khung kín,
+     không phóng to dấu ngoặc kép làm hoạ tiết (mục 5.2 FINDINGS.md) ───────── */
+  blockquote.pull {
+    margin: var(--space-6) 0 var(--space-6) 0;
+    max-width: 42ch;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: var(--space-4) 0;
+  }
+  blockquote.pull p {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.35rem;
+    line-height: 1.45;
+    margin: 0 0 var(--space-3) 0;
+    color: var(--ink);
+  }
+  blockquote.pull .attrib {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-lo);
+  }
+
+  h2.section-title {
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    margin: var(--space-7) 0 var(--space-4) 0;
+    max-width: 30ch;
+  }
+
+  .research-tag {
+    position: absolute;
+    top: 8px; right: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    background: var(--accent);
+    color: var(--paper);
+    padding: 2px 8px;
+    letter-spacing: 0.04em;
+    z-index: 5;
+  }
+
+  .caveat {
+    max-width: 62ch;
+    margin-top: var(--space-8);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-lo);
+    line-height: 1.6;
+  }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+    .sidenote { float: none; width: auto; margin: var(--space-2) 0; border-left: none;
+      border-top: 1px dashed var(--line); padding-left: 0; padding-top: var(--space-2); }
+  }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; box-shadow: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 20mm 55mm 20mm 18mm; }
+    blockquote.pull, .note-callout { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">SIDENOTE KIỂU TUFTE + DROP CAP + PULL-QUOTE</span>
+
+  <div class="furniture">
+    <span>CLF* &middot; Cập nhật quý 2/2026 &middot; Phần 2</span>
+    <span>Trang 05</span>
+  </div>
+
+  <p class="kicker">Phân tích chuyên sâu</p>
+  <h1 class="headline">Rủi ro tồn kho và chu kỳ tiền mặt</h1>
+
+  <div class="article">
+    <p class="lede">Vòng quay tồn kho 96 ngày<span class="sidenote-ref">1</span> của CLF* trong
+    quý 2/2026 cao hơn mức bình quân ngành gạo xuất khẩu khoảng 78 ngày<span class="sidenote-ref">2</span>,
+    và đây là điểm nghẽn thực sự của luận điểm phục hồi biên lợi nhuận nêu ở phần trước. Tồn kho
+    lớn không tự nó là vấn đề nếu chu kỳ tiền mặt được tài trợ tốt, nhưng CLF* đang tài trợ phần
+    lớn tồn kho bằng vay ngắn hạn lãi suất thả nổi.</p>
+    <span class="sidenote"><b>1.</b> Vòng quay tồn kho = tồn kho bình quân / giá vốn hàng bán x
+    số ngày trong kỳ. Nguồn: báo cáo tài chính quý 2/2026 (minh hoạ).</span>
+    <span class="sidenote"><b>2.</b> Bình quân ngành lấy theo nhóm 5 doanh nghiệp gạo xuất khẩu
+    niêm yết lớn nhất, không tính doanh nghiệp có tỷ trọng kinh doanh khác gạo trên 30% doanh
+    thu.</span>
+
+    <p>Chu kỳ chuyển đổi tiền mặt (cash conversion cycle) của CLF* kéo dài lên
+    <b class="anchor-hi">112 ngày</b> trong quý 2/2026, tăng từ 97 ngày quý trước. Phần lớn mức
+    tăng này đến từ tồn kho, không phải từ khoản phải thu hay phải trả: khoản phải thu giảm nhẹ
+    xuống 41 ngày, khoản phải trả giữ ổn định quanh 35 ngày.<span class="sidenote-ref">3</span></p>
+    <span class="sidenote"><b>3.</b> Chu kỳ chuyển đổi tiền mặt = DIO + DSO - DPO. DIO tăng từ
+    82 lên 96 ngày là biến số duy nhất thay đổi đáng kể quý này.</span>
+
+    <blockquote class="pull">
+      <p>Chúng tôi chấp nhận tồn kho cao hơn bình thường trong quý 2 vì đã chốt được vùng giá
+      thu mua thấp, và sẽ đẩy nhanh tốc độ xuất hàng trong quý 3 khi giá bán phục hồi đủ biên
+      lãi mong muốn.</p>
+      <div class="attrib">Trích minh hoạ, phát biểu hư cấu của lãnh đạo CLF* &middot; quý 2/2026</div>
+    </blockquote>
+
+    <p>Nếu phát biểu trên đúng, tồn kho sẽ giảm về vùng 75-80 ngày trong quý 3/2026 khi tốc độ
+    xuất hàng tăng. Đây là biến số quan trọng nhất cần theo dõi trong quý tới: nếu vòng quay tồn
+    kho KHÔNG cải thiện, chi phí lãi vay tài trợ tồn kho sẽ tiếp tục ăn vào phần biên lợi nhuận
+    gộp vừa phục hồi, làm luận điểm "phục hồi bền vững" ở phần đầu báo cáo yếu đi đáng kể.</p>
+
+    <h2 class="section-title">Điều gì làm luận điểm này sai</h2>
+
+    <p>Kịch bản rủi ro chính: nếu giá gạo xuất khẩu quay đầu giảm trở lại trước khi CLF* xuất
+    hết tồn kho giá thấp, công ty sẽ phải bán ở biên lợi nhuận thấp hơn kỳ vọng trong khi vẫn
+    gánh chi phí lãi vay tồn kho cao của quý này<span class="sidenote-ref">4</span> - lúc đó cả
+    hai luận điểm (biên lợi nhuận phục hồi và tồn kho tự điều chỉnh) đổ vỡ đồng thời.</p>
+    <span class="sidenote"><b>4.</b> Lãi suất vay ngắn hạn tài trợ vốn lưu động của CLF* dao
+    động 7,5-8,2%/năm theo báo cáo tài chính quý 2/2026 (minh hoạ).</span>
+  </div>
+
+  <div class="caveat">
+    Ghi chú kỹ thuật: cột ghi chú bên phải dùng float + margin-right âm, không dùng CSS Grid hay
+    JavaScript, đã kiểm tra render ổn định qua WeasyPrint 69.0 (engine PDF thật của repo này).
+    Xem research/01-editorial/FINDINGS.md muc 5.1 để biết lý do chọn kỹ thuật này thay vì
+    CSS Grid.
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!doctype html>
+<!--
+  MINH HOẠ: trang bìa báo cáo dùng đúng MỘT con số làm điểm neo, xung quanh là
+  khoảng trắng chủ động (không phải khoảng trắng "chưa xong việc"). Bố cục bất
+  đối xứng: kicker nhỏ góc trên phải, con số khổng lồ lệch trái ở khoảng 60%
+  chiều cao trang, một câu ngữ cảnh duy nhất, một dòng định danh tài liệu ở
+  đáy trang. Không logo lớn, không ảnh nền, không liệt kê nhiều chỉ số.
+
+  NGUỒN CẢM HỨNG (xem FINDINGS.md mục 1):
+  - Kinfolk magazine: đặt hai điểm neo lệch tâm (ảnh góc trên phải, chữ góc
+    dưới trái) buộc mắt di chuyển qua khoảng trắng giữa chúng, thay vì căn
+    giữa tuyệt đối kiểu template PowerPoint.
+  - Pentagram, Flatiron 23rd Street Partnership annual report: bìa trả lời
+    MỘT câu hỏi thị giác duy nhất, không nhồi thông điệp.
+  - Nicholas Felton / Feltron Annual Report: một con số luôn đi kèm ngữ cảnh
+    đo lường cụ thể, không đứng trần trụi.
+
+  CANH BẠC: đặt cược rằng một con số duy nhất, cỡ áp đảo, giữa khoảng trắng
+  thật, khiến người nhận "biết trước có gì đó đáng chú ý" và lật vào xác
+  minh — thay vì bìa dạng "logo + tên + ngày" lấp đầy để trông đủ thông tin.
+  THUA nếu con số không phải là con số quan trọng nhất của báo cáo, hoặc nếu
+  khách hàng cần thấy logo/thương hiệu lớn ngay từ bìa theo yêu cầu brand
+  guideline — trường hợp đó, bìa dạng liệt kê chỉ số quen thuộc AN TOÀN hơn.
+
+  KHI NÀO KHÔNG NÊN DÙNG:
+  - Hồ sơ gửi cơ quan quản lý hoặc kiểm toán, nơi bìa cần đủ thông tin định
+    danh (mã hồ sơ, cơ sở pháp lý) ngay từ trang đầu để tra cứu, không phải
+    để "gây tò mò".
+  - Khi tài liệu có nhiều đồng tác giả/đơn vị bảo trợ cần liệt kê logo — bố
+    cục một-điểm-neo không có chỗ cho việc đó mà không phá vỡ tỷ lệ.
+  - Số liệu, tên công ty trong file này là MINH HỌA. "CTCP Vận tải Biển Á
+    Châu" là công ty hư cấu đã dùng trong components/gallery.html và trong
+    samples/report-exec-brief-action-first.html, tái dùng ở đây để giữ nhất
+    quán bối cảnh giữa các mẫu wow-layer, không phải doanh nghiệp có thật.
+
+  RÀNG BUỘC IN: font-family list kết thúc generic keyword (không dùng font
+  nhúng base64 của repo vì đã phát hiện lỗi vỡ dấu tiếng Việt khi in bằng
+  WeasyPrint, xem FINDINGS.md mục 0 — dùng font hệ thống có fallback Noto
+  Serif/Georgia để không tái sinh lỗi đó). Shadow chỉ offset cứng, blur = 0.
+  Không gauge/radar. Không em-dash/en-dash. @media dùng từ khoá screen.
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trang bìa một con số, mẫu tham khảo HT-viz-rendering</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --paper: #FFFFFF;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --accent: #2251FF;
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ECEFF3; }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    margin: 12px auto;
+    background: var(--paper);
+    position: relative;
+    padding: 18mm 16mm;
+    font-family: var(--font-serif);
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .kicker {
+    position: absolute;
+    top: 18mm;
+    right: 16mm;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-lo);
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+  .kicker strong { color: var(--ink-md); }
+
+  .hero-wrap {
+    position: absolute;
+    left: 16mm;
+    top: 128mm;
+    right: 26mm;
+  }
+  .hero-unit {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin: 0 0 4px 2px;
+  }
+  .hero-number {
+    font-size: 168px;
+    font-weight: 600;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    margin: 0;
+    /* Chữ nổi kiểu letterpress: 2 lớp text-shadow, blur = 0 tuyệt đối.
+       Xem FINDINGS.md mục 8.1. Trên nền trắng thuần nên highlight trắng
+       phía trên gần như vô hình, đúng ý — chỉ shadow tối phía dưới-phải
+       tạo cảm giác khắc nhẹ, không lộ liễu như box-shadow dán nổi. */
+    text-shadow: 1px 2px 0px rgba(5,28,44,0.14), -1px -1px 0px rgba(255,255,255,0.9);
+  }
+  .hero-context {
+    max-width: 400px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-md);
+    margin: 22px 0 0 4px;
+  }
+  .hero-context strong { color: var(--ink); }
+
+  .footer {
+    position: absolute;
+    left: 16mm;
+    right: 16mm;
+    bottom: 16mm;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-lo);
+    letter-spacing: 0.04em;
+  }
+  .footer .company { color: var(--ink-md); font-size: 12px; }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; height: auto; min-height: 100vh; padding: 8vw 6vw 12vw; }
+    .hero-wrap { position: static; margin-top: 30vh; }
+    .hero-number { font-size: 22vw; }
+    .kicker { position: static; text-align: left; margin-bottom: 24px; }
+    .footer { position: static; margin-top: 40px; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="kicker">
+      Bản đánh giá tín dụng<br>
+      <strong>Trái phiếu xanh</strong> · phát hành riêng lẻ<br>
+      Tháng 08/2026 · minh hoạ
+    </div>
+
+    <div class="hero-wrap">
+      <div class="hero-unit">Tỷ đồng huy động đợt một</div>
+      <p class="hero-number">150</p>
+      <p class="hero-context">
+        Trần phát hành trái phiếu xanh của <strong>CTCP Vận tải Biển Á Châu</strong>,
+        lãi suất sàn 9,2%/năm, kỳ hạn không quá 5 năm, giải ngân theo hai đợt
+        gắn với tiến độ nhận hai tàu container feeder mới.
+      </p>
+    </div>
+
+    <div class="footer">
+      <span class="company">CTCP Vận tải Biển Á Châu</span>
+      <span>Số liệu minh hoạ · dữ liệu chốt 2026-08-01</span>
+    </div>
+  </div>
+</body>
+</html>

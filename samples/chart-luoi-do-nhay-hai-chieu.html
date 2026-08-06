@@ -1,0 +1,180 @@
+<!--
+  Ý MINH HOẠ: lưới độ nhạy 2 chiều (2-way sensitivity grid) cho mô hình DCF, khác
+  tornado chart (06-tornado.mjs trong repo, vốn chỉ đổi 1 biến 1 lúc). Ở đây 2 biến
+  (WACC và tăng trưởng dài hạn) thay đổi ĐỒNG THỜI, kết quả là 1 ma trận giá trị
+  doanh nghiệp. Quy ước: 1 ô "base case" phải được đánh dấu riêng, và toàn bộ ma
+  trận PHẢI có số thật trong từng ô (không chỉ dựa vào màu) để đọc được cả khi in
+  đen trắng hoặc photocopy.
+
+  NGUỒN CẢM HỨNG: quy ước phụ lục mô hình DCF trong nghiệp vụ định giá (data table
+  2 chiều trong Excel), tinh thần "annotation over legend" của Economist/BBC áp
+  dụng cho thang màu liên tục thay vì categorical, và nguyên tắc "không traffic-
+  light" của repo này (đây là 1 magnitude field liên tục, không phải delta thời
+  gian hay nhận định so sánh, nên dùng 1 hue duy nhất tăng dần độ đậm, không dùng
+  2 hue đối lập kiểu đỏ-xanh).
+
+  CHUYỂN SANG BỐI CẢNH NÀY: chưa có trong charts/echarts/ (08-heatmap.mjs là
+  heatmap categorical, mục đích và cách đọc khác: không có khái niệm "base case"
+  cần viền riêng). Đề xuất mở rộng PALETTE.bandLo/Mid/Hi (đã có, dùng cho bullet
+  chart) thành thang 5 bậc liên tục cho preset mới trong theme.mjs.
+
+  KHI NÀO KHÔNG NÊN DÙNG: khi chỉ có 1 biến độ nhạy (dùng tornado, gọn hơn); khi
+  ma trận vượt quá khoảng 6x6 ô (mật độ số dày đặc, khó dò theo mắt); khi 2 biến
+  không độc lập trong mô hình (kết quả interaction giả tạo, cần chú thích rõ nếu
+  vẫn phải trình bày dạng lưới).
+
+  Dữ liệu: giá trị doanh nghiệp (tỷ đồng) theo WACC va tang truong dai han, minh
+  hoạ, base case 850 tỷ khớp với ví dụ trong 06-tornado.mjs của repo để nhất quán
+  bối cảnh minh hoạ (không phải trùng hợp số liệu thật).
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Lưới độ nhạy 2 chiều: WACC và tăng trưởng dài hạn</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #2251FF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .kicker {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 8px; font-weight: 700;
+  }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 8px; max-width: 62ch; }
+  .unit { font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; color: var(--ink-lo); margin: 0 0 20px; }
+  .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.76rem; color: var(--ink-md); line-height: 1.6; margin: 18px 0 0; max-width: 68ch;
+  }
+  .source {
+    margin-top: 26px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">Độ nhạy định giá 2 chiều</p>
+  <h1>Giá trị doanh nghiệp theo WACC và tăng trưởng dài hạn</h1>
+  <p class="dek">Base case 850 tỷ đồng (viền đậm) dao động từ 680 đến 1.075 tỷ tuỳ giả định.</p>
+  <p class="unit">Đơn vị ô: tỷ đồng. Số liệu minh hoạ, khớp base case với mẫu 06-tornado.mjs trong repo.</p>
+
+  <svg viewBox="0 0 640 360" width="100%" height="auto" role="img">
+    <title>Luoi do nhay 2 chieu WACC x tang truong</title>
+    <desc>Ma tran 5x5 gia tri doanh nghiep theo WACC tu 9% den 11% va tang truong dai han tu 2% den 4%, base case tai WACC 10% g 3% la 850 ty duoc vien dam</desc>
+
+    <text x="60" y="30" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#42566A" text-anchor="middle">WACC</text>
+    <text x="340" y="20" font-family="Spectral, Georgia, serif" font-size="12" font-weight="600" fill="#051C2C" text-anchor="middle">Tăng trưởng dài hạn (g)</text>
+
+    <!-- header hang g -->
+    <g font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700" fill="#051C2C" text-anchor="middle">
+      <text x="164" y="44">2,0%</text>
+      <text x="252" y="44">2,5%</text>
+      <text x="340" y="44">3,0%</text>
+      <text x="428" y="44">3,5%</text>
+      <text x="516" y="44">4,0%</text>
+    </g>
+    <line x1="120" y1="52" x2="560" y2="52" stroke="#051C2C" stroke-width="1.2" />
+
+    <!-- header cot WACC -->
+    <g font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700" fill="#051C2C" text-anchor="middle">
+      <text x="60" y="106">9,0%</text>
+      <text x="60" y="150">9,5%</text>
+      <text x="60" y="194">10,0%</text>
+      <text x="60" y="238">10,5%</text>
+      <text x="60" y="282">11,0%</text>
+    </g>
+    <line x1="112" y1="60" x2="112" y2="308" stroke="#051C2C" stroke-width="1.2" />
+
+    <!-- 25 o. moi hang: fill theo band, text so lieu -->
+    <!-- Hang 0: WACC 9,0% -->
+    <g font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="600" text-anchor="middle">
+      <rect x="120" y="60" width="88" height="44" fill="#7D9BFF" /><text x="164" y="86" fill="#051C2C">940</text>
+      <rect x="208" y="60" width="88" height="44" fill="#7D9BFF" /><text x="252" y="86" fill="#051C2C">965</text>
+      <rect x="296" y="60" width="88" height="44" fill="#7D9BFF" /><text x="340" y="86" fill="#051C2C">995</text>
+      <rect x="384" y="60" width="88" height="44" fill="#2251FF" /><text x="428" y="86" fill="#FFFFFF">1.030</text>
+      <rect x="472" y="60" width="88" height="44" fill="#2251FF" /><text x="516" y="86" fill="#FFFFFF">1.075</text>
+    </g>
+    <!-- Hang 1: WACC 9,5% -->
+    <g font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="600" text-anchor="middle">
+      <rect x="120" y="104" width="88" height="44" fill="#B8C9FF" /><text x="164" y="130" fill="#051C2C">890</text>
+      <rect x="208" y="104" width="88" height="44" fill="#B8C9FF" /><text x="252" y="130" fill="#051C2C">910</text>
+      <rect x="296" y="104" width="88" height="44" fill="#7D9BFF" /><text x="340" y="130" fill="#051C2C">935</text>
+      <rect x="384" y="104" width="88" height="44" fill="#7D9BFF" /><text x="428" y="130" fill="#051C2C">965</text>
+      <rect x="472" y="104" width="88" height="44" fill="#2251FF" /><text x="516" y="130" fill="#FFFFFF">1.000</text>
+    </g>
+    <!-- Hang 2: WACC 10,0% (base case o giua) -->
+    <g font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="600" text-anchor="middle">
+      <rect x="120" y="148" width="88" height="44" fill="#DCE5FF" /><text x="164" y="174" fill="#051C2C">800</text>
+      <rect x="208" y="148" width="88" height="44" fill="#DCE5FF" /><text x="252" y="174" fill="#051C2C">822</text>
+      <rect x="296" y="148" width="88" height="44" fill="#B8C9FF" stroke="#051C2C" stroke-width="3" /><text x="340" y="174" fill="#051C2C" font-weight="700">850</text>
+      <rect x="384" y="148" width="88" height="44" fill="#B8C9FF" /><text x="428" y="174" fill="#051C2C">880</text>
+      <rect x="472" y="148" width="88" height="44" fill="#B8C9FF" /><text x="516" y="174" fill="#051C2C">915</text>
+    </g>
+    <!-- Hang 3: WACC 10,5% -->
+    <g font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="600" text-anchor="middle">
+      <rect x="120" y="192" width="88" height="44" fill="#F2F5FF" /><text x="164" y="218" fill="#051C2C">735</text>
+      <rect x="208" y="192" width="88" height="44" fill="#F2F5FF" /><text x="252" y="218" fill="#051C2C">752</text>
+      <rect x="296" y="192" width="88" height="44" fill="#DCE5FF" /><text x="340" y="218" fill="#051C2C">772</text>
+      <rect x="384" y="192" width="88" height="44" fill="#DCE5FF" /><text x="428" y="218" fill="#051C2C">795</text>
+      <rect x="472" y="192" width="88" height="44" fill="#DCE5FF" /><text x="516" y="218" fill="#051C2C">822</text>
+    </g>
+    <!-- Hang 4: WACC 11,0% -->
+    <g font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="600" text-anchor="middle">
+      <rect x="120" y="236" width="88" height="44" fill="#F2F5FF" /><text x="164" y="262" fill="#051C2C">680</text>
+      <rect x="208" y="236" width="88" height="44" fill="#F2F5FF" /><text x="252" y="262" fill="#051C2C">693</text>
+      <rect x="296" y="236" width="88" height="44" fill="#F2F5FF" /><text x="340" y="262" fill="#051C2C">708</text>
+      <rect x="384" y="236" width="88" height="44" fill="#F2F5FF" /><text x="428" y="262" fill="#051C2C">725</text>
+      <rect x="472" y="236" width="88" height="44" fill="#F2F5FF" /><text x="516" y="262" fill="#051C2C">745</text>
+    </g>
+
+    <!-- luoi mong phan tach o -->
+    <g stroke="#FFFFFF" stroke-width="1.5">
+      <line x1="208" y1="60" x2="208" y2="280" /><line x1="296" y1="60" x2="296" y2="280" />
+      <line x1="384" y1="60" x2="384" y2="280" /><line x1="472" y1="60" x2="472" y2="280" />
+      <line x1="120" y1="104" x2="560" y2="104" /><line x1="120" y1="148" x2="560" y2="148" />
+      <line x1="120" y1="192" x2="560" y2="192" /><line x1="120" y1="236" x2="560" y2="236" />
+    </g>
+    <rect x="120" y="60" width="440" height="220" fill="none" stroke="#051C2C" stroke-width="1.2" />
+
+    <!-- thang mau lien tuc o day, khong phai legend categorical -->
+    <g>
+      <text x="120" y="320" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">Thấp</text>
+      <rect x="160" y="308" width="46" height="14" fill="#F2F5FF" stroke="#DBE2EA" />
+      <rect x="206" y="308" width="46" height="14" fill="#DCE5FF" />
+      <rect x="252" y="308" width="46" height="14" fill="#B8C9FF" />
+      <rect x="298" y="308" width="46" height="14" fill="#7D9BFF" />
+      <rect x="344" y="308" width="46" height="14" fill="#2251FF" />
+      <text x="398" y="320" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">Cao</text>
+      <text x="470" y="320" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">1 hue liên tục, không traffic-light</text>
+    </g>
+  </svg>
+
+  <p class="note">
+    Thang màu chỉ dùng 1 hue (xanh dương) tăng dần độ đậm theo giá trị, không dùng 2
+    hue đối lập kiểu đỏ-xanh: đây là 1 magnitude field liên tục (giá trị doanh
+    nghiệp), không phải delta thời gian hay nhận định so sánh, nên không áp dụng
+    quy tắc "màu theo chiều tăng giảm" của waterfall/tornado. Ô base case (850, giữa
+    lưới) được đánh dấu bằng VIỀN đậm hơn, không đổi màu nền, để không phá vỡ tính
+    liên tục của thang màu. Mọi ô đều có SỐ THẬT, nên đọc được đầy đủ ngay cả khi in
+    đen trắng hoặc photocopy mất màu.
+  </p>
+
+  <p class="source">
+    Nguồn: quy ước data table 2 chiều trong nghiệp vụ định giá DCF &middot;
+    Số liệu minh hoạ, base case khớp charts/echarts/06-tornado.mjs &middot;
+    Xem research/03-chart-doctrine/FINDINGS.md &sect;8, &sect;9
+  </p>
+</div>
+</body>
+</html>

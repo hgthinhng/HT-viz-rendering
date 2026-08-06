@@ -1,0 +1,215 @@
+<!--
+  Ý MINH HOẠ: bar/column mã hoá giá trị bằng ĐỘ DÀI thanh tính từ 0. Cắt trục (bắt
+  đầu từ một số khác 0) phá vỡ đúng phép mã hoá đó: cùng dữ liệu tăng 7,6% bị vẽ
+  trông như tăng gấp đôi. Panel giữa là bản sửa đúng (trục từ 0, tăng trưởng thật
+  trông đúng bằng mắt). Panel phải là NGOẠI LỆ hợp lệ: line chart được phép cắt trục
+  khi biến động nhỏ có thật và mục đích rõ ràng là thấy biến động ngắn hạn, MIỄN LÀ
+  đánh dấu điểm gãy trục tường minh (dấu zigzag), vì line mã hoá bằng vị trí/độ dốc,
+  không phải độ dài từ gốc như bar.
+
+  NGUỒN CẢM HỨNG: Michael Correll, "Truncating the Y-Axis: Threat or Menace?"
+  (arXiv 1907.02035, nghiên cứu Tableau Research), QuantHub "Avoid Truncated Axes",
+  Urban Institute Data Visualization Style Guide (bar phải từ 0).
+
+  KHI NÀO KHÔNG NÊN DÙNG: panel bên trái (cắt trục cho bar) không bao giờ được dùng
+  trong bất kỳ báo cáo nào của repo này, dù có đánh dấu hay không. Panel phải (line
+  cắt trục) chỉ hợp khi trục có nhãn số rõ ràng VÀ có ký hiệu gãy trục VÀ mục đích là
+  biến động ngắn hạn thật (ví dụ lãi suất điều hành), không dùng để "làm cho đường
+  trông kịch tính hơn" khi biến động vốn dĩ không quan trọng.
+
+  Dữ liệu: doanh thu quý (minh hoạ) và lãi suất điều hành 5 tháng (minh hoạ), không
+  phải số liệu thật của tổ chức nào.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Cắt trục biến 7,6% thành trông như gấp đôi</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #2251FF; --negative: #C22F4E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 1rem; font-style: italic; margin: 0 0 28px; max-width: 74ch; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  @media screen and (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid var(--line); padding: 16px 16px 18px; }
+  .panel-bad { border-color: var(--negative); border-width: 1.5px; background: #FFFBFB; }
+  .panel-good { border-color: var(--ink); border-width: 1.5px; }
+  .panel-ok { background: #FAFAFA; }
+  .tag {
+    display: inline-block; font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; margin-bottom: 8px;
+  }
+  .tag-bad { color: var(--negative); border: 1px solid var(--negative); }
+  .tag-good { color: var(--accent); border: 1px solid var(--accent); }
+  .tag-ok { color: var(--ink-md); border: 1px solid var(--ink-md); }
+  .panel h2 { font-size: 0.98rem; margin: 0 0 10px; line-height: 1.35; }
+  .panel .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-md); line-height: 1.55; margin: 10px 0 0;
+  }
+  .source {
+    margin-top: 30px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Cắt trục biến tăng trưởng 7,6% thành trông như gấp đôi</h1>
+  <p class="dek">Ba panel dùng cùng một quy tắc kiểm: bar/column phải luôn từ 0, line được miễn nếu đánh dấu điểm gãy rõ ràng. Số liệu minh hoạ.</p>
+
+  <div class="grid">
+    <div class="panel panel-bad">
+      <span class="tag tag-bad">Sai</span>
+      <h2>Doanh thu quý, trục cột bắt đầu từ 110 tỷ</h2>
+      <svg viewBox="0 0 260 230" width="100%" height="auto" role="img">
+        <title>Doanh thu quy, truc cat</title>
+        <desc>4 quy doanh thu 118, 121, 124, 127 ty dong, truc y bat dau tu 110 khong phai 0</desc>
+        <line x1="35" y1="200" x2="250" y2="200" stroke="#051C2C" stroke-width="1.2" />
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#8595A6" text-anchor="end">
+          <text x="30" y="203">110</text>
+          <text x="30" y="128">120</text>
+          <text x="30" y="53">130</text>
+        </g>
+        <g stroke="#DBE2EA" stroke-width="0.8">
+          <line x1="35" y1="128" x2="250" y2="128" />
+          <line x1="35" y1="53" x2="250" y2="53" />
+        </g>
+        <g fill="#C22F4E">
+          <rect x="52" y="128" width="34" height="72" />
+          <rect x="107" y="101" width="34" height="99" />
+          <rect x="162" y="74" width="34" height="126" />
+          <rect x="217" y="47" width="34" height="153" />
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#051C2C" text-anchor="middle">
+          <text x="69" y="122">118</text>
+          <text x="124" y="95">121</text>
+          <text x="179" y="68">124</text>
+          <text x="234" y="41">127</text>
+        </g>
+        <g font-family="Spectral, Georgia, serif" font-size="10" fill="#42566A" text-anchor="middle">
+          <text x="69" y="214">Q1</text>
+          <text x="124" y="214">Q2</text>
+          <text x="179" y="214">Q3</text>
+          <text x="234" y="214">Q4</text>
+        </g>
+        <text x="35" y="18" font-family="IBM Plex Mono, monospace" font-size="9" fill="#C22F4E">Trục cắt: 110-130, không phải 0-140</text>
+      </svg>
+      <p class="note">
+        Chiều cao cột Q4 gấp 2,1 lần cột Q1 trên hình. Tăng trưởng thật giữa Q1 và Q4
+        chỉ là 7,6% (118 lên 127 tỷ đồng). Vì bar mã hoá bằng độ dài từ 0, cắt trục
+        làm sai lệch trực tiếp phép mã hoá đó, không phải lỗi thẩm mỹ.
+      </p>
+    </div>
+
+    <div class="panel panel-good">
+      <span class="tag tag-good">Đúng</span>
+      <h2>Cùng dữ liệu, trục cột từ 0</h2>
+      <svg viewBox="0 0 260 230" width="100%" height="auto" role="img">
+        <title>Doanh thu quy, truc tu 0</title>
+        <desc>Cung 4 quy doanh thu, truc y tu 0 den 140, chieu cao cot phan anh dung ty le</desc>
+        <line x1="35" y1="200" x2="250" y2="200" stroke="#051C2C" stroke-width="1.2" />
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#8595A6" text-anchor="end">
+          <text x="30" y="203">0</text>
+          <text x="30" y="115">70</text>
+          <text x="30" y="23">140</text>
+        </g>
+        <g stroke="#DBE2EA" stroke-width="0.8">
+          <line x1="35" y1="110" x2="250" y2="110" />
+          <line x1="35" y1="20" x2="250" y2="20" />
+        </g>
+        <g fill="#2251FF">
+          <rect x="52" y="48.3" width="34" height="151.7" />
+          <rect x="107" y="44.4" width="34" height="155.6" />
+          <rect x="162" y="40.6" width="34" height="159.4" />
+          <rect x="217" y="36.7" width="34" height="163.3" />
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#051C2C" text-anchor="middle">
+          <text x="69" y="42">118</text>
+          <text x="124" y="38">121</text>
+          <text x="179" y="34">124</text>
+          <text x="234" y="30">127</text>
+        </g>
+        <g font-family="Spectral, Georgia, serif" font-size="10" fill="#42566A" text-anchor="middle">
+          <text x="69" y="214">Q1</text>
+          <text x="124" y="214">Q2</text>
+          <text x="179" y="214">Q3</text>
+          <text x="234" y="214">Q4</text>
+        </g>
+        <text x="35" y="14" font-family="IBM Plex Mono, monospace" font-size="9" fill="#2251FF">Trục đầy đủ: 0-140, đúng tỷ lệ thật</text>
+      </svg>
+      <p class="note">
+        Bốn cột gần như bằng nhau, đúng với tăng trưởng thật 7,6% qua 4 quý. Đây là
+        hình dạng người đọc PHẢI thấy nếu muốn đánh giá đúng mức độ tăng trưởng, dù
+        "kém kịch tính" hơn panel bên trái.
+      </p>
+    </div>
+
+    <div class="panel panel-ok">
+      <span class="tag tag-ok">Ngoại lệ hợp lệ</span>
+      <h2>Lãi suất điều hành 5 tháng, line có đánh dấu gãy trục</h2>
+      <svg viewBox="0 0 260 230" width="100%" height="auto" role="img">
+        <title>Lai suat dieu hanh, line cat truc co danh dau</title>
+        <desc>5 thang lai suat 4,50 4,50 4,75 5,00 5,00 phan tram, truc y tu 4,4 den 5,1 co ky hieu gay truc</desc>
+        <line x1="35" y1="200" x2="250" y2="200" stroke="#051C2C" stroke-width="1.2" />
+        <!-- ky hieu gay truc: zigzag ngay tren truc x -->
+        <path d="M 35 192 L 40 185 L 45 192 L 50 185" stroke="#42566A" stroke-width="1.3" fill="none" />
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#8595A6" text-anchor="end">
+          <text x="30" y="183">4,40</text>
+          <text x="30" y="103">4,75</text>
+          <text x="30" y="23">5,10</text>
+        </g>
+        <g stroke="#DBE2EA" stroke-width="0.8">
+          <line x1="35" y1="100" x2="250" y2="100" />
+          <line x1="35" y1="20" x2="250" y2="20" />
+        </g>
+        <polyline points="60,157.14 130,157.14 150,100 180,42.86 240,42.86"
+          fill="none" stroke="#2251FF" stroke-width="2" />
+        <g fill="#2251FF" stroke="#FFFFFF" stroke-width="1.2">
+          <circle cx="60" cy="157.14" r="4" />
+          <circle cx="130" cy="157.14" r="4" />
+          <circle cx="150" cy="100" r="4" />
+          <circle cx="180" cy="42.86" r="4" />
+          <circle cx="240" cy="42.86" r="4" />
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="9" font-weight="700" fill="#051C2C" text-anchor="middle">
+          <text x="60" y="150">4,50%</text>
+          <text x="150" y="92">4,75%</text>
+          <text x="240" y="35">5,00%</text>
+        </g>
+        <g font-family="Spectral, Georgia, serif" font-size="9" fill="#42566A" text-anchor="middle">
+          <text x="60" y="214">T1</text>
+          <text x="130" y="214">T2</text>
+          <text x="150" y="214">T3</text>
+          <text x="180" y="214">T4</text>
+          <text x="240" y="214">T5</text>
+        </g>
+      </svg>
+      <p class="note">
+        Line mã hoá bằng vị trí/độ dốc, không phải độ dài từ gốc, nên cắt trục không
+        phá vỡ phép mã hoá như với bar. Điểm gãy được đánh dấu tường minh bằng ký hiệu
+        zigzag ngay trên trục. Hợp lệ vì mục đích là thấy đúng biến động nhỏ có thật
+        (0,50 điểm phần trăm), không phải để "làm cho đường trông dốc hơn".
+      </p>
+    </div>
+  </div>
+
+  <p class="source">
+    Nguồn: Michael Correll, "Truncating the Y-Axis: Threat or Menace?" (arXiv 1907.02035) &middot;
+    QuantHub "Avoid Truncated Axes" &middot; Urban Institute Data Visualization Style Guide &middot;
+    Số liệu minh hoạ &middot; Xem research/03-chart-doctrine/FINDINGS.md &sect;3 và &sect;5
+  </p>
+</div>
+</body>
+</html>

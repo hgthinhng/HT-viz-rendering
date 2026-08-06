@@ -19,13 +19,15 @@ thật qua WeasyPrint và đếm ảnh raster bằng `scripts/count_raster.py` �
 
 ---
 
-## 0. Ba phát hiện kỹ thuật xác minh bằng cách render THẬT qua WeasyPrint 69.0, không phải suy đoán
+## 0. Bốn phát hiện kỹ thuật xác minh bằng cách render THẬT qua WeasyPrint 69.0, không phải suy đoán
 
 Trong lúc render 5 mẫu HTML của mục nghiên cứu này qua WeasyPrint 69.0 để tự kiểm (đúng yêu
-cầu "mỗi file phải in ra A4 được"), ba giới hạn sau xuất hiện ở MỌI file, được cô lập và tái
-hiện lại bằng file test tối giản riêng để loại trừ khả năng lỗi do nội dung cụ thể. Đây không
-phải phát hiện thiết kế editorial, mà là giới hạn ENGINE, ảnh hưởng đến toàn bộ repo chứ không
-riêng gì các mẫu ở đây, nên ghi lại rõ ràng để không ai phải tái khám phá.
+cầu "mỗi file phải in ra A4 được"), ba giới hạn CSS sau xuất hiện ở MỌI file, được cô lập và tái
+hiện lại bằng file test tối giản riêng để loại trừ khả năng lỗi do nội dung cụ thể; mục thứ tư
+(0.4) là một cảnh báo nhận từ controller trong lúc làm vòng này, đã đối chiếu lại với 5 mẫu của
+chính agent này để xác nhận không dính. Đây không phải phát hiện thiết kế editorial, mà là giới
+hạn ENGINE hoặc bug cụ thể, ảnh hưởng đến toàn bộ repo chứ không riêng gì các mẫu ở đây, nên ghi
+lại rõ ràng để không ai phải tái khám phá.
 
 ### 0.1 `box-shadow` KHÔNG được WeasyPrint hỗ trợ, dưới bất kỳ hình thức nào, kể cả blur = 0
 
@@ -57,39 +59,63 @@ dùng property `box-shadow`. Trùng khớp thú vị: cách này lại CÀNG h�
 này (hairline rule thay khung/card kín làm trang trông đắt hơn) - giới hạn kỹ thuật ở đây tình
 cờ đẩy về đúng hướng thẩm mỹ đã chọn.
 
-### 0.2 Cú pháp media query CSS3/4 (media feature, `and`, `not`) không được WeasyPrint hỗ trợ
+### 0.2 WeasyPrint CÓ hỗ trợ `@media` dạng media-type, nhưng KHÔNG parse được cú pháp media-feature `(...)` dưới bất kỳ hình thức nào - ĐỪNG suy ra từ đây rằng ràng buộc `screen` vô nghĩa
 
-**Thực nghiệm**: WeasyPrint 69.0 CHỈ hiểu danh sách media type đơn giản kiểu CSS2 (`screen`,
-`print`, `all`, phân tách bằng dấu phẩy). Mọi hình thức dùng media FEATURE đều bị báo lỗi cú
-pháp và cả khối `@media` bị loại bỏ HOÀN TOÀN, kể cả những hình thức tưởng như đơn giản:
-`@media (max-width: 900px)`, `@media screen and (max-width: 900px)`,
-`@media all and (max-width: 900px)`, `@media not print` - tất cả đều nhận
-`WARNING: Expected a media type, got '...'` rồi `Invalid media type ... the whole @media rule
-was ignored`. Đã tái hiện bằng file test tối giản độc lập, không liên quan nội dung cụ thể của
-5 mẫu HTML.
+**SỬA LẠI so với bản trước của mục này**: bản viết trước đặt tiêu đề "media query CSS3/4 không
+được WeasyPrint hỗ trợ", dễ khiến người đọc hiểu lầm là `@media` nói chung không chạy trong
+WeasyPrint, rồi suy tiếp (SAI) rằng ràng buộc cứng "media query màn hình phải viết
+`@media screen and (max-width: ...)`" là vô nghĩa nên có thể gỡ. Controller đã tự đo lại và chỉ
+ra đây là kết luận sai, cần sửa vì hồ sơ này nuôi các vòng nghiên cứu sau. Mục dưới đây viết lại
+đầy đủ, kèm phép đo mới để định vị CHÍNH XÁC ranh giới hỗ trợ, không suy diễn nữa.
 
-**Ý nghĩa cho repo này, đọc kỹ vì có hai lớp**:
-- Ràng buộc cứng hiện tại của repo ("media query co giãn màn hình PHẢI viết `@media screen and
-  (max-width: ...)`, thiếu `screen` là tự kích hoạt khi in") mô tả đúng hành vi CSS chuẩn trong
-  MỌI TRÌNH DUYỆT THẬT (Chrome, Firefox, Safari) khi ai đó mở file HTML trực tiếp hoặc in bằng
-  Chromium - ở đó cú pháp `and (max-width: ...)` được hiểu đúng, và quy tắc "phải có `screen`"
-  là cách phòng ngừa chính xác. Ràng buộc này VẪN ĐÚNG VÀ VẪN CẦN GIỮ cho mục đích đó.
-- NHƯNG với engine WeasyPrint là pipeline PDF thật của repo, phát hiện ở trên cho thấy CẢ HAI
-  dạng cú pháp (có `screen and` lẫn không có) đều bị bỏ qua như nhau, vì WeasyPrint không phân
-  tích được media feature dưới bất kỳ hình thức nào. Nói cách khác: đúng theo quy tắc cứng
-  (`@media screen and (max-width: ...)`) hay sai theo quy tắc cứng (`@media (max-width: ...)`)
-  đều cho ra CÙNG một kết quả khi qua WeasyPrint - khối đó không bao giờ được áp dụng, dù đúng
-  hay sai cú pháp theo ràng buộc của repo. Té ra effect an toàn (không tự kích hoạt khi in) đạt
-  được ở WeasyPrint là do toàn bộ khối bị vứt bỏ, không phải do type-scoping đúng như chủ đích
-  ban đầu của ràng buộc.
-- Hệ quả thực tế: KHÔNG có cách nào làm layout co giãn theo độ rộng (responsive breakpoint) hoạt
-  động trong PDF xuất ra bởi WeasyPrint - đây không phải giới hạn có thể né bằng cú pháp khác,
-  mà là engine không có khái niệm đó. Layout trong PDF WeasyPrint LUÔN LUÔN là layout mặc định
-  (không nằm trong bất kỳ khối `@media (feature)` nào), được kiểm soát hoàn toàn qua `@page` và
-  CSS không điều kiện. Năm mẫu HTML trong `samples/` viết đúng theo ràng buộc cứng
-  (`@media screen and (max-width: ...)`) vì đó là hành vi ĐÚNG cho người xem bằng trình duyệt
-  thật (giá trị sử dụng chính của các mẫu tham khảo), và vì WeasyPrint bỏ qua toàn bộ khối này
-  một cách vô hại (không có style co giãn nào rò vào bản PDF), không cần sửa gì thêm.
+**Ba phép thử, ĐỀU đã tự chạy lại độc lập trên WeasyPrint 69.0, không chỉ chép báo cáo**:
+
+1. `@media print { .mp { color: #008A6D; } }` - trích màu chữ thật từ PDF ra ĐÚNG `#008A6D`.
+   Kết luận: `@media` với media-type dạng CSS2 (`screen`, `print`, `all`, danh sách phân tách
+   bằng dấu phẩy) ĐƯỢC PARSE VÀ ĐƯỢC ÁP DỤNG THẬT. WeasyPrint hỗ trợ `@media`, không phải không
+   hỗ trợ gì cả.
+2. `@media screen and (max-width: 900px) { ... }` khi render (media context là in ấn) không áp
+   dụng. Đây ĐÚNG LÀ HÀNH VI MONG MUỐN của ràng buộc cứng repo: khối dành cho `screen` không
+   được lộ ra khi in.
+3. **Phép đo quyết định, agent này tự thêm để phân định rạch ròi "không parse được" với "parse
+   được nhưng đánh giá điều kiện khác"**: đặt cạnh nhau một điều kiện LUÔN ĐÚNG về mặt toán học
+   (`@media (min-width: 0px)`) và một điều kiện LUÔN SAI (`@media (min-width: 99999px)`) trong
+   cùng một file, không type nào cả, chỉ feature trần. Nếu WeasyPrint THẬT SỰ phân tích cú pháp
+   và đánh giá điều kiện (chỉ là đánh giá khác Chromium do quy chiếu độ rộng khác), điều kiện
+   luôn đúng phải áp dụng còn điều kiện luôn sai thì không. Kết quả đo được: CẢ HAI đều nhận
+   cảnh báo GIỐNG HỆT NHAU (`Expected a media type, got '(min-width: ...)'` rồi
+   `Invalid media type ... the whole @media rule was ignored`), và màu chữ cuối cùng vẫn là màu
+   gốc (đen) - tức là điều kiện luôn đúng KHÔNG áp dụng. Đây là bằng chứng dứt khoát: WeasyPrint
+   không "đánh giá điều kiện rồi ra kết quả khác", mà **KHÔNG PARSE ĐƯỢC cú pháp media-feature
+   `(...)` ở bất kỳ vị trí ngữ pháp nào của `@media`, bất kể điều kiện đó về mặt toán học đúng
+   hay sai** - toàn bộ khối bị vứt bỏ ở bước phân tích cú pháp, trước khi có bất kỳ phép so sánh
+   độ rộng nào xảy ra.
+
+**Kết luận đúng, thay cho kết luận sai ở bản trước**: WeasyPrint 69.0 hỗ trợ `@media` cho danh
+sách media-type kiểu CSS2 (`screen`, `print`, `all`...), và áp dụng đúng theo media context đang
+render (in thì khối `@media print` chạy, khối `@media screen` không chạy). Nhưng WeasyPrint
+KHÔNG có ngữ pháp cho media-feature `(max-width: ...)`/`(min-width: ...)` dưới bất kỳ tổ hợp nào
+(trần, sau `screen and`, sau `all and`, sau `not`) - đây không phải "đánh giá khác", mà là
+"không đọc được cú pháp đó, vứt cả câu".
+
+**RÀNG BUỘC CỨNG `@media screen and (max-width: ...)` CỦA REPO VẪN ĐÚNG, ĐỪNG GỠ**: quy tắc này
+được viết ra để chặn một lỗi CÓ THẬT trong Chromium/trình duyệt thật (nơi CSS Media Queries L3/4
+được hỗ trợ đầy đủ, và một `@media (max-width: 900px)` trần THẬT SỰ đánh giá đúng theo độ rộng,
+khớp với vùng in A4 688-717px sau margin, làm layout responsive lộ sai vào bản in). Với WeasyPrint,
+ràng buộc này vẫn ĐÚNG CÚ PHÁP theo chuẩn CSS thật (nó không sai ở đâu cả) và vẫn là cách viết
+ĐÚNG cho người mở file bằng trình duyệt thật, chỉ là WeasyPrint tình cờ vứt luôn cả khối này vì lý
+do khác (không parse được feature), không phải vì quy tắc `screen` phát huy tác dụng type-scoping
+đúng như thiết kế ban đầu. Hai lý do khác nhau nhưng CÙNG một khuyến nghị: giữ nguyên ràng buộc
+`screen`, viết đúng cú pháp chuẩn, không viết tắt bằng `@media (max-width: ...)` trần.
+
+**Hệ quả thực tế cho responsive layout trong PDF**: KHÔNG có cách nào làm layout co giãn theo độ
+rộng (breakpoint) hoạt động trong PDF xuất bởi WeasyPrint, bất kể viết đúng hay sai cú pháp theo
+ràng buộc cứng của repo - layout trong PDF WeasyPrint luôn là layout mặc định (nằm ngoài mọi khối
+`@media (feature)`), kiểm soát hoàn toàn qua `@page` và CSS không điều kiện. Năm mẫu HTML trong
+`samples/` viết đúng theo ràng buộc cứng (`@media screen and (max-width: ...)`) vì đó là hành vi
+ĐÚNG khi mở bằng trình duyệt thật (giá trị sử dụng chính của các mẫu tham khảo), và WeasyPrint bỏ
+qua toàn bộ khối này một cách vô hại cho mục đích in (không có style responsive nào rò vào PDF),
+không cần sửa gì thêm ở 5 file mẫu.
 
 ### 0.3 Hàm toán học CSS (`clamp()`, `min()`, `max()`) không được WeasyPrint hỗ trợ
 
@@ -106,6 +132,58 @@ riêng trong khối `@media screen` cho màn hình hẹp, thay vì co giãn liê
 tra bằng cách render thật và đo giá trị xuất ra (không suy đoán từ CSS nhìn "hợp lý"), vì hàm bị
 bỏ qua ÂM THẦM (chỉ có warning trong log, không có lỗi dừng chương trình) và property rớt về giá
 trị kế thừa, dễ lọt qua nếu chỉ xem preview trên trình duyệt thay vì xem PDF xuất ra thật.
+
+### 0.4 `fonts-embedded.css` (hai khối `@font-face` cùng family/weight, khác `unicode-range`) làm lộn glyph tiếng Việt trong WeasyPrint, dù trình duyệt hiển thị bình thường
+
+**Cảnh báo nhận từ controller trong lúc làm vòng nghiên cứu này, đã đối chiếu lại với 5 mẫu của
+chính agent này để xác nhận không dính lỗi**: `design-system/fonts/fonts-embedded.css` khai 24
+khối `@font-face` cho 12 tổ hợp (family, style, weight), mỗi tổ hợp có HAI khối chỉ khác nhau ở
+`unicode-range` (subset vietnamese và subset latin). WeasyPrint 69.0 không chọn đúng subset theo
+`unicode-range` khi hai khối `@font-face` trùng family/weight/style, dẫn đến lộn glyph ở tầng
+TEXT của PDF, không chỉ lộn ở tầng hiển thị: `nghệ` ra `nght`, `liệu` ra `litu`. Vì lỗi ăn vào
+tầng text nên copy chữ từ PDF ra cũng sai, không phải chỉ "trông giống chữ khác" mà đúng ra là
+KHÁC CHỮ THẬT.
+
+**Điểm nguy hiểm nhất, đây là bài học quy trình chứ không chỉ là một bug**: trình duyệt (Chromium,
+Firefox) xử lý `unicode-range` ĐÚNG theo đặc tả, nên nếu nghiệm thu bằng cách mở file HTML trên
+trình duyệt xem có "trông đẹp" hay không, lỗi này HOÀN TOÀN không lộ ra - trang trông bình
+thường tuyệt đối. Lỗi chỉ lộ khi mở đúng file PDF xuất ra bởi WeasyPrint và đọc tầng text thật
+(qua PyMuPDF hoặc copy-paste từ PDF). Đây đúng là trường hợp hai engine phân kỳ ở chỗ khó thấy
+nhất: cùng một file CSS, một engine (dùng để xem) đúng, một engine (dùng để giao hàng thật) sai,
+và người kiểm bằng mắt trên engine sai sẽ ký nghiệm thu nhầm.
+
+**Xác nhận cho 5 mẫu của vòng nghiên cứu này**: cả 5 file trong `samples/editorial-*.html` KHÔNG
+nạp `fonts-embedded.css` và không tự khai bất kỳ khối `@font-face` nào - chỉ dùng font-family
+stack có fallback thật lấy nguyên từ `tokens.css` (`"Spectral", "Noto Serif", Georgia,
+"Times New Roman", serif` và `"IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas,
+"Liberation Mono", monospace`), nên không thể dính lỗi hai-subset này dù Spectral/IBM Plex Mono
+có được cài trên máy hay không (engine sẽ rơi xuống Noto Serif/Noto Sans Mono, và bộ đôi đó render
+đúng qua WeasyPrint trên máy này). Đã kiểm chứng lại bằng cách trích xuất tầng text thật của cả 5
+PDF (đọc qua PyMuPDF, không đọc bằng mắt): các từ có dấu tổ hợp phức tạp xuất hiện trong nội dung
+5 file (`liệu`, `nguyên`, `xuất`, `khẩu`, `giữa`, `biến`, `chuyển`) đều trích ra NGUYÊN VẸN, không
+có dấu hiệu lộn glyph kiểu `nghệ` thành `nght`.
+
+Nghiệm thu bản in KHÔNG được dừng ở bước mở file HTML bằng trình duyệt xem "có đẹp không". Phải
+mở đúng PDF xuất ra bởi engine PDF thật của repo (WeasyPrint) và, với mọi nội dung có dấu tiếng
+Việt, trích tầng text thật ra so sánh ký tự chứ không chỉ nhìn hình.
+
+### 0.5 Nguyên tắc bao trùm cả bốn phát hiện trên: "đã verify" PHẢI kèm tên engine, không có ngoại lệ
+
+Đây là bài học tổng quát nhất rút ra từ 0.1 đến 0.4, đứng riêng vì nó áp dụng vượt ra ngoài phạm
+vi CSS/WeasyPrint của vòng nghiên cứu này. Nhìn lại bốn phát hiện: `box-shadow` "an toàn" đo bằng
+**Chromium** hoá ra không tồn tại trong **WeasyPrint**; ràng buộc `screen` đúng cho **trình duyệt
+thật** nhưng vô tác dụng cho lý do khác hẳn trong **WeasyPrint**; `clamp()` chạy tốt trong **mọi
+trình duyệt** nhưng rớt âm thầm trong **WeasyPrint**; `unicode-range` đúng chuẩn trong **trình
+duyệt** nhưng lộn glyph trong **WeasyPrint**. Cả bốn lần, thủ phạm giống hệt nhau: một phép đo
+được gắn nhãn "đã verify" mà không ghi rõ verify TRÊN ENGINE NÀO, rồi bị coi là đúng phổ quát.
+
+**Quy tắc**: một khẳng định "đã kiểm tra an toàn khi in" mà không nêu tên engine cụ thể
+(WeasyPrint 69.0? Chromium qua Playwright? engine nào?) là một khẳng định KHÔNG ĐẦY ĐỦ, phải coi
+như chưa verify cho engine còn lại. Trình duyệt và WeasyPrint là hai bộ máy layout độc lập, không
+dùng chung code, nên "đúng trên cái này" không suy ra được "đúng trên cái kia" theo BẤT KỲ hướng
+nào. Vì pipeline PDF thật của repo này là WeasyPrint (không phải Chromium, xem `memory.md`), mọi
+kết luận "an toàn khi in" trong tài liệu của repo mà không ghi rõ đã đo trên WeasyPrint đều cần
+được đo lại trước khi tin, bất kể kết luận đó cũ hay mới, đến từ nguồn nào.
 
 ---
 

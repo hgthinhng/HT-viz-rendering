@@ -289,3 +289,29 @@ chưa đủ mạnh** (thêm icon vì con số chưa đủ ấn tượng, thêm m
 tròn/gradient vì không dám để phẳng). Kiểm tra nhanh một thiết kế: nếu xoá bớt một yếu tố mà
 thông điệp mạnh HƠN, yếu tố đó là rẻ tiền; nếu xoá đi thông điệp yếu hơn, yếu tố đó xứng đáng ở
 lại.
+
+---
+
+## 9. Bổ sung sau khi đối chiếu với vòng 01-editorial: nguyên nhân thật của "box-shadow không render"
+
+Sổ `research/RESEARCH-LEDGER.md` (vòng 01-editorial) ghi nhận "`box-shadow` không được
+WeasyPrint hỗ trợ dưới bất kỳ hình thức nào kể cả blur=0". Trong lúc dựng `wow-do-noi-khong-blur.html`
+tôi thấy shadow của CHÍNH MÌNH lại render bình thường qua WeasyPrint, nên nghi ngờ và test đối
+chứng trực tiếp: `box-shadow` với `rgba(R,G,B,A)` cú pháp dấu phẩy cổ điển RENDER ĐÚNG; cùng
+giá trị số nhưng viết `rgba(R G B / A)` theo CSS Color Level 4 (cú pháp `tokens.css` đang dùng
+cho toàn bộ `--shadow-1/2/3/hairline`, xem comment dòng 179-183 trong file đó) thì WeasyPrint
+69.0 **bỏ qua âm thầm toàn bộ khai báo màu**, không phải riêng thuộc tính shadow. Test mở rộng
+xác nhận: cùng cú pháp `rgba(R G B / A)` dùng cho `color` hoặc `background` thường (không liên
+quan `box-shadow`) cũng bị bỏ qua y hệt, rớt về giá trị kế thừa/trong suốt.
+
+Vậy phát hiện đúng không phải "`box-shadow` chết trên WeasyPrint", mà là "**WeasyPrint 69.0 không
+đọc được cú pháp màu CSS Color 4 dạng khoảng trắng/gạch chéo**, và toàn bộ token shadow của repo
+đang viết đúng bằng cú pháp đó" (chính `tokens.css` ghi rõ lý do chọn cú pháp này: tránh làm hỏng
+phép tách `val.split(",")` trong `tests/consistency/tokens_test.py`). Đây là xung đột thật giữa
+một test và một engine render, không phải giới hạn không sửa được của CSS. Repo có thể giữ được
+CẢ hiệu ứng nổi CẢ bài test nếu đổi cách test tách chuỗi (ví dụ regex tôn trọng dấu ngoặc) thay vì
+đổi cú pháp màu sang dạng WeasyPrint không đọc được - nhưng việc sửa `tokens.css`/`tokens_test.py`
+nằm ngoài quyền ghi file của agent nghiên cứu này (chỉ được ghi `research/` và `samples/`). Năm
+mẫu HTML của tôi ở `samples/wow-*.html` dùng cú pháp `rgba()` dấu phẩy cổ điển nên không dính lỗi
+này, nhưng bất kỳ ai copy nguyên `var(--shadow-1)` từ `tokens.css` vào một trang thật sẽ thấy
+shadow biến mất khi in, đúng như vòng 01-editorial đã báo, chỉ khác ở NGUYÊN NHÂN GỐC.

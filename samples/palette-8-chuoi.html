@@ -191,18 +191,45 @@
   </div>
 
   <table class="data">
-    <thead><tr><th>Doanh nghiệp</th><th>Màu</th><th>ΔGrayCSS so với hàng dưới</th><th>Ghi chú</th></tr></thead>
+    <thead><tr>
+      <th>Doanh nghiệp</th><th>Màu</th><th>ΔGrayCSS<br>hàng dưới</th>
+      <th>Protanopia</th><th>Deuteranopia</th><th>Tritanopia</th><th>Ghi chú</th>
+    </tr></thead>
     <tbody>
-      <tr><td><span class="swatch" style="background:#051C2C"></span>Công ty X (chủ thể)</td><td>ink</td><td class="num">29.3</td><td>Luôn đậm nhất, dễ tìm nhất bất kể thứ hạng</td></tr>
-      <tr><td><span class="swatch" style="background:#1233B8"></span>DN B</td><td>accent-hi</td><td class="num">30.0</td><td></td></tr>
-      <tr><td><span class="swatch" style="background:#2251FF"></span>DN C</td><td>accent</td><td class="num">31.0</td><td></td></tr>
-      <tr><td><span class="swatch" style="background:#9162BD"></span>DN D</td><td>accent-plum</td><td class="num">32.3</td><td>Màu mới, sinh trong cung hue an toàn</td></tr>
-      <tr><td><span class="swatch" style="background:#8595A6"></span>DN E</td><td>ink-lo</td><td class="num">36.5</td><td></td></tr>
-      <tr><td><span class="swatch" style="background:#82C0FF"></span>DN F</td><td>accent-sky</td><td class="num">18.7</td><td>Cặp yếu nhất bảng, có hoạ tiết chéo</td></tr>
-      <tr><td><span class="swatch" style="background:#64E3FF"></span>DN G</td><td>accent-cyan</td><td class="num">23.1</td><td>Có hoạ tiết chấm</td></tr>
-      <tr><td><span class="swatch" style="background:#DBE2EA"></span>DN H</td><td>line</td><td class="num">—</td><td>Nhạt nhất, luôn có viền ink 0.6px</td></tr>
+      <tr><td><span class="swatch" style="background:#051C2C"></span>Công ty X (chủ thể)</td><td>ink</td><td class="num">29.3</td>
+        <td><span class="swatch" style="background:#151C2D"></span></td><td><span class="swatch" style="background:#0F192C"></span></td><td><span class="swatch" style="background:#002022"></span></td>
+        <td>Luôn đậm nhất, dễ tìm nhất bất kể thứ hạng</td></tr>
+      <tr><td><span class="swatch" style="background:#1233B8"></span>DN B</td><td>accent-hi</td><td class="num">30.0</td>
+        <td><span class="swatch" style="background:#004DBC"></span></td><td><span class="swatch" style="background:#003DB6"></span></td><td><span class="swatch" style="background:#005A72"></span></td>
+        <td></td></tr>
+      <tr><td><span class="swatch" style="background:#2251FF"></span>DN C</td><td>accent</td><td class="num">31.0</td>
+        <td><span class="swatch" style="background:#0071FF"></span></td><td><span class="swatch" style="background:#005CFC"></span></td><td><span class="swatch" style="background:#0082A2"></span></td>
+        <td></td></tr>
+      <tr><td><span class="swatch" style="background:#9162BD"></span>DN D</td><td>accent-plum</td><td class="num">32.3</td>
+        <td><span class="swatch" style="background:#4975C0"></span></td><td><span class="swatch" style="background:#5677BB"></span></td><td><span class="swatch" style="background:#8A7187"></span></td>
+        <td>Màu mới, sinh trong cung hue an toàn</td></tr>
+      <tr><td><span class="swatch" style="background:#8595A6"></span>DN E</td><td>ink-lo</td><td class="num">36.5</td>
+        <td><span class="swatch" style="background:#8F95A7"></span></td><td><span class="swatch" style="background:#8B92A6"></span></td><td><span class="swatch" style="background:#7C999A"></span></td>
+        <td></td></tr>
+      <tr><td><span class="swatch" style="background:#82C0FF"></span>DN F</td><td>accent-sky</td><td class="num">18.7</td>
+        <td><span class="swatch" style="background:#A7C2FF"></span></td><td><span class="swatch" style="background:#97B5FE"></span></td><td><span class="swatch" style="background:#46CFD6"></span></td>
+        <td>Cặp yếu nhất bảng, có hoạ tiết chéo</td></tr>
+      <tr><td><span class="swatch" style="background:#64E3FF"></span>DN G</td><td>accent-cyan</td><td class="num">23.1</td>
+        <td><span class="swatch" style="background:#CFDCFF"></span></td><td><span class="swatch" style="background:#B8CBFF"></span></td><td><span class="swatch" style="background:#00EEEC"></span></td>
+        <td>Có hoạ tiết chấm</td></tr>
+      <tr><td><span class="swatch" style="background:#DBE2EA"></span>DN H</td><td>line</td><td class="num">—</td>
+        <td><span class="swatch" style="background:#DFE2EA"></span></td><td><span class="swatch" style="background:#DEE0EA"></span></td><td><span class="swatch" style="background:#D8E4E4"></span></td>
+        <td>Nhạt nhất, luôn có viền ink 0.6px</td></tr>
     </tbody>
   </table>
+  <p class="note">
+    <b>Mô phỏng mù màu (3 cột trên):</b> mỗi ô là màu hex thật sau khi áp ma
+    trận Machado/Oliveira/Fernandes 2009 (severity 1.0, tính trên linear RGB
+    rồi chuyển lại sRGB). Cặp yếu nhất khi mô phỏng vẫn là accent-sky/accent-
+    cyan (ΔE giảm còn 14.4 dưới deuteranopia, thấp nhất bảng), đúng cặp đã
+    được gắn hoạ tiết ở biểu đồ trên &mdash; hoạ tiết bù đúng chỗ toán học chỉ
+    ra là yếu nhất, không phải bù ngẫu nhiên.
+  </p>
 
   <p class="note">
     <b>Vẫn phải nói rõ giới hạn:</b> 8 là ngưỡng trên thực dụng, không phải

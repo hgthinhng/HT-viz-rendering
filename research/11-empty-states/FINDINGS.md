@@ -113,7 +113,7 @@ quá hạn) vì đây là vấn đề đặc thù của báo cáo DOANH NGHIỆP
 ### 1.3 Ràng buộc riêng của repo này làm mất đi quy ước phổ biến nhất
 
 **Xung đột thật cần nói thẳng**: ký hiệu phổ biến nhất cho "đúng bằng không" trong xuất bản định
-chế (UN, nhiều BCTC phương Tây) là gạch ngang en-dash "–". Repo này CẤM en-dash tuyệt đối trong
+chế (UN, nhiều BCTC phương Tây) là gạch ngang en-dash (U+2013). Repo này CẤM en-dash tuyệt đối trong
 mọi nội dung hiển thị. Đây không phải một lựa chọn có thể né bằng font khác - ký tự đó không
 được xuất hiện. Giải pháp trong `ABSENCE-TABLE.md`: dùng chính chữ số "0" cho "đúng bằng không"
 (giống OECD 1973, nhưng trong bối cảnh khác lý do khác - OECD dùng "0" vì họ ĐÃ dành gạch ngang

@@ -52,7 +52,7 @@ async function main() {
       const div = document.createElement("div");
       div.style.cssText =
         "position:absolute;left:-9999px;top:0;visibility:hidden;max-width:65ch;" +
-        "font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.7;" +
+        "font-family:'Spectral',Georgia,serif;font-size:17px;line-height:1.7;" +
         "white-space:normal;overflow-wrap:break-word;";
       div.textContent = text;
       document.body.appendChild(div);
@@ -100,12 +100,12 @@ async function main() {
       return { renderedHeight: rect.height, expectedLineBox, overflowRisk: rect.height > expectedLineBox + 0.5 };
     }
     return {
-      body_17_lh1_7_ebgaramond: check("ường ệ ẫ ữ ỗ ộ ẫu tưởng nghiêng ưỡng", 17, 1.7, "'EB Garamond',Georgia,serif"),
-      h2_30_lh1_32_fraunces: check("Lộ trình mở rộng đội tàu, khử carbon và tưởng ứng ràng buộc mới", 30.2, 1.32, "'Fraunces',Georgia,serif"),
-      h3_23_lh1_32_fraunces: check("Ba câu hỏi thường gặp về ràng buộc pháp lý", 22.7, 1.32, "'Fraunces',Georgia,serif"),
-      h1_44_lh1_32_fraunces: check("Định vị dòng tiền tự do và ràng buộc pháp lý ngành hàng hải", 44, 1.32, "'Fraunces',Georgia,serif"),
-      label_11_mono: check("BIÊN LỢI NHUẬN ƯỚC TÍNH", 11, 1.6, "'JetBrains Mono',monospace"),
-      label_11_sans: check("BIÊN LỢI NHUẬN ƯỚC TÍNH", 11, 1.6, "'Inter',sans-serif"),
+      body_17_lh1_7_spectral: check("ường ệ ẫ ữ ỗ ộ ẫu tưởng nghiêng ưỡng", 17, 1.7, "'Spectral',Georgia,serif"),
+      h2_30_lh1_28_spectral: check("Lộ trình mở rộng đội tàu, khử carbon và tưởng ứng ràng buộc mới", 30.2, 1.28, "'Spectral',Georgia,serif"),
+      h3_23_lh1_28_spectral: check("Ba câu hỏi thường gặp về ràng buộc pháp lý", 22.7, 1.28, "'Spectral',Georgia,serif"),
+      h1_44_lh1_28_spectral: check("Định vị dòng tiền tự do và ràng buộc pháp lý ngành hàng hải", 44, 1.28, "'Spectral',Georgia,serif"),
+      label_11_mono: check("BIÊN LỢI NHUẬN ƯỚC TÍNH", 11, 1.6, "'IBM Plex Mono',monospace"),
+      table_cell_12_sans: check("Đóng mới 2 tàu hàng rời 38.000 DWT", 12, 1.45, "'IBM Plex Sans',sans-serif"),
     };
   });
 
@@ -131,20 +131,22 @@ async function main() {
     }
     const worst = "ường ệ ẫ ữ ỗ ộ ẫu tưởng nghiêng ưỡng Ộ Ễ Ữ";
     const rows = [
-      ["ebgaramond_body_400_17px", worst, 17, 400, "'EB Garamond'"],
-      ["fraunces_h2_600_30px", "Lộ trình khử carbon", 30.2, 600, "Fraunces"],
-      ["fraunces_h1_600_44px", "Định vị dòng tiền tự do", 44, 600, "Fraunces"],
+      ["spectral_body_400_17px", worst, 17, 400, "Spectral"],
+      ["spectral_h2_700_30px", "Lộ trình khử carbon", 30.2, 700, "Spectral"],
+      ["spectral_h1_700_44px", "Định vị dòng tiền tự do", 44, 700, "Spectral"],
     ];
     const out = {};
     rows.forEach(([label, text, sz, wt, ff]) => { out[label] = ink(text, sz, wt, ff); });
     return out;
   });
   // So khớp inkHeight với line-box thật (fontSize*lineHeight của CSS system)
-  // để có kết luận "còn dư bao nhiêu px" thay vì chỉ true/false.
+  // để có kết luận "còn dư bao nhiêu px" thay vì chỉ true/false. Trọng số 700
+  // vì h2.sec-title/h1 thật trong gallery.html dùng font-weight:700 Spectral,
+  // không phải 600 như bản Fraunces cũ.
   const inkVsLineBox = {
-    ebgaramond_body: { ...inkMetrics.ebgaramond_body_400_17px, lineBox: 17 * 1.7, marginPx: +(17 * 1.7 - inkMetrics.ebgaramond_body_400_17px.inkHeight).toFixed(2) },
-    fraunces_h2: { ...inkMetrics.fraunces_h2_600_30px, lineBox: 30.2 * 1.32, marginPx: +(30.2 * 1.32 - inkMetrics.fraunces_h2_600_30px.inkHeight).toFixed(2) },
-    fraunces_h1: { ...inkMetrics.fraunces_h1_600_44px, lineBox: 44 * 1.32, marginPx: +(44 * 1.32 - inkMetrics.fraunces_h1_600_44px.inkHeight).toFixed(2) },
+    spectral_body: { ...inkMetrics.spectral_body_400_17px, lineBox: 17 * 1.7, marginPx: +(17 * 1.7 - inkMetrics.spectral_body_400_17px.inkHeight).toFixed(2) },
+    spectral_h2: { ...inkMetrics.spectral_h2_700_30px, lineBox: 30.2 * 1.28, marginPx: +(30.2 * 1.28 - inkMetrics.spectral_h2_700_30px.inkHeight).toFixed(2) },
+    spectral_h1: { ...inkMetrics.spectral_h1_700_44px, lineBox: 44 * 1.28, marginPx: +(44 * 1.28 - inkMetrics.spectral_h1_700_44px.inkHeight).toFixed(2) },
   };
 
   fs.writeFileSync(

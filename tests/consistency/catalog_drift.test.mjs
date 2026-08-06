@@ -127,14 +127,35 @@ function hasRealCssAnchor(tail) {
 // Da can nhac 3 huong (xem task-7-report.md muc Fix round 3 de co phan
 // tich day du): (1) ha ky vong, ghi ro gioi han; (2) doi thanh ">=2 loai
 // neo" thay vi ">=1"; (3) danh sach den cum rong nghia hay gap. Loai (2) vi
-// chay thu tren 24 file that cho thay ~15/24 file TOT hien chi co DUNG MOT
-// loai neo, ep len 2 se buoc phai viet them noi dung gia tao vao gan nua so
-// file dang dung, dung chinh cai bay da gay ra F2 (bia mot su that CSS de
-// thoa neo). Chon KET HOP (1) + (3): them mot danh sach den nham THANG vao
-// cum mo dau rong nghia da biet (VACUOUS_OPENING), VA ghi ro trong comment
-// nay rang test khong the kiem duoc y nghia noi dung noi chung, chi chan
-// duoc cac dang rong nghia da biet + doi hoi it nhat mot manh THAT di kem.
-// Day la gioi han THAT, khong phai loi chua sua.
+// dem lai bang script rieng tren 24 file that (khong doan): dung 1 neo
+// 17/24, 0 neo 0/24, tu 2 neo tro len 7/24 - tuc 71% file TOT hien chi co
+// DUNG MOT loai neo. Ep len 2 se buoc phai viet them noi dung gia tao vao
+// 71% file dang dung, dung chinh cai bay da gay ra F2 (bia mot su that CSS
+// de thoa neo). Chon KET HOP (1) + (3): them mot danh sach den nham THANG
+// vao cum mo dau rong nghia da biet (VACUOUS_OPENING), VA ghi ro trong
+// comment nay rang test khong the kiem duoc y nghia noi dung noi chung, chi
+// chan duoc cac dang rong nghia da biet + doi hoi it nhat mot manh THAT di
+// kem. Day la gioi han THAT, khong phai loi chua sua.
+//
+// Fix round 4 (V2, cung mot re-reviewer): comment tren chi thanh that MOT
+// CHIEU (chieu LOT mot cau gia). Con chieu nguoc lai cung THAT va da duoc
+// tu tay dung lai:
+//   - CHIEU LOT (da biet): VACUOUS_OPENING chi chan duoc DUNG CAC DANG da
+//     liet ke. Doi mot chu la lach duoc: "khong phu hop" -> "chua phu hop"
+//     hoac "it phu hop" van la ly do rong hoan toan nhung KHONG khop danh
+//     sach den (da tu kiem lai: ca hai bien the deu cho vacuous=false).
+//   - CHIEU OAN (moi phat hien, CO THAT, khong phai gia thuyet): mot cau
+//     DUNG va dung duoc nhung TINH CO mo dau bang mot cum trong danh sach
+//     den van bi chan. Vi du that da tu chay kiem chung:
+//       "KHÔNG dùng khi không phù hợp với khổ hẹp dưới 700px vì
+//       `.term-mag` cố định 3 cột."
+//     Cau nay co nguong that (duoi 700px) VA neo CSS that (`.term-mag` co
+//     that trong components.css), noi dung dung va dung duoc, nhung van bi
+//     VACUOUS_OPENING chan vi mo dau trung "khong phu hop". Neu gap tinh
+//     huong nay: viet lai cau de KHONG mo dau bang cum trong danh sach den
+//     (vi du doi thanh "KHÔNG dùng cho khổ hẹp dưới 700px: `.term-mag` cố
+//     định 3 cột."), DUNG di sua test rong danh sach den, vi noi long danh
+//     sach den se mo lai chinh ke ho F1 vua dong.
 const VACUOUS_OPENING =
   /^(?:KHÔNG dùng|không nên dùng|Khong dung)\s*(?:khi|để|cho|nếu)?\s*(?:không\s+)?(?:phù\s*hợp|hợp\s*lý|thích\s*hợp|hợp\b|cần\s*thiết|đúng(?:\s+ngữ\s*cảnh)?|tùy\s*(?:trường\s*hợp|tình\s*huống))/i;
 

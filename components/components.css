@@ -475,7 +475,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, .drillable:focu
   .statgrid, .exec-qa-grid { break-inside: auto; } /* container được phép ngắt, từng thẻ con thì không */
 
   /* BẪY ĐÃ ĐO ĐƯỢC (không nằm trong 3 điều cấm gốc, nhưng cùng họ lỗi):
-     box-shadow CÓ BLUR (kể cả khi không dùng CSS filter hay lớp mờ nền) bị Chromium
+     box-shadow CÓ BLUR (kể cả không dùng filter/backdrop-filter) bị Chromium
      "nướng bitmap" khi in — mỗi lớp shadow trong danh sách phẩy trở thành MỘT
      ảnh JPEG DeviceGray riêng. Đo được bằng thực nghiệm ban đầu: .sg-card dùng
      shadow có blur (2 lớp) × 6 thẻ KPI = 12 object /Subtype /Image trong PDF

@@ -80,7 +80,7 @@ const results = []; // { name, passed, detail }
 function record(name, passed, detail) {
   results.push({ name, passed, detail });
   const tag = passed ? "PASS" : "FAIL";
-  console.log(`[${tag}] ${name}${detail ? " — " + detail : ""}`);
+  console.log(`[${tag}] ${name}${detail ? " - " + detail : ""}`);
 }
 
 async function main() {
@@ -217,7 +217,7 @@ print(doc.page_count)
   );
 
   console.log("");
-  console.log(allPassed ? "TỔNG KẾT: PASS — mọi kiểm tra đạt." : "TỔNG KẾT: FAIL — xem chi tiết ở trên.");
+  console.log(allPassed ? "TỔNG KẾT: PASS - mọi kiểm tra đạt." : "TỔNG KẾT: FAIL - xem chi tiết ở trên.");
   process.exit(allPassed ? 0 : 1);
 }
 

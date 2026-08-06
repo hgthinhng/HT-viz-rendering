@@ -17,14 +17,19 @@ test('gallery.html ton tai va tro dung tokens.css', () => {
 
 test('components.css khong con khoi token rieng', () => {
   const css = readFileSync(path.join(ROOT, 'components/components.css'), 'utf8');
-  assert.doesNotMatch(css, /--accent\s*:\s*#/, 'components.css van tu khai bao --accent, phai lay tu tokens.css');
+  const withoutImport = css.replace(/^\s*@import[^\n]*\n?/m, '');
+  const tokenDecl = withoutImport.match(/^\s*--[\w-]+\s*:/m);
+  assert.equal(tokenDecl, null, `components.css van tu khai bao lai bien CSS (${tokenDecl && tokenDecl[0]}), phai lay tu tokens.css`);
 });
 
 test('components.css khong vi pham lenh cam', () => {
   const css = readFileSync(path.join(ROOT, 'components/components.css'), 'utf8');
-  assert.doesNotMatch(css, /filter\s*:\s*blur/, 'con filter: blur');
-  assert.doesNotMatch(css, /backdrop-filter/, 'con backdrop-filter');
-  const badMedia = css.match(/@media\s*\(\s*max-width/g) || [];
+  // Boc comment CSS truoc khi quet: comment giai thich ky thuat duoc phep
+  // nhac ten "filter: blur()"/"backdrop-filter", chi CSS THAT MOI bi cam.
+  const codeOnly = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.doesNotMatch(codeOnly, /filter\s*:\s*blur/, 'con filter: blur');
+  assert.doesNotMatch(codeOnly, /backdrop-filter/, 'con backdrop-filter');
+  const badMedia = codeOnly.match(/@media\s*\(\s*max-width/g) || [];
   assert.equal(badMedia.length, 0, `${badMedia.length} media query thieu "screen", se tu kich hoat khi in`);
 });
 

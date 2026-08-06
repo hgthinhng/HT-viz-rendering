@@ -1,0 +1,25 @@
+{
+  "name": "ht-viz-rendering",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Sinh bao cao tai chinh tieng Viet chat luong xuat ban: HTML self-contained va PDF in duoc",
+  "scripts": {
+    "test": "node --test tests/**/*.test.mjs",
+    "verify": "node scripts/verify-components.mjs && node scripts/verify-illustrations.mjs && node scripts/verify-charts.mjs",
+    "verify:components": "node scripts/verify-components.mjs",
+    "verify:illustrations": "node scripts/verify-illustrations.mjs",
+    "verify:charts": "node scripts/verify-charts.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "^1.49.0",
+    "echarts": "^6.1.0",
+    "d3-geo": "^3.1.1",
+    "topojson-client": "^3.1.0",
+    "topojson-simplify": "^3.0.3",
+    "world-atlas": "^2.0.2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

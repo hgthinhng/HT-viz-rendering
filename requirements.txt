@@ -1,0 +1,4 @@
+weasyprint>=69.0
+pymupdf>=1.28.0
+matplotlib>=3.10.9
+fonttools>=4.63.0

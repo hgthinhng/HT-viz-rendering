@@ -4,7 +4,7 @@
 
 ## Mô tả / khi nào dùng
 
-Không tính vào 22 component chính nhưng đủ tổng quát để đưa vào thư viện: giải nghĩa viết tắt kỹ thuật mà không cần footnote rời.
+Không tính vào 22 component chính nhưng đủ tổng quát để đưa vào thư viện: giải nghĩa viết tắt kỹ thuật mà không cần footnote rời. KHÔNG dùng khi số thuật ngữ khác 3: `.term-mag` cố định `grid-template-columns: repeat(3, 1fr)` và luật bỏ `border-left` chỉ áp cho `.term:first-child` của toàn khối chứ không phải đầu mỗi hàng, nên từ thuật ngữ thứ 4 trở đi một đường kẻ dọc mồ côi xuất hiện ở đầu hàng mới; ít hơn 3 để lại cột trống lệch trái. Cũng KHÔNG dùng khi thuật ngữ đã quen thuộc với người đọc mục tiêu, vì giải nghĩa cái ai cũng biết làm báo cáo đọc chậm không cần thiết.
 
 ## HTML mẫu (copy trực tiếp từ gallery.html, chạy được ngay với components.css)
 

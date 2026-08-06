@@ -4,7 +4,7 @@
 
 ## Mô tả / khi nào dùng
 
-Bản tham chiếu Kimi dùng #era-rail { position: fixed } ẩn/hiện theo cuộn trang, sống động trên màn hình nhưng vô nghĩa khi in (rail sẽ đứng yên đè lên nội dung ở mọi trang giấy). Bản này đặt thanh tiến trình làm phần tử TĨNH đầu mỗi section (đã thấy ở khối 01-06 phía trên), nó vẫn "trôi" theo bạn khi cuộn vì mỗi section có thanh riêng, và khi in, mỗi thanh chỉ in ra ĐÚNG MỘT LẦN, ở đúng trang chứa section đó, không đè lên nội dung trang khác.
+Bản tham chiếu Kimi dùng #era-rail { position: fixed } ẩn/hiện theo cuộn trang, sống động trên màn hình nhưng vô nghĩa khi in (rail sẽ đứng yên đè lên nội dung ở mọi trang giấy). Bản này đặt thanh tiến trình làm phần tử TĨNH đầu mỗi section (đã thấy ở khối 01-06 phía trên), nó vẫn "trôi" theo bạn khi cuộn vì mỗi section có thanh riêng, và khi in, mỗi thanh chỉ in ra ĐÚNG MỘT LẦN, ở đúng trang chứa section đó, không đè lên nội dung trang khác. KHÔNG dùng khi báo cáo có dưới 4 section: `.cp-track` chia đều số `.cp-seg` theo tổng section, với 2-3 đoạn thanh chỉ lặp lại thông tin đã có sẵn trong `cp-label` (dạng "X / Y · TÊN PHẦN") mà không thêm ngữ cảnh định vị nào; đồng thời mỗi lần thêm hoặc bớt section phải tự tay sửa lại số `cp-seg done` ở tất cả các khối trước đó, dễ lệch nếu quên một chỗ.
 
 ## HTML mẫu (copy trực tiếp từ gallery.html, chạy được ngay với components.css)
 

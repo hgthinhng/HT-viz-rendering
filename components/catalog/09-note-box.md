@@ -4,7 +4,7 @@
 
 ## Mô tả / khi nào dùng
 
-Ba biến thể dùng chung khung (border-top/bottom hairline, nhãn mono viết hoa) nhưng khác màu nhãn để phân biệt mức độ nghiêm trọng. KHÔNG lạm dụng quá 1 note-box mỗi 2 màn hình cuộn; dùng nhiều sẽ mất tác dụng nhấn.
+Ba biến thể dùng chung khung (border-top/bottom hairline, nhãn mono viết hoa) nhưng khác màu nhãn để phân biệt mức độ nghiêm trọng. KHÔNG lạm dụng quá 1 note-box mỗi 2 màn hình cuộn; dùng nhiều sẽ mất tác dụng nhấn. KHÔNG dùng khi nội dung là luận điểm chính của mục: `color: var(--ink-md)` làm chữ nhạt hơn thân bài và khung chỉ có hairline mỏng, đưa luận điểm chính vào đây sẽ đọc như một ghi chú phụ chứ không phải kết luận; dùng assertion-evidence (khối 10) hoặc key-point (khối phụ 2) khi cần nhấn mạnh.
 
 ## HTML mẫu (copy trực tiếp từ gallery.html, chạy được ngay với components.css)
 

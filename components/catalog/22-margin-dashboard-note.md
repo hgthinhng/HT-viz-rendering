@@ -4,7 +4,7 @@
 
 ## Mô tả / khi nào dùng
 
-Bản tham chiếu Kimi vẽ dashboard bên phải bằng <canvas> cố định toàn trang (position:fixed), đổi nội dung theo section đang cuộn qua IntersectionObserver, sinh động nhưng: (1) canvas không có text thật cho screen reader, (2) fixed vỡ hoàn toàn khi in. Bản này dùng <aside> thật với position:sticky chỉ trong phạm vi khối cha (không sticky toàn viewport), text thật nên đọc được, và tự chuyển thành khối tĩnh nằm dưới nội dung khi in hoặc màn hẹp.
+Bản tham chiếu Kimi vẽ dashboard bên phải bằng <canvas> cố định toàn trang (position:fixed), đổi nội dung theo section đang cuộn qua IntersectionObserver, sinh động nhưng: (1) canvas không có text thật cho screen reader, (2) fixed vỡ hoàn toàn khi in. Bản này dùng <aside> thật với position:sticky chỉ trong phạm vi khối cha (không sticky toàn viewport), text thật nên đọc được, và tự chuyển thành khối tĩnh nằm dưới nội dung khi in hoặc màn hẹp. KHÔNG dùng khi bản in là đầu ra chính: ở `@media print`, `.margin-note` chuyển `position: static`, mất `border-left` và xếp thành một hàng flex nằm dưới nội dung, nên lợi thế theo dõi ngữ cảnh song song khi cuộn hoàn toàn biến mất trên giấy; lúc đó note-box đơn giản hơn cho cùng nội dung.
 
 ## HTML mẫu (copy trực tiếp từ gallery.html, chạy được ngay với components.css)
 

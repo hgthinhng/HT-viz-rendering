@@ -26,10 +26,15 @@ COLORS = {
     "neg": "#C22F4E",
 }
 
+# Fix round 2: FONTS lech that voi tokens.css (thieu nhanh Noto Serif/Noto
+# Sans, "sans" co them Arial ma CSS khong co). Da sua khop nguyen van voi
+# --font-serif / --font-sans / --font-mono trong tokens.css (khoi :root thu
+# hai). Moi list van ket thuc bang generic keyword: serif, monospace,
+# sans-serif.
 FONTS = {
-    "serif": '"Spectral", Georgia, "Times New Roman", serif',
-    "mono": '"IBM Plex Mono", Consolas, "Courier New", monospace',
-    "sans": '"IBM Plex Sans", "Segoe UI", Arial, sans-serif',
+    "serif": '"Spectral", "Noto Serif", Georgia, "Times New Roman", serif',
+    "mono": '"IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace',
+    "sans": '"IBM Plex Sans", "Noto Sans", -apple-system, "Segoe UI", sans-serif',
 }
 
 SPACING = [4, 8, 12, 16, 20, 28, 40, 56]

@@ -6,14 +6,28 @@ CSS = ROOT / "design-system" / "tokens.css"
 
 
 def parse_css_root():
+    """Gop TAT CA cac khoi :root tran (khong bat :root:not(...)).
+
+    Fix round 2: ban truoc dung re.search nen CHI doc khoi :root DAU TIEN.
+    Sau fix round 1, --shadow-1 va --shadow-hairline da doi hen sang khoi
+    :root THU HAI, nen ban cu bo sot hai bien nay hoan toan (test_shadow_
+    khong_co_blur khong con kiem chung gi cho --shadow-1). Dung lai dung
+    regex ranh gioi cua test_khong_bien_nao_bi_khai_hai_lan_trong_root, vi
+    test do da chung minh regex tach dung 2 khoi tran. Vong lap gan gia tri
+    theo THU TU khoi trong file, nen khoi sau (n dung sau trong cascade khi
+    cung specificity) se de len gia tri cua khoi truoc neu trung ten; test
+    test_khong_bien_nao_bi_khai_hai_lan_trong_root da dam bao khong con
+    truong hop trung ten nao, nen viec gop nay an toan.
+    """
     text = CSS.read_text(encoding="utf-8")
-    block = re.search(r":root\s*\{(.*?)\}", text, re.S)
-    assert block, "khong tim thay khoi :root trong tokens.css"
+    blocks = re.findall(r"(?<![\w\-\)\]])\:root\s*\{(.*?)\n\}", text, re.S)
+    assert blocks, "khong tim thay khoi :root nao trong tokens.css"
     out = {}
-    for line in block.group(1).split("\n"):
-        m = re.match(r"\s*--([a-z0-9-]+)\s*:\s*([^;]+);", line)
-        if m:
-            out[m.group(1)] = m.group(2).strip()
+    for body in blocks:
+        for line in body.split("\n"):
+            m = re.match(r"\s*--([a-z0-9-]+)\s*:\s*([^;]+);", line)
+            if m:
+                out[m.group(1)] = m.group(2).strip()
     return out
 
 
@@ -40,19 +54,71 @@ def test_css_co_du_12_mau():
         )
 
 
+def _chuan_hoa_khoang_trang(s):
+    return re.sub(r"\s+", " ", s).strip()
+
+
 def test_python_khop_css():
+    """Fix round 2: ban truoc chi doi chieu COLORS. FONTS/SPACING/RADIUS/
+    SHADOW khong duoc kiem gi, va FONTS thuc su da lech (thieu nhanh Noto,
+    "sans" thua Arial). Mo rong de dung nghia Interfaces cua brief: "test
+    ep hai ban luon khop", khong chi rieng mau.
+    """
     import sys
 
     sys.path.insert(0, str(ROOT / "design-system"))
     import tokens
 
     css = parse_css_root()
+
+    # Mau
     for name, hexval in tokens.COLORS.items():
         css_name = name.replace("_", "-")
         assert css_name in css, f"tokens.py co {name} nhung tokens.css khong co"
         assert css[css_name].upper() == hexval.upper(), (
             f"{name} lech giua hai ban: py={hexval} css={css[css_name]}"
         )
+
+    # Font: --font-serif / --font-sans / --font-mono, so sau khi chuan hoa
+    # khoang trang (CSS va Python co the khac nhau cho xuong dong).
+    font_map = {"serif": "font-serif", "mono": "font-mono", "sans": "font-sans"}
+    for py_name, css_name in font_map.items():
+        assert css_name in css, f"tokens.css khong co --{css_name}"
+        assert _chuan_hoa_khoang_trang(tokens.FONTS[py_name]) == _chuan_hoa_khoang_trang(
+            css[css_name]
+        ), f"FONTS['{py_name}'] lech: py={tokens.FONTS[py_name]!r} css={css[css_name]!r}"
+
+    # Spacing: --space-1 toi --space-8 theo dung thu tu trong SPACING
+    for i, px in enumerate(tokens.SPACING, start=1):
+        css_name = f"space-{i}"
+        assert css_name in css, f"tokens.css khong co --{css_name}"
+        assert css[css_name] == f"{px}px", (
+            f"SPACING[{i - 1}] lech: py={px}px css={css[css_name]}"
+        )
+
+    # Radius: --radius-0 (khong don vi trong CSS goc) toi --radius-3
+    radius_map = {"r0": "radius-0", "r1": "radius-1", "r2": "radius-2", "r3": "radius-3"}
+    for py_name, css_name in radius_map.items():
+        assert css_name in css, f"tokens.css khong co --{css_name}"
+        gia_tri = tokens.RADIUS[py_name]
+        mong_doi = "0" if gia_tri == 0 else f"{gia_tri}px"
+        assert css[css_name] == mong_doi, (
+            f"RADIUS['{py_name}'] lech: py={mong_doi} css={css[css_name]}"
+        )
+
+    # Shadow: --shadow-1/2/3/none/hairline, so sau khi chuan hoa khoang trang
+    shadow_map = {
+        "s1": "shadow-1",
+        "s2": "shadow-2",
+        "s3": "shadow-3",
+        "none": "shadow-none",
+        "hairline": "shadow-hairline",
+    }
+    for py_name, css_name in shadow_map.items():
+        assert css_name in css, f"tokens.css khong co --{css_name}"
+        assert _chuan_hoa_khoang_trang(tokens.SHADOW[py_name]) == _chuan_hoa_khoang_trang(
+            css[css_name]
+        ), f"SHADOW['{py_name}'] lech: py={tokens.SHADOW[py_name]!r} css={css[css_name]!r}"
 
 
 def test_shadow_khong_co_blur():

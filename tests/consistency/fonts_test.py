@@ -113,9 +113,10 @@ def _render_va_doc_lai(font_css_text, family, style, weight, chuoi):
     """
     pdf_bytes = HTML(string=html).write_pdf()
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    so_trang = doc.page_count
     text = doc[0].get_text()
     doc.close()
-    return _chuan_hoa_khoang_trang(text)
+    return _chuan_hoa_khoang_trang(text), so_trang
 
 
 @pytest.mark.parametrize(
@@ -128,13 +129,45 @@ def test_font_khong_lon_glyph_qua_weasyprint(fam, style, weight):
     fonts-embedded.css (doc dong, khong hard-code), khong chi rieng Spectral
     normal 400 nhu ban round 3. Khi do se biet CHINH XAC to hop nao hong
     thay vi mot test gop bao chung chung.
+
+    Chan TRAN TRANG truoc khi so ky tu (theo goi y reviewer): mat chu do
+    @page qua hep so voi chuoi thu (PDF paginated khong tu "cuon ngang" nhu
+    trinh duyet, phan tran bi CAT chu khong ngat sang trang 2) nhin GIONG
+    lon glyph nhung nguyen nhan hoan toan khac -- da tung gap that o chinh
+    file nay khi CHUOI_THU dai ra o G2, xem lich su sua trong
+    _render_va_doc_lai. Hai dau hieu KHONG duoc lan voi nhau:
+      - so trang != 1, hoac chuoi doc duoc NGAN HON chuoi goc: nghi TRAN
+        TRANG, khong phai loi font.
+      - chuoi doc duoc CUNG DO DAI nhung KHAC noi dung: moi thuc su nghi
+        LON GLYPH.
     """
-    doc_duoc = _render_va_doc_lai(_FONT_CSS_TEXT, fam, style, weight, CHUOI_THU)
+    doc_duoc, so_trang = _render_va_doc_lai(_FONT_CSS_TEXT, fam, style, weight, CHUOI_THU)
+
+    assert so_trang == 1, (
+        f"'{fam}' style={style} weight={weight}: PDF ra {so_trang} trang, "
+        f"ky vong 1. Day la dau hieu TRAN KHOI KHUNG TRANG (@page trong "
+        f"_render_va_doc_lai qua hep so voi chuoi thu), KHONG PHAI loi lon "
+        f"glyph. Dung di kiem test_moi_to_hop_font_chi_khai_dung_1_lan cho "
+        f"truong hop nay."
+    )
+    if len(doc_duoc) < len(CHUOI_THU):
+        raise AssertionError(
+            f"'{fam}' style={style} weight={weight}: chuoi doc duoc NGAN "
+            f"HON chuoi dua vao ({len(doc_duoc)} so voi {len(CHUOI_THU)} ky "
+            f"tu). Day la dau hieu TRAN TRANG (mot doan giua hoac cuoi bi "
+            f"cat mat, khong duoc render nen khong doc duoc), KHONG PHAI loi "
+            f"lon glyph. Kiem tra @page trong _render_va_doc_lai co du rong "
+            f"cho chuoi thu khong; DUNG di kiem test_moi_to_hop_font_chi_"
+            f"khai_dung_1_lan cho truong hop nay.\n"
+            f"doc duoc: {doc_duoc!r}\ndua vao : {CHUOI_THU!r}"
+        )
     assert doc_duoc == CHUOI_THU, (
         f"Glyph lon khi render '{fam}' style={style} weight={weight} qua "
-        f"WeasyPrint: doc duoc {doc_duoc!r}, dua vao {CHUOI_THU!r}. Kiem tra "
-        f"fonts-embedded.css co con khai hai @font-face cho cung mot to hop "
-        f"khong (xem test_moi_to_hop_font_chi_khai_dung_1_lan)."
+        f"WeasyPrint (chuoi doc duoc CUNG DO DAI voi ban goc nhung KHAC noi "
+        f"dung, nen day la LON GLYPH that su, khong phai tran trang): doc "
+        f"duoc {doc_duoc!r}, dua vao {CHUOI_THU!r}. Kiem tra fonts-embedded.css "
+        f"co con khai hai @font-face cho cung mot to hop khong (xem "
+        f"test_moi_to_hop_font_chi_khai_dung_1_lan)."
     )
 
 

@@ -179,7 +179,20 @@
 
   /* ── 2. Chữ trùng lệch màu nhạt, thay cho "letterpress"/text-shadow ──
      Hai phần tử <span> THẬT chồng lên nhau bằng position absolute, không
-     phải một hiệu ứng CSS trên một phần tử. */
+     phải một hiệu ứng CSS trên một phần tử.
+
+     RÀNG BUỘC BẮT BUỘC, phát hiện bởi mũi tổng hợp khi dùng kỹ thuật này
+     với cụm nhiều từ ("Dư cung"): .lp-behind là position:absolute không có
+     right/bottom/width, nên WeasyPrint tính chiều rộng containing-block
+     theo thuật toán shrink-to-fit CỦA RIÊNG NÓ, và với chữ CÓ khoảng trắng
+     thuật toán đó có thể ra kết quả hẹp hơn .lp-front, khiến .lp-behind tự
+     ngắt dòng rồi ĐÈ LÊN nội dung bên dưới (không có phép đếm ảnh/raster
+     nào bắt được lỗi này, chỉ thấy bằng cách mở ảnh). Bắt buộc
+     `white-space: nowrap` trên CẢ HAI lớp để ép chúng luôn ở một dòng, in
+     dài hơn khung thì TRÀN RA NGOÀI (thấy ngay, an toàn) thay vì ngắt dòng
+     sai lệch giữa hai lớp (vô hình cho tới khi mở ảnh, nguy hiểm hơn nhiều).
+     Hệ quả: kỹ thuật này CHỈ dùng cho chữ một dòng, không dùng cho đoạn văn
+     hoặc tiêu đề nhiều dòng. */
   .demo-letterpress .lp-wrap {
     position: relative;
     display: inline-block;
@@ -191,6 +204,7 @@
   .demo-letterpress .lp-behind,
   .demo-letterpress .lp-front {
     display: block;
+    white-space: nowrap;
   }
   .demo-letterpress .lp-behind {
     position: absolute;
@@ -200,6 +214,19 @@
   .demo-letterpress .lp-front {
     position: relative;
     color: var(--paper-hi);
+  }
+  .demo-letterpress-multi {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .demo-letterpress-multi .lp-wrap {
+    font-size: 26px;
+  }
+  .demo-letterpress-multi .lp-caption {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-lo);
+    text-align: center;
   }
 
   /* ── 3. Background-color khối, thay cho "veil"/inset shadow ──
@@ -293,11 +320,17 @@
 
       <div class="card">
         <h2>2. Chữ trùng lệch màu nhạt (thay cho letterpress/text-shadow)</h2>
-        <div class="demo demo-letterpress">
+        <div class="demo demo-letterpress demo-letterpress-multi">
           <div class="lp-wrap">
             <span class="lp-behind" aria-hidden="true">9,2%</span>
             <span class="lp-front">9,2%</span>
           </div>
+          <p class="lp-caption">token đơn, không khoảng trắng</p>
+          <div class="lp-wrap">
+            <span class="lp-behind" aria-hidden="true">Dư cung</span>
+            <span class="lp-front">Dư cung</span>
+          </div>
+          <p class="lp-caption">cụm hai từ, CÓ khoảng trắng, cần white-space: nowrap</p>
         </div>
         <p class="note">
           Hai phần tử <code>&lt;span&gt;</code> chồng lên nhau bằng
@@ -305,7 +338,17 @@
           một chút. Dùng cho số liệu hero trên nền tối. Cần đồng bộ chính
           xác nội dung hai lớp, sai lệch dễ lộ khi sinh tự động từ template.
         </p>
-        <p class="verified">Verified: hai phần tử DOM thật, không phải CSS shadow ảo</p>
+        <p class="note">
+          <strong>Ràng buộc bắt buộc:</strong> phải có
+          <code>white-space: nowrap</code> trên cả hai lớp. Mũi tổng hợp
+          từng dùng kỹ thuật này với cụm "Dư cung" (không có nowrap) và
+          WeasyPrint tự ngắt dòng RIÊNG lớp phía sau, đè lên đoạn văn bên
+          dưới, không đọc được, dù không có phép đếm ảnh/raster nào bắt
+          được vì đây là lỗi CHỒNG CHỮ, không phải lỗi thiếu ảnh. Ô demo
+          thứ hai ở trên dùng đúng "Dư cung" để chứng minh có nowrap thì
+          đúng. Hệ quả: kỹ thuật này CHỈ dùng cho chữ một dòng.
+        </p>
+        <p class="verified">Verified: hai phần tử DOM thật; đã kiểm cả token đơn lẫn cụm nhiều từ có khoảng trắng</p>
       </div>
 
       <div class="card">

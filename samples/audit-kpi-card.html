@@ -1,0 +1,170 @@
+<!doctype html>
+<!--
+  MẪU KIỂM TOÁN vòng 4 (10-weasyprint-audit) — thẻ KPI STAT GRID (component
+  01 trong components/components.css) là MỘT TRONG HAI CHỖ THẬT trong toàn
+  bộ components/ đang khai box-shadow. Mã ở khối 1 dưới đây COPY NGUYÊN VĂN
+  từ components/components.css dòng 76-80 (.sg-card), không sửa gì, để cho
+  thấy đúng cái đang chạy trong repo hôm nay.
+
+  ĐÃ ĐO BẰNG WeasyPrint 69.0 thật (không suy diễn): box-shadow: var(--shadow-1)
+  không tạo ra một điểm ảnh nào. .sg-card có border: 1px solid var(--line)
+  NÊN thẻ vẫn có ranh giới rõ khi in — chỉ mất lớp "nổi khối" hai tông
+  (bóng đậm góc dưới-phải + viền sáng góc trên-trái) mà --shadow-1 định
+  nghĩa. Xem research/10-weasyprint-audit/FINDINGS.md mục 1 cho số liệu đo
+  đầy đủ và research/RESEARCH-LEDGER.md cho lịch sử.
+
+  BA KHỐI DƯỚI ĐÂY DÙNG CÙNG MỘT DỮ LIỆU, chỉ đổi đúng phần shadow, để
+  người quyết định thấy khác biệt thị giác thật khi mở PDF xuất bằng
+  WeasyPrint, không phải đọc mô tả bằng chữ.
+
+  RÀNG BUỘC ĐÃ TUÂN THỦ: không nhúng fonts-embedded.css (dùng font-stack có
+  fallback), không em-dash/en-dash, không filter/backdrop-filter, media
+  query co giãn màn hình có từ khoá screen, không gauge/radar (không áp
+  dụng ở đây, không có chart).
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiểm toán WeasyPrint: thẻ KPI stat grid, shadow chết vs thay thế</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --paper-hi: #F7F9FC; --ink: #051C2C; --ink-md: #42566A;
+    --ink-lo: #8595A6; --line: #DBE2EA; --accent: #2251FF; --pos: #008A6D;
+    --font-display: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    /* --shadow-1 copy nguyên văn tu design-system/tokens.css dong 184,
+       KHONG doi gia tri, chi de doi chieu. */
+    --shadow-1: 2px 2px 0px rgba(5, 28, 44, 0.12), -1px -1px 0px rgba(255, 255, 255, 0.6);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 28px 60px; background: var(--paper); color: var(--ink);
+    font-family: var(--font-display); font-size: 15px; line-height: 1.6; }
+  h1 { font-size: 21px; margin: 0 0 6px; }
+  h2 { font-size: 15px; margin: 40px 0 4px; font-family: var(--font-mono); text-transform: uppercase;
+    letter-spacing: .08em; color: var(--ink-md); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  p.note { color: var(--ink-md); font-size: 13px; max-width: 74ch; margin: 0 0 4px; }
+  p.verdict { color: var(--ink); font-size: 13.5px; max-width: 74ch; margin: 6px 0 0; font-family: var(--font-mono); }
+  p.verdict b { color: var(--accent); }
+
+  .statgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  @media screen and (max-width: 640px) { .statgrid { grid-template-columns: 1fr; } }
+
+  /* ── KHỐI 1: nguyên văn code hiện tại của repo ─────────────────────── */
+  .sg-card { border: 1px solid var(--line); border-radius: 3px; background: var(--paper);
+    box-shadow: var(--shadow-1); padding: 18px 20px 16px; position: relative; }
+  .sg-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-lo); }
+  .sg-value { font-family: var(--font-display); font-weight: 700; font-size: 30px; margin-top: 10px; }
+  .sg-value small { font-size: 13px; font-weight: 400; color: var(--ink-md); }
+  .sg-trend { font-family: var(--font-mono); font-size: 11px; font-weight: 700; margin-top: 8px; display: block; }
+  .sg-trend.up { color: var(--pos); }
+
+  /* ── KHỐI 2: xoá thuần tuý, không thêm gì ──────────────────────────── */
+  .fix-delete { border: 1px solid var(--line); border-radius: 3px; background: var(--paper);
+    padding: 18px 20px 16px; position: relative; }
+
+  /* ── KHỐI 3: kỹ thuật thay thế đã verify — khối ink lệch vị trí phía
+     sau bằng position absolute + z-index, mô phỏng lại đúng hướng bóng
+     (lệch phải-dưới) mà --shadow-1 định nghĩa, render THẬT bằng vector,
+     không phải hiệu ứng CSS ảo. */
+  .fix-stamp-wrap { position: relative; }
+  .fix-stamp-behind { position: absolute; inset: 4px -4px -4px 4px; background: var(--ink);
+    opacity: .14; border-radius: 3px; z-index: 0; }
+  .fix-stamp { position: relative; z-index: 1; border: 1px solid var(--line); border-radius: 3px;
+    background: var(--paper); padding: 18px 20px 16px; }
+
+  .tag { display: inline-block; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 2px; margin-left: 8px; }
+  .tag.bad { background: #FBE4E8; color: #9E1B37; }
+  .tag.ok { background: #E3F5EF; color: #0A5C48; }
+
+  @media print { @page { size: A4; margin: 16mm 14mm; } body { background: #fff; } }
+</style>
+</head>
+<body>
+
+<h1>Kiểm toán thẻ KPI stat grid: box-shadow chết trong WeasyPrint 69.0</h1>
+<p class="note">Ba khối dưới dùng CÙNG bố cục, cùng ba con số, chỉ đổi đúng phần tạo độ nổi. Mở file PDF xuất
+  từ trang này bằng WeasyPrint để so trực tiếp, đừng chỉ đọc mã.</p>
+
+<h2>1. Mã hiện tại của repo <span class="tag bad">box-shadow: var(--shadow-1)</span></h2>
+<p class="note">Copy nguyên văn <code>components/components.css</code> dòng 76-80. Trong WeasyPrint, dòng
+  box-shadow này không tạo ra điểm ảnh nào; thẻ chỉ còn border 1px phẳng.</p>
+<div class="statgrid">
+  <div class="sg-card">
+    <div class="sg-label">Quy mô đội tàu</div>
+    <div class="sg-value">23<small> chiếc</small></div>
+    <div class="sg-trend up">▲ +3 so với 2023</div>
+  </div>
+  <div class="sg-card">
+    <div class="sg-label">Tổng trọng tải</div>
+    <div class="sg-value">612.400<small> DWT</small></div>
+    <div class="sg-trend up">▲ +9,8% theo năm</div>
+  </div>
+  <div class="sg-card">
+    <div class="sg-label">Tỷ lệ khai thác</div>
+    <div class="sg-value">87,4<small>%</small></div>
+    <div class="sg-trend up">▲ +2,1 điểm %</div>
+  </div>
+</div>
+
+<h2>2. Phương án A: chỉ xoá dòng box-shadow <span class="tag ok">border đã đủ phân tách</span></h2>
+<p class="note">Không thêm phần tử nào. Trong WeasyPrint, khối này và khối 1 ra Y HỆT một ảnh (đã kiểm bằng
+  render thật ở cuối file), vì box-shadow của khối 1 vốn đã không vẽ được gì. Phù hợp khi thẻ đứng trên nền
+  trắng thuần và border đủ để mắt phân biệt ranh giới.</p>
+<div class="statgrid">
+  <div class="fix-delete">
+    <div class="sg-label">Quy mô đội tàu</div>
+    <div class="sg-value">23<small> chiếc</small></div>
+    <div class="sg-trend up">▲ +3 so với 2023</div>
+  </div>
+  <div class="fix-delete">
+    <div class="sg-label">Tổng trọng tải</div>
+    <div class="sg-value">612.400<small> DWT</small></div>
+    <div class="sg-trend up">▲ +9,8% theo năm</div>
+  </div>
+  <div class="fix-delete">
+    <div class="sg-label">Tỷ lệ khai thác</div>
+    <div class="sg-value">87,4<small>%</small></div>
+    <div class="sg-trend up">▲ +2,1 điểm %</div>
+  </div>
+</div>
+
+<h2>3. Phương án B: khối ink lệch vị trí phía sau <span class="tag ok">giữ lại cảm giác "nổi khối"</span></h2>
+<p class="note">Thêm một <code>&lt;div&gt;</code> nền ink mờ 14%, đặt lệch phải-dưới bằng <code>position:
+  absolute</code> và <code>z-index</code>, đúng hướng bóng mà --shadow-1 định nghĩa. Vẽ được thật bằng
+  vector trong WeasyPrint, không phải hiệu ứng ảo. Dùng khi cần giữ ngôn ngữ "con dấu" của hệ thống, hoặc khi
+  thẻ có thể đứng trên nền không phải trắng thuần.</p>
+<div class="statgrid">
+  <div class="fix-stamp-wrap">
+    <div class="fix-stamp-behind"></div>
+    <div class="fix-stamp">
+      <div class="sg-label">Quy mô đội tàu</div>
+      <div class="sg-value">23<small> chiếc</small></div>
+      <div class="sg-trend up">▲ +3 so với 2023</div>
+    </div>
+  </div>
+  <div class="fix-stamp-wrap">
+    <div class="fix-stamp-behind"></div>
+    <div class="fix-stamp">
+      <div class="sg-label">Tổng trọng tải</div>
+      <div class="sg-value">612.400<small> DWT</small></div>
+      <div class="sg-trend up">▲ +9,8% theo năm</div>
+    </div>
+  </div>
+  <div class="fix-stamp-wrap">
+    <div class="fix-stamp-behind"></div>
+    <div class="fix-stamp">
+      <div class="sg-label">Tỷ lệ khai thác</div>
+      <div class="sg-value">87,4<small>%</small></div>
+      <div class="sg-trend up">▲ +2,1 điểm %</div>
+    </div>
+  </div>
+</div>
+
+<p class="verdict">Kết luận đo được: khối 1 và khối 2 render <b>giống hệt nhau ở mức byte</b> trong PDF
+  WeasyPrint (xác nhận box-shadow không vẽ gì). Khối 3 là bản DUY NHẤT trong ba bản có độ nổi thị giác thật
+  trong file PDF. Chi tiết đo tại research/10-weasyprint-audit/FINDINGS.md mục 1.</p>
+
+</body>
+</html>

@@ -547,3 +547,38 @@ report-verdict-vs-recap-teardown.html   2 trang,  61 drawing, 0 raster
 Xem ảnh raster hoá từ đúng PDF WeasyPrint xác nhận bằng mắt: trang vẫn đọc được như "một trang
 giấy", exhibit và bảng vẫn tách khỏi khoảng trắng xung quanh nhờ hairline border và khoảng đệm,
 không cần shadow để tạo cảm giác đó.
+
+### KT.4, `clamp()` bị WeasyPrint bỏ qua âm thầm, và verdict là chỗ đau nhất để lỗi này rơi vào
+
+`h1.verdict` trong `report-exec-brief-action-first.html` từng khai
+`font-size:clamp(1.55rem, 1.1rem + 1.6vw, 2.15rem)` để chữ co giãn theo viewport khi xem trực
+tiếp bằng trình duyệt. `clamp()`, `min()`, `max()` bị WeasyPrint 69.0 bỏ qua ÂM THẦM, không log,
+không lỗi, property rớt thẳng về giá trị KẾ THỪA từ phần tử cha (không phải về giá trị đối số
+đầu hay đối số nào của hàm) - phát hiện đã có từ `research/01-editorial/FINDINGS.md` mục 0.3,
+ghi lại đây vì hậu quả cụ thể trên mẫu này nặng hơn nhiều so với một tiêu đề mục thông thường.
+
+Đo bằng cách tái hiện đúng trạng thái trước khi vá (giữ nguyên `clamp()` làm giá trị duy nhất,
+không bọc `@media screen`), trích tầng text từ PDF WeasyPrint qua `page.get_text("dict")`:
+verdict, đúng câu quan trọng nhất của cả trang exec brief, ra 10,1 đến 12,6pt, XẤP XỈ BẰNG cỡ
+chữ thân bài xung quanh. Với một trang được thiết kế theo nguyên lý action-first (F2.1-F2.3),
+đây là lỗi nặng nhất có thể xảy ra: verdict không còn NỔI BẬT HƠN phần còn lại, người đọc lướt
+20 giây (xem F6.1) sẽ không còn phân biệt được đâu là kết luận, đâu là chi tiết hỗ trợ, tức là
+hỏng đúng nguyên lý cốt lõi mà cả hồ sơ FINDINGS.md này lập luận.
+
+Vá bằng đúng khuyến nghị: giá trị cố định `1.9rem` làm mặc định (đúng cho mọi engine kể cả
+WeasyPrint, vì A4 là khổ cố định nên không cần co giãn theo viewport khi in), bọc `clamp()` gốc
+trong khối `@media screen` để trình duyệt vẫn co giãn khi xem trực tiếp. Đo lại sau vá bằng đúng
+phép trên: verdict ra 22,8pt ổn định trên mọi dòng của câu, gấp khoảng 1,8 đến 2,25 lần cỡ chữ
+thân bài xung quanh, đúng ý đồ thiết kế.
+
+Đã rà lại 3 mẫu còn lại (`report-dense-data-table.html`, `report-exhibit-institutional.html`,
+`report-verdict-vs-recap-teardown.html`) bằng regex bắt đúng lời gọi hàm (`\bclamp\(`, `\bmin\(`,
+`\bmax\(`, tránh nhầm với `max-width`/`min-width` là thuộc tính khác không phải hàm): cả ba
+KHÔNG có `clamp()`, `min()`, `max()` nào, không cần sửa.
+
+**Quy tắc rút ra cho mọi mẫu sau này của repo**: bất kỳ chỗ nào cỡ chữ mang GIÁ TRỊ Ý NGHĨA cao
+(tiêu đề hành động, verdict, con số hero) tuyệt đối không được khai bằng `clamp()`/`min()`/`max()`
+làm giá trị DUY NHẤT; luôn có một giá trị cố định làm mặc định và đẩy hàm co giãn vào
+`@media screen`, giống hệt lý do "@media co giãn màn hình phải có `screen`" đã là luật cứng của
+repo cho một lớp lỗi khác (kích hoạt nhầm khi in) - đây là một lớp lỗi SONG SONG (rớt về kế thừa
+khi in) cần cùng một kỷ luật phòng ngừa.

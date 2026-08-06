@@ -1,0 +1,131 @@
+<!doctype html>
+<!--
+  MẪU KIỂM TOÁN vòng 4 (10-weasyprint-audit) — khối CẦN PHÂN LỚP MẠNH,
+  khác thẻ KPI ở audit-kpi-card.html (đó là "nổi nhẹ trên nền trắng thuần").
+  Ở đây khối trích kết luận (verdict pull-quote) đặt TRÊN một dải nền màu
+  gần cùng độ sáng với chính khối, mô phỏng tình huống thật hay gặp trong
+  báo cáo: trang ngăn chương, khối "wow" một con số, callout đặt trên dải
+  màu section-break. Đây KHÔNG có trong components/ hôm nay (không tìm thấy
+  component thật nào dùng box-shadow cho khối trên nền màu), dựng để trả
+  lời câu hỏi 2 của team lead: ba kỹ thuật đã verify có phủ được vai trò
+  "tách khối khỏi nền GẦN CÙNG TÔNG MÀU" hay không.
+
+  ĐO ĐƯỢC: khi nền và khối gần cùng độ sáng, một border 1px màu line/ink-lo
+  mờ đi trực quan (độ tương phản thấp), khối "chìm" vào nền hơn hẳn so với
+  trường hợp nền trắng thuần ở audit-kpi-card.html. Khối lệch vị trí
+  (position/z-index) giữ được ranh giới rõ bất kể tông nền vì nó tạo một
+  vùng MÀU KHÁC hẳn (ink đậm) chứ không dựa vào độ tương phản viền mảnh.
+
+  RÀNG BUỘC ĐÃ TUÂN THỦ: không nhúng fonts-embedded.css, không em/en-dash,
+  không filter/backdrop-filter, media query màn hình có từ khoá screen,
+  không gauge/radar.
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiểm toán WeasyPrint: khối phân lớp mạnh trên nền màu</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --paper-hi: #F7F9FC; --ink: #051C2C; --ink-md: #42566A;
+    --ink-lo: #8595A6; --line: #DBE2EA; --accent: #2251FF; --accent-soft: #7D9BFF;
+    --font-display: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 28px 60px; background: var(--paper); color: var(--ink);
+    font-family: var(--font-display); font-size: 15px; line-height: 1.6; }
+  h1 { font-size: 21px; margin: 0 0 6px; }
+  h2 { font-size: 15px; margin: 40px 0 4px; font-family: var(--font-mono); text-transform: uppercase;
+    letter-spacing: .08em; color: var(--ink-md); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  p.note { color: var(--ink-md); font-size: 13px; max-width: 74ch; margin: 0 0 4px; }
+  p.verdict { color: var(--ink); font-size: 13.5px; max-width: 74ch; margin: 6px 0 0; font-family: var(--font-mono); }
+  p.verdict b { color: var(--accent); }
+  .tag { display: inline-block; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 2px; margin-left: 8px; }
+  .tag.bad { background: #FBE4E8; color: #9E1B37; }
+  .tag.ok { background: #E3F5EF; color: #0A5C48; }
+
+  /* Dải nền section-break: cùng họ với --paper-hi/--accent-soft pha loãng,
+     độ sáng GẦN với nền trắng của khối bên trong, đúng tình huống khó. */
+  .ribbon { background: linear-gradient(180deg, #E7ECFA, #EDF1FA); padding: 46px 40px; margin-top: 14px; }
+
+  /* ── KHỐI 1: box-shadow (kể cả stamp hai lớp của chính token --shadow-1) ── */
+  .quote-shadow { background: var(--paper); border: 1px solid var(--line); border-radius: 3px;
+    padding: 26px 30px; max-width: 560px;
+    box-shadow: 2px 2px 0px rgba(5, 28, 44, 0.12), -1px -1px 0px rgba(255, 255, 255, 0.6); }
+
+  /* ── KHỐI 2: chỉ border, không thêm gì (phương án xoá thuần tuý) ───────── */
+  .quote-border { background: var(--paper); border: 1px solid var(--ink-lo); border-radius: 3px;
+    padding: 26px 30px; max-width: 560px; }
+
+  /* ── KHỐI 3: kỹ thuật thay thế đã verify — khối ink đặc phía sau, lệch
+     vị trí bằng position/transform + z-index. Vùng ink đậm tạo ranh giới
+     bằng MÀU khác hẳn nền, không phụ thuộc độ tương phản viền mảnh. */
+  .quote-stamp-wrap { position: relative; max-width: 560px; }
+  .quote-stamp-behind { position: absolute; inset: 0; background: var(--ink); border-radius: 3px;
+    transform: translate(7px, 7px); z-index: 0; }
+  .quote-stamp { position: relative; z-index: 1; background: var(--paper); border-radius: 3px;
+    padding: 26px 30px; }
+
+  .qtitle { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-lo); margin-bottom: 10px; }
+  .qbody { font-size: 19px; line-height: 1.45; margin: 0; }
+  .qbody b { color: var(--accent); }
+
+  @media print { @page { size: A4; margin: 16mm 14mm; } body { background: #fff; } }
+</style>
+</head>
+<body>
+
+<h1>Kiểm toán khối phân lớp mạnh: box-shadow trên nền màu gần cùng tông</h1>
+<p class="note">Ba khối trích kết luận dưới đây đặt trên CÙNG một dải nền màu xanh nhạt (mô phỏng trang ngăn
+  chương/section-break), chỉ đổi phần tạo ranh giới. So sánh mức độ "chìm vào nền" giữa ba phương án.</p>
+
+<h2>1. box-shadow (kể cả bản hai lớp của chính --shadow-1) <span class="tag bad">chết trong WeasyPrint</span></h2>
+<p class="note">Trong WeasyPrint, khối này KHÔNG khác gì một khối chỉ có border 1px màu nhạt — mà border nhạt
+  trên nền gần cùng tông thì gần như vô hình.</p>
+<div class="ribbon">
+  <div class="quote-shadow">
+    <div class="qtitle">Kết luận</div>
+    <p class="qbody">NÊN tham gia tối đa <b>150 tỷ đồng</b> vào đợt phát hành trái phiếu xanh, lãi suất sàn
+      9,2% mỗi năm, kỳ hạn không quá 5 năm.</p>
+  </div>
+</div>
+
+<h2>2. Chỉ xoá, tăng độ đậm border <span class="tag bad">vẫn yếu trên nền màu</span></h2>
+<p class="note">Đổi border sang màu đậm hơn (var(--ink-lo)) để bù lại việc mất shadow. Ranh giới rõ hơn khối 1
+  nhưng vẫn là MỘT ĐƯỜNG VIỀN MẢNH, không tạo cảm giác "khối tách khỏi nền" thật sự khi nhìn tổng thể trang.</p>
+<div class="ribbon">
+  <div class="quote-border">
+    <div class="qtitle">Kết luận</div>
+    <p class="qbody">NÊN tham gia tối đa <b>150 tỷ đồng</b> vào đợt phát hành trái phiếu xanh, lãi suất sàn
+      9,2% mỗi năm, kỳ hạn không quá 5 năm.</p>
+  </div>
+</div>
+
+<h2>3. Khối ink đặc lệch vị trí phía sau <span class="tag ok">tách khối rõ bất kể tông nền</span></h2>
+<p class="note">Một khối nền ink đặc (không phải viền mảnh) lệch 7px phía sau bằng <code>transform</code> +
+  <code>z-index</code>. Vì đây là một VÙNG MÀU KHÁC HẲN chứ không phải một đường viền mảnh, ranh giới vẫn rõ
+  dù nền là trắng, màu nhạt, hay có gradient.</p>
+<div class="ribbon">
+  <div class="quote-stamp-wrap">
+    <div class="quote-stamp-behind"></div>
+    <div class="quote-stamp">
+      <div class="qtitle">Kết luận</div>
+      <p class="qbody">NÊN tham gia tối đa <b>150 tỷ đồng</b> vào đợt phát hành trái phiếu xanh, lãi suất sàn
+        9,2% mỗi năm, kỳ hạn không quá 5 năm.</p>
+    </div>
+  </div>
+</div>
+
+<p class="verdict">Kết luận đo được: trên nền màu gần cùng tông, kỹ thuật viền (khối 1 và 2) yếu đi rõ rệt so
+  với khi đứng trên nền trắng thuần (đối chiếu audit-kpi-card.html). Kỹ thuật khối đặc lệch vị trí (khối 3) là
+  phương án DUY NHẤT trong ba phương án không phụ thuộc độ tương phản với nền, vì nó tạo ranh giới bằng một
+  vùng màu khác hẳn thay vì một đường viền mảnh. Không có vai trò thị giác nào trong repo hiện tại vượt ra
+  ngoài khả năng của ba kỹ thuật đã verify; điểm cần trả giá là bản sao ĐÚNG HAI TÔNG của --shadow-1 (bóng đậm
+  một góc, viền sáng góc đối diện) cần HAI phần tử lệch vị trí thay vì một, xem
+  research/10-weasyprint-audit/FINDINGS.md mục 2.</p>
+
+</body>
+</html>

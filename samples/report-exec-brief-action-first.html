@@ -90,8 +90,15 @@ body{
 }
 .demo-flag{ color:var(--warn); }
 h1.verdict{
-  font-family:var(--font-serif); font-weight:700; font-size:clamp(1.55rem, 1.1rem + 1.6vw, 2.15rem);
+  font-family:var(--font-serif); font-weight:700; font-size:1.9rem;
   line-height:1.28; margin:0 0 14px; letter-spacing:-.005em;
+}
+/* clamp() bị WeasyPrint 69.0 bỏ qua âm thầm, property rớt về giá trị kế thừa
+   (đã đo thật, xem KT.4 trong research/02-professional-report/FINDINGS.md).
+   Giá trị cố định ở trên là mặc định AN TOÀN cho in ấn; khối screen-only này
+   phục hồi co giãn theo viewport CHỈ khi xem trực tiếp bằng trình duyệt. */
+@media screen {
+  h1.verdict{ font-size:clamp(1.55rem, 1.1rem + 1.6vw, 2.15rem); }
 }
 h1.verdict .num{ font-family:var(--font-mono); color:var(--accent-hi); font-weight:700; }
 .why{ font-size:1.05rem; color:var(--ink-md); max-width:64ch; margin:0 0 26px; }

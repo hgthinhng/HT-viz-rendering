@@ -19,16 +19,17 @@ thật qua WeasyPrint và đếm ảnh raster bằng `scripts/count_raster.py` �
 
 ---
 
-## 0. Bốn phát hiện kỹ thuật xác minh bằng cách render THẬT qua WeasyPrint 69.0, cộng một nguyên tắc bao trùm
+## 0. Tám phát hiện kỹ thuật xác minh bằng cách render THẬT qua WeasyPrint 69.0, cộng một nguyên tắc bao trùm
 
 Trong lúc render 5 mẫu HTML của mục nghiên cứu này qua WeasyPrint 69.0 để tự kiểm (đúng yêu
-cầu "mỗi file phải in ra A4 được"), ba giới hạn CSS sau xuất hiện ở MỌI file, được cô lập và tái
-hiện lại bằng file test tối giản riêng để loại trừ khả năng lỗi do nội dung cụ thể; mục thứ tư
-(0.4) là một cảnh báo nhận từ controller trong lúc làm vòng này, đã đối chiếu lại với 5 mẫu của
-chính agent này để xác nhận không dính. Đây không phải phát hiện thiết kế editorial, mà là giới
-hạn ENGINE hoặc bug cụ thể, ảnh hưởng đến toàn bộ repo chứ không riêng gì các mẫu ở đây, nên ghi
-lại rõ ràng để không ai phải tái khám phá. Mục 0.2 đã được controller sửa lại sau một lần đọc
-phản biện (bản đầu kết luận sai, xem ghi chú "SỬA LẠI" ngay đầu mục 0.2); mục 0.5 đúc kết nguyên
+cầu "mỗi file phải in ra A4 được"), nhiều giới hạn CSS sau xuất hiện, được cô lập và tái hiện lại
+bằng file test tối giản riêng để loại trừ khả năng lỗi do nội dung cụ thể; mục 0.4 là một cảnh
+báo nhận từ controller trong lúc làm vòng này, đã đối chiếu lại với 5 mẫu của chính agent này để
+xác nhận không dính; mục 0.6-0.8 phát hiện thêm khi dọn `box-shadow` chết theo yêu cầu controller
+ở một vòng làm việc sau. Đây không phải phát hiện thiết kế editorial, mà là giới hạn ENGINE hoặc
+bug cụ thể, ảnh hưởng đến toàn bộ repo chứ không riêng gì các mẫu ở đây, nên ghi lại rõ ràng để
+không ai phải tái khám phá. Mục 0.2 đã được controller sửa lại sau một lần đọc phản biện (bản
+đầu kết luận sai, xem ghi chú "SỬA LẠI" ngay đầu mục 0.2); mục 0.5 đúc kết nguyên
 tắc chung rút ra từ cả bốn phát hiện.
 
 ### 0.1 `box-shadow` KHÔNG được WeasyPrint hỗ trợ, dưới bất kỳ hình thức nào, kể cả blur = 0
@@ -186,6 +187,60 @@ dùng chung code, nên "đúng trên cái này" không suy ra được "đúng t
 nào. Vì pipeline PDF thật của repo này là WeasyPrint (không phải Chromium, xem `memory.md`), mọi
 kết luận "an toàn khi in" trong tài liệu của repo mà không ghi rõ đã đo trên WeasyPrint đều cần
 được đo lại trước khi tin, bất kể kết luận đó cũ hay mới, đến từ nguồn nào.
+
+**Ba phát hiện dưới đây (0.6-0.8) là bằng chứng SỐNG cho chính nguyên tắc này**: cả ba bị phát
+hiện trong lúc dọn `box-shadow` chết khỏi 5 mẫu của vòng nghiên cứu này (theo yêu cầu của
+controller sau khi quét 41 mẫu toàn repo), lúc tự kiểm bằng cách MỞ ẢNH PDF THẬT thay vì chỉ tin
+"không có warning CSS là xong". Không có bước mở ảnh đó, cả ba lỗi này đã lọt qua.
+
+### 0.6 Float có chiều cao nhiều dòng không được WeasyPrint chừa chỗ ở dòng nó bắt đầu (drop cap)
+
+Xem tường thuật đầy đủ ở mục 2.3 (đã viết lại). Tóm tắt cho mục lục kỹ thuật ở đây: `float: left`
+trên một phần tử cao hơn 1 dòng văn bản (`::first-letter` phóng to HOẶC một `<span>` DOM thật,
+cả hai lỗi giống hệt nhau) khiến chữ ngay sau nó in đè lên, không nằm bên phải như float đúng
+nghĩa. Xác nhận bằng toạ độ glyph thật (`rawdict` của PyMuPDF), không phải bằng mắt trên ảnh thu
+nhỏ. Áp dụng: TRÁNH mọi kỹ thuật float cao-nhiều-dòng ở vị trí đầu dòng văn bản khi render qua
+WeasyPrint 69.0.
+
+### 0.7 `width` phần trăm bên trong một item của flex container tính sai chiều rộng tham chiếu
+
+**Thực nghiệm**: cấu trúc `.wrap { display: flex }` chứa nhiều `.col { flex: 1 }`, mỗi `.col`
+chứa một `.bar { width: 62% }` - đúng theo CSS, `62%` phải tính theo chiều rộng ĐÃ PHÂN GIẢI của
+`.col` (containing block trực tiếp của `.bar`). Đo bằng toạ độ path thật (`page.get_drawings()`)
+trên một file test cô lập 5 cột: `.col` được tính đúng (mỗi cột rộng bằng nhau, chia đều chiều
+rộng `.wrap` trừ gap). NHƯNG `.bar` bên trong lại rộng ĐÚNG BẰNG 62% của `.wrap` (container flex
+NGOÀI CÙNG), không phải 62% của `.col` (item chứa nó) - chênh lệch tới 3-4 lần chiều rộng dự
+kiến, khiến mỗi cột biểu đồ tràn lấn sang các cột bên phải, đè lên nhãn số của chính nó và của
+các cột sau. Bug tái hiện được trên file cô lập, không phụ thuộc nội dung cụ thể.
+
+**Sửa**: đổi `width` phần trăm bên trong flex-item sang **giá trị px cố định** khi containing
+block của phần tử đó là một flex-item khác (không phải chính flex container hay một khối có
+chiều rộng khai báo tường minh). Đã sửa trong `editorial-luoi-modular-spiegel.html`
+(`.hero-bars .bar` từ `width: 62%` sang `width: 40px`), xác nhận bằng ảnh sau khi sửa: 5 cột
+đứng đúng vị trí, nhãn số không còn bị đè.
+
+**Phạm vi ảnh hưởng chưa xác minh hết**: đây có thể là biểu hiện của một lớp lỗi rộng hơn (phần
+trăm trong ngữ cảnh flex lồng nhau), chưa kiểm tra toàn bộ `charts/` và `components/` xem có chỗ
+nào khác dùng `width`/`height` phần trăm bên trong flex-item lồng nhau - để lại cho vòng sau.
+
+### 0.8 `display: inline-flex` đặt giữa dòng văn bản làm WeasyPrint ngắt dòng sai và văng dấu câu
+
+**Thực nghiệm**: một `<span>` mang `display: inline-flex` (dùng để căn giữa icon SVG với chữ,
+`align-items: center`) đặt CHEN GIỮA một câu văn xuôi bình thường (ví dụ "... đã nêu ở Phần 2
+`<span class="xref-mark">...</span>`, hay là ..."). So ảnh và toạ độ chữ thật: nội dung bên
+trong `inline-flex` bị đẩy XUỐNG DÒNG MỚI dù còn đủ chỗ trên dòng hiện tại, và dấu câu NGAY SAU
+span (dấu phẩy) bị văng tới một toạ độ hoàn toàn không liên quan (giữa hai dòng, lệch hẳn sang
+phải), tách rời khỏi chữ nó đáng lẽ phải bám sát. Tái hiện trên file cô lập, không phụ thuộc icon
+SVG cụ thể.
+
+**Sửa**: đổi `display: inline-flex; align-items: center` sang `display: inline-block;
+vertical-align: middle`, và thay `gap` giữa icon/chữ bằng `margin-right` trên chính SVG. Sau khi
+đổi, dấu câu theo sau bám đúng vị trí và đoạn văn chảy tiếp bình thường trên cùng dòng khi đủ
+chỗ. Đã sửa trong `editorial-chu-thich-nguon-rest-of-world.html` (`.xref-mark`).
+
+**Quy tắc rút ra**: TRÁNH `display: inline-flex`/`inline-grid` cho các cụm nhỏ (icon + nhãn ngắn)
+chen giữa văn xuôi khi render qua WeasyPrint 69.0. Dùng `inline-block` + `vertical-align` để căn
+chỉnh dọc thay cho `align-items` của flex.
 
 ---
 
@@ -359,33 +414,44 @@ tạp nhất của báo cáo), rồi kết bằng khuyến nghị ngắn với k
 nhiều công ty) cần mật độ ĐỀU và có thể tiên đoán được để người đọc quét nhanh, biến thiên mật
 độ ở phụ lục sẽ gây khó tra cứu, không giúp gì cho việc đọc kiểu tham khảo nhanh này.
 
-### 2.3 Drop cap mở đoạn: quy ước cổ điển, cẩn trọng với dấu tiếng Việt và WeasyPrint
+### 2.3 Drop cap mở đoạn: quy ước cổ điển, ĐÃ GỠ KHỎI MẪU vì float không dùng được với WeasyPrint 69.0
 
-**Nguồn**: quy ước drop cap chuẩn xuất bản (Helen Yentus, [hyentus.com](https://hyentus.com/blog/how-to-use-drop-caps-effectively-in-editorial-design)); kiểm chứng kỹ thuật riêng của agent này bằng WeasyPrint 69.0 có sẵn trong repo.
+**ĐÍNH CHÍNH, đọc trước khi dùng lại kỹ thuật này ở bất kỳ đâu trong repo**: phiên bản trước
+của mục này khẳng định "`::first-letter` cộng `float` ... được hỗ trợ ổn định trên mọi engine
+kể cả WeasyPrint, đã kiểm chứng thật". Khẳng định đó SAI, và sai vì lý do đúng như nguyên tắc ở
+mục 0.5: lúc viết câu đó, "kiểm chứng" chỉ dừng ở việc WeasyPrint không báo lỗi CSS, KHÔNG dừng
+ở việc trích toạ độ glyph thật để xem chữ có thật sự nằm đúng chỗ hay không. Khi tự trích toạ độ
+ký tự thật từ PDF (không nhìn ảnh thu nhỏ), phát hiện chữ cái theo sau "V" phóng to (ví dụ "ò"
+trong "Vòng") có bbox BẮT ĐẦU CÙNG TOẠ ĐỘ X với "V", nghĩa là nó in ĐÈ LÊN "V" thay vì nằm bên
+phải như một float đúng nghĩa phải làm. Đã thử hai cách độc lập để loại trừ khả năng lỗi do
+riêng pseudo-element: (1) `::first-letter { float: left }`, (2) một `<span>` DOM thật với
+`float: left; display: block; width: <giá trị cố định>`. Cả hai cho kết quả chồng chữ GIỐNG HỆT
+NHAU, kể cả khi thêm `width` tường minh. Kết luận: **WeasyPrint 69.0 không tính đúng vùng chừa
+chỗ (line-box exclusion) cho một phần tử float có chiều cao trải dài nhiều dòng ngay ở DÒNG ĐẦU
+TIÊN nó xuất hiện**, bất kể float đó là pseudo-element hay phần tử DOM thật. Đây là giới hạn
+engine, không phải lỗi cú pháp có thể vá bằng cách viết lại CSS.
 
-**Thủ pháp**: chữ cái đầu đoạn mở bài phóng to 3-4 dòng, dùng CSS `::first-letter` với
-`float: left`, KHÔNG dùng CSS property `initial-letter` (chuẩn CSS Inline Layout Level 3) vì
-mức hỗ trợ của WeasyPrint với property này không chắc chắn. `::first-letter` cộng `float` là kỹ
-thuật cũ hơn nhưng được hỗ trợ ổn định trên mọi engine kể cả WeasyPrint, đã kiểm chứng thật bằng
-cách render mẫu `editorial-tufte-sidenote-margin.html` qua WeasyPrint 69.0 (xem `samples/README-01-editorial.md`).
+**Hệ quả**: đã GỠ drop cap khỏi `editorial-tufte-sidenote-margin.html` (đoạn mở giờ chỉ tăng
+`font-size` lên 1.1em, không phóng to riêng một chữ cái), xem comment đầu file để biết chi tiết.
+KHÔNG dùng kỹ thuật drop cap dạng float (dù qua `::first-letter` hay `<span>`) ở bất kỳ đâu
+trong repo này cho tới khi tìm được một cách triển khai khác được verify bằng toạ độ glyph
+thật, không chỉ bằng cách xem không có CSS warning.
 
-**Tại sao hiệu quả**: đánh dấu điểm bắt đầu đọc mà không cần thêm một dòng nhãn "Mở đầu:", chữ
-cái lớn tự nó là tín hiệu "đoạn văn bắt đầu ở đây, đọc chậm lại".
+**Nguồn ý tưởng gốc (vẫn đúng cho ấn phẩm dùng engine khác)**: quy ước drop cap chuẩn xuất bản
+(Helen Yentus, [hyentus.com](https://hyentus.com/blog/how-to-use-drop-caps-effectively-in-editorial-design)).
+Nguyên lý "chữ cái đầu đoạn phóng to đánh dấu điểm bắt đầu đọc" vẫn đúng và hiệu quả trên các
+engine hỗ trợ float/initial-letter đúng chuẩn (mọi trình duyệt thật); chỉ riêng pipeline PDF
+WeasyPrint của repo này là không dùng được, không phải ý tưởng sai.
 
-**Chuyển sang báo cáo tài chính tiếng Việt**: dùng cho đoạn mở đầu MỖI PHẦN LỚN, không phải mọi
-đoạn văn. Vì dấu tiếng Việt nằm trên nguyên âm, chữ cái đầu câu tiếng Việt thường là phụ âm
-không mang dấu (ví dụ "Biên", "Doanh", "Chi phí": B/D/C không có dấu), nên rủi ro dấu bị cắt khi
-phóng to gần như không có. Rủi ro thật chỉ xảy ra khi đoạn mở đầu bằng một từ có nguyên âm mang
-dấu ngay chữ cái đầu tiên (ví dụ "Ước tính..." với Ư mang dấu móc, hoặc "Áp lực..." với Á mang
-dấu sắc): trong các trường hợp này, tăng biên trên của riêng ký tự first-letter (không phải
-toàn đoạn, xem ghi chú `feedback_vietnamese_ink_metrics`: không cần buffer CJK cho line-height
-toàn văn bản, nhưng chữ cái ĐƠN LẺ phóng to 4 lần thì dấu sắc/dấu móc phía trên cần biên trên
-rộng hơn tỷ lệ với riêng ký tự đó) hoặc né bằng cách chọn từ mở đầu khác nếu có thể.
+**Ghi chú còn giữ nguyên giá trị dù đã gỡ kỹ thuật**: nếu một engine khác (hoặc bản WeasyPrint
+sau này) sửa được lỗi trên, cân nhắc dấu tiếng Việt trước khi bật lại - chữ cái đầu câu tiếng
+Việt thường là phụ âm không mang dấu (ví dụ "Biên", "Doanh": B/D không có dấu) nên rủi ro dấu bị
+cắt khi phóng to gần như không có, trừ khi từ mở đầu có nguyên âm mang dấu ngay chữ cái đầu (ví
+dụ "Ước tính..." với Ư mang dấu móc).
 
-**Khi nào ĐỪNG dùng**: đoạn văn ngắn hơn 3 dòng khiến drop cap trông không cân xứng (chữ cái to
-hơn cả đoạn văn nó mở đầu). Cũng đừng dùng ở đoạn có số liệu ngay đầu câu (ví dụ "18,4% biên lợi
-nhuận..."), không phóng to được chữ số theo quy ước drop cap cổ điển, sẽ phải viết lại câu để
-né, không đáng công.
+**Khi nào ĐỪNG dùng, kể cả nếu kỹ thuật được sửa trong tương lai**: đoạn văn ngắn hơn 3 dòng
+khiến drop cap trông không cân xứng. Cũng đừng dùng ở đoạn có số liệu ngay đầu câu (ví dụ
+"18,4% biên lợi nhuận..."), không phóng to được chữ số theo quy ước drop cap cổ điển.
 
 ### 2.4 Kicker mono cho eyebrow, không dùng serif: hội tụ ba nguồn
 

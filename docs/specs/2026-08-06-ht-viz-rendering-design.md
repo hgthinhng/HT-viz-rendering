@@ -66,7 +66,17 @@ Font: `Spectral` cho mọi vai trò chữ, `IBM Plex Mono` cho số liệu và n
 
 Bổ sung một phương án sans `IBM Plex Sans` chỉ dùng cho ô bảng và nhãn nhỏ khi bảng số liệu quá dày, không dùng cho tiêu đề hay thân bài.
 
-Thang chữ tỉ lệ 1.333. Spacing 4/8/12/16/20/24/32/48/64. Radius 0 cho hairline, 4 cho chip, 8 cho card, 12 cho khối lớn. Shadow bốn bậc tint theo màu ink, không dùng đen thuần, opacity 0.05 tới 0.12.
+Thang chữ tỉ lệ 1.333. Spacing 8 bậc trên lưới 4px. Radius nhỏ gần phẳng: 2, 3, 6px. Cố ý không dùng bo tròn lớn vì bo tròn lớn cộng border-left màu là dấu hiệu AI-slop, và vì báo cáo tài chính mật độ cao khác landing page.
+
+**Shadow dùng offset cứng, blur bằng 0.** Đây là kết quả một thí nghiệm tách ba biến thể độc lập, đo bằng `doc.xref_object`:
+
+| Biến thể | Kết quả |
+|---|---|
+| `2px 2px 0 rgba(...)` offset cứng, blur 0 | 0 ảnh raster |
+| `0 6px 20px rgba(...)` có blur | 1 ảnh raster |
+| Hai lớp offset cứng chồng nhau | 0 ảnh raster |
+
+Kết luận: không phải cứ có `box-shadow` là bị nướng bitmap, **chỉ blur-radius lớn hơn 0 mới bị**. Vì vậy shadow con dấu (`2px 2px 0` cộng một lớp ngược chiều) là ngôn ngữ độ nổi duy nhất của toàn hệ. Cách này giải quyết vấn đề ngay từ token nên không phải override `box-shadow: none` cho từng component, và ít chỗ để sót hơn.
 
 Đo thật bằng Range API: cột prose 65ch ở 17px Spectral cho 67 tới 70 ký tự mỗi dòng. **Dấu tiếng Việt chỉ làm giảm 4% ký tự mỗi dòng** so với văn bản không dấu, không cần cộng buffer line-height kiểu CJK. Tiếng Việt viết cách từ nên dấu chỉ cộng chiều cao, không cộng chiều rộng.
 
@@ -217,6 +227,8 @@ Bảy bẫy print-safe mới phát hiện, tất cả bằng cách render PDF th
 6. `white-space: nowrap` trên badge tràn ra ngoài thẻ hẹp
 7. Grid con nhiều hơn số cột khai báo khi `::before` counter tự chiếm một cột
 
+**Cách đo dấu tiếng Việt phải dùng mực chữ, không dùng hộp dòng.** Phép đo sai là so `getBoundingClientRect().height` với `fontSize × lineHeight`: hai số này theo định nghĩa CSS luôn bằng nhau khi không có `overflow: hidden`, nên kết quả "an toàn" không bao giờ có thể trả về "không an toàn". Phép đo đúng dùng Canvas `measureText().actualBoundingBoxAscent` và `actualBoundingBoxDescent`, đọc mực chữ thật, độc lập với line-height khai báo. Phải đo sau khi trang đã tải font, nếu không Canvas dùng font chưa tải và cho số sai.
+
 Về accessibility, sửa đúng cách chứ không máy móc: **không gắn `role="img"` lên container HTML thật** vì sẽ che mất text bên trong khỏi cây accessibility, tệ hơn cả không làm gì. Cách đúng: đánh dấu bản trực quan phức tạp `aria-hidden="true"` rồi cung cấp bản thay thế thật, là danh sách phẳng hoặc bảng dữ liệu ẩn.
 
 ## 8. Nhóm C: minh hoạ ngành
@@ -244,7 +256,16 @@ Ví dụ đúng: mớn nước là kim ngạch, hầm máy là chi phí vận h�
 
 **Thứ tự giải va chạm nhãn** với ngưỡng đo thật: dời vị trí, so le tầng, xuống dòng theo từ, đo và cắt với serif tối thiểu 5,8px mỗi ký tự và mono 6px ở cỡ 10px. Đuôi cắt phải gỡ dấu phẩy, mạo từ, giới từ trước khi thêm dấu ba chấm. Bản đầy đủ luôn nằm trong drill-down. Chữ đè đường luôn dùng `paint-order: stroke` với halo giấy 3,5 tới 5px.
 
-Bản đồ quốc gia phải sinh từ dữ liệu geo thật qua d3-geo, không tay gõ toạ độ.
+Bản đồ quốc gia phải sinh từ dữ liệu geo thật qua d3-geo, không tay gõ toạ độ. Nguồn world-atlas Natural Earth, lọc lấy polygon lục địa lớn nhất, đơn giản hoá Visvalingam còn khoảng 72 điểm, chiếu Mercator qua `fitExtent`. Bản tay gõ từ trí nhớ không ra được hình chữ S.
+
+Mọi nhãn chữ đặt trên hình phải có halo, nếu không sẽ bị đường nét của hình cắt ngang chữ. Dùng `stroke` màu nền với `paint-order: stroke`.
+
+**Ba việc phải verify bằng số, không bằng mắt**, vì cả ba đều có sai số quá nhỏ để mắt bắt được trên ảnh full-page:
+1. Độ dài đường dẫn callout, đo bằng `path.getTotalLength()` từ DOM đã render
+2. Hộp nhãn nằm trọn trong viewBox, đo bounding box thật của từng hộp
+3. Chữ không đè lên nét hình
+
+Một bug thật đã bắt được nhờ đo: hàm giải va chạm có bước nén cho vừa khung dùng hệ số ngược chiều, phần tử cuối đang gây tràn lại nhận hệ số nhỏ nhất. Hộp tràn 16,5px mà nhìn ảnh không thấy. Cách sửa đúng là thuật toán hai lượt, top-down đảm bảo khoảng cách tối thiểu rồi bottom-up kẹp không vượt biên, cộng một ràng buộc cứng ưu tiên thu hẹp bề rộng hộp trước khi dời vị trí.
 
 **Đánh giá thật thà về giới hạn**: SVG viết tay thua ảnh AI về chất liệu bề mặt và độ phong phú chi tiết. Đó là cái giá có chủ đích của luật cấm gradient và filter để đổi lấy PDF không vỡ. Đổi lại, ảnh AI không neo được số liệu vào bộ phận, không sửa được, phải trả phí mỗi lần sinh. Quy tắc dùng: ảnh AI cho bìa chương và banner trang trí không cần callout, SVG tay cho mọi minh hoạ cần neo số liệu thật.
 

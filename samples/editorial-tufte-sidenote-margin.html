@@ -1,13 +1,24 @@
 <!--
-  MINH HOẠ: sidenote kiểu Tufte thay footnote, drop cap mở đoạn, pull-quote không rẻ tiền,
-  và cách neo số quan trọng bằng màu tiết chế trong văn xuôi.
+  MINH HOẠ: sidenote kiểu Tufte thay footnote, pull-quote không rẻ tiền, và cách neo số quan
+  trọng bằng màu tiết chế trong văn xuôi.
+
+  ĐÃ GỠ DROP CAP KHỎI FILE NÀY, đọc trước khi thêm lại: bản trước dùng ::first-letter + float
+  để mở đoạn (ý tưởng từ Helen Yentus, quy ước drop cap xuất bản cổ điển
+  - https://hyentus.com/blog/how-to-use-drop-caps-effectively-in-editorial-design), và
+  FINDINGS.md từng khẳng định đã "kiểm chứng thật" bằng cách render qua WeasyPrint. Khẳng định
+  đó SAI: tự kiểm lại bằng cách trích toạ độ glyph thật (không chỉ xem ảnh thu nhỏ) phát hiện
+  chữ theo sau "V" phóng to đè thẳng lên "V" thay vì nằm bên phải nó - `float: left` trên
+  ::first-letter KHÔNG được WeasyPrint 69.0 tính đúng vùng chừa chỗ cho dòng đầu. Đã thử thêm
+  kỹ thuật thay thế (span thật thay pseudo-element, thêm width tường minh) và cả hai đều lỗi
+  GIỐNG HỆT NHau, nên đây là giới hạn thật của engine, không phải lỗi cú pháp có thể vá. Xem
+  FINDINGS.md muc 2.3 (đã viết lại) cho bằng chứng đầy đủ. KHÔNG thêm lại drop cap kiểu float
+  vào file này cho tới khi có kỹ thuật khác được verify bằng toạ độ glyph thật.
 
   LẤY CẢM HỨNG TỪ:
   - Edward Tufte / Tufte-CSS: ghi chú đặt ngay lề phải ngang đúng đoạn văn liên quan, không đẩy
     xuống cuối trang - https://edwardtufte.github.io/tufte-css/ và https://gwern.net/sidenote
   - NYT Magazine: dùng font khác cho pull-quote/caption thay vì chỉ dựa vào chữ nghiêng
     - https://fontsinuse.com/tags/3713/pull-quotes
-  - Quy ước drop cap xuất bản cổ điển (Helen Yentus) - https://hyentus.com/blog/how-to-use-drop-caps-effectively-in-editorial-design
   - The Economist: nguyên lý "direct labeling", chỉ nhấn số quan trọng nhất, không nhấn mọi số
 
   Chi tiết đầy đủ: research/01-editorial/FINDINGS.md muc 2.3, 2.4, 5.1, 5.2, 5.3.
@@ -17,8 +28,6 @@
     hơn cả footnote nó thay thế - quay lại footnote cuối trang hoặc bảng chú thích riêng.
   - Sidenote: đừng dùng ở khổ trang hẹp (A5, slide 16:9) - không đủ chỗ cho lề phụ mà không bóp
     cột chính xuống dưới ~50 ký tự/dòng.
-  - Drop cap: đừng dùng cho đoạn dưới 3 dòng, và đừng dùng khi đoạn mở đầu bằng số liệu
-    (không phóng to được chữ số theo quy ước này).
   - Pull-quote: CHỈ dùng khi có trích dẫn THẬT từ nguồn xác thực. Câu trích trong file này là hư
     cấu minh hoạ (đánh dấu rõ) vì công ty là hư cấu - không được dùng làm mẫu để bịa trích dẫn
     thật trong báo cáo thật.
@@ -113,16 +122,14 @@
   }
   .article p { margin: 0 0 var(--space-4) 0; }
 
-  /* Drop cap: ::first-letter + float, KHÔNG dùng initial-letter property vì
-     hỗ trợ của WeasyPrint chưa chắc chắn (xem FINDINGS.md muc 2.3) */
-  .article p.lede::first-letter {
-    float: left;
-    font-family: var(--font-serif);
-    font-weight: 600;
-    font-size: 3.8em;
-    line-height: 0.82;
-    padding-right: var(--space-2);
-    padding-top: 0.04em;
+  /* KHÔNG dùng drop cap ::first-letter/float ở đây: đã tự kiểm bằng toạ độ
+     glyph thật và xác nhận WeasyPrint 69.0 không chừa chỗ cho dòng đầu, chữ
+     theo sau đè thẳng lên chữ cái phóng to (xem FINDINGS.md muc 2.3, phần
+     "ĐÍNH CHÍNH"). Đoạn mở dùng cỡ chữ lớn hơn thân bài một bậc thay vì
+     phóng to riêng một chữ cái - vẫn đánh dấu "đây là điểm vào bài" mà
+     không phụ thuộc float. */
+  .article p.lede {
+    font-size: 1.1em;
     color: var(--ink);
   }
 

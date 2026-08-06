@@ -22,8 +22,18 @@
   KHÔNG linearize trước, đã tự kiểm khớp Chromium sai số tối đa 0.49/255) làm
   fill của panel phải, không phụ thuộc runtime filter của bất kỳ renderer nào.
   Bằng chứng này áp dụng cho ít nhất 8 mẫu khác trong samples/ cùng dùng
-  filter: grayscale(1) hoặc width="100%" height="auto" trên SVG, xem
-  FINDINGS.md mục "Hai bẫy WeasyPrint".
+  filter: grayscale(1) hoặc height="auto" (thuộc tính) trên SVG, xem
+  FINDINGS.md mục 0 (Bẫy 1, Bẫy 2).
+
+  PHÁT HIỆN THÊM (yêu cầu kiểm riêng patternTransform): hoạ tiết "gạch chéo"
+  dùng cho dải Nông nghiệp (pattern id hatch-sky/hatch-sky2, patternTransform=
+  "rotate(45)") render THÀNH LƯỚI CHÉO HAI HƯỚNG trong WeasyPrint, khác với
+  Chromium (chỉ 1 hướng đường song song). Đã cô lập bằng file test riêng: bỏ
+  patternTransform thì 2 engine ra hình giống hệt nhau, nên lỗi khoanh đúng
+  vào patternTransform khi góc xoay khác bội số 90 độ. Không sửa lại pattern ở
+  đây vì lưới chéo vẫn phục vụ đúng mục đích phân biệt (thậm chí đậm hơn dải
+  chấm bi liền kề), nhưng đây là khác biệt THẬT giữa bản xem trình duyệt và
+  bản in, xem FINDINGS.md mục 0 (Bẫy 4).
 
   Cặp yếu nhất trong bảng 8 màu này là accent-sky/accent-cyan (ΔGrayCSS=18.7,
   ΔE mô phỏng deuteranopia=14.4) — cả hai đều được thêm hoạ tiết (gạch chéo,

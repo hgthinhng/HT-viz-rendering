@@ -126,7 +126,12 @@
     margin-bottom: var(--space-2);
   }
   .hero-bars .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
-  .hero-bars .bar { width: 62%; background: var(--accent-soft); }
+  /* width TUYỆT ĐỐI, không phần trăm: đã tự kiểm bằng toạ độ path thật và
+     phát hiện WeasyPrint 69.0 tính % của .bar theo chiều rộng .hero-bars
+     (flex container ngoài cùng) thay vì theo .bar-col (flex item cha trực
+     tiếp) - mỗi cột lấn hẳn sang các cột bên phải. Đổi sang px cố định né
+     hoàn toàn việc tính %. Xem FINDINGS.md muc 0.6 cho bằng chứng đầy đủ. */
+  .hero-bars .bar { width: 40px; background: var(--accent-soft); }
   .hero-bars .bar-col.is-current .bar { background: var(--accent); }
   .hero-bars .bar-value {
     font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-md);

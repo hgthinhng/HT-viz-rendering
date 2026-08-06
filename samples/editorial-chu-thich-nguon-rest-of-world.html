@@ -88,12 +88,18 @@
   /* ── MÔ-TÍP THAM CHIẾU CHÉO TỰ THIẾT KẾ: ngoặc góc hở, dùng SVG inline ──
      Ý tưởng mượn từ MIT Tech Review (một dấu hiệu nhỏ lặp lại xuyên suốt),
      hình dạng do agent này tự vẽ, không sao chép logo T/r của MIT. */
+  /* display: inline-block + vertical-align, KHÔNG dùng inline-flex: đã tự
+     kiểm bằng toạ độ chữ thật và phát hiện inline-flex đặt NGAY TRONG một
+     dòng văn bản làm WeasyPrint 69.0 ngắt dòng sai chỗ, văng dấu câu theo
+     sau (dấu phẩy/chấm) ra một vị trí trống rỗng không liên quan. Đổi sang
+     inline-block khiến dấu câu theo sau bám đúng vị trí. Xem FINDINGS.md
+     muc 0.6 cho bằng chứng đầy đủ. */
   .xref-mark {
-    display: inline-flex; align-items: center; gap: 3px;
+    display: inline-block; vertical-align: middle;
     font-family: var(--font-mono); font-size: var(--fs-caption);
     color: var(--accent); font-weight: 600; white-space: nowrap;
   }
-  .xref-mark svg { display: block; }
+  .xref-mark svg { display: inline-block; vertical-align: middle; margin-right: 3px; }
 
   h2.section-title { font-size: var(--fs-h2); font-weight: 600; margin: var(--space-7) 0 var(--space-4) 0; }
 

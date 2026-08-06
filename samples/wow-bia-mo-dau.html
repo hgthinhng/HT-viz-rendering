@@ -97,17 +97,37 @@
     text-transform: uppercase;
     margin: 0 0 4px 2px;
   }
+  /* Kỹ thuật nổi ĐÃ SỬA sau phản biện: `text-shadow`/`box-shadow` không tồn tại trong
+     WeasyPrint 69.0 dưới bất kỳ cú pháp nào (xác nhận bằng so ảnh mức byte, xem
+     FINDINGS.md mục 8, ban đầu bản nháp file này dùng text-shadow letterpress và
+     KHÔNG hề render gì trong PDF thật dù nhìn có vẻ đúng trên trình duyệt). Thay
+     bằng hai phần tử THẬT chồng lệch vị trí: `.hero-number-behind` là bản sao cùng
+     số, màu nhạt `--line`, lệch 4px bằng `top/left` tuyệt đối; `.hero-number` đè
+     lên trên bằng z-index. `transform`/`position`/`color` đều đã verify render
+     đúng trong WeasyPrint, khác `box-shadow`/`text-shadow`. */
+  .hero-number-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .hero-number-behind,
   .hero-number {
     font-size: 168px;
     font-weight: 600;
     line-height: 0.92;
     letter-spacing: -0.02em;
     margin: 0;
-    /* Chữ nổi kiểu letterpress: 2 lớp text-shadow, blur = 0 tuyệt đối.
-       Xem FINDINGS.md mục 8.1. Trên nền trắng thuần nên highlight trắng
-       phía trên gần như vô hình, đúng ý — chỉ shadow tối phía dưới-phải
-       tạo cảm giác khắc nhẹ, không lộ liễu như box-shadow dán nổi. */
-    text-shadow: 1px 2px 0px rgba(5,28,44,0.14), -1px -1px 0px rgba(255,255,255,0.9);
+  }
+  .hero-number-behind {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    color: var(--line);
+    z-index: 0;
+  }
+  .hero-number {
+    position: relative;
+    z-index: 1;
+    color: var(--ink);
   }
   .hero-context {
     max-width: 400px;
@@ -138,7 +158,7 @@
   @media screen and (max-width: 900px) {
     .page { width: 100%; height: auto; min-height: 100vh; padding: 8vw 6vw 12vw; }
     .hero-wrap { position: static; margin-top: 30vh; }
-    .hero-number { font-size: 22vw; }
+    .hero-number, .hero-number-behind { font-size: 22vw; }
     .kicker { position: static; text-align: left; margin-bottom: 24px; }
     .footer { position: static; margin-top: 40px; }
   }
@@ -154,7 +174,10 @@
 
     <div class="hero-wrap">
       <div class="hero-unit">Tỷ đồng huy động đợt một</div>
-      <p class="hero-number">150</p>
+      <div class="hero-number-wrap">
+        <p class="hero-number-behind" aria-hidden="true">150</p>
+        <p class="hero-number">150</p>
+      </div>
       <p class="hero-context">
         Trần phát hành trái phiếu xanh của <strong>CTCP Vận tải Biển Á Châu</strong>,
         lãi suất sàn 9,2%/năm, kỳ hạn không quá 5 năm, giải ngân theo hai đợt

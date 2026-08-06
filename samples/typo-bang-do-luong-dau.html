@@ -32,7 +32,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bảng đo dấu chồng tiếng Việt — mẫu tham khảo HT-viz-rendering</title>
+<title>Bảng đo dấu chồng tiếng Việt - mẫu tham khảo HT-viz-rendering</title>
 <style>
   @page { size: A4; margin: 0; }
   :root {
@@ -97,7 +97,7 @@
   <table class="spec">
     <caption>3. Line-height tối thiểu cho khối 2 dòng chữ hoa, dấu đầy đủ</caption>
     <tr><th>line-height</th><th>Khoảng trắng đo được giữa 2 dòng (cỡ 80px)</th><th>Khuyến nghị</th></tr>
-    <tr><td class="num neg">1.0</td><td>2.5px CSS (~3% font-size)</td><td>Tránh — biên quá mỏng, rủi ro chạm khi đổi font/DPI</td></tr>
+    <tr><td class="num neg">1.0</td><td>2.5px CSS (~3% font-size)</td><td>Tránh - biên quá mỏng, rủi ro chạm khi đổi font/DPI</td></tr>
     <tr><td class="num warn">1.05 - 1.15</td><td>5px CSS (~6% font-size)</td><td>Chấp nhận được nếu diacritic load thấp</td></tr>
     <tr><td class="num">1.2 - 1.3</td><td>10-14px CSS (~15-18% font-size)</td><td>An toàn cho tiêu đề hoa toàn phần dấu đầy đủ</td></tr>
   </table>
@@ -105,8 +105,8 @@
   <table class="spec">
     <caption>4. Tracking (letter-spacing) cho tiêu đề hoa có nguyên âm móc (Ơ, Ư)</caption>
     <tr><th>letter-spacing</th><th>Trạng thái đo (Spectral 700, 140px)</th><th>Khuyến nghị</th></tr>
-    <tr><td class="num neg">-0.04em</td><td>Gộp mực — 2 glyph liền thành 1 khối</td><td>Không dùng</td></tr>
-    <tr><td class="num warn">-0.03em</td><td>Gần chạm — khe hở 0.5px CSS</td><td>Không dùng</td></tr>
+    <tr><td class="num neg">-0.04em</td><td>Gộp mực - 2 glyph liền thành 1 khối</td><td>Không dùng</td></tr>
+    <tr><td class="num warn">-0.03em</td><td>Gần chạm - khe hở 0.5px CSS</td><td>Không dùng</td></tr>
     <tr><td class="num">-0.01em đến 0</td><td>Còn khe hở, phụ thuộc kerning font</td><td>Chấp nhận được, nên kiểm bằng mắt</td></tr>
     <tr><td class="num">+0.02em đến +0.04em</td><td>Khe hở ổn định 4-6.5px CSS</td><td>An toàn, khuyến nghị cho hoa toàn phần</td></tr>
   </table>
@@ -114,7 +114,7 @@
   <p class="foot-note">Công cụ đo: playwright-core + Chromium (deviceScaleFactor 2) để chụp
   pixel thật, numpy để quét profile mực theo hàng/cột, WeasyPrint + PyMuPDF để xác nhận
   hành vi trên chính engine xuất PDF của repo. Không dùng getBoundingClientRect() một mình
-  vì đó là số liệu layout, không phải mực đã render — hai thứ khác nhau ở đúng những
+  vì đó là số liệu layout, không phải mực đã render - hai thứ khác nhau ở đúng những
   trường hợp bảng này đang đo.</p>
 </div>
 </body>

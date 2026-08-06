@@ -1,0 +1,192 @@
+<!--
+  Ý MINH HOẠ: trả lời câu hỏi "bao nhiêu chuỗi thì màu hết tác dụng". Panel
+  trái dùng cách làm phổ biến nhất khi số hạng mục tăng: mở rộng palette
+  bằng chính thuật toán tham lam đã dùng cho bảng 8 màu (research/07-bw-
+  palette/colormath.py), kéo dài thêm 4 màu nữa tới N=12. Số liệu đo được
+  (không suy đoán): ΔGrayCSS nhỏ nhất toàn bảng giảm dần đều N=8:18.7 ->
+  N=9:17.3 -> N=10:16.1 -> N=11:15.4 -> N=12:15.0 -- về mặt THUẦN SỐ vẫn trên
+  ngưỡng tối thiểu 10 (chuẩn bản đồ học), NHƯNG đây chính là điểm mấu chốt:
+  con số qua được không có nghĩa là DÙNG ĐƯỢC. 4 màu mới sinh ra (#0C5170,
+  #2D6F8D, #2F8FFF, #84A9D2) đều là các sắc thái xanh dương-xanh lam-xám khác
+  nhau về trị số nhưng KHÔNG có bản sắc riêng dễ nhớ trong mắt người -- đây là
+  giới hạn thật của việc đo bằng ΔE/ΔGray từng cặp: phép đo không nắm được
+  việc não người phân loại màu theo "họ màu" (gestalt), không theo từng cặp
+  riêng lẻ. Cộng thêm gánh nặng nhận thức của legend 12 mục (Munzner: 6-12
+  màu categorical, thực dụng 7-9 trước khi legend giảm hiệu quả, 8 là ngưỡng
+  hay được dẫn).
+
+  Panel phải bỏ hẳn ý định dùng màu để phân biệt: small multiples, 12 ô nhỏ
+  cùng MỘT màu (accent), tên và số ghi trực tiếp trong từng ô. Không cần
+  legend, không có giới hạn N nào cho cách làm này (đọc thêm 20 ô cũng không
+  khó hơn đọc 12 ô, vì mỗi ô tự đủ nghĩa).
+
+  NGUỒN: Munzner, "Visualization Analysis and Design" (khuyến nghị 6-12 màu
+  categorical, thực dụng 7-9); Datawrapper colorblindness blog (nhãn trực
+  tiếp thắng legend khi số chuỗi lớn); số đo ΔGrayCSS/ΔE tự tính bằng
+  colormath.py, xem FINDINGS.md.
+
+  KHI NÀO VẪN NÊN DÙNG MÀU Ở N=12: khi 12 hạng mục đã có trật tự KHÔNG GIAN
+  cố định trên chính biểu đồ (ví dụ bản đồ 12 tỉnh, hoặc lưới toạ độ), người
+  đọc tra cứu bằng vị trí chứ không phải bằng màu -- lúc đó màu chỉ là gia vị
+  phụ, không phải kênh mã hoá chính, nên yêu cầu phân biệt thấp hơn nhiều.
+
+  Dữ liệu: tỷ trọng dư nợ theo 12 ngành kinh tế, số minh hoạ.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>12 ngành: khi nào màu hết tác dụng và giải pháp thay thế</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #2251FF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 26px; max-width: 84ch; }
+  .panel { border: 1px solid var(--line); padding: 16px 18px 18px; margin-bottom: 22px; }
+  /* justify-self:start la bat buoc: mac dinh grid item la stretch, va vi
+     <svg> co aspect ratio noi tai (tu width/height thuoc tinh), trinh duyet
+     (va WeasyPrint) se KEO GIAN chieu rong toi het cot grid roi tinh lai
+     chieu cao theo ti le -- bien 1 SVG 170x320 thanh 300x564 va de len bang
+     phia duoi. Da tu kiem bang render that, khong phai suy doan. */
+  .panel svg { display: block; max-width: 100%; height: auto; justify-self: start; }
+  .tag {
+    display: inline-block; font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; margin-bottom: 8px; color: var(--ink-md); border: 1px solid var(--ink-md);
+  }
+  .tag-bad { color: #C22F4E; border-color: #C22F4E; }
+  .tag-good { color: var(--accent); border-color: var(--accent); }
+  .panel h2 { font-size: 0.95rem; margin: 0 0 10px; }
+  .row2 { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+  @media screen and (max-width: 760px) { .row2 { grid-template-columns: 1fr; } }
+  .legend12 { columns: 2; column-gap: 18px; font-size: 0.74rem; font-family: "IBM Plex Mono", monospace; }
+  .legend12 div { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; break-inside: avoid; }
+  .sw { width: 10px; height: 10px; border: 1px solid var(--ink); flex: none; }
+  .grid12 {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  }
+  @media screen and (max-width: 700px) { .grid12 { grid-template-columns: repeat(2, 1fr); } }
+  .card {
+    border: 1px solid var(--line); padding: 10px 12px; background: var(--paper);
+  }
+  .card .name { font-size: 0.78rem; color: var(--ink-md); margin-bottom: 4px; }
+  .card .val { font-family: "IBM Plex Mono", monospace; font-size: 1.05rem; font-weight: 700; color: var(--ink); }
+  .card .bar-bg { background: var(--line); height: 5px; margin-top: 6px; }
+  .card .bar-fg { background: var(--accent); height: 5px; }
+  .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.74rem; color: var(--ink-md); line-height: 1.65; margin: 22px 0 0; max-width: 90ch;
+  }
+  .note b { color: var(--ink); }
+  table.data { border-collapse: collapse; width: 100%; margin-top: 14px; font-size: 0.78rem; }
+  table.data th, table.data td { border-bottom: 1px solid var(--line); padding: 4px 7px; text-align: right; }
+  table.data th:first-child, table.data td:first-child { text-align: left; }
+  table.data th { font-family: "IBM Plex Mono", monospace; font-size: 0.66rem; text-transform: uppercase; color: var(--ink-md); }
+  .source {
+    margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>12 ngành trong 1 biểu đồ: khi nào màu hết tác dụng</h1>
+  <p class="dek">Tỷ trọng dư nợ theo 12 ngành kinh tế. Cùng 1 bộ dữ liệu, 2 cách trình bày. Số liệu minh hoạ.</p>
+
+  <div class="panel">
+    <span class="tag tag-bad">Cách 1: kéo dài palette tới 12 màu, dùng legend</span>
+    <h2>Vẫn qua ngưỡng số (ΔGrayCSS tối thiểu 15.0, còn trên chuẩn 10) nhưng khó dùng thật</h2>
+    <div class="row2">
+      <svg viewBox="0 0 170 320" width="170" height="320" role="img">
+        <title>Co cau du no 12 nganh, palette keo dai</title>
+        <desc>1 cot 100% chia 12 nganh, mau sinh boi thuat toan tham lam keo dai tu 8 len 12</desc>
+        <line x1="26" y1="300" x2="140" y2="300" stroke="#051C2C" stroke-width="1"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="8" fill="#8595A6">
+          <text x="22" y="303" text-anchor="end">0%</text>
+          <text x="22" y="23" text-anchor="end">100%</text>
+        </g>
+        <rect x="40" y="20.00" width="90" height="44.80" fill="#051C2C" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="64.80" width="90" height="36.40" fill="#1233B8" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="101.20" width="90" height="30.80" fill="#0C5170" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="132.00" width="90" height="28.00" fill="#2251FF" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="160.00" width="90" height="25.20" fill="#2D6F8D" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="185.20" width="90" height="22.40" fill="#9162BD" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="207.60" width="90" height="19.60" fill="#2F8FFF" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="227.20" width="90" height="16.80" fill="#8595A6" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="244.00" width="90" height="16.80" fill="#84A9D2" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="260.80" width="90" height="14.00" fill="#82C0FF" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="274.80" width="90" height="14.00" fill="#64E3FF" stroke="#051C2C" stroke-width="0.5"/>
+        <rect x="40" y="288.80" width="90" height="11.20" fill="#DBE2EA" stroke="#051C2C" stroke-width="0.5"/>
+      </svg>
+      <div>
+        <p style="font-size:0.82rem; color:var(--ink-md); margin: 2px 0 10px;">Legend 12 mục: người đọc phải tra ngược từ dải màu trên cột sang đúng dòng chữ dưới đây, 12 lần liên tiếp nếu muốn đọc hết. 4 màu ở giữa (Ngành 3, 5, 7, 9) đều thuộc họ xanh dương-xanh lam-xám, không có tên gọi riêng trong đầu người đọc dù đo số vẫn cách nhau.</p>
+        <div class="legend12">
+          <div><span class="sw" style="background:#051C2C"></span>Ngành 1, 16%</div>
+          <div><span class="sw" style="background:#1233B8"></span>Ngành 2, 13%</div>
+          <div><span class="sw" style="background:#0C5170"></span>Ngành 3, 11%</div>
+          <div><span class="sw" style="background:#2251FF"></span>Ngành 4, 10%</div>
+          <div><span class="sw" style="background:#2D6F8D"></span>Ngành 5, 9%</div>
+          <div><span class="sw" style="background:#9162BD"></span>Ngành 6, 8%</div>
+          <div><span class="sw" style="background:#2F8FFF"></span>Ngành 7, 7%</div>
+          <div><span class="sw" style="background:#8595A6"></span>Ngành 8, 6%</div>
+          <div><span class="sw" style="background:#84A9D2"></span>Ngành 9, 6%</div>
+          <div><span class="sw" style="background:#82C0FF"></span>Ngành 10, 5%</div>
+          <div><span class="sw" style="background:#64E3FF"></span>Ngành 11, 5%</div>
+          <div><span class="sw" style="background:#DBE2EA"></span>Ngành 12, 4%</div>
+        </div>
+      </div>
+    </div>
+    <table class="data">
+      <thead><tr><th>N</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr></thead>
+      <tbody>
+        <tr><td>ΔGrayCSS nhỏ nhất toàn bảng</td><td>18.7</td><td>17.3</td><td>16.1</td><td>15.4</td><td>15.0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <span class="tag tag-good">Cách 2: small multiples, không cần phân biệt bằng màu</span>
+    <h2>Cùng 12 ngành, 1 màu duy nhất, đọc được ngay không cần legend</h2>
+    <div class="grid12">
+      <div class="card"><div class="name">Ngành 1</div><div class="val">16%</div><div class="bar-bg"><div class="bar-fg" style="width:100%"></div></div></div>
+      <div class="card"><div class="name">Ngành 2</div><div class="val">13%</div><div class="bar-bg"><div class="bar-fg" style="width:81%"></div></div></div>
+      <div class="card"><div class="name">Ngành 3</div><div class="val">11%</div><div class="bar-bg"><div class="bar-fg" style="width:69%"></div></div></div>
+      <div class="card"><div class="name">Ngành 4</div><div class="val">10%</div><div class="bar-bg"><div class="bar-fg" style="width:63%"></div></div></div>
+      <div class="card"><div class="name">Ngành 5</div><div class="val">9%</div><div class="bar-bg"><div class="bar-fg" style="width:56%"></div></div></div>
+      <div class="card"><div class="name">Ngành 6</div><div class="val">8%</div><div class="bar-bg"><div class="bar-fg" style="width:50%"></div></div></div>
+      <div class="card"><div class="name">Ngành 7</div><div class="val">7%</div><div class="bar-bg"><div class="bar-fg" style="width:44%"></div></div></div>
+      <div class="card"><div class="name">Ngành 8</div><div class="val">6%</div><div class="bar-bg"><div class="bar-fg" style="width:38%"></div></div></div>
+      <div class="card"><div class="name">Ngành 9</div><div class="val">6%</div><div class="bar-bg"><div class="bar-fg" style="width:38%"></div></div></div>
+      <div class="card"><div class="name">Ngành 10</div><div class="val">5%</div><div class="bar-bg"><div class="bar-fg" style="width:31%"></div></div></div>
+      <div class="card"><div class="name">Ngành 11</div><div class="val">5%</div><div class="bar-bg"><div class="bar-fg" style="width:31%"></div></div></div>
+      <div class="card"><div class="name">Ngành 12</div><div class="val">4%</div><div class="bar-bg"><div class="bar-fg" style="width:25%"></div></div></div>
+    </div>
+  </div>
+
+  <p class="note">
+    <b>Ngưỡng kết luận:</b> từ 6 chuỗi trở lên, luôn thử phương án không dùng
+    màu song song với phương án màu, đừng mặc định màu là kênh chính; từ 8 trở
+    lên, nếu vẫn dùng màu thì bắt buộc thêm mã hoá thứ 2 (hoạ tiết, nhãn trực
+    tiếp) cho mọi cặp có ΔGrayCSS dưới 20; từ 10 trở lên, ưu tiên chuyển hẳn
+    sang small multiples hoặc highlight-and-mute (tô đậm 1-2 chuỗi trọng tâm,
+    phần còn lại dùng chung 1 màu trung tính) thay vì cố nhồi thêm màu vào
+    cùng một cung hue, vì lúc đó vấn đề không còn là toán học (ΔE vẫn qua
+    ngưỡng) mà là con người không gán được TÊN cho từng màu trong trí nhớ.
+  </p>
+
+  <p class="source">
+    Nguồn: Munzner, "Visualization Analysis and Design" &middot; ΔGrayCSS/ΔE tự tính bằng
+    colormath.py &middot; Số liệu minh hoạ &middot; Xem research/07-bw-palette/FINDINGS.md
+  </p>
+</div>
+</body>
+</html>

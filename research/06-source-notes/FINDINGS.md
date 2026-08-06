@@ -16,7 +16,7 @@ ghi chú giả định mô hình định giá. Căng thẳng lộ nguồn đư�
 
 ### 1.1 Ngày chốt số liệu đặt một lần ở đầu tài liệu, không lặp ở từng con số
 
-Nguồn: IMF, "Assumptions and Data Conventions", World Economic Outlook — xác nhận qua tóm
+Nguồn: IMF, "Assumptions and Data Conventions", World Economic Outlook - xác nhận qua tóm
 tắt tìm kiếm (bản PDF gốc trả 403 khi fetch trực tiếp, không trích nguyên văn được, chỉ dùng nội
 dung đã xác nhận qua nhiều kết quả tìm kiếm độc lập khớp nhau): mỗi kỳ WEO có một câu quy ước cố
 định dạng "estimates and projections are based on statistical information available through
@@ -43,7 +43,7 @@ cũ hơn.
 
 ### 1.2 Ký hiệu hậu tố một chữ cái thay vì nhắc lại chữ đầy đủ
 
-Nguồn: World Bank, "Global Economic Prospects" — xác nhận qua tìm kiếm: quy ước dùng hậu tố
+Nguồn: World Bank, "Global Economic Prospects" - xác nhận qua tìm kiếm: quy ước dùng hậu tố
 "e" (estimate) và "f" (forecast) đặt ngay sau con số hoặc ở đầu cột, thay vì viết "ước tính" hay
 "dự báo" đầy đủ trong từng ô.
 
@@ -66,7 +66,7 @@ thực sự tiết kiệm được diện tích.
 
 ### 1.3 Dòng nguồn liệt kê nhiều nguồn cộng "tính toán của [đơn vị]" cho số đã qua xử lý
 
-Nguồn: BIS, "Annual Economic Report" — xác nhận qua tìm kiếm, mẫu câu điển hình dạng
+Nguồn: BIS, "Annual Economic Report" - xác nhận qua tìm kiếm, mẫu câu điển hình dạng
 "Sources: International Labour Organization; IMF; OECD; Bloomberg; Consensus Economics;
 Datastream; BIS calculations".
 

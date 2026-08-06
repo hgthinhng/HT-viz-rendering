@@ -26,7 +26,7 @@ chứng và chiết khấu độ tin cậy, không cần biết tên hệ thốn
 |---|---|---|
 | Số liệu công ty tự công bố (BCTC kiểm toán, báo cáo IR, tài liệu họp ĐHCĐ, thông cáo báo chí) | Nêu thẳng tên tài liệu và ngày công bố: "theo BCTC hợp nhất quý 2/2026, công bố 20/07/2026" | Đây là nguồn công khai đã sẵn kiểm được, chính công ty là bên chịu trách nhiệm cho số liệu, nêu thẳng tên không tạo rủi ro gì và còn TĂNG độ tin cậy |
 | Số liệu cơ quan nhà nước/định chế quốc tế công khai (Tổng cục Thống kê, NHNN, UBCKNN, IMF, World Bank, sở giao dịch) | Nêu thẳng tên cơ quan và kỳ công bố: "theo Tổng cục Thống kê, số liệu tháng 6/2026" | Cùng lý do trên, đây là nguồn công khai chuẩn của ngành, không phải kênh nội bộ |
-| Dữ liệu thương mại trả phí (nhà cung cấp dữ liệu thị trường, dữ liệu tổng hợp giá/khối lượng) | "Dữ liệu thị trường tổng hợp, chốt tới hết [ngày]" — không nêu tên nhà cung cấp cụ thể trừ khi điều khoản sử dụng của chính nhà cung cấp đó cho phép và yêu cầu ghi credit | Người đọc biết đây là dữ liệu giao dịch thật (không phải số tự nghĩ ra), có ngày chốt để đối chiếu với các nguồn công khai khác nếu muốn kiểm tra chéo; việc không nêu tên thương hiệu cụ thể không làm giảm khả năng kiểm chứng vì bản thân dữ liệu giá/khối lượng đã có thể đối chiếu qua sở giao dịch |
+| Dữ liệu thương mại trả phí (nhà cung cấp dữ liệu thị trường, dữ liệu tổng hợp giá/khối lượng) | "Dữ liệu thị trường tổng hợp, chốt tới hết [ngày]" - không nêu tên nhà cung cấp cụ thể trừ khi điều khoản sử dụng của chính nhà cung cấp đó cho phép và yêu cầu ghi credit | Người đọc biết đây là dữ liệu giao dịch thật (không phải số tự nghĩ ra), có ngày chốt để đối chiếu với các nguồn công khai khác nếu muốn kiểm tra chéo; việc không nêu tên thương hiệu cụ thể không làm giảm khả năng kiểm chứng vì bản thân dữ liệu giá/khối lượng đã có thể đối chiếu qua sở giao dịch |
 | Mô hình định giá, ước tính, hoặc kết quả backtest/calibration tự làm | "Ước tính của [đơn vị phát hành báo cáo]", kèm hộp giả định (xem mẫu `source-khoi-gia-dinh-dinh-gia.html`) nêu rõ input và logic ở mức người ngoài đọc hiểu được | Không giả vờ đây là số đo được: gắn nhãn "ước tính của bên phát hành" đã đúng bản chất, và hộp giả định cho người đọc đủ thông tin để TỰ TÁI TẠO logic, đây là dạng kiểm chứng mạnh hơn cả nêu tên nguồn |
 | Tổng hợp nhiều nguồn công khai bằng công cụ nội bộ (thu thập tin tức, quét báo cáo công khai) | "Tổng hợp từ các nguồn công bố công khai" + liệt kê LOẠI nguồn đã dùng (báo chí trong nước, thông cáo doanh nghiệp, báo cáo cơ quan quản lý) | Liệt kê loại nguồn đủ để người đọc biết phạm vi tin cậy, không cần biết tên công cụ/pipeline dùng để thu thập, công cụ chỉ là phương tiện, không phải nguồn |
 | Trao đổi riêng với ban lãnh đạo/IR không có xác nhận công khai đi kèm | Không đưa số đó vào artifact. Nếu thông tin thật sự trọng yếu, tìm xác nhận qua kênh công khai tương đương (biên bản ĐHCĐ, công bố thông tin) rồi trích theo dòng nguồn công khai đó; không có xác nhận thì bỏ hẳn con số | Đây là ranh giới cứng, không phải quy đổi câu chữ: một con số không kiểm chứng độc lập được thì không có cách diễn đạt nào làm nó kiểm chứng được, xử lý bằng cách bỏ, không phải bằng cách nói giảm |
@@ -36,23 +36,23 @@ chứng và chiết khấu độ tin cậy, không cần biết tên hệ thốn
 
 ## Cụm từ NÊN TRÁNH vì vô tình lộ kênh
 
-- "Theo nguồn tin nội bộ [tên doanh nghiệp]" — tự khai có đường dây riêng với đúng doanh nghiệp
+- "Theo nguồn tin nội bộ [tên doanh nghiệp]" - tự khai có đường dây riêng với đúng doanh nghiệp
   đang được phân tích, đây là rủi ro nặng nhất vì gắn trực tiếp vào một chủ thể có thể truy vết.
-- "Dữ liệu lấy từ [tên hệ thống/tên nhà cung cấp cụ thể] mà chúng tôi đang thuê bao" — lộ cả
+- "Dữ liệu lấy từ [tên hệ thống/tên nhà cung cấp cụ thể] mà chúng tôi đang thuê bao" - lộ cả
   quan hệ thương mại lẫn quy mô đầu tư hạ tầng dữ liệu, không cần thiết cho giá trị phân tích.
-- "Theo trao đổi riêng với ban lãnh đạo" khi không kèm xác nhận công khai — biến một cuộc nói
+- "Theo trao đổi riêng với ban lãnh đạo" khi không kèm xác nhận công khai - biến một cuộc nói
   chuyện không kiểm chứng được thành có vẻ như một trích dẫn chính thức.
-- "Theo file/mô hình nội bộ phòng phân tích" hoặc nêu thẳng tên dự án/pipeline — lộ cấu trúc vận
+- "Theo file/mô hình nội bộ phòng phân tích" hoặc nêu thẳng tên dự án/pipeline - lộ cấu trúc vận
   hành mà không tăng thêm một chút độ tin cậy nào cho con số.
-- "Một nhà đầu tư đang nắm giữ X% cho biết" khi chính bên viết báo cáo là nhà đầu tư đó — vừa lộ
+- "Một nhà đầu tư đang nắm giữ X% cho biết" khi chính bên viết báo cáo là nhà đầu tư đó - vừa lộ
   vị thế, vừa lộ động cơ, đọc được ngay là quảng cáo trá hình cho vị thế của mình.
-- "Theo dữ liệu chúng tôi thu thập được từ [nhóm chat/diễn đàn cụ thể]" — lộ kênh riêng tư đã
+- "Theo dữ liệu chúng tôi thu thập được từ [nhóm chat/diễn đàn cụ thể]" - lộ kênh riêng tư đã
   theo dõi, và thường không kiểm chứng độc lập được nên còn vi phạm cả nguyên tắc verifiability.
 - Bất kỳ URL nội bộ, tên trường dữ liệu (field name), tên API endpoint, hay đường dẫn file dùng
-  để truy vấn/tính ra con số — đây là chi tiết vận hành, không phải nguồn theo nghĩa người đọc
+  để truy vấn/tính ra con số - đây là chi tiết vận hành, không phải nguồn theo nghĩa người đọc
   cần, và có thể lộ thêm cấu trúc hệ thống nếu bị đọc kỹ.
 - "Chúng tôi có thông tin sớm hơn thị trường" hoặc bất kỳ câu hàm ý biết trước ngày công bố của
-  doanh nghiệp — đây là ranh giới đã chốt ở memory `feedback_no_source_disclosure_in_artifacts`,
+  doanh nghiệp - đây là ranh giới đã chốt ở memory `feedback_no_source_disclosure_in_artifacts`,
   nhắc lại vì cùng họ lỗi: không phải lỗi phân tích, lỗi nằm ở câu khai nguồn không cần thiết.
 
 ## Liên hệ với FINDINGS.md

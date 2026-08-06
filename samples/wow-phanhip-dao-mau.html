@@ -75,9 +75,19 @@
     text-transform: uppercase;
     color: var(--warn);
   }
+  /* Kỹ thuật nổi ĐÃ SỬA sau phản biện: bản nháp trước dùng text-shadow hai lớp,
+     đã xác nhận bằng so ảnh mức byte KHÔNG render gì trong WeasyPrint dưới bất
+     kỳ cú pháp nào (xem FINDINGS.md mục 8). Thay bằng hai phần tử thật chồng
+     lệch: bản sau tối hơn nền một chút (#16283A, cùng tông ink nhưng nhạt hơn),
+     lệch xuống-phải; bản trước màu paper trắng đè lên trên. */
+  .hero-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .hero-behind,
   .hero {
     /* Đệm dòng phía trên lớn hơn line-height bình thường của repo (1.28)
-       để chừa chỗ cho dấu hỏi trên "ủ" ở cỡ cực lớn — đo bằng mắt trên ảnh
+       để chừa chỗ cho dấu hỏi trên "ủ" ở cỡ cực lớn - đo bằng mắt trên ảnh
        PDF render thật (WeasyPrint), không suy diễn từ cỡ chữ thường.
        Xem FINDINGS.md mục 3. */
     font-size: 156px;
@@ -85,10 +95,18 @@
     line-height: 1.15;
     margin: 14px 0 0;
     letter-spacing: -0.01em;
-    /* Letterpress đảo hướng cho nền tối: highlight lệch lên-trái nhạt hơn
-       nhiều so với bản nền sáng, tránh loá; shadow tối lệch xuống-phải chỉ
-       để tạo cạnh, blur vẫn bằng 0 tuyệt đối. Xem FINDINGS.md mục 8.1. */
-    text-shadow: 2px 2px 0px rgba(0,0,0,0.35), -1px -1px 0px rgba(255,255,255,0.08);
+  }
+  .hero-behind {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    color: #16283A;
+    z-index: 0;
+  }
+  .hero {
+    position: relative;
+    z-index: 1;
+    color: var(--paper);
   }
   .dek {
     max-width: 480px;
@@ -123,7 +141,7 @@
 
   @media screen and (max-width: 900px) {
     .page { width: 100%; height: auto; min-height: 100vh; padding: 10vw 6vw 40vw; }
-    .hero { font-size: 20vw; }
+    .hero, .hero-behind { font-size: 20vw; }
     .conditions { position: static; grid-template-columns: 1fr; margin-top: 40px; }
   }
 </style>
@@ -131,7 +149,10 @@
 <body>
   <div class="page">
     <div class="kicker">Điều kiện huỷ giải ngân · không phải cảnh báo</div>
-    <p class="hero">Rủi ro</p>
+    <div class="hero-wrap">
+      <p class="hero-behind" aria-hidden="true">Rủi ro</p>
+      <p class="hero">Rủi ro</p>
+    </div>
     <p class="dek">
       Bên cho vay rút toàn bộ hạn mức chưa giải ngân trong vòng 10 ngày làm
       việc nếu chạm một trong ba mốc dưới đây, không cần chờ thêm cảnh báo

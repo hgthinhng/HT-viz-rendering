@@ -1,0 +1,223 @@
+<!--
+  Ý MINH HOẠ: chứng minh RIÊNG cho bài toán "so sánh 8 doanh nghiệp cùng
+  ngành" nêu trong đề bài nghiên cứu (khác kiểu chart với palette-mau-vs-
+  thang-xam.html, vốn dùng biểu đồ cơ cấu). Ở đây là bar ngang xếp hạng 8
+  doanh nghiệp theo biên lợi nhuận gộp — mỗi doanh nghiệp một màu ổn định để
+  DÙNG LẠI được ở các exhibit khác trong cùng báo cáo (biểu đồ này không dùng
+  legend, gán màu và tên trực tiếp lên từng thanh; nhưng nếu báo cáo có thêm
+  1 biểu đồ xu hướng 8 quý cho cùng 8 doanh nghiệp này, nên giữ đúng cặp
+  tên-màu đã dùng ở đây để người đọc không phải học lại).
+
+  8 màu và thứ tự gán giống hệt palette-mau-vs-thang-xam.html: sắp theo
+  GrayCSS tăng dần, gán cho doanh nghiệp có biên lợi nhuận GIẢM dần — nên
+  doanh nghiệp dẫn đầu (thường là chủ thể báo cáo) luôn nhận màu đậm nhất hệ
+  (ink), tương phản mạnh nhất với phần còn lại mà không cần chọn tay.
+
+  KHI NÀO KHÔNG NÊN gán màu theo thứ tự giá trị: nếu chủ thể báo cáo không
+  phải doanh nghiệp có biên lợi nhuận cao nhất (ví dụ đang xếp hạng thứ 5/8),
+  vẫn nên ưu tiên gán MÀU ĐẬM NHẤT (ink) cho đúng chủ thể, không theo thứ hạng
+  — vì mục đích của màu ở đây là "chủ thể báo cáo dễ tìm nhất", không phải
+  "xếp hạng dễ đọc nhất" (thứ hạng đã có sẵn qua độ dài thanh và số ghi trực
+  tiếp, không cần màu đảm nhiệm việc đó nữa).
+
+  NGUỒN số liệu màu: research/07-bw-palette/colormath.py, bảng đầy đủ ở
+  PALETTE-TABLE.md. Bài học WeasyPrint (SVG cần width/height cố định, không
+  dùng CSS filter cho bản xám) áp dụng y hệt palette-mau-vs-thang-xam.html.
+
+  Dữ liệu: biên lợi nhuận gộp 8 doanh nghiệp cùng ngành, số minh hoạ.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>So sánh 8 doanh nghiệp cùng ngành: 8 màu còn phân biệt được</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #2251FF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 26px; max-width: 80ch; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media screen and (max-width: 800px) { .grid2 { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid var(--line); padding: 16px 18px 18px; }
+  .panel svg { display: block; max-width: 100%; height: auto; }
+  .tag {
+    display: inline-block; font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; margin-bottom: 8px; color: var(--accent); border: 1px solid var(--accent);
+  }
+  .panel h2 { font-size: 0.92rem; margin: 0 0 10px; }
+  .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.74rem; color: var(--ink-md); line-height: 1.65; margin: 22px 0 0; max-width: 88ch;
+  }
+  .note b { color: var(--ink); }
+  table.data {
+    border-collapse: collapse; width: 100%; margin-top: 22px; font-size: 0.82rem;
+  }
+  table.data th, table.data td {
+    border-bottom: 1px solid var(--line); padding: 5px 8px; text-align: left;
+  }
+  table.data th {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-md);
+  }
+  td.num { font-family: "IBM Plex Mono", monospace; text-align: right; }
+  .swatch { display:inline-block; width:11px; height:11px; margin-right:6px; vertical-align:-1px; border:1px solid var(--ink); }
+  .source {
+    margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>So sánh 8 doanh nghiệp cùng ngành: 8 màu còn phân biệt được, kèm giới hạn của cách làm này</h1>
+  <p class="dek">Biên lợi nhuận gộp quý gần nhất, 8 doanh nghiệp bất động sản khu công nghiệp. Bar ngang, không dùng legend rời, tên và số ghi trực tiếp trên từng thanh. Số liệu minh hoạ.</p>
+
+  <div class="grid2">
+    <div class="panel">
+      <span class="tag">Bản màu</span>
+      <h2>8 doanh nghiệp, màu gán theo thứ hạng giảm dần</h2>
+      <svg viewBox="0 0 460 320" width="460" height="320" role="img">
+        <title>Xep hang 8 doanh nghiep theo bien loi nhuan gop, ban mau</title>
+        <desc>Bar ngang, gia tri giam dan tu tren xuong, mau gan theo thu tu GrayCSS tang dan</desc>
+        <defs>
+          <pattern id="p8-sky" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="6" height="6" fill="#82C0FF" /><line x1="0" y1="0" x2="0" y2="6" stroke="#051C2C" stroke-width="1" opacity="0.35" />
+          </pattern>
+          <pattern id="p8-cyan" width="7" height="7" patternUnits="userSpaceOnUse">
+            <rect width="7" height="7" fill="#64E3FF" /><circle cx="3.5" cy="3.5" r="1.1" fill="#051C2C" opacity="0.4" />
+          </pattern>
+        </defs>
+        <line x1="130" y1="10" x2="130" y2="300" stroke="#051C2C" stroke-width="1" />
+        <!-- bars: x0=130, scale 10px/don vi -->
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5">
+          <rect x="130" y="14" width="340" height="24" fill="#051C2C" stroke="#051C2C" stroke-width="0.6"/>
+          <text x="124" y="30" text-anchor="end" fill="#051C2C">Công ty X</text>
+          <text x="475" y="30" text-anchor="end" fill="#051C2C" font-weight="700">34%</text>
+
+          <rect x="130" y="50" width="290" height="24" fill="#1233B8" stroke="#051C2C" stroke-width="0.6"/>
+          <text x="124" y="66" text-anchor="end" fill="#051C2C">DN B</text>
+          <text x="425" y="66" text-anchor="end" fill="#051C2C" font-weight="700">29%</text>
+
+          <rect x="130" y="86" width="260" height="24" fill="#2251FF" stroke="#051C2C" stroke-width="0.6"/>
+          <text x="124" y="102" text-anchor="end" fill="#051C2C">DN C</text>
+          <text x="395" y="102" text-anchor="end" fill="#051C2C" font-weight="700">26%</text>
+
+          <rect x="130" y="122" width="230" height="24" fill="#9162BD" stroke="#051C2C" stroke-width="0.6"/>
+          <text x="124" y="138" text-anchor="end" fill="#051C2C">DN D</text>
+          <text x="365" y="138" text-anchor="end" fill="#051C2C" font-weight="700">23%</text>
+
+          <rect x="130" y="158" width="190" height="24" fill="#8595A6" stroke="#051C2C" stroke-width="0.6"/>
+          <text x="124" y="174" text-anchor="end" fill="#051C2C">DN E</text>
+          <text x="325" y="174" text-anchor="end" fill="#051C2C" font-weight="700">19%</text>
+
+          <rect x="130" y="194" width="160" height="24" fill="url(#p8-sky)" stroke="#051C2C" stroke-width="0.6"/>
+          <text x="124" y="210" text-anchor="end" fill="#051C2C">DN F</text>
+          <text x="295" y="210" text-anchor="end" fill="#051C2C" font-weight="700">16%</text>
+
+          <rect x="130" y="230" width="120" height="24" fill="url(#p8-cyan)" stroke="#051C2C" stroke-width="0.6"/>
+          <text x="124" y="246" text-anchor="end" fill="#051C2C">DN G</text>
+          <text x="255" y="246" text-anchor="end" fill="#051C2C" font-weight="700">12%</text>
+
+          <rect x="130" y="266" width="80" height="24" fill="#DBE2EA" stroke="#051C2C" stroke-width="0.6"/>
+          <text x="124" y="282" text-anchor="end" fill="#051C2C">DN H</text>
+          <text x="215" y="282" text-anchor="end" fill="#051C2C" font-weight="700">8%</text>
+        </g>
+        <text x="130" y="312" font-family="IBM Plex Mono, monospace" font-size="9" fill="#8595A6">DN F / DN G dùng hoạ tiết vì ΔGrayCSS chỉ 18.7</text>
+      </svg>
+    </div>
+
+    <div class="panel">
+      <span class="tag" style="color:var(--ink-md); border-color:var(--ink-md);">Bản thang xám (giá trị xám gán thẳng)</span>
+      <h2>Vẫn tìm đúng Công ty X và đọc đúng thứ hạng</h2>
+      <svg viewBox="0 0 460 320" width="460" height="320" role="img">
+        <title>Xep hang 8 doanh nghiep, ban da khu mau</title>
+        <desc>Cung du lieu, fill la gia tri xam da tinh san</desc>
+        <defs>
+          <pattern id="p8-sky2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="6" height="6" fill="#B7B7B7" /><line x1="0" y1="0" x2="0" y2="6" stroke="#181818" stroke-width="1" opacity="0.35" />
+          </pattern>
+          <pattern id="p8-cyan2" width="7" height="7" patternUnits="userSpaceOnUse">
+            <rect width="7" height="7" fill="#CACACA" /><circle cx="3.5" cy="3.5" r="1.1" fill="#181818" opacity="0.4" />
+          </pattern>
+        </defs>
+        <line x1="130" y1="10" x2="130" y2="300" stroke="#181818" stroke-width="1" />
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5">
+          <rect x="130" y="14" width="340" height="24" fill="#181818" stroke="#181818" stroke-width="0.6"/>
+          <text x="124" y="30" text-anchor="end" fill="#181818">Công ty X</text>
+          <text x="475" y="30" text-anchor="end" fill="#181818" font-weight="700">34%</text>
+
+          <rect x="130" y="50" width="290" height="24" fill="#363636" stroke="#181818" stroke-width="0.6"/>
+          <text x="124" y="66" text-anchor="end" fill="#181818">DN B</text>
+          <text x="425" y="66" text-anchor="end" fill="#181818" font-weight="700">29%</text>
+
+          <rect x="130" y="86" width="260" height="24" fill="#545454" stroke="#181818" stroke-width="0.6"/>
+          <text x="124" y="102" text-anchor="end" fill="#181818">DN C</text>
+          <text x="395" y="102" text-anchor="end" fill="#181818" font-weight="700">26%</text>
+
+          <rect x="130" y="122" width="230" height="24" fill="#737373" stroke="#181818" stroke-width="0.6"/>
+          <text x="124" y="138" text-anchor="end" fill="#181818">DN D</text>
+          <text x="365" y="138" text-anchor="end" fill="#181818" font-weight="700">23%</text>
+
+          <rect x="130" y="158" width="190" height="24" fill="#939393" stroke="#181818" stroke-width="0.6"/>
+          <text x="124" y="174" text-anchor="end" fill="#181818">DN E</text>
+          <text x="325" y="174" text-anchor="end" fill="#181818" font-weight="700">19%</text>
+
+          <rect x="130" y="194" width="160" height="24" fill="url(#p8-sky2)" stroke="#181818" stroke-width="0.6"/>
+          <text x="124" y="210" text-anchor="end" fill="#181818">DN F</text>
+          <text x="295" y="210" text-anchor="end" fill="#181818" font-weight="700">16%</text>
+
+          <rect x="130" y="230" width="120" height="24" fill="url(#p8-cyan2)" stroke="#181818" stroke-width="0.6"/>
+          <text x="124" y="246" text-anchor="end" fill="#181818">DN G</text>
+          <text x="255" y="246" text-anchor="end" fill="#181818" font-weight="700">12%</text>
+
+          <rect x="130" y="266" width="80" height="24" fill="#E1E1E1" stroke="#181818" stroke-width="0.6"/>
+          <text x="124" y="282" text-anchor="end" fill="#181818">DN H</text>
+          <text x="215" y="282" text-anchor="end" fill="#181818" font-weight="700">8%</text>
+        </g>
+        <text x="130" y="312" font-family="IBM Plex Mono, monospace" font-size="9" fill="#939393">Hoạ tiết vẫn tách được DN F / DN G khi màu gần trùng</text>
+      </svg>
+    </div>
+  </div>
+
+  <table class="data">
+    <thead><tr><th>Doanh nghiệp</th><th>Màu</th><th>ΔGrayCSS so với hàng dưới</th><th>Ghi chú</th></tr></thead>
+    <tbody>
+      <tr><td><span class="swatch" style="background:#051C2C"></span>Công ty X (chủ thể)</td><td>ink</td><td class="num">29.3</td><td>Luôn đậm nhất, dễ tìm nhất bất kể thứ hạng</td></tr>
+      <tr><td><span class="swatch" style="background:#1233B8"></span>DN B</td><td>accent-hi</td><td class="num">30.0</td><td></td></tr>
+      <tr><td><span class="swatch" style="background:#2251FF"></span>DN C</td><td>accent</td><td class="num">31.0</td><td></td></tr>
+      <tr><td><span class="swatch" style="background:#9162BD"></span>DN D</td><td>accent-plum</td><td class="num">32.3</td><td>Màu mới, sinh trong cung hue an toàn</td></tr>
+      <tr><td><span class="swatch" style="background:#8595A6"></span>DN E</td><td>ink-lo</td><td class="num">36.5</td><td></td></tr>
+      <tr><td><span class="swatch" style="background:#82C0FF"></span>DN F</td><td>accent-sky</td><td class="num">18.7</td><td>Cặp yếu nhất bảng, có hoạ tiết chéo</td></tr>
+      <tr><td><span class="swatch" style="background:#64E3FF"></span>DN G</td><td>accent-cyan</td><td class="num">23.1</td><td>Có hoạ tiết chấm</td></tr>
+      <tr><td><span class="swatch" style="background:#DBE2EA"></span>DN H</td><td>line</td><td class="num">—</td><td>Nhạt nhất, luôn có viền ink 0.6px</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    <b>Vẫn phải nói rõ giới hạn:</b> 8 là ngưỡng trên thực dụng, không phải
+    ngưỡng an toàn tuyệt đối. Cặp DN F/DN G (ΔGrayCSS=18.7) chỉ đứng vững nhờ
+    hoạ tiết bù thêm; nếu bỏ hoạ tiết, 2 thanh gần như không phân biệt được ở
+    bản in đen trắng khi nhìn lướt. Nếu báo cáo cần so sánh 10-12 doanh nghiệp
+    thay vì 8, xem palette-khong-dung-mau.html: ở ngưỡng đó nên chuyển hẳn
+    sang small multiples hoặc tô đậm 1-2 doanh nghiệp trọng tâm, không cố
+    nhồi thêm màu vào cùng một cung hue.
+  </p>
+
+  <p class="source">
+    Nguồn: colormath.py (tự viết, xem FINDINGS.md) &middot; Số liệu minh hoạ &middot;
+    Xem research/07-bw-palette/PALETTE-TABLE.md
+  </p>
+</div>
+</body>
+</html>

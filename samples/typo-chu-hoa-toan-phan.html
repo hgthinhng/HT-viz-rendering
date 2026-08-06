@@ -39,7 +39,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chữ hoa toàn phần cỡ lớn — mẫu tham khảo HT-viz-rendering</title>
+<title>Chữ hoa toàn phần cỡ lớn - mẫu tham khảo HT-viz-rendering</title>
 <style>
   @page { size: A4; margin: 0; }
   :root {
@@ -119,30 +119,30 @@
   <h1 class="page-title">Chữ hoa toàn phần: nơi dấu chồng hai tầng dễ vỡ nhất</h1>
 
   <div class="block">
-    <p class="section-title">Tiêu đề chính — đã tính headroom và line-height an toàn</p>
+    <p class="section-title">Tiêu đề chính - đã tính headroom và line-height an toàn</p>
     <p class="display safe">Trượt giá trị điều chỉnh</p>
     <p class="caption">Cỡ 80px, <b>padding-top 30px</b> (~38% font-size) và
     <b>line-height 1.22</b>. Cụm "TRƯỢT" và "TRỊ" đều có dấu nặng kéo xuống, "GIÁ"
-    có dấu sắc, nhưng vì đây chỉ một dòng nên chưa cần lo va chạm liên dòng —
+    có dấu sắc, nhưng vì đây chỉ một dòng nên chưa cần lo va chạm liên dòng -
     xem khối line-height bên dưới cho trường hợp hai dòng.</p>
   </div>
 
   <div class="block">
-    <p class="section-title">Line-height 1.0 (nguy hiểm) so với 1.22 (an toàn) — hai dòng</p>
+    <p class="section-title">Line-height 1.0 (nguy hiểm) so với 1.22 (an toàn) - hai dòng</p>
     <div class="compare">
       <div class="tight">
-        <span class="lh-tag">line-height: 1.0 — biên chỉ 2.5px CSS</span>
+        <span class="lh-tag">line-height: 1.0 - biên chỉ 2.5px CSS</span>
         <p class="display">Tỷ suất lợi<br>nhuận ấn tượng</p>
       </div>
       <div class="safe-lh">
-        <span class="lh-tag">line-height: 1.22 — biên 10px+ CSS</span>
+        <span class="lh-tag">line-height: 1.22 - biên 10px+ CSS</span>
         <p class="display">Tỷ suất lợi<br>nhuận ấn tượng</p>
       </div>
     </div>
     <p class="caption">Đo bằng pixel-scan thật (không phải suy diễn): ở line-height
     1.0, khoảng trắng giữa dấu nặng cuối dòng 1 ("LỢI" không có, nhưng khối
     tổng ink của dòng 1 kết thúc rất sát) và dấu mũ/sắc đầu dòng 2 ("ẤN") chỉ
-    còn 2.5px CSS ở cỡ 80px Spectral 700 — quy đổi tỷ lệ tương ứng ở cỡ 44px
+    còn 2.5px CSS ở cỡ 80px Spectral 700 - quy đổi tỷ lệ tương ứng ở cỡ 44px
     hiển thị tại đây. Xem FINDINGS.md mục 2 để lấy số đo gốc đầy đủ.</p>
   </div>
 
@@ -150,17 +150,17 @@
     <p class="section-title">Tracking âm làm dấu móc chạm chữ bên cạnh</p>
     <div class="tracking-row">
       <div class="danger">
-        <span class="tag">letter-spacing: -0.035em — vùng chạm</span>
+        <span class="tag">letter-spacing: -0.035em - vùng chạm</span>
         <p class="display">TRƯỢT GIÁ TRỊ</p>
       </div>
       <div class="ok">
-        <span class="tag">letter-spacing: +0.02em — an toàn</span>
+        <span class="tag">letter-spacing: +0.02em - an toàn</span>
         <p class="display">TRƯỢT GIÁ TRỊ</p>
       </div>
     </div>
     <p class="caption">Đếm connected-component trên ảnh render Spectral 700 cỡ
     140px thật: số cụm liền mạch giảm từ 9-10 xuống còn 8 khi tracking đạt
-    -0.04em, tức có glyph đã <b>gộp mực</b> với glyph bên cạnh — nhiều khả năng ở
+    -0.04em, tức có glyph đã <b>gộp mực</b> với glyph bên cạnh - nhiều khả năng ở
     móc của Ư. Từ +0.02em trở lên, khoảng trắng tối thiểu giữa hai glyph ổn
     định quanh 4-6.5px CSS.</p>
   </div>

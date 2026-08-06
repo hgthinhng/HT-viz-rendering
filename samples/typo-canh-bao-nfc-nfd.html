@@ -1,13 +1,26 @@
 <!doctype html>
 <!--
   MINH HOẠ: thẻ cảnh báo kỹ thuật cho một bẫy KHÔNG liên quan gì tới font
-  nhúng hay engine in — liên quan tới CÁCH VĂN BẢN ĐƯỢC MÃ HOÁ trước khi tới
+  nhúng hay engine in - liên quan tới CÁCH VĂN BẢN ĐƯỢC MÃ HOÁ trước khi tới
   công đoạn render. Cùng một câu tiếng Việt, biểu diễn Unicode NFC (tổ hợp
   sẵn, kiểu gõ Unikey/VNI chuẩn) và NFD (phân rã thành chữ cái nền + các dấu
   kết hợp rời) LÀ HAI CHUỖI BYTE KHÁC NHAU dù mắt người đọc thấy "giống nhau"
   khi gõ. Vế NFD ở khối bên phải trong trang này CỐ Ý giữ nguyên dạng phân
-  rã thật (không tự sửa) để trình duyệt/WeasyPrint render đúng như khi gặp
-  văn bản NFD thật ngoài đời — đây là bằng chứng sống, không phải ảnh chụp.
+  rã thật (không tự sửa).
+
+  QUAN TRỌNG - kết quả hiển thị của khối NFD PHỤ THUỘC FONT THỰC TẾ ĐƯỢC
+  CHỌN, đây chính là điều đáng ghi lại: trang này dùng font-stack có fallback
+  (bắt buộc theo luật phạm vi, không được nhúng Spectral thật). Trên máy dựng
+  trang này, tên "Spectral" không khớp font nào đã cài nên fontconfig thay
+  THẲNG bằng Noto Sans cho toàn bộ đoạn - và Noto Sans tình cờ có ĐỦ cả ba
+  dấu kết hợp cấu trúc, nên khối NFD bên dưới render ĐÚNG, không vỡ. Đây
+  không phải bằng chứng lỗi không tồn tại - nó chứng minh một điều còn quan
+  trọng hơn: bẫy chỉ lộ ra khi font CHÍNH có mặt (không bị thay nguyên
+  family) nhưng THIẾU một số codepoint dấu cụ thể, đúng như trường hợp
+  Spectral nhúng thật của repo (luôn "có mặt" vì là data: URI, không bao giờ
+  bị coi là "thiếu cả family" để kích hoạt thay thế toàn bộ). Ảnh chụp thật
+  của lỗi này (dùng đúng Spectral 700 nhúng, không phải fallback) nằm trong
+  FONT-TRAPS.md bẫy #2 - xem bảng cmap bên dưới để đối chiếu.
 
   ĐO ĐƯỢC (research/05-typography-vn/FONT-TRAPS.md bẫy #2; công cụ: Python
   unicodedata.normalize, WeasyPrint 69.0, PyMuPDF đọc lại tầng text, so
@@ -15,16 +28,19 @@
   - Font Spectral/IBM Plex Mono/IBM Plex Sans nhúng trong repo phủ ĐỦ
     134/134 ký tự tiếng Việt tổ hợp sẵn (NFC), nhưng THIẾU cả ba dấu kết hợp
     cấu trúc (U+0302 mũ, U+0306 trăng, U+031B móc) dùng khi văn bản là NFD.
-    Font hệ thống dự phòng (Noto Serif, khớp qua fc-match cho generic
-    "serif" trên máy build) lại CÓ ĐỦ cả ba — nên khi gặp NFD, engine render
-    phải mượn glyph dấu từ MỘT FONT KHÁC cho đúng một ký tự trong từ, và dấu
-    đó nổi lệch vị trí vì bảng neo GPOS mark-to-base của hai font không
-    khớp nhau.
-  - Tầng TEXT của PDF (đọc bằng PyMuPDF) vẫn giữ ĐÚNG chuỗi NFD gốc dù hình
-    ảnh render vỡ — nghĩa là copy/tìm kiếm không mất ký tự, nhưng chuỗi đó
-    có ĐỘ DÀI và DÃY CODEPOINT khác bản NFC (53 so với 76 ký tự cho cùng một
-    câu), nên so sánh chuỗi bằng "==" giữa hai nguồn dữ liệu khác gốc chuẩn
-    hoá sẽ luôn trả về sai dù nội dung "giống nhau" với mắt người.
+    Với Spectral 700 nhúng thật + fallback "serif" (khớp Noto Serif qua
+    fc-match), câu NFD render VỠ THẬT (đo bằng pixel diff, xem FONT-TRAPS.md)
+    vì Spectral vẫn được dùng cho phần lớn ký tự (không bị thay cả family),
+    chỉ ba dấu thiếu mới mượn glyph từ Noto Serif, và neo GPOS mark-to-base
+    giữa hai font không khớp nhau nên dấu nổi lệch vị trí.
+  - Tầng TEXT của PDF khi dùng đúng Spectral nhúng + fallback serif giữ
+    NGUYÊN chuỗi NFD gốc (đã xác nhận bằng PyMuPDF, độ dài 76 khớp input).
+    Nhưng khi font đang render là MỘT font DUY NHẤT có đủ dấu (như Noto Sans
+    ở trang này), engine (HarfBuzz bên trong WeasyPrint) có thể tái tổ hợp
+    NFD về NFC ngay trong lúc shaping trước khi ghi ToUnicode CMap - nghĩa là
+    hành vi tầng text của cùng một input NFD KHÔNG cố định, nó phụ thuộc font
+    nào thực sự được chọn để vẽ. Không nên viết code coi "PDF luôn giữ đúng
+    NFD gốc" là bất biến.
 
   KHI NÀO GẶP NFD NGOÀI ĐỜI: tên file lấy từ macOS (HFS+ ép NFD cho tên
   file), một số hàm chuẩn hoá của thư viện xử lý văn bản, dữ liệu chép tay
@@ -47,17 +63,20 @@
     template, không phải nội dung xuất bản.
 
   RÀNG BUỘC IN: font-family list kết thúc generic keyword (không dùng font
-  nhúng base64 của repo — xem FONT-TRAPS.md). Shadow chỉ offset cứng,
+  nhúng base64 của repo - xem FONT-TRAPS.md). Shadow chỉ offset cứng,
   blur = 0. Không gauge/radar. Không em-dash/en-dash. @media dùng từ khoá
-  screen. Đã qua round-trip WeasyPrint + PyMuPDF: tầng text khớp CHÍNH XÁC
-  chuỗi nguồn kể cả ở khối NFD (WeasyPrint giữ đúng dãy codepoint gốc dù
-  hình ảnh render sai — xem ghi chú ở trên).
+  screen. ROUND-TRIP: khớp tuyệt đối theo multiset ký tự (không mất, không
+  sinh ký tự lạ) ở MỌI khối trừ khối NFD - khối đó tầng text bị engine tái
+  tổ hợp về NFC do font thay thế trên máy build có đủ dấu (xem giải thích ở
+  trên); đây là hành vi ĐÃ HIỂU, không phải mất dữ liệu (multiset ký tự sau
+  khi coi NFD nguồn tương đương NFC vẫn khớp 1-1, xem ghi chú kiểm chứng
+  trong research/05-typography-vn/FINDINGS.md).
 -->
 <html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NFC và NFD trong render tiếng Việt — mẫu tham khảo HT-viz-rendering</title>
+<title>NFC và NFD trong render tiếng Việt - mẫu tham khảo HT-viz-rendering</title>
 <style>
   @page { size: A4; margin: 0; }
   :root {
@@ -114,20 +133,25 @@
 <body>
 <div class="sheet">
   <p class="kicker">Nghiên cứu typography · chuẩn hoá Unicode NFC/NFD</p>
-  <h1 class="page-title">Cùng một câu, hai cách mã hoá, một cách render vỡ</h1>
+  <h1 class="page-title">Cùng một câu, hai cách mã hoá Unicode, một rủi ro tuỳ font</h1>
 
   <div class="compare">
     <div class="ok">
-      <span class="tag">NFC — tổ hợp sẵn (đúng)</span>
+      <span class="tag">NFC - tổ hợp sẵn (luôn đúng)</span>
       <p class="sample">Nghệ thuật ước lượng giá trị hợp lý ở ngưỡng ổn định.</p>
       <p class="meta">53 codepoint · gõ bàn phím Unikey/VNI ra dạng này</p>
     </div>
     <div class="bad">
-      <span class="tag">NFD — phân rã (vỡ)</span>
+      <span class="tag">NFD - phân rã (vỡ TUỲ FONT)</span>
       <p class="sample">Nghệ thuật ước lượng giá trị hợp lý ở ngưỡng ổn định.</p>
-      <p class="meta">76 codepoint · cùng một câu, macOS filename / OCR / một số API trả về dạng này</p>
+      <p class="meta">76 codepoint nguồn · cùng một câu, macOS filename / OCR / một số API trả về dạng này</p>
     </div>
   </div>
+  <p class="caption">Ở TRANG NÀY hai khối trông giống hệt nhau vì font thay thế trên
+  máy dựng trang (Noto Sans, do "Spectral" không cài sẵn) có đủ cả ba dấu kết hợp cấu
+  trúc. Với đúng font Spectral 700 nhúng của repo, khối NFD sẽ vỡ (dấu nổi lệch vị trí)
+  vì Spectral thiếu ba dấu đó - xem ảnh chụp thật trong FONT-TRAPS.md bẫy #2. Bảng
+  cmap ngay dưới đây giải thích vì sao hai trường hợp cho kết quả khác nhau.</p>
 
   <div class="block">
     <p class="section-title">Vì sao vỡ: font thiếu glyph dấu cấu trúc cho dạng phân rã</p>
@@ -139,7 +163,7 @@
       <tr><td>U+031B</td><td>dấu móc (ơ/ư)</td><td class="no">không</td><td class="yes">có</td></tr>
     </table>
     <p class="caption">Ba dấu font nhúng KHÔNG có (mũ, trăng, móc) đúng là ba dấu cần
-    để dựng lại â/ă/ê/ô/ơ/ư khi văn bản đã bị phân rã — nên bất cứ chữ nào trong nhóm
+    để dựng lại â/ă/ê/ô/ơ/ư khi văn bản đã bị phân rã - nên bất cứ chữ nào trong nhóm
     này, khi gặp ở dạng NFD, engine phải mượn glyph từ font dự phòng, và neo GPOS của
     hai font không khớp nhau khiến dấu nổi lệch như ảnh bên trên.</p>
   </div>
@@ -151,7 +175,7 @@
 # sua tai diem nap du lieu, khong sua o tang render:
 text = unicodedata.normalize('NFC', text)</p>
     <p class="caption">Chạy kiểm tra này trong pipeline nạp dữ liệu (đọc CSV, nhận
-    input người dùng, đọc file gửi từ máy khác) — không phải trong bước render HTML,
+    input người dùng, đọc file gửi từ máy khác) - không phải trong bước render HTML,
     vì lúc render đã quá muộn để phân biệt "dấu thật của câu" với "dấu do phân rã".</p>
   </div>
 </div>

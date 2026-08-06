@@ -91,15 +91,34 @@
     color: var(--pos);
     margin: 0 0 8px 4px;
   }
+  /* Kỹ thuật nổi ĐÃ SỬA sau phản biện: bản nháp trước dùng text-shadow, đã xác
+     nhận bằng so ảnh mức byte rằng KHÔNG render gì trong WeasyPrint (xem
+     FINDINGS.md mục 8). Thay bằng hai phần tử thật chồng lệch, lần này offset
+     lên-trái (ngược hướng với wow-bia-mo-dau.html để hai trang không giống hệt
+     nhau) và dùng màu accent nhạt thay vì line, hợp tông --pos của trang này. */
+  .num-hero-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .num-hero-behind,
   .num-hero {
     font-size: 210px;
     font-weight: 600;
     line-height: 0.9;
     margin: 0;
     letter-spacing: -0.015em;
-    /* Chữ khắc (impressed), hướng ngược với hero ở trang bìa để hai trang
-       không trông giống hệt nhau dù cùng kỹ thuật gốc — xem FINDINGS.md 8.1. */
-    text-shadow: -1px -1px 0px rgba(5,28,44,0.10), 1px 1px 0px rgba(255,255,255,0.85);
+  }
+  .num-hero-behind {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    color: color-mix(in srgb, var(--pos) 18%, var(--paper));
+    z-index: 0;
+  }
+  .num-hero {
+    position: relative;
+    z-index: 1;
+    color: var(--ink);
   }
   .num-context {
     max-width: 460px;
@@ -126,7 +145,7 @@
 
   @media screen and (max-width: 900px) {
     .page { width: 100%; height: auto; min-height: 100vh; padding: 8vw 6vw; }
-    .num-hero { font-size: 26vw; }
+    .num-hero, .num-hero-behind { font-size: 26vw; }
     .stage { padding: 10vh 0; }
   }
 </style>
@@ -137,7 +156,10 @@
 
     <div class="stage">
       <p class="num-label">Công suất khai thác tăng thêm dự kiến</p>
-      <p class="num-hero">+30%</p>
+      <div class="num-hero-wrap">
+        <p class="num-hero-behind" aria-hidden="true">+30%</p>
+        <p class="num-hero">+30%</p>
+      </div>
       <p class="num-context">
         Khi hai tàu container feeder mới thay thế đội tàu trên 20 năm tuổi,
         công suất khai thác dự kiến tăng <span class="delta">30%</span> so

@@ -1,0 +1,226 @@
+<!--
+  MINH HOẠ: ba quy ước của định chế phát hành số liệu (IMF/World Bank/BIS) gộp vào một khối mở
+  đầu báo cáo ngành: câu chốt ngày đặt một lần, ký hiệu hậu tố cho số dự phóng, và dòng "Nguồn:"
+  giải quyết CỤ THỂ căng thẳng lộ nguồn nội bộ bằng cách quy đổi sang diễn đạt kiểm chứng được.
+
+  LẤY Ý TỪ (chi tiết đầy đủ: research/06-source-notes/FINDINGS.md mục 1, bảng quy đổi đầy đủ ở
+  research/06-source-notes/SOURCE-DISCLOSURE.md):
+  - IMF, "Assumptions and Data Conventions": một câu chốt ngày duy nhất áp cho toàn bộ số liệu,
+    không lặp lại ở từng bảng/từng số.
+  - World Bank, "Global Economic Prospects": ký hiệu hậu tố một chữ cái cho số dự báo.
+  - BIS, "Annual Economic Report": dòng "Sources:" liệt kê nguồn thô, đóng bằng "tính toán của
+    [đơn vị]" khi số đã qua xử lý, đây chính là cơ chế dùng để giải căng thẳng lộ nguồn ở đây.
+
+  KHI NÀO ĐỪNG DÙNG:
+  - Đừng liệt kê nhiều nguồn công khai nếu thực ra có MỘT nguồn thẩm quyền duy nhất đã đủ (ví dụ
+    một số liệu chỉ có ở đúng một cơ quan), liệt kê thừa nguồn là nguỵ tạo uy tín, xem
+    SOURCE-DISCLOSURE.md.
+  - Đừng gộp câu chốt ngày một lần nếu các bảng trong cùng báo cáo có ngày chốt THỰC SỰ khác
+    nhau đáng kể, lúc đó phải ghi riêng cho từng bảng.
+
+  Ngành xi măng Việt Nam và công ty "CTCP Vật liệu Xây dựng Sông Hồng" (mã giả định "SHM*") tiếp
+  nối các mẫu trước. Toàn bộ số liệu là MINH HOẠ, không phải khuyến nghị đầu tư.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Ngành xi măng - Đóng nguồn kiểu định chế</title>
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --line-lo: #EEF1F6;
+    --accent: #2251FF;
+    --accent-hi: #1233B8;
+    --pos: #008A6D;
+    --neg: #C22F4E;
+    --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem;
+    --fs-small: 0.825rem;
+    --fs-body: 1rem;
+    --fs-h3: 1.333rem;
+    --fs-h2: 1.777rem;
+    --fs-h1: 2.369rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 24px auto;
+    background: var(--paper); box-shadow: 4px 4px 0px rgba(5 28 44 / 0.18);
+    padding: 20mm; position: relative;
+  }
+  .research-tag {
+    position: absolute; top: 8px; right: 8px;
+    font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper);
+    padding: 2px 8px; letter-spacing: 0.04em; z-index: 5;
+  }
+  .kicker {
+    font-family: var(--font-mono); font-size: var(--fs-small);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 var(--space-2) 0;
+  }
+  h1.headline { font-size: var(--fs-h1); font-weight: 600; line-height: 1.18; margin: 0 0 var(--space-4) 0; max-width: 30ch; }
+
+  /* ── câu chốt ngày, đặt MỘT LẦN, áp cho toàn bộ số liệu bên dưới ────────── */
+  .cutoff-banner {
+    display: flex; align-items: center; gap: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-md);
+    background: var(--paper-hi); border-left: 3px solid var(--warn);
+    padding: var(--space-3) var(--space-4); margin-bottom: var(--space-6);
+  }
+  .cutoff-banner b { color: var(--ink); }
+
+  h2.section-title { font-size: var(--fs-h3); font-weight: 600; margin: 0 0 var(--space-3) 0; }
+
+  table.macro { width: 100%; border-collapse: collapse; font-family: var(--font-serif); font-size: 0.92rem; margin-bottom: var(--space-2); }
+  table.macro caption { text-align: left; caption-side: top; margin-bottom: var(--space-3); font-size: var(--fs-small); color: var(--ink-md); }
+  table.macro th, table.macro td { padding: var(--space-2) var(--space-3); text-align: right; border-bottom: 1px solid var(--line-lo); }
+  table.macro th:first-child, table.macro td:first-child { text-align: left; }
+  table.macro thead th {
+    font-family: var(--font-mono); font-size: var(--fs-caption); text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--ink-lo); font-weight: 600; border-bottom: 1px solid var(--ink);
+  }
+  table.macro td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  table.macro td.fcast { font-style: italic; color: var(--ink-md); border-left: 1px dashed var(--ink-lo); }
+  table.macro th.fcast-h { font-style: italic; border-left: 1px dashed var(--ink-lo); }
+  .fc-mark { font-family: var(--font-mono); font-weight: 600; }
+
+  /* ── dòng "Nguồn:" kiểu BIS: liệt kê nguồn công khai + tính toán riêng ──── */
+  .source-block {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo);
+    line-height: 1.7; margin: 0 0 var(--space-7) 0; padding-top: var(--space-2);
+    border-top: 1px solid var(--line);
+  }
+  .source-block b { color: var(--ink-md); }
+  .source-block .glossary { display: block; margin-top: 4px; }
+
+  .conversion-note {
+    background: var(--paper-hi); border-left: 3px solid var(--accent);
+    padding: var(--space-4) var(--space-5); font-size: var(--fs-small); color: var(--ink);
+    line-height: 1.65; margin-bottom: var(--space-6);
+  }
+  .conversion-note .label {
+    font-family: var(--font-mono); font-size: var(--fs-caption); letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--accent-hi); display: block; margin-bottom: 4px;
+  }
+
+  .verdict { margin-top: var(--space-3); padding: var(--space-5); background: var(--ink); color: var(--paper); }
+  .verdict .v-kicker {
+    font-family: var(--font-mono); font-size: var(--fs-caption); letter-spacing: 0.08em;
+    text-transform: uppercase; color: #7D9BFF; margin: 0 0 var(--space-2) 0;
+  }
+  .verdict ul { margin: 0; padding-left: 1.1em; font-size: var(--fs-small); line-height: 1.7; }
+  .verdict li { margin-bottom: 4px; }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+    table.macro { font-size: 0.8rem; }
+  }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; box-shadow: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 18mm; }
+    table.macro, .conversion-note, .verdict { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">CHỐT NGÀY + KÝ HIỆU HẬU TỐ + NGUỒN KIỂU ĐỊNH CHẾ</span>
+
+  <p class="kicker">Hệ chú nguồn &middot; Đóng nguồn kiểu định chế</p>
+  <h1 class="headline">Toàn cảnh ngành xi măng, quý 2/2026</h1>
+
+  <div class="cutoff-banner">Số liệu thực tế trong toàn báo cáo chốt tới hết <b>30/06/2026</b>;
+  các mốc từ 2026<span class="fc-mark">d</span> trở đi là dự báo, không lặp lại ngày chốt này ở
+  từng bảng bên dưới.</div>
+
+  <h2 class="section-title">Sản lượng tiêu thụ xi măng toàn quốc</h2>
+  <table class="macro">
+    <caption>Sản lượng tiêu thụ xi măng toàn quốc, 2023 tới 2025 và dự báo 2026 tới 2027 (triệu tấn)</caption>
+    <thead>
+      <tr>
+        <th>Chỉ tiêu</th>
+        <th>2023</th>
+        <th>2024</th>
+        <th>2025</th>
+        <th class="fcast-h">2026<span class="fc-mark">d</span></th>
+        <th class="fcast-h">2027<span class="fc-mark">d</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tiêu thụ nội địa</td>
+        <td class="num">62,4</td>
+        <td class="num">64,1</td>
+        <td class="num">65,8</td>
+        <td class="num fcast">67,9</td>
+        <td class="num fcast">70,3</td>
+      </tr>
+      <tr>
+        <td>Xuất khẩu</td>
+        <td class="num">31,2</td>
+        <td class="num">29,8</td>
+        <td class="num">28,1</td>
+        <td class="num fcast">27,4</td>
+        <td class="num fcast">26,9</td>
+      </tr>
+      <tr>
+        <td>Thị phần SHM* trong tiêu thụ nội địa</td>
+        <td class="num">4,0%</td>
+        <td class="num">4,1%</td>
+        <td class="num">4,1%</td>
+        <td class="num fcast">4,2%</td>
+        <td class="num fcast">4,3%</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="source-block">
+    <b>Nguồn:</b> Tổng cục Thống kê; Hiệp hội Xi măng Việt Nam; báo cáo IR các doanh nghiệp xi
+    măng niêm yết (minh hoạ) &middot; phần 2026<span class="fc-mark">d</span> tới
+    2027<span class="fc-mark">d</span> và dòng thị phần SHM* là <b>tính toán của đơn vị phát hành
+    báo cáo</b>.
+    <span class="glossary">d = dự báo &middot; số liệu chốt tới hết 30/06/2026, xem băng chốt
+    ngày ở đầu trang.</span>
+  </div>
+
+  <div class="conversion-note">
+    <span class="label">Cách quy đổi đã áp dụng ở dòng Nguồn phía trên</span>
+    Ba nguồn đầu là số liệu công khai nên nêu thẳng tên. Dòng dự báo và dòng thị phần SHM* là kết
+    quả một mô hình tổng hợp nội bộ, nên KHÔNG nêu tên mô hình hay quy trình đã dùng để tính, chỉ
+    đóng bằng "tính toán của đơn vị phát hành báo cáo". Người đọc vẫn biết chính xác phần nào là
+    số đo được và phần nào là số suy ra, mà không cần biết tên hệ thống đứng sau con số suy ra
+    đó. Xem bảng quy đổi đầy đủ trong <i>SOURCE-DISCLOSURE.md</i>.
+  </div>
+
+  <div class="verdict">
+    <p class="v-kicker">Khi nào KHÔNG dùng cách đóng nguồn này</p>
+    <ul>
+      <li>Nếu một số liệu chỉ có đúng một nguồn thẩm quyền (ví dụ chỉ Hiệp hội Xi măng công bố
+      số liệu xuất khẩu theo tháng), đừng liệt kê thêm nguồn khác không thực sự dùng tới chỉ để
+      dòng Nguồn trông dày dặn hơn.</li>
+      <li>Nếu các bảng trong cùng báo cáo có ngày chốt số liệu khác nhau đáng kể (ví dụ một bảng
+      dùng số liệu quý trước), đừng dùng chung một băng chốt ngày ở đầu trang, phải ghi riêng
+      ngày chốt cho đúng bảng đó.</li>
+    </ul>
+  </div>
+</section>
+</body>
+</html>

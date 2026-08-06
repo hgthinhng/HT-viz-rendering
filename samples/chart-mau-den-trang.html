@@ -1,13 +1,26 @@
 <!--
   Ý MINH HOẠ (BẮT BUỘC theo yêu cầu nghiên cứu): chứng minh bằng thực nghiệm, không
   chỉ khẳng định suông, rằng 1 chart nhiều chuỗi VẪN phân biệt được khi khử hết màu.
-  Cùng 1 khối SVG được render 2 lần: bản trái giữ nguyên màu, bản phải áp
-  filter: grayscale(1) qua CSS thật (không phải tự vẽ lại bằng tay 1 bản xám riêng,
-  để phép chứng minh trung thực với chính dữ liệu màu gốc). Hai kỹ thuật dự phòng
-  được nhúng sẵn trong chart: (1) 5 màu được chọn CÁCH ĐỀU nhau về ĐỘ SÁNG khi khử
-  bão hoà (không chỉ khác hue), (2) 2 dải dễ nhầm nhất (Bất động sản và Sản xuất,
-  độ sáng khử màu gần nhau nhất trong 5 dải) được hoạ tiết hoá thêm bằng pattern
-  (gạch chéo, chấm bi) để mã hoá kép, không chỉ dựa vào màu.
+  Cùng 1 bố cục SVG được render 2 lần: bản trái giữ nguyên màu, bản phải dùng giá trị
+  xám TĨNH tính tay bằng công thức luminance BT.709 (Y = 0,2126R + 0,7152G + 0,0722B,
+  đúng công thức mà CSS filter: grayscale() dùng nội bộ), không phải vẽ áng chừng.
+
+  SỬA LẠI SAU KHI TỰ KIỂM PHÁT HIỆN BUG: bản đầu tiên của file này dùng
+  `filter: grayscale(1)` qua CSS bọc ngoài SVG màu, với lý do là "trung thực với
+  chính dữ liệu màu gốc, không tự vẽ lại tay". Khi nghiệm thu bằng đúng pipeline PDF
+  của repo (WeasyPrint 69.0, không phải Chromium), phát hiện `filter` bị WEASYPRINT
+  BỎ QUA HOÀN TOÀN, không lỗi không cảnh báo: bản "thang xám" hiện lên nguyên màu,
+  giống hệt bản màu, tức là TOÀN BỘ lý do tồn tại của file này (chứng minh còn phân
+  biệt được khi mất màu) bị vô hiệu ngay trong bản in mà không ai biết. Xem cơ chế
+  đầy đủ và phép cô lập 4 biến thể trong research/03-chart-doctrine/FINDINGS.md muc
+  0.2. Đã sửa bằng cách tính tay 7 giá trị xám (BT.709) cho mọi màu trong panel phải,
+  nhúng thẳng thành hex tĩnh: kết quả giống hệt nhau trên Chromium và WeasyPrint vì
+  không còn phụ thuộc 1 CSS feature không được hỗ trợ đầy đủ.
+
+  Hai kỹ thuật dự phòng được nhúng sẵn trong chart: (1) 5 màu được chọn CÁCH ĐỀU
+  nhau về ĐỘ SÁNG khi khử bão hoà (không chỉ khác hue), (2) 2 dải dễ nhầm nhất (Bất
+  động sản và Sản xuất, độ sáng khử màu gần nhau nhất trong 5 dải) được hoạ tiết hoá
+  thêm bằng pattern (gạch chéo, chấm bi) để mã hoá kép, không chỉ dựa vào màu.
 
   NGUỒN CẢM HỨNG: Datawrapper blog "What to consider when visualizing data for
   colorblind readers" (https://www.datawrapper.de/blog/colorblindness-part2) và
@@ -58,7 +71,6 @@
     padding: 3px 8px; margin-bottom: 8px; color: var(--accent); border: 1px solid var(--accent);
   }
   .panel h2 { font-size: 0.95rem; margin: 0 0 10px; }
-  .gray-svg { filter: grayscale(1); }
   .note {
     font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
     font-size: 0.74rem; color: var(--ink-md); line-height: 1.6; margin: 22px 0 0; max-width: 78ch;
@@ -73,7 +85,7 @@
 <body>
 <div class="wrap">
   <h1>Cơ cấu dư nợ theo ngành: còn đọc được khi mất hết màu</h1>
-  <p class="dek">Bản phải là bản trái áp filter: grayscale(1) thật qua CSS, không phải vẽ lại tay. Số liệu minh hoạ, đơn vị phần trăm dư nợ.</p>
+  <p class="dek">Bản phải dùng hex xám tính tay bằng luminance BT.709, không dùng filter: grayscale(1) vì WeasyPrint bỏ qua thuộc tính đó. Số liệu minh hoạ, đơn vị phần trăm dư nợ.</p>
 
   <div class="grid2">
     <div class="panel">
@@ -153,87 +165,89 @@
     </div>
 
     <div class="panel">
-      <span class="tag" style="color:var(--ink-md); border-color:var(--ink-md);">Bản thang xám (filter: grayscale(1) thật)</span>
+      <span class="tag" style="color:var(--ink-md); border-color:var(--ink-md);">Bản thang xám (hex tính tay, BT.709)</span>
       <h2>Vẫn đọc được thứ tự và tên từng dải</h2>
-      <div class="gray-svg">
       <svg viewBox="0 0 520 300" width="100%" role="img">
-        <title>Co cau du no theo nganh, ban da khu mau</title>
-        <desc>Cung du lieu, ap dung grayscale that qua CSS filter, khong ve lai tay</desc>
+        <title>Co cau du no theo nganh, ban da khu mau bang hex tinh tay</title>
+        <desc>Cung du lieu, moi mau chuyen sang xam bang cong thuc luminance BT.709, khong dung CSS filter vi WeasyPrint bo qua thuoc tinh do</desc>
         <defs>
           <pattern id="hatch-diag2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <rect width="6" height="6" fill="#2251FF" />
+            <rect width="6" height="6" fill="#545454" />
             <line x1="0" y1="0" x2="0" y2="6" stroke="#FFFFFF" stroke-width="1.6" opacity="0.5" />
           </pattern>
           <pattern id="hatch-dot2" width="7" height="7" patternUnits="userSpaceOnUse">
-            <rect width="7" height="7" fill="#B07A10" />
+            <rect width="7" height="7" fill="#7E7E7E" />
             <circle cx="3.5" cy="3.5" r="1.1" fill="#FFFFFF" opacity="0.6" />
           </pattern>
         </defs>
-        <line x1="26" y1="260" x2="480" y2="260" stroke="#051C2C" stroke-width="1" />
-        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#8595A6">
+        <line x1="26" y1="260" x2="480" y2="260" stroke="#181818" stroke-width="1" />
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#939393">
           <text x="22" y="263" text-anchor="end">0%</text>
           <text x="22" y="23" text-anchor="end">100%</text>
         </g>
         <g>
           <rect x="32" y="20.0" width="56" height="67.2" fill="url(#hatch-diag2)" />
           <rect x="32" y="87.2" width="56" height="76.8" fill="url(#hatch-dot2)" />
-          <rect x="32" y="164.0" width="56" height="43.2" fill="#051C2C" />
-          <rect x="32" y="207.2" width="56" height="33.6" fill="#7D9BFF" />
-          <rect x="32" y="240.8" width="56" height="19.2" fill="#DBE2EA" />
+          <rect x="32" y="164.0" width="56" height="43.2" fill="#181818" />
+          <rect x="32" y="207.2" width="56" height="33.6" fill="#9C9C9C" />
+          <rect x="32" y="240.8" width="56" height="19.2" fill="#E1E1E1" />
           <text x="60" y="57" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" font-weight="700" fill="#FFFFFF">28%</text>
           <text x="60" y="128" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" font-weight="700" fill="#FFFFFF">32%</text>
         </g>
         <g>
           <rect x="122" y="20.0" width="56" height="64.8" fill="url(#hatch-diag2)" />
           <rect x="122" y="84.8" width="56" height="79.2" fill="url(#hatch-dot2)" />
-          <rect x="122" y="164.0" width="56" height="45.6" fill="#051C2C" />
-          <rect x="122" y="209.6" width="56" height="31.2" fill="#7D9BFF" />
-          <rect x="122" y="240.8" width="56" height="19.2" fill="#DBE2EA" />
+          <rect x="122" y="164.0" width="56" height="45.6" fill="#181818" />
+          <rect x="122" y="209.6" width="56" height="31.2" fill="#9C9C9C" />
+          <rect x="122" y="240.8" width="56" height="19.2" fill="#E1E1E1" />
         </g>
         <g>
           <rect x="212" y="20.0" width="56" height="60.0" fill="url(#hatch-diag2)" />
           <rect x="212" y="80.0" width="56" height="81.6" fill="url(#hatch-dot2)" />
-          <rect x="212" y="161.6" width="56" height="48.0" fill="#051C2C" />
-          <rect x="212" y="209.6" width="56" height="31.2" fill="#7D9BFF" />
-          <rect x="212" y="240.8" width="56" height="19.2" fill="#DBE2EA" />
+          <rect x="212" y="161.6" width="56" height="48.0" fill="#181818" />
+          <rect x="212" y="209.6" width="56" height="31.2" fill="#9C9C9C" />
+          <rect x="212" y="240.8" width="56" height="19.2" fill="#E1E1E1" />
         </g>
         <g>
           <rect x="302" y="20.0" width="56" height="57.6" fill="url(#hatch-diag2)" />
           <rect x="302" y="77.6" width="56" height="84.0" fill="url(#hatch-dot2)" />
-          <rect x="302" y="161.6" width="56" height="48.0" fill="#051C2C" />
-          <rect x="302" y="209.6" width="56" height="31.2" fill="#7D9BFF" />
-          <rect x="302" y="240.8" width="56" height="19.2" fill="#DBE2EA" />
+          <rect x="302" y="161.6" width="56" height="48.0" fill="#181818" />
+          <rect x="302" y="209.6" width="56" height="31.2" fill="#9C9C9C" />
+          <rect x="302" y="240.8" width="56" height="19.2" fill="#E1E1E1" />
           <text x="330" y="53" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" font-weight="700" fill="#FFFFFF">24%</text>
           <text x="330" y="123" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" font-weight="700" fill="#FFFFFF">35%</text>
         </g>
-        <g font-family="Spectral, Georgia, serif" font-size="10.5" fill="#42566A" text-anchor="middle">
+        <g font-family="Spectral, Georgia, serif" font-size="10.5" fill="#535353" text-anchor="middle">
           <text x="60" y="278">Q1</text><text x="150" y="278">Q2</text><text x="240" y="278">Q3</text><text x="330" y="278">Q4</text>
         </g>
-        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#051C2C">
-          <line x1="358" y1="48.8" x2="368" y2="48.8" stroke="#051C2C" stroke-width="1" />
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#181818">
+          <line x1="358" y1="48.8" x2="368" y2="48.8" stroke="#181818" stroke-width="1" />
           <text x="372" y="52">Bất động sản, 24%</text>
-          <line x1="358" y1="119.6" x2="368" y2="119.6" stroke="#051C2C" stroke-width="1" />
+          <line x1="358" y1="119.6" x2="368" y2="119.6" stroke="#181818" stroke-width="1" />
           <text x="372" y="123">Sản xuất, 35%</text>
-          <line x1="358" y1="185.6" x2="368" y2="185.6" stroke="#051C2C" stroke-width="1" />
+          <line x1="358" y1="185.6" x2="368" y2="185.6" stroke="#181818" stroke-width="1" />
           <text x="372" y="189">Bán lẻ, 20%</text>
-          <line x1="358" y1="225.2" x2="368" y2="225.2" stroke="#051C2C" stroke-width="1" />
+          <line x1="358" y1="225.2" x2="368" y2="225.2" stroke="#181818" stroke-width="1" />
           <text x="372" y="229">Xây dựng, 13%</text>
-          <line x1="358" y1="250.4" x2="368" y2="250.4" stroke="#051C2C" stroke-width="1" />
+          <line x1="358" y1="250.4" x2="368" y2="250.4" stroke="#181818" stroke-width="1" />
           <text x="372" y="254">Khác, 8%</text>
         </g>
       </svg>
-      </div>
     </div>
   </div>
 
   <p class="note">
-    Ba lớp phòng thủ độc lập giữ chart đọc được sau khi mất màu: (1) 5 nền đã chọn
+    Bốn lớp phòng thủ độc lập giữ chart đọc được sau khi mất màu: (1) 5 nền đã chọn
     cách đều theo ĐỘ SÁNG khi khử bão hoà (ink gần đen, line gần trắng, 3 dải giữa
     trải đều), không chỉ khác hue; (2) 2 dải dễ nhầm nhất về độ sáng (Bất động sản
     và Sản xuất) có thêm hoạ tiết (gạch chéo, chấm bi) làm mã hoá kép, đọc được
     bằng mắt ngay cả khi 2 mảng xám trông gần giống nhau; (3) tên ngành và số liệu
     phần trăm được viết TRỰC TIẾP cạnh mỗi dải (không dùng legend rời), nên dù màu
-    có mất hoàn toàn, nhãn chữ vẫn đứng vững vì chữ không phụ thuộc màu để đọc.
+    có mất hoàn toàn, nhãn chữ vẫn đứng vững vì chữ không phụ thuộc màu để đọc;
+    (4) bản thang xám dùng HEX TĨNH tính tay bằng luminance BT.709, không dùng CSS
+    filter: grayscale(), vì WeasyPrint (engine PDF của repo) bỏ qua thuộc tính filter
+    hoàn toàn mà không báo lỗi, một bug đã tự tái hiện và ghi lại trong
+    research/03-chart-doctrine/FINDINGS.md mục 0.2.
   </p>
 
   <p class="source">

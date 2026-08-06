@@ -40,6 +40,7 @@
   .dek { color: var(--ink-md); font-size: 1rem; font-style: italic; margin: 0 0 28px; max-width: 68ch; }
   .grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 28px; align-items: start; }
   @media screen and (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .grid > .panel { min-width: 0; }
   .panel { border: 1px solid var(--line); padding: 18px 20px 20px; }
   .panel-bad { background: #FAFAFA; }
   .panel-good { background: var(--paper); border-color: var(--ink); border-width: 1.5px; }
@@ -78,7 +79,7 @@
       <h2>Radar: cùng dữ liệu, đổi thứ tự trục</h2>
       <div class="mini-row">
         <div>
-          <svg viewBox="0 0 160 155" width="220" height="212" role="img">
+          <svg viewBox="0 0 160 155" width="150" height="145" role="img">
             <title>Radar A</title>
             <desc>Radar 5 truc voi thu tu NIM, CAR, ROE, CASA, No xau nguoc</desc>
             <g stroke="#DBE2EA" stroke-width="1" fill="none">
@@ -108,7 +109,7 @@
           <div class="mini-cap">Thứ tự A</div>
         </div>
         <div>
-          <svg viewBox="0 0 160 155" width="220" height="212" role="img">
+          <svg viewBox="0 0 160 155" width="150" height="145" role="img">
             <title>Radar B</title>
             <desc>Cung 5 con so A, doi thu tu gan truc: ROE, NIM, No xau nguoc, CAR, CASA</desc>
             <g stroke="#DBE2EA" stroke-width="1" fill="none">

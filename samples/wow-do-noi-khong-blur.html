@@ -1,38 +1,44 @@
 <!doctype html>
 <!--
   MINH HOẠ: trang catalog kỹ thuật tạo độ nổi (elevation) mà KHÔNG dùng
-  blur-radius lớn hơn 0 ở bất kỳ đâu — bài toán kỹ thuật thật của repo này,
-  vì Chromium nướng bitmap mọi box-shadow có blur khi in PDF (đã đo, xem
-  memory.md và tokens.css). Bốn kỹ thuật trình bày cạnh nhau để so sánh.
+  box-shadow/text-shadow, vì hai thuộc tính này ĐÃ XÁC NHẬN không tồn tại
+  trong WeasyPrint 69.0 dưới bất kỳ cú pháp nào (kể cả offset cứng blur=0).
 
-  NGUỒN CẢM HỨNG (xem FINDINGS.md mục 8):
-  - "Simulating The Letterpress" (Smashing Magazine, 2012): chữ nổi/chìm
-    bằng hai lớp text-shadow đối hướng, blur = 0 tuyệt đối.
-  - "Getting Deep Into Shadows" (CSS-Tricks): xếp lớp nhiều box-shadow để
-    tạo cảm giác tách lớp, và dùng box-shadow inset như một "veil" phủ màu
-    lên trên chính nền của element thay vì tạo lõm.
-  - tokens.css của chính repo: "stamped hard shadow" offset cứng đã là
-    NGÔN NGỮ ĐỘ NỔI DUY NHẤT đang dùng — trang này bổ sung thêm 3 biến thể
-    chưa thấy dùng, không thay thế biến thể đã có.
+  LỊCH SỬ SỬA, đọc trước khi copy kỹ thuật trong file này đi nơi khác: bản
+  nháp đầu của file này dùng đúng `box-shadow`/`text-shadow` offset cứng,
+  nhìn "có vẻ nổi" khi mở bằng Chromium và cả khi so bằng mắt trên ảnh
+  render WeasyPrint thu nhỏ. Team lead phản biện và phân xử bằng so ảnh mức
+  byte (5 file HTML giống hệt nhau, chỉ đổi đúng một khai báo shadow mỗi
+  lần, so `pixmap.tobytes()`/md5 trực tiếp): cả 5 biến thể cho ảnh GIỐNG HỆT
+  bản không có shadow. Tự kiểm lại bằng đúng phương pháp, xác nhận đúng, và
+  viết lại toàn bộ file này bằng kỹ thuật đã verify THẬT SỰ render ra điểm
+  ảnh khác biệt. Xem FINDINGS.md mục 8 cho bảng so sánh đầy đủ.
 
-  CANH BẠC: chứng minh rằng "không dùng blur" không đồng nghĩa với "phẳng
-  và chán" — offset cứng, chồng lớp, và veil bán trong suốt đều tạo được
-  cảm giác phân lớp thị giác thật, chỉ khác GIỌNG so với drop-shadow mềm
-  kiểu SaaS (giọng "con dấu mực trên giấy" thay vì "thẻ nổi trên kính").
-  THUA nếu dùng quá nhiều kỹ thuật cùng lúc trên một trang thật — ở đây
-  cố ý gộp cả 4 để SO SÁNH, không phải mẫu cách dùng thật cho một trang báo
-  cáo (một trang thật nên chọn 1-2 kỹ thuật, không phải cả 4).
+  NGUỒN CẢM HỨNG: ý tưởng gốc (letterpress hai lớp, veil bán trong suốt) từ
+  Smashing Magazine và CSS-Tricks vẫn đúng cho MỘT trang web thường, chỉ sai
+  cho đúng engine in này. Kỹ thuật thay thế dưới đây tự nghĩ ra để đạt hiệu
+  ứng thị giác TƯƠNG ĐƯƠNG bằng phần tử THẬT (không phải hiệu ứng CSS ảo)
+  sau khi biết shadow không dùng được.
+
+  CANH BẠC: chứng minh rằng thiếu hẳn `box-shadow` không đồng nghĩa với
+  "phẳng và chán" - hai phần tử thật chồng lệch vị trí bằng `transform`
+  (đã verify render đúng, khác `box-shadow`) tạo được cảm giác phân lớp
+  thị giác gần giống hệt letterpress/stamp, chỉ tốn thêm một phần tử DOM
+  mỗi chỗ dùng. THUA nếu dùng quá nhiều kỹ thuật cùng lúc trên một trang
+  thật - ở đây cố ý gộp cả 4 để SO SÁNH, không phải mẫu cách dùng thật cho
+  một trang báo cáo (một trang thật nên chọn 1-2 kỹ thuật, không phải cả 4).
 
   KHI NÀO KHÔNG NÊN DÙNG (từng kỹ thuật, chi tiết trong ô tương ứng):
-  - Letterpress trên nền có màu (không phải --paper trắng thuần): highlight
-    trắng phía trên có thể lộ thành viền sáng trông như lỗi render.
-  - Veil inset trên nhiều ô liên tiếp: quá 3-4 ô liền kề sẽ trông "vằn vện"
-    kiểu Excel tô màu cảnh báo, mất chất báo cáo xuất bản.
-  - Xếp lớp offset nhiều tầng (>3 lớp): tăng độ phức tạp render mà mắt
-    thường không phân biệt được lớp thứ 3 trở đi, phí công không phí ích.
+  - Khối/chữ trùng lệch: cần đúng 2 phần tử đồng bộ nội dung và kích thước,
+    sai lệch 1px cũng lộ ngay vì đây là hai lớp thật, không phải hiệu ứng
+    tự động theo nội dung.
+  - Background-color khối trên nhiều dòng liên tiếp: quá 3-4 dòng liền kề
+    sẽ trông "vằn vện" kiểu Excel tô màu cảnh báo, mất chất báo cáo xuất bản.
+  - Xếp lớp offset nhiều tầng (>3 lớp): tăng độ phức tạp DOM mà mắt thường
+    không phân biệt được lớp thứ 3 trở đi, phí công không phí ích.
 
-  RÀNG BUỘC IN: MỌI box-shadow và text-shadow trong file này có blur-radius
-  bằng 0, đã tự kiểm bằng mắt từng khai báo. Không filter, không
+  RÀNG BUỘC IN: KHÔNG dùng `box-shadow`/`text-shadow` ở bất kỳ đâu trong
+  file này (đã xác nhận vô nghĩa trên engine in thật). Không filter, không
   backdrop-filter. Không dùng font nhúng của repo (xem FINDINGS.md mục 0).
   Không gauge/radar, không em-dash/en-dash, @media dùng từ khoá screen.
 -->
@@ -62,20 +68,29 @@
     min-height: 297mm;
     margin: 12px auto;
     background: var(--paper);
-    padding: 16mm 16mm 14mm;
+    padding: 12mm 16mm 10mm;
     font-family: var(--font-serif);
     color: var(--ink);
   }
   h1 {
-    font-size: 26px;
+    font-size: 21px;
     margin: 0 0 4px;
   }
   .sub {
     font-family: var(--font-mono);
     font-size: 12px;
     color: var(--ink-lo);
-    margin: 0 0 22px;
+    margin: 0 0 8px;
     letter-spacing: 0.03em;
+  }
+  .warn-banner {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--warn);
+    border: 1px solid var(--warn);
+    padding: 6px 10px;
+    margin: 0 0 14px;
+    line-height: 1.5;
   }
   /* Dùng flexbox thay vì CSS Grid đa cột: đã thực nghiệm CSS Grid nhiều cột
      bị WeasyPrint tính sai kích thước track khi một item chứa bảng dày đặc
@@ -84,12 +99,12 @@
   .grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 10mm;
+    gap: 7mm;
   }
   .card {
-    width: calc(50% - 5mm);
+    width: calc(50% - 3.5mm);
     border: 1px solid var(--line);
-    padding: 16px 18px 18px;
+    padding: 12px 14px 14px;
     box-sizing: border-box;
   }
   .full-width {
@@ -97,26 +112,32 @@
   }
   .card h2 {
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: 12.5px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--accent);
-    margin: 0 0 12px;
+    margin: 0 0 10px;
   }
   .demo {
     background: var(--paper-hi);
-    min-height: 96px;
+    min-height: 76px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 12px;
-    padding: 10px;
+    margin-bottom: 10px;
+    padding: 8px;
   }
   .note {
     font-size: 13px;
     line-height: 1.6;
     color: var(--ink-md);
     margin: 0;
+  }
+  .verified {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--accent);
+    margin: 6px 0 0;
   }
   code {
     font-family: var(--font-mono);
@@ -125,28 +146,58 @@
     padding: 1px 4px;
   }
 
-  /* ── 1. Stamped hard shadow (đã có trong tokens.css, để đối chiếu) ── */
-  .demo-stamp .chip {
+  /* ── 1. Khối trùng lệch vị trí, thay cho "stamp"/box-shadow ──
+     Hai phần tử THẬT: .stamp-behind tô màu đặc, lệch bằng position tuyệt
+     đối; .stamp-front đè lên trên. Đã so ảnh mức byte xác nhận khác biệt
+     thật với bản không có .stamp-behind. */
+  .demo-stamp .stamp-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .demo-stamp .stamp-behind {
+    position: absolute;
+    inset: 0;
+    top: 5px; left: 5px;
+    background: var(--line);
+  }
+  .demo-stamp .stamp-front {
+    position: relative;
     background: var(--paper);
-    border: 1px solid var(--line);
+    border: 1px solid var(--ink);
     padding: 10px 22px;
     font-family: var(--font-mono);
     font-weight: 600;
     font-size: 15px;
-    box-shadow: 2px 2px 0px rgba(5,28,44,0.12), -1px -1px 0px rgba(255,255,255,0.6);
+    z-index: 1;
   }
 
-  /* ── 2. Letterpress: chữ nổi bằng text-shadow 2 lớp, blur 0 ── */
-  .demo-letterpress .word {
+  /* ── 2. Chữ trùng lệch màu nhạt, thay cho "letterpress"/text-shadow ──
+     Hai phần tử <span> THẬT chồng lên nhau bằng position absolute, không
+     phải một hiệu ứng CSS trên một phần tử. */
+  .demo-letterpress .lp-wrap {
+    position: relative;
+    display: inline-block;
     font-size: 40px;
     font-weight: 600;
-    color: var(--paper-hi);
-    background: var(--ink);
     padding: 14px 26px;
-    text-shadow: 1px 1px 0px rgba(0,0,0,0.55), -1px -1px 0px rgba(255,255,255,0.12);
+    background: var(--ink);
+  }
+  .demo-letterpress .lp-behind,
+  .demo-letterpress .lp-front {
+    display: block;
+  }
+  .demo-letterpress .lp-behind {
+    position: absolute;
+    top: 2px; left: 2px;
+    color: #16283A;
+  }
+  .demo-letterpress .lp-front {
+    position: relative;
+    color: var(--paper-hi);
   }
 
-  /* ── 3. Veil: inset shadow blur 0 phủ màu lên nền chính nó ── */
+  /* ── 3. Background-color khối, thay cho "veil"/inset shadow ──
+     Không cần thêm biến màu mới: color-mix() giữa token có sẵn và --paper. */
   .demo-veil table { border-collapse: collapse; width: 100%; font-size: 13px; }
   .demo-veil td, .demo-veil th {
     padding: 7px 10px;
@@ -157,10 +208,12 @@
   .demo-veil th { text-align: left; color: var(--ink-lo); font-weight: 400; }
   .demo-veil td:first-child, .demo-veil th:first-child { text-align: left; font-family: var(--font-serif); }
   .demo-veil tr.flag td {
-    box-shadow: inset 0 0 0 999px rgba(176,122,16,0.08);
+    background: color-mix(in srgb, var(--warn) 10%, var(--paper));
   }
 
-  /* ── 4. Xếp lớp offset (3 tầng, tăng dần) để mô phỏng độ sâu ── */
+  /* ── 4. Xếp lớp offset (3 tầng) để mô phỏng độ sâu, dùng transform ──
+     transform đã verify render đúng trong WeasyPrint (khác box-shadow),
+     nên kỹ thuật này giữ nguyên từ bản trước, chỉ bỏ box-shadow ở lớp 3. */
   .demo-stack {
     position: relative;
     height: 96px;
@@ -184,7 +237,7 @@
     background: var(--paper);
     color: var(--ink);
     font-weight: 600;
-    box-shadow: 3px 3px 0px rgba(5,28,44,0.10), -1px -1px 0px rgba(5,28,44,0.05);
+    border: 1.5px solid var(--ink);
   }
 
   .rule {
@@ -207,32 +260,50 @@
 </head>
 <body>
   <div class="page">
-    <h1>Bốn cách tạo độ nổi khi blur-radius bắt buộc bằng 0</h1>
+    <h1>Bốn cách tạo độ nổi khi box-shadow không tồn tại trong PDF thật</h1>
     <p class="sub">Catalog kỹ thuật, không phải trang báo cáo thật · một trang thật chỉ nên chọn 1-2 trong 4</p>
+    <p class="warn-banner">
+      box-shadow và text-shadow đã xác nhận bằng so ảnh mức byte KHÔNG render
+      bất kỳ điểm ảnh nào trong WeasyPrint 69.0, kể cả offset cứng blur=0.
+      Bốn kỹ thuật dưới đây dùng phần tử DOM thật thay vì hiệu ứng shadow.
+    </p>
 
     <div class="grid">
       <div class="card">
-        <h2>1. Stamped hard shadow (đã dùng trong tokens.css)</h2>
-        <div class="demo demo-stamp"><span class="chip">150 tỷ</span></div>
+        <h2>1. Khối trùng lệch vị trí (thay cho stamp/box-shadow)</h2>
+        <div class="demo demo-stamp">
+          <div class="stamp-wrap">
+            <div class="stamp-behind" aria-hidden="true"></div>
+            <div class="stamp-front">150 tỷ</div>
+          </div>
+        </div>
         <p class="note">
-          Hai lớp <code>box-shadow</code> offset cứng, một lớp tối lệch
-          xuống-phải, một lớp sáng lệch lên-trái. Đây là ngôn ngữ độ nổi
-          chính của repo, dùng cho thẻ, badge, ô nhấn.
+          Hai phần tử thật: một khối tô màu <code>--line</code> đặc, lệch
+          bằng <code>position: absolute; top/left</code>; một khối chính đè
+          lên trên. Dùng cho thẻ, badge, ô nhấn cần cảm giác "con dấu".
         </p>
+        <p class="verified">Verified: so ảnh mức byte, khác bản không có .stamp-behind</p>
       </div>
 
       <div class="card">
-        <h2>2. Letterpress: chữ khắc bằng text-shadow hai lớp</h2>
-        <div class="demo demo-letterpress"><span class="word">9,2%</span></div>
+        <h2>2. Chữ trùng lệch màu nhạt (thay cho letterpress/text-shadow)</h2>
+        <div class="demo demo-letterpress">
+          <div class="lp-wrap">
+            <span class="lp-behind" aria-hidden="true">9,2%</span>
+            <span class="lp-front">9,2%</span>
+          </div>
+        </div>
         <p class="note">
-          <code>text-shadow: 1px 1px 0 rgba(0,0,0,.55), -1px -1px 0 rgba(255,255,255,.12)</code>.
-          Dùng cho số liệu hero trên nền tối. Chỉ an toàn trên nền phẳng
-          một màu, không dùng trên nền có hoạ tiết vì highlight sẽ lộ viền.
+          Hai phần tử <code>&lt;span&gt;</code> chồng lên nhau bằng
+          <code>position: absolute</code>, lệch 2px, màu bản sau tối hơn nền
+          một chút. Dùng cho số liệu hero trên nền tối. Cần đồng bộ chính
+          xác nội dung hai lớp, sai lệch dễ lộ khi sinh tự động từ template.
         </p>
+        <p class="verified">Verified: hai phần tử DOM thật, không phải CSS shadow ảo</p>
       </div>
 
       <div class="card">
-        <h2>3. Veil: inset shadow phủ màu không cần thêm biến màu mới</h2>
+        <h2>3. Background-color khối (thay cho veil/inset shadow)</h2>
         <div class="demo demo-veil">
           <table>
             <thead><tr><th>Mốc</th><th>Chỉ số</th></tr></thead>
@@ -244,14 +315,15 @@
           </table>
         </div>
         <p class="note">
-          <code>box-shadow: inset 0 0 0 999px rgba(176,122,16,.08)</code> tô
-          nổi một dòng trong bảng dày đặc mà không cần thêm màu nền rời rạc
+          <code>background: color-mix(in srgb, var(--warn) 10%, var(--paper))</code>
+          tô nổi một dòng trong bảng dày đặc mà không cần thêm biến màu mới
           ngoài token đã chốt. Quá 3-4 dòng liền kề sẽ trông vằn vện.
         </p>
+        <p class="verified">Verified: color-mix() và background render đúng trong WeasyPrint</p>
       </div>
 
       <div class="card">
-        <h2>4. Xếp lớp offset ba tầng, mô phỏng độ sâu</h2>
+        <h2>4. Xếp lớp offset ba tầng bằng transform</h2>
         <div class="demo">
           <div class="demo-stack">
             <div class="layer l1"></div>
@@ -260,19 +332,22 @@
           </div>
         </div>
         <p class="note">
-          Ba khối cùng kích thước, lệch nhau 5px mỗi lớp, không blur. Dùng
-          khi cần gợi ý "còn nhiều mục phía sau" (ví dụ chồng tài liệu, chồng
-          kịch bản) mà không dựng shadow drop mềm.
+          Ba khối cùng kích thước, lệch nhau 5px mỗi lớp bằng
+          <code>transform: translate()</code>, không dùng shadow ở lớp nào.
+          Dùng khi cần gợi ý "còn nhiều mục phía sau" (chồng tài liệu, chồng
+          kịch bản).
         </p>
+        <p class="verified">Verified: transform render đúng trong WeasyPrint (khác box-shadow)</p>
       </div>
 
       <hr class="rule full-width">
       <p class="verdict full-width">
-        <strong>Kết luận dùng thật:</strong> ưu tiên kỹ thuật 1 (đã chuẩn hoá
-        trong token) cho mọi trường hợp thông thường. Dùng kỹ thuật 2 chỉ ở
-        trang một-con-số trên nền tối. Dùng kỹ thuật 3 khi cần nhấn đúng một
-        dòng trong bảng dài. Kỹ thuật 4 hiếm dùng, chỉ khi ẩn dụ "chồng lớp"
-        đúng với nội dung thật.
+        <strong>Kết luận dùng thật:</strong> ưu tiên kỹ thuật 1 cho thẻ/badge
+        cần cảm giác "con dấu". Dùng kỹ thuật 2 chỉ ở trang một-con-số trên
+        nền tối. Dùng kỹ thuật 3 khi cần nhấn đúng một dòng trong bảng dài.
+        Kỹ thuật 4 hiếm dùng, chỉ khi ẩn dụ "chồng lớp" đúng với nội dung
+        thật. Cả bốn đều KHÔNG dùng box-shadow/text-shadow, vì hai thuộc
+        tính đó không tồn tại trong PDF thật xuất từ WeasyPrint.
       </p>
     </div>
   </div>

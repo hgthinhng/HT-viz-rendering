@@ -1,8 +1,6 @@
 <!--
   Ý MINH HOẠ: cùng một biểu đồ cơ cấu 8 ngành cho vay, vẽ 1 lần, hiển thị 2 lần
-  cạnh nhau. Bản phải là bản trái áp filter: grayscale(1) THẬT qua CSS (không vẽ
-  lại tay), đúng yêu cầu "chứng minh bằng thực nghiệm, không chỉ khẳng định
-  suông". Bảng 8 màu dùng ở đây là bảng đã được ĐO bằng research/07-bw-palette/
+  cạnh nhau. Bảng 8 màu dùng ở đây là bảng đã được ĐO bằng research/07-bw-palette/
   colormath.py: 5 màu là token gốc của tokens.css (ink, accent-hi, accent,
   ink-lo, line), 3 màu còn lại (accent-plum #9162BD, accent-sky #82C0FF,
   accent-cyan #64E3FF) là màu MỚI sinh bằng thuật toán tham lam trong không
@@ -10,6 +8,22 @@
   vùng lân cận theo TÊN màu cảm nhận, không chỉ theo góc chính xác), tối đa
   hoá đồng thời khoảng cách xám nhỏ nhất VÀ khoảng cách sau mô phỏng mù màu tệ
   nhất trong 3 dạng. Số liệu đầy đủ ở research/07-bw-palette/PALETTE-TABLE.md.
+
+  PHÁT HIỆN QUAN TRỌNG buộc phải đổi cách làm so với dự định ban đầu: bản nháp
+  đầu tiên dùng CSS filter: grayscale(1) trên toàn khối (đúng cách vòng 1 đã
+  làm ở chart-mau-den-trang.html). Đã TỰ KIỂM bằng weasyprint 69.0 thật (không
+  chỉ đọc code): xuất PDF, đọc lại pixel bằng PyMuPDF, phát hiện panel "xám" có
+  PIXEL Y HỆT panel màu (vd accent-hi vẫn ra RGB(17,51,184), không phải xám) —
+  WeasyPrint KHÔNG hỗ trợ CSS filter, bỏ qua lặng lẽ, không lỗi không cảnh báo.
+  Nghĩa là kỹ thuật "chứng minh bằng grayscale filter" của vòng 1 CHỈ đúng khi
+  xem bằng trình duyệt, không đúng cho chính pipeline in PDF mà repo cam kết
+  ("HTML self-contained VÀ PDF in được"). Sample này SỬA bằng cách gán THẲNG
+  giá trị xám đã tính sẵn (công thức CSS Filter Effects áp lên sRGB gamma,
+  KHÔNG linearize trước, đã tự kiểm khớp Chromium sai số tối đa 0.49/255) làm
+  fill của panel phải, không phụ thuộc runtime filter của bất kỳ renderer nào.
+  Bằng chứng này áp dụng cho ít nhất 8 mẫu khác trong samples/ cùng dùng
+  filter: grayscale(1) hoặc width="100%" height="auto" trên SVG, xem
+  FINDINGS.md mục "Hai bẫy WeasyPrint".
 
   Cặp yếu nhất trong bảng 8 màu này là accent-sky/accent-cyan (ΔGrayCSS=18.7,
   ΔE mô phỏng deuteranopia=14.4) — cả hai đều được thêm hoạ tiết (gạch chéo,
@@ -65,7 +79,6 @@
     padding: 3px 8px; margin-bottom: 8px; color: var(--accent); border: 1px solid var(--accent);
   }
   .panel h2 { font-size: 0.92rem; margin: 0 0 10px; }
-  .gray-svg { filter: grayscale(1); }
   .mono {
     font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
   }
@@ -84,7 +97,7 @@
 <body>
 <div class="wrap">
   <h1>Cơ cấu dư nợ theo 8 ngành: bảng 8 màu còn đọc được khi mất hết màu</h1>
-  <p class="dek">Bản phải là bản trái áp filter: grayscale(1) thật qua CSS, không vẽ lại tay. 8 màu: 5 token gốc của hệ (ink, accent-hi, accent, ink-lo, line) cộng 3 màu mới sinh trong cùng cung hue (accent-plum, accent-sky, accent-cyan). Số liệu minh hoạ.</p>
+  <p class="dek">Bản phải dùng đúng 8 giá trị xám mà công thức CSS Filter Effects tính ra cho 8 màu bên trái (không dùng filter: grayscale, vì WeasyPrint không thực thi filter đó khi xuất PDF). 8 màu: 5 token gốc của hệ (ink, accent-hi, accent, ink-lo, line) cộng 3 màu mới sinh trong cùng cung hue (accent-plum, accent-sky, accent-cyan). Số liệu minh hoạ.</p>
 
   <div class="grid2">
     <div class="panel">
@@ -158,72 +171,70 @@
     </div>
 
     <div class="panel">
-      <span class="tag" style="color:var(--ink-md); border-color:var(--ink-md);">Bản thang xám (filter: grayscale(1) thật)</span>
+      <span class="tag" style="color:var(--ink-md); border-color:var(--ink-md);">Bản thang xám (giá trị xám gán thẳng, không dùng CSS filter)</span>
       <h2>Vẫn đọc được thứ tự và tên từng ngành</h2>
-      <div class="gray-svg">
       <svg viewBox="0 0 480 320" width="480" height="320" role="img">
         <title>Co cau du no theo 8 nganh, ban da khu mau</title>
-        <desc>Cung du lieu, ap dung grayscale that qua CSS filter, khong ve lai tay</desc>
+        <desc>Cung du lieu, moi fill duoc thay bang gia tri xam css_grayscale_value da tinh san, khong dung CSS filter vi WeasyPrint khong ho tro</desc>
         <defs>
           <pattern id="hatch-sky2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <rect width="6" height="6" fill="#82C0FF" />
-            <line x1="0" y1="0" x2="0" y2="6" stroke="#051C2C" stroke-width="1" opacity="0.35" />
+            <rect width="6" height="6" fill="#B7B7B7" />
+            <line x1="0" y1="0" x2="0" y2="6" stroke="#181818" stroke-width="1" opacity="0.35" />
           </pattern>
           <pattern id="hatch-cyan2" width="7" height="7" patternUnits="userSpaceOnUse">
-            <rect width="7" height="7" fill="#64E3FF" />
-            <circle cx="3.5" cy="3.5" r="1.1" fill="#051C2C" opacity="0.4" />
+            <rect width="7" height="7" fill="#CACACA" />
+            <circle cx="3.5" cy="3.5" r="1.1" fill="#181818" opacity="0.4" />
           </pattern>
         </defs>
-        <line x1="30" y1="300" x2="440" y2="300" stroke="#051C2C" stroke-width="1" />
-        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#8595A6">
+        <line x1="30" y1="300" x2="440" y2="300" stroke="#181818" stroke-width="1" />
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#939393">
           <text x="26" y="303" text-anchor="end">0%</text>
           <text x="26" y="23" text-anchor="end">100%</text>
         </g>
         <g>
-          <rect x="40" y="20" width="80" height="61.6" fill="#051C2C" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="40" y="81.6" width="80" height="50.4" fill="#1233B8" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="40" y="132.0" width="80" height="42.0" fill="#2251FF" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="40" y="174.0" width="80" height="33.6" fill="#9162BD" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="40" y="207.6" width="80" height="30.8" fill="#8595A6" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="40" y="238.4" width="80" height="28.0" fill="url(#hatch-sky2)" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="40" y="266.4" width="80" height="19.6" fill="url(#hatch-cyan2)" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="40" y="286.0" width="80" height="14.0" fill="#DBE2EA" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="20" width="80" height="61.6" fill="#181818" stroke="#181818" stroke-width="0.6"/>
+          <rect x="40" y="81.6" width="80" height="50.4" fill="#363636" stroke="#181818" stroke-width="0.6"/>
+          <rect x="40" y="132.0" width="80" height="42.0" fill="#545454" stroke="#181818" stroke-width="0.6"/>
+          <rect x="40" y="174.0" width="80" height="33.6" fill="#737373" stroke="#181818" stroke-width="0.6"/>
+          <rect x="40" y="207.6" width="80" height="30.8" fill="#939393" stroke="#181818" stroke-width="0.6"/>
+          <rect x="40" y="238.4" width="80" height="28.0" fill="url(#hatch-sky2)" stroke="#181818" stroke-width="0.6"/>
+          <rect x="40" y="266.4" width="80" height="19.6" fill="url(#hatch-cyan2)" stroke="#181818" stroke-width="0.6"/>
+          <rect x="40" y="286.0" width="80" height="14.0" fill="#E1E1E1" stroke="#181818" stroke-width="0.6"/>
           <text x="80" y="55" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700" fill="#FFFFFF">22%</text>
           <text x="80" y="110" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700" fill="#FFFFFF">18%</text>
         </g>
         <g>
-          <rect x="150" y="20" width="80" height="56.0" fill="#051C2C" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="150" y="76.0" width="80" height="47.6" fill="#1233B8" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="150" y="123.6" width="80" height="47.6" fill="#2251FF" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="150" y="171.2" width="80" height="36.4" fill="#9162BD" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="150" y="207.6" width="80" height="28.0" fill="#8595A6" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="150" y="235.6" width="80" height="25.2" fill="url(#hatch-sky2)" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="150" y="260.8" width="80" height="22.4" fill="url(#hatch-cyan2)" stroke="#051C2C" stroke-width="0.6"/>
-          <rect x="150" y="283.2" width="80" height="16.8" fill="#DBE2EA" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="20" width="80" height="56.0" fill="#181818" stroke="#181818" stroke-width="0.6"/>
+          <rect x="150" y="76.0" width="80" height="47.6" fill="#363636" stroke="#181818" stroke-width="0.6"/>
+          <rect x="150" y="123.6" width="80" height="47.6" fill="#545454" stroke="#181818" stroke-width="0.6"/>
+          <rect x="150" y="171.2" width="80" height="36.4" fill="#737373" stroke="#181818" stroke-width="0.6"/>
+          <rect x="150" y="207.6" width="80" height="28.0" fill="#939393" stroke="#181818" stroke-width="0.6"/>
+          <rect x="150" y="235.6" width="80" height="25.2" fill="url(#hatch-sky2)" stroke="#181818" stroke-width="0.6"/>
+          <rect x="150" y="260.8" width="80" height="22.4" fill="url(#hatch-cyan2)" stroke="#181818" stroke-width="0.6"/>
+          <rect x="150" y="283.2" width="80" height="16.8" fill="#E1E1E1" stroke="#181818" stroke-width="0.6"/>
         </g>
-        <g font-family="Spectral, Georgia, serif" font-size="10.5" fill="#42566A" text-anchor="middle">
+        <g font-family="Spectral, Georgia, serif" font-size="10.5" fill="#939393" text-anchor="middle">
           <text x="80" y="315">Quý 1</text><text x="190" y="315">Quý 4</text>
         </g>
-        <g font-family="IBM Plex Mono, monospace" font-size="8.6" fill="#051C2C">
-          <line x1="230" y1="48" x2="240" y2="48" stroke="#051C2C" stroke-width="1" />
+        <g font-family="IBM Plex Mono, monospace" font-size="8.6" fill="#181818">
+          <line x1="230" y1="48" x2="240" y2="48" stroke="#181818" stroke-width="1" />
           <text x="244" y="51">Bán lẻ trong nước, 20%</text>
-          <line x1="230" y1="99.8" x2="240" y2="99.8" stroke="#051C2C" stroke-width="1" />
+          <line x1="230" y1="99.8" x2="240" y2="99.8" stroke="#181818" stroke-width="1" />
           <text x="244" y="102.8">Sản xuất công nghiệp, 17%</text>
-          <line x1="230" y1="147.4" x2="240" y2="147.4" stroke="#051C2C" stroke-width="1" />
+          <line x1="230" y1="147.4" x2="240" y2="147.4" stroke="#181818" stroke-width="1" />
           <text x="244" y="150.4">Bất động sản, 17%</text>
-          <line x1="230" y1="189.4" x2="240" y2="189.4" stroke="#051C2C" stroke-width="1" />
+          <line x1="230" y1="189.4" x2="240" y2="189.4" stroke="#181818" stroke-width="1" />
           <text x="244" y="192.4">Xuất khẩu, 13%</text>
-          <line x1="230" y1="221.6" x2="240" y2="221.6" stroke="#051C2C" stroke-width="1" />
+          <line x1="230" y1="221.6" x2="240" y2="221.6" stroke="#181818" stroke-width="1" />
           <text x="244" y="224.6">Dịch vụ tài chính, 10%</text>
-          <line x1="230" y1="248.2" x2="240" y2="248.2" stroke="#051C2C" stroke-width="1" />
+          <line x1="230" y1="248.2" x2="240" y2="248.2" stroke="#181818" stroke-width="1" />
           <text x="244" y="251.2">Nông nghiệp, 9% (hoạ tiết chéo)</text>
-          <line x1="230" y1="272" x2="240" y2="272" stroke="#051C2C" stroke-width="1" />
+          <line x1="230" y1="272" x2="240" y2="272" stroke="#181818" stroke-width="1" />
           <text x="244" y="275">Logistics, 8% (hoạ tiết chấm)</text>
-          <line x1="230" y1="291.6" x2="240" y2="291.6" stroke="#051C2C" stroke-width="1" />
+          <line x1="230" y1="291.6" x2="240" y2="291.6" stroke="#181818" stroke-width="1" />
           <text x="244" y="294.6">Khác, 6%</text>
         </g>
       </svg>
-      </div>
     </div>
   </div>
 

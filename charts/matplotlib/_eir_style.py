@@ -115,25 +115,32 @@ def _register(candidates):
     Chi dua ten suong khong du: matplotlib co cache font rieng, khong tu quet
     theo ten, phai goi addfont voi duong dan that truoc.
 
-    Repo cam fallback im lang (xem CLAUDE.md). Neu mot candidate co duong dan
-    ma khong ton tai, canh bao ro font nao, duong dan nao, va no dang bi bo
-    qua (roi tiep tuc xet candidate ke tiep trong danh sach) - moi truong khac
-    thieu font Liberation ma khong ai biet chinh la kich ban bug ban dau
-    (hardcode sai ten thu muc font) tai dien.
+    Repo cam fallback im lang (xem CLAUDE.md), nhung canh bao THUONG TRUC cung
+    la mot dang fallback im lang kieu khac: neu moi lan chay deu in ra 1 canh
+    bao vo hai (candidate du phong sau khong bao gio dung toi bi thieu), pytest
+    luon hien "1 warning", nguoi dung quen mat va luot qua, roi den luc font
+    CHINH that su bien mat thi canh bao that lai lan vao dung cho quen mat do.
+
+    Vi vay CHI canh bao khi CANDIDATE DAU TIEN (index 0) cua danh sach bi
+    thieu, vi do chinh la dieu kien Test A dang kiem: font dau tien phai phu
+    het chuoi tieng Viet, thieu no doi ket qua that su (co the roi ve font
+    khac thieu glyph, sinh dau tach roi). Candidate du phong sau do (index > 0)
+    bi thieu thi KHONG doi ket qua cuoi cung vi danh sach van con candidate/
+    generic keyword phia sau, nen khong canh bao.
     """
     names = []
-    for name, path in candidates:
+    for i, (name, path) in enumerate(candidates):
         if path and os.path.exists(path):
             fm.fontManager.addfont(path)
             names.append(name)
         elif path is None:
             names.append(name)
-        else:
+        elif i == 0:
             warnings.warn(
-                f"_eir_style: khong tim thay font '{name}' tai '{path}', "
-                "bo qua candidate nay va roi xuong candidate ke tiep. Neu day "
-                "la moi truong thieu font Liberation, tieng Viet co the mat "
-                "dau khi roi ve DejaVu."
+                f"_eir_style: KHONG tim thay font DAU TIEN '{name}' tai "
+                f"'{path}'. Day la font quyet dinh ket qua that su (phai phu "
+                "het chuoi tieng Viet); thieu no co the lam mat dau, khac voi "
+                "candidate du phong sau khong bao gio dung toi."
             )
     return names
 

@@ -63,9 +63,12 @@
   html { background: var(--ink-lo); }
   body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
 
+  /* Không dùng box-shadow trên .page: không tồn tại trong WeasyPrint 69.0
+     (FINDINGS.md muc 0.1). Tương phản trắng/xám-xanh với nền html đã đủ
+     tách lớp thị giác, không cần thay bằng border/offset. */
   .page {
     width: 210mm; min-height: 297mm; margin: 24px auto;
-    background: var(--paper); box-shadow: 4px 4px 0 rgba(5,28,44,0.18);
+    background: var(--paper);
     padding: 20mm; position: relative;
   }
   .furniture {
@@ -162,7 +165,7 @@
 
   @media print {
     html, body { background: var(--paper); }
-    .page { width: auto; min-height: auto; margin: 0; box-shadow: none; padding: 0; }
+    .page { width: auto; min-height: auto; margin: 0; padding: 0; }
     .research-tag { display: none; }
     @page { size: A4; margin: 18mm; }
     figure.bleed, table.comps { break-inside: avoid; }

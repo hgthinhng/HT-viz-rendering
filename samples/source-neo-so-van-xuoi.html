@@ -59,7 +59,7 @@
 
   .page {
     width: 210mm; min-height: 297mm; margin: 24px auto;
-    background: var(--paper); box-shadow: 4px 4px 0px rgba(5 28 44 / 0.18);
+    background: var(--paper); border: 1px solid var(--line);
     padding: 20mm; position: relative;
   }
   .research-tag {
@@ -138,7 +138,7 @@
 
   @media print {
     html, body { background: var(--paper); }
-    .page { width: auto; min-height: auto; margin: 0; box-shadow: none; padding: 0; }
+    .page { width: auto; min-height: auto; margin: 0; border: none; padding: 0; }
     .research-tag { display: none; }
     @page { size: A4; margin: 18mm; }
     section.step, .verdict { break-inside: avoid; }

@@ -80,7 +80,7 @@ body{
 }
 .page{
   max-width:794px; margin:28px auto; background:var(--paper);
-  padding:22mm 18mm; box-shadow:3px 3px 0px rgba(5 28 44 / 0.10), -1px -1px 0px rgba(5 28 44 / 0.05);
+  padding:22mm 18mm; border:1px solid var(--line);
 }
 .note{ max-width:900px; margin:0 auto 0; padding:14px 18mm; font-family:var(--font-sans); font-size:12.5px; color:var(--ink-lo);}
 .kicker{
@@ -137,7 +137,7 @@ table.masa td.act b{ color:var(--accent-hi); }
 @media print{
   @page{ size:A4; margin:16mm 14mm; }
   html,body{ background:#fff; }
-  .page{ box-shadow:none; margin:0; padding:0; max-width:none; }
+  .page{ border:none; margin:0; padding:0; max-width:none; }
   .note{ display:none; }
   table.masa tr, .qa, .killbox{ break-inside:avoid; }
 }

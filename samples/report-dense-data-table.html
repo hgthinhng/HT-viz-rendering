@@ -83,7 +83,7 @@
 html,body{margin:0;padding:0;background:#DBE2EA;}
 body{ font-family:var(--font-serif); color:var(--ink); line-height:1.6; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 .page{ max-width:850px; margin:28px auto; background:var(--paper); padding:20mm 16mm;
-  box-shadow:3px 3px 0px rgba(5 28 44 / 0.10), -1px -1px 0px rgba(5 28 44 / 0.05); }
+  border:1px solid var(--line); }
 .note{ max-width:900px; margin:0 auto; padding:14px 16mm; font-family:var(--font-sans); font-size:12.5px; color:var(--ink-lo);}
 .kicker{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent);
   display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:20px; }
@@ -127,7 +127,7 @@ table.dense tbody tr.median td:first-child{ font-style:normal; }
 @media print{
   @page{ size:A4; margin:16mm 14mm; }
   html,body{ background:#fff; }
-  .page{ box-shadow:none; margin:0; padding:0; max-width:none; }
+  .page{ border:none; margin:0; padding:0; max-width:none; }
   .note{ display:none; }
   table.dense tr{ break-inside:avoid; }
   .tbl-block{ break-inside:avoid; }

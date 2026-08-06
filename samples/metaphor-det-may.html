@@ -1,0 +1,259 @@
+<!--
+  Y MINH HOA: nha may may xuat khau, dung cho nganh det may/may mac. La 1 trong
+  3 mau vong nghien cuu 09-metaphor (mo rong bang tra an du ngoai 11 hinh co
+  san trong illustrations/svg/). File nguon SVG sach (khong callout) nam o
+  research/09-metaphor/svg/textile-garment-factory.svg, day la ban dan nhung
+  vao trang demo + giai thich cach doc, dung quy uoc trinh bay nhu cac mau
+  chart-*.html da co trong thu muc nay.
+
+  KHI NAO KHONG NEN DUNG an du nay: bao cao ve mot cong ty may GIA CONG THUAN
+  CMT khong co bat ky don hang FOB nao (mat di 1 trong 4 bien neo, chi con 3);
+  bao cao ve nganh soi/det (upstream, khac cong doan voi may/CMT-FOB o day);
+  hoac khi bao cao can nhan manh chuoi cung ung nguyen lieu bong/xo hoa hoc
+  (an du nay bat dau tu cuon vai da det san, khong ve duoc phan truoc do).
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>An du nganh det may: nha may may xuat khau</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #db2777; --negative: #C22F4E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px 60px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 24px; max-width: 72ch; }
+  .tag {
+    display: inline-block; font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; margin-bottom: 8px; color: var(--ink-md); border: 1px solid var(--ink-md);
+  }
+  .tag-good { color: var(--accent); border-color: var(--accent); }
+  .tag-bad { color: var(--negative); border-color: var(--negative); }
+  .stage { border: 1px solid var(--line); padding: 20px; margin-bottom: 20px; background: #fdfdfe; }
+  h2 { font-size: 1.05rem; margin: 22px 0 10px; }
+  h3 { font-size: 0.92rem; margin: 16px 0 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin: 10px 0 4px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-md); }
+  .swatch { display: inline-block; width: 11px; height: 11px; border: 1px solid var(--ink); vertical-align: -1px; margin-right: 5px; }
+  .test-block { border-left: 3px solid var(--ink); padding: 4px 0 4px 14px; margin: 10px 0; }
+  .test-block.pass { border-left-color: #059669; }
+  ul { padding-left: 20px; margin: 8px 0; }
+  li { margin-bottom: 4px; }
+  .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.74rem; color: var(--ink-md); line-height: 1.6; margin: 10px 0 0;
+  }
+  .source {
+    margin-top: 26px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag tag-good">Vong 09 minh hoa nganh, mau moi 1/3</span>
+  <h1>Nha may may xuat khau: 4 bo phan neo 4 bien so lieu det may</h1>
+  <p class="dek">
+    Vat the: mot xuong may xuat khau nhin mo mat truoc, tu kho nguyen lieu toi
+    cua xuat hang. Dung khi bao cao co du lieu cong suat, ton kho, va co cau
+    don hang FOB/CMT cua mot doanh nghiep det may.
+  </p>
+
+  <div class="stage">
+    <svg viewBox="0 0 800 500" width="100%" role="img" style="--accent:#db2777">
+      <title>Nha may may xuat khau</title>
+      <desc>Kho cuon vai nguyen lieu ben trai, xuong may mo mat truoc voi day chuyen may nhieu tram, khu dong goi kien hang FOB va CMT, cua xuat hang co xe tai cho o hang doi. Dung minh hoa nganh det may, may mac xuat khau.</desc>
+      <g class="scene">
+        <g class="ground">
+          <rect x="0" y="430" width="800" height="70" fill="#cbd5e1"/>
+          <rect x="0" y="430" width="800" height="5" fill="#94a3b8"/>
+        </g>
+        <g class="fabric-stock">
+          <rect x="24" y="422" width="112" height="8" fill="#94a3b8" stroke="#0f172a" stroke-width="1"/>
+          <rect x="30" y="392" width="100" height="30" rx="15" ry="15" fill="#db2777" stroke="#0f172a" stroke-width="1.4"/>
+          <g stroke="#9d174d" stroke-width="1.3" fill="none" opacity="0.85">
+            <path d="M45,394 A13,13 0 0 1 45,420"/>
+            <path d="M45,399.5 A7.5,7.5 0 0 1 45,414.5"/>
+          </g>
+          <path d="M32,422 L20,436 L34,428 Z" fill="#db2777" stroke="#0f172a" stroke-width="1" opacity="0.9"/>
+          <rect x="30" y="358" width="100" height="30" rx="15" ry="15" fill="#f472b6" stroke="#0f172a" stroke-width="1.4"/>
+          <g stroke="#be185d" stroke-width="1.2" fill="none" opacity="0.85">
+            <path d="M45,360 A13,13 0 0 1 45,386"/>
+            <path d="M45,365.5 A7.5,7.5 0 0 1 45,380.5"/>
+          </g>
+          <rect x="30" y="326" width="72" height="28" rx="14" ry="14" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+          <g stroke="#475569" stroke-width="1.1" fill="none" opacity="0.85">
+            <path d="M44,328 A12,12 0 0 1 44,352"/>
+          </g>
+        </g>
+        <g class="shed">
+          <path d="M215,300 L387,255 L560,300 Z" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5"/>
+          <rect x="215" y="296" width="345" height="8" fill="var(--accent)"/>
+          <rect x="229" y="304" width="317" height="120" fill="#f8fafc" opacity="0.5"/>
+          <rect x="215" y="300" width="14" height="128" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+          <rect x="546" y="300" width="14" height="128" fill="#64748b" stroke="#0f172a" stroke-width="1.4"/>
+          <rect x="215" y="426" width="345" height="4" fill="#475569"/>
+        </g>
+        <g class="sewing-line" stroke="#0f172a" stroke-width="1.4">
+          <g class="station">
+            <rect x="245" y="415" width="34" height="6" fill="#334155"/>
+            <rect x="252" y="392" width="20" height="23" fill="var(--accent)"/>
+            <line x1="262" y1="392" x2="262" y2="382" stroke-width="1.6"/>
+            <circle cx="262" cy="382" r="3" fill="#0f172a"/>
+          </g>
+          <g class="station">
+            <rect x="290" y="415" width="34" height="6" fill="#334155"/>
+            <rect x="297" y="392" width="20" height="23" fill="var(--accent)"/>
+            <line x1="307" y1="392" x2="307" y2="382" stroke-width="1.6"/>
+            <circle cx="307" cy="382" r="3" fill="#0f172a"/>
+          </g>
+          <g class="station station-idle">
+            <rect x="335" y="415" width="34" height="6" fill="#334155"/>
+            <rect x="342" y="392" width="20" height="23" fill="#94a3b8"/>
+            <line x1="352" y1="392" x2="352" y2="382" stroke-width="1.6" opacity="0.5"/>
+            <circle cx="352" cy="382" r="3" fill="#64748b"/>
+          </g>
+          <g class="station">
+            <rect x="380" y="415" width="34" height="6" fill="#334155"/>
+            <rect x="387" y="392" width="20" height="23" fill="var(--accent)"/>
+            <line x1="397" y1="392" x2="397" y2="382" stroke-width="1.6"/>
+            <circle cx="397" cy="382" r="3" fill="#0f172a"/>
+          </g>
+          <g class="station">
+            <rect x="425" y="415" width="34" height="6" fill="#334155"/>
+            <rect x="432" y="392" width="20" height="23" fill="var(--accent)"/>
+            <line x1="442" y1="392" x2="442" y2="382" stroke-width="1.6"/>
+            <circle cx="442" cy="382" r="3" fill="#0f172a"/>
+          </g>
+          <g class="station">
+            <rect x="470" y="415" width="34" height="6" fill="#334155"/>
+            <rect x="477" y="392" width="20" height="23" fill="var(--accent)"/>
+            <line x1="487" y1="392" x2="487" y2="382" stroke-width="1.6"/>
+            <circle cx="487" cy="382" r="3" fill="#0f172a"/>
+          </g>
+        </g>
+        <g class="packing" stroke="#0f172a" stroke-width="1.3">
+          <rect x="566" y="424" width="120" height="6" fill="#94a3b8"/>
+          <rect x="572" y="398" width="32" height="28" fill="var(--accent)"/>
+          <rect x="572" y="392" width="10" height="5" fill="#fdf2f8"/>
+          <rect x="608" y="398" width="32" height="28" fill="#94a3b8"/>
+          <rect x="608" y="392" width="10" height="5" fill="#f1f5f9"/>
+          <rect x="644" y="398" width="32" height="28" fill="var(--accent)"/>
+          <rect x="644" y="392" width="10" height="5" fill="#fdf2f8"/>
+          <rect x="590" y="370" width="32" height="28" fill="var(--accent)" opacity="0.9"/>
+          <rect x="626" y="370" width="32" height="28" fill="#94a3b8"/>
+        </g>
+        <g class="dock">
+          <rect x="690" y="330" width="60" height="100" fill="#1e293b" stroke="#0f172a" stroke-width="1.4"/>
+          <g stroke="#475569" stroke-width="1.6">
+            <line x1="690" y1="346" x2="750" y2="346"/>
+            <line x1="690" y1="366" x2="750" y2="366"/>
+            <line x1="690" y1="386" x2="750" y2="386"/>
+          </g>
+          <rect x="695" y="380" width="24" height="30" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.3"/>
+          <rect x="717" y="368" width="55" height="42" fill="var(--accent)" stroke="#0f172a" stroke-width="1.3"/>
+          <circle cx="705" cy="412" r="8" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+          <circle cx="755" cy="412" r="8" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+          <g fill="none" stroke="#0f172a" stroke-width="1.4" stroke-dasharray="4 3" opacity="0.65">
+            <rect x="762" y="372" width="34" height="40"/>
+            <rect x="780" y="378" width="26" height="34"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <h2>Bo phan nao neo bien nao</h2>
+  <table>
+    <tr><th>Bo phan vat the</th><th>Bien so lieu neo</th><th>Doc the nao</th></tr>
+    <tr>
+      <td><span class="swatch" style="background:#db2777"></span>Chieu cao chong cuon vai o kho dau vao</td>
+      <td>Ton kho nguyen vat lieu / ty le NVL tren gia von</td>
+      <td>Chong cao = ton kho day, dat truoc don hang; chong thap = mua vua du, rui ro thieu vai khi don tang dot bien</td>
+    </tr>
+    <tr>
+      <td><span class="swatch" style="background:#db2777"></span>So tram may "sang" (mau accent) so voi "tat" (mau xam) tren day chuyen</td>
+      <td>Cong suat su dung day chuyen (utilization rate)</td>
+      <td>Mau nay ve 5/6 tram sang = 83% cong suat; 1 tram tat la mot chuyen dang dung do thieu don hoac bao tri</td>
+    </tr>
+    <tr>
+      <td><span class="swatch" style="background:#db2777"></span> / <span class="swatch" style="background:#94a3b8"></span>Ty le mau kien hang o khu dong goi</td>
+      <td>Co cau doanh thu theo phuong thuc FOB (mau accent) so CMT (mau xam)</td>
+      <td>Mau nay ve 3 kien accent / 2 kien xam = FOB chiem da so, bien gop cao hon vi FOB tinh ca gia nguyen lieu</td>
+    </tr>
+    <tr>
+      <td>Xe tai dang xep tai cua so voi 2 khoi net dut cho o hang doi</td>
+      <td>Don hang ton dong cho giao (backlog) / ap luc giao hang</td>
+      <td>Net dut la quy uoc "cho/du kien" da dung sang trong thu vien goc (vd day cau cau cau real-estate-apartment-crane.svg); hang doi dai hon = backlog lon hon</td>
+    </tr>
+  </table>
+
+  <h2>Ba bai tu kiem bat buoc</h2>
+
+  <h3>1. Che het chu, con doc ra cau truc du lieu khong</h3>
+  <div class="test-block pass">
+    <strong>KET QUA: DAT.</strong> Xoa toan bo <code>&lt;title&gt;</code>/<code>&lt;desc&gt;</code> va nhin
+    lai silhouette: van con doc ngay 4 vung khac chuc nang chi tu hinh dang, khong can chu:
+    (a) mot chong hinh vien thuoc thang, dau tron mot dau = cuon vai, (b) mot day may
+    lien tuc voi cac dau kim nho + 1 mau xam khac mau giua day = mot may dang tat,
+    (c) mot khoi hop xep tang xen ke 2 mau = kien hang phan loai, (d) mot xe tai
+    dang do o cua cong voi 2 khung net dut phia sau = hang doi cho. Ca 4 déu la
+    CAU TRUC (so luong, trang thai bat/tat, ty le mau, do dai hang doi), khong
+    phai chi la trang tri, dung tinh chat cua bai tu kiem nay.
+  </div>
+
+  <h3>2. Doi nganh khac, hinh con dung nguyen duoc khong</h3>
+  <div class="test-block pass">
+    <strong>KET QUA: DAT (that bai neu doi nganh).</strong> Thu doi nhan sang nganh khac: cuon
+    vai KHONG the doi thanh "cuon giay" hay "cuon thep" ma van giu dung y nghia
+    "ton kho nguyen lieu det may" (hinh dang cu the la vai cuon co dau xoay
+    trung tam, khac hoan toan cuon giay/thep cong nghiep); day may voi dau kim
+    nho + oc chi tren dinh KHONG dung duoc cho day chuyen dong goi hay day
+    chuyen lap rap dien tu (hinh dang dau kim la dac trung rieng cua may cong
+    nghiep); nhan FOB/CMT la thuat ngu RIENG cua nganh gia cong xuat khau det
+    may, khong ton tai o nganh khac. Ba chi tiet nay khien hinh KHONG the dung
+    nguyen xi cho nganh khac chi bang doi nhan, khac voi vi du "hop + mui ten"
+    ma bai tu kiem 2 muon loai bo.
+  </div>
+
+  <h3>3. Kiem danh sach den chart gia</h3>
+  <div class="test-block pass">
+    <strong>KET QUA: DAT.</strong> Khong co gauge (khong co kim + mat so), khong
+    co radar, khong co pie/donut nao trong hinh. Muc "sang/tat" cua tram may
+    ma hoa bang MAU + VI TRI co dinh (khong phai goc quay hay dien tich), dung
+    huong tiep can bullet-chart ma repo da chon thay gauge. Khong co truc bi
+    cat cut, khong co dual-axis.
+  </div>
+
+  <h2>Khi nao KHONG nen dung an du nay</h2>
+  <ul>
+    <li>Doanh nghiep chi lam CMT thuan tuy, khong co don FOB nao: mat 1 trong 4
+      bien neo (co cau FOB/CMT), chi con 3 bien, nen can nhac doi an du khac
+      hoac bo bot callout do.</li>
+    <li>Bao cao ve nganh soi/det (khau thuong nguon, truoc khi co vai cuon
+      thanh pham): hinh nay bat dau tu vai da det san, khong ve duoc cong doan
+      keo soi/det thoi.</li>
+    <li>Khi so lieu utilization/backlog khong co that, chi mang tinh minh hoa
+      chung chung: dung an du nay ma khong co so that thi 2 trong 4 bo phan
+      (day may, xe tai cho) roi vao dung loai "trang tri khong callout" ma
+      metaphor-table.md da canh bao o muc "KHONG dung khi chi de trang tri".</li>
+  </ul>
+
+  <p class="source">
+    File nguon SVG sach: research/09-metaphor/svg/textile-garment-factory.svg &middot;
+    Ngu phap tuan theo illustrations/grammar.md &middot; Xem bang tra day du o
+    research/09-metaphor/METAPHOR-TABLE-EXT.md
+  </p>
+</div>
+</body>
+</html>

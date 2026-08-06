@@ -518,3 +518,32 @@ report-verdict-vs-recap-teardown.html   @font-face=14 unicode-range=1(chỉ tron
 Mọi dấu tiếng Việt đúng tuyệt đối, không một ký tự lộn glyph, đối chiếu từng chữ với chuỗi gốc
 trong HTML. `raster_objects` (đếm bằng `doc.xref_object`, đúng phương pháp của repo) bằng 0 trên
 cả 4 file, cả 2 trang mỗi file.
+
+### KT.3, `box-shadow` và `text-shadow` là CSS chết trên WeasyPrint 69.0, không phải chỉ khi có blur
+
+Bổ sung cho phát hiện đã có ở `research/04-wow-layer/FINDINGS.md` mục 8 (team-lead phân xử bằng
+so ảnh mức byte: box-shadow và text-shadow không tồn tại trên WeasyPrint DƯỚI BẤT KỲ hình thức
+nào, kể cả offset cứng blur=0). Bốn mẫu của vòng này từng dính đúng lỗi đó ở CÙNG một chỗ: khối
+`.page` (khung trang mô phỏng khi xem trực tiếp bằng trình duyệt) dùng `box-shadow` offset cứng
+để tách nền xám màn hình khỏi trang giấy trắng. Vì đã tự đặt `.page{box-shadow:none}` trong
+`@media print` từ trước, shadow này chưa từng có tác dụng gì trong PDF xuất ra (đã đúng ý định),
+nhưng NGUỒN của nó vẫn là CSS chết đáng gỡ, vì giữ lại một khai báo `box-shadow` sống trong CSS
+dạy sai người đọc sau rằng kỹ thuật đó dùng được trên engine này.
+
+Đã gỡ hoàn toàn `box-shadow` khỏi `.page` ở cả 4 mẫu, thay bằng `border:1px solid var(--line)`,
+đúng kỹ thuật "border đặc thay cho shadow" đã verify ở mục 8.2 của `research/04-wow-layer/FINDINGS.md`.
+Bản print vẫn đặt `border:none` cho `.page` (trang PDF chiếm trọn khổ A4, không cần viền tách nền
+vì không có nền xám xung quanh trong PDF). Không có `.chart-box`/`.exhibit`/thẻ nào khác trong 4
+mẫu từng dùng shadow, chúng đã dùng `border:1px solid var(--line)` ngay từ bản đầu nên không cần
+sửa. Verify lại bằng đúng phép đo `len(doc)` cộng `sum(page.get_drawings())`:
+
+```
+report-dense-data-table.html            2 trang, 103 drawing, 0 raster
+report-exec-brief-action-first.html     2 trang,  34 drawing, 0 raster
+report-exhibit-institutional.html       2 trang,  49 drawing, 0 raster
+report-verdict-vs-recap-teardown.html   2 trang,  61 drawing, 0 raster
+```
+
+Xem ảnh raster hoá từ đúng PDF WeasyPrint xác nhận bằng mắt: trang vẫn đọc được như "một trang
+giấy", exhibit và bảng vẫn tách khỏi khoảng trắng xung quanh nhờ hairline border và khoảng đệm,
+không cần shadow để tạo cảm giác đó.

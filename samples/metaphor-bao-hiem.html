@@ -1,0 +1,245 @@
+<!--
+  Y MINH HOA: he be du phong nghiep vu bao hiem. Mau 3/3 cua vong nghien cuu
+  09-metaphor. File nguon SVG sach o
+  research/09-metaphor/svg/insurance-reserve-tank.svg.
+
+  Day la an du CO CHE, khac loai voi 2 mau con lai (nha may det may/thuy san
+  la an du "toan canh doanh nghiep"): be du phong mo ta dung 1 co che ke toan
+  cu the (dong tien phi bao hiem gop qua du phong nghiep vu qua boi thuong,
+  co nhuong tai), khong phai toan bo doanh nghiep bao hiem. Ly do chon co che
+  hep thay vi toan canh: cac bo phan "toan canh" quen thuoc cua bao hiem
+  (toa nha tru so, quay giao dich) khong neo duoc so lieu tai chinh dac trung
+  cua nganh nay nhu banking-headquarters-vault.svg neo duoc CAR qua vault; co
+  che be chua moi la noi 4/5 dong tien bao hiem thuc su xay ra.
+
+  KHI NAO KHONG NEN DUNG: cong ty bao hiem phi nhan tho khong mua tai bao
+  hiem dang ke (mat bien nhuong tai, chi con 3-4 bien); bao hiem nhan tho co
+  cau truc du phong toan hoc phuc tap hon nhieu lop (be don o day qua don
+  gian cho san pham co gia tri hoan lai/tai dau tu); hoac khi nguoi doc khong
+  quen thuat ngu ky thuat bao hiem (du phong nghiep vu, nhuong tai) va can
+  giai thich bang loi truoc, an du co che se kho vao hon an du toan canh.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>An du nganh bao hiem: he be du phong nghiep vu</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #4f46e5; --negative: #C22F4E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px 60px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 24px; max-width: 72ch; }
+  .tag {
+    display: inline-block; font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; margin-bottom: 8px; color: var(--ink-md); border: 1px solid var(--ink-md);
+  }
+  .tag-good { color: var(--accent); border-color: var(--accent); }
+  .stage { border: 1px solid var(--line); padding: 20px; margin-bottom: 20px; background: #fdfdfe; }
+  h2 { font-size: 1.05rem; margin: 22px 0 10px; }
+  h3 { font-size: 0.92rem; margin: 16px 0 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin: 10px 0 4px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-md); }
+  .swatch { display: inline-block; width: 11px; height: 11px; border: 1px solid var(--ink); vertical-align: -1px; margin-right: 5px; }
+  .test-block { border-left: 3px solid var(--ink); padding: 4px 0 4px 14px; margin: 10px 0; }
+  .test-block.pass { border-left-color: #059669; }
+  .test-block.caveat { border-left-color: #B07A10; }
+  ul { padding-left: 20px; margin: 8px 0; }
+  li { margin-bottom: 4px; }
+  .source {
+    margin-top: 26px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag tag-good">Vong 09 minh hoa nganh, mau moi 3/3</span>
+  <h1>He be du phong nghiep vu: 5 bo phan neo 5 dong tien bao hiem</h1>
+  <p class="dek">
+    Vat the: mot he thong be chua cong nghiep noi ong dan, mo phong dung co
+    che ke toan cua mot cong ty bao hiem phi nhan tho: phi bao hiem gop vao,
+    boi thuong chay ra, va phan nhuong tai chay sang mot be phu dai dien nha
+    tai bao hiem.
+  </p>
+
+  <div class="stage">
+    <svg viewBox="0 0 800 500" width="100%" role="img" style="--accent:#4f46e5">
+      <title>He be du phong nghiep vu bao hiem</title>
+      <desc>Be chinh nhan ong dan phi bao hiem goc va dong von dau tu tu tren, xa day qua ong boi thuong xuong be chua, va tran sang be phu nho hon qua ong nhuong tai bao hiem. Muc nuoc moi be la muc du phong nghiep vu con lai. Dung minh hoa nganh bao hiem.</desc>
+      <g class="scene">
+        <g class="ground">
+          <rect x="0" y="430" width="800" height="70" fill="#cbd5e1"/>
+          <rect x="0" y="430" width="800" height="5" fill="#94a3b8"/>
+        </g>
+        <g class="investment-feed">
+          <g stroke="#0f172a" stroke-width="1.2">
+            <ellipse cx="470" cy="92" rx="18" ry="6" fill="#eab308"/>
+            <ellipse cx="470" cy="84" rx="16" ry="6" fill="#facc15"/>
+            <ellipse cx="470" cy="76" rx="14" ry="6" fill="#eab308"/>
+          </g>
+          <path d="M462,70 L462,58 L462,58" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+          <path d="M462,120 L400,150" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+          <path d="M462,120 L400,150" stroke="#1e293b" stroke-width="1.4"/>
+          <path d="M410,146 L398,152 L406,158 Z" fill="#475569" stroke="#0f172a" stroke-width="1"/>
+        </g>
+        <g class="premium-inlet">
+          <path d="M120,60 L120,150" stroke="#475569" stroke-width="14" stroke-linecap="round"/>
+          <path d="M120,60 L120,150" stroke="#1e293b" stroke-width="2"/>
+          <path d="M120,150 L300,150" stroke="#475569" stroke-width="14" stroke-linecap="round"/>
+          <path d="M120,150 L300,150" stroke="#1e293b" stroke-width="2"/>
+          <circle cx="120" cy="100" r="11" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.6"/>
+          <g stroke="#0f172a" stroke-width="1.6">
+            <line x1="120" y1="90" x2="120" y2="110"/>
+            <line x1="110" y1="100" x2="130" y2="100"/>
+          </g>
+          <path d="M284,150 L300,150 L284,158 Z" fill="#1e293b"/>
+        </g>
+        <g class="main-tank">
+          <path d="M300,150 A60,14 0 0 1 420,150" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5"/>
+          <rect x="300" y="150" width="120" height="220" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5"/>
+          <rect x="360" y="150" width="60" height="220" fill="#cbd5e1"/>
+          <path d="M304,228 Q330,220 360,228 T420,228" fill="none" stroke="#3730a3" stroke-width="1.6" opacity="0.7"/>
+          <rect x="304" y="228" width="112" height="140" fill="var(--accent)" opacity="0.55"/>
+          <path d="M300,370 A60,12 0 0 0 420,370" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+          <rect x="286" y="380" width="148" height="18" fill="#475569" stroke="#0f172a" stroke-width="1.3"/>
+          <rect x="300" y="398" width="16" height="32" fill="#334155" stroke="#0f172a" stroke-width="1.2"/>
+          <rect x="404" y="398" width="16" height="32" fill="#334155" stroke="#0f172a" stroke-width="1.2"/>
+        </g>
+        <g class="reinsurance-overflow">
+          <path d="M418,200 L560,255" stroke="#475569" stroke-width="12" stroke-linecap="round"/>
+          <path d="M418,200 L560,255" stroke="#1e293b" stroke-width="1.8"/>
+          <path d="M548,251 L562,258 L552,266 Z" fill="#1e293b"/>
+        </g>
+        <g class="cede-tank">
+          <path d="M560,255 A42,10 0 0 1 644,255" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.4"/>
+          <rect x="560" y="255" width="84" height="130" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.4"/>
+          <rect x="602" y="255" width="42" height="130" fill="#cbd5e1"/>
+          <path d="M564,340 Q580,334 602,340 T644,340" fill="none" stroke="#3730a3" stroke-width="1.4" opacity="0.7"/>
+          <rect x="564" y="340" width="76" height="45" fill="var(--accent)" opacity="0.5"/>
+          <path d="M560,385 A42,9 0 0 0 644,385" fill="#94a3b8" stroke="#0f172a" stroke-width="1.3"/>
+          <rect x="550" y="392" width="104" height="14" fill="#475569" stroke="#0f172a" stroke-width="1.2"/>
+          <rect x="562" y="406" width="12" height="24" fill="#334155" stroke="#0f172a" stroke-width="1.1"/>
+          <rect x="622" y="406" width="12" height="24" fill="#334155" stroke="#0f172a" stroke-width="1.1"/>
+        </g>
+        <g class="claims-outlet">
+          <path d="M360,398 L360,436" stroke="#475569" stroke-width="12" stroke-linecap="round"/>
+          <path d="M360,398 L360,436" stroke="#1e293b" stroke-width="1.8"/>
+          <path d="M354,430 L366,430 L360,442 Z" fill="var(--accent)"/>
+          <path d="M300,440 L420,440 L410,460 L310,460 Z" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+          <g stroke="var(--accent)" stroke-width="1.4" opacity="0.75">
+            <circle cx="330" cy="452" r="2.5"/>
+            <circle cx="360" cy="455" r="2.5"/>
+            <circle cx="390" cy="452" r="2.5"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <h2>Bo phan nao neo bien nao</h2>
+  <table>
+    <tr><th>Bo phan vat the</th><th>Bien so lieu neo</th><th>Doc the nao</th></tr>
+    <tr>
+      <td>Duong ong lon + van banh xe o goc tren trai, chay vao dinh be chinh</td>
+      <td>Phi bao hiem goc thu duoc (gross written premium)</td>
+      <td>Duong ong cang lon/van cang mo = dong phi vao cang manh; day la dau vao chinh cua toan he thong</td>
+    </tr>
+    <tr>
+      <td>Chieu cao chat long mau accent trong be chinh</td>
+      <td>Du phong nghiep vu (net technical reserves) hien co</td>
+      <td>Mau nay ve muc nuoc ~64% chieu cao be (tu day be len toi gan mieng) = du phong con day, chua bi rut can boi mot dot boi thuong lon</td>
+    </tr>
+    <tr>
+      <td>Ong xa day be chinh, chay xuong be hung phia duoi</td>
+      <td>Chi tra boi thuong (claims paid) / ty le boi thuong</td>
+      <td>Cac giot ban ra o be hung la dong chay lien tuc; ong cang lon hoac giot ban day dac hon = ty le boi thuong dang tang, an mon du phong nhanh hon</td>
+    </tr>
+    <tr>
+      <td>Ong tran nghieng noi sang be phu nho hon ben phai, + muc nuoc rieng cua be phu</td>
+      <td>Ty le nhuong tai bao hiem (ceded reinsurance ratio)</td>
+      <td>Be phu chi bang khoang 40% dung tich be chinh va muc nuoc thap hon = phan rui ro da chuyen giao cho nha tai bao hiem chi la mot lat cat nho hon so voi phan cong ty giu lai</td>
+    </tr>
+    <tr>
+      <td>Coc tien nho (3 dong xu chong) rot xuong be chinh tu tren qua 1 ong nho</td>
+      <td>Thu nhap dau tu tren quy du phong (investment income)</td>
+      <td>Day la dong vao PHU, nho hon han ong phi bao hiem chinh, dung vi tri "rot them tu tren" de phan biet voi dong phi bao hiem "chay ngang" o duoi</td>
+    </tr>
+  </table>
+
+  <h2>Ba bai tu kiem bat buoc</h2>
+
+  <h3>1. Che het chu, con doc ra cau truc du lieu khong</h3>
+  <div class="test-block pass">
+    <strong>KET QUA: DAT.</strong> Xoa <code>&lt;title&gt;</code>/<code>&lt;desc&gt;</code>, hinh van
+    doc duoc nhu mot SO DO CO CHE cong nghiep chuan: 1 be lon + 1 be nho hon
+    noi voi nhau qua 1 ong cheo, be lon co 1 duong ong lon voi 1 van banh xe
+    o dau vao, va 1 duong ong nho o day chay ra ngoai. Nguoi xem quen so do
+    cong nghiep (bon chua, nha may loc dau, xu ly nuoc) se doc duoc NGAY ca
+    truc "vao/tru/tran/ra" ma khong can chu, day chinh la cau truc dinh luong
+    can kiem trong bai nay.
+  </div>
+
+  <h3>2. Doi nganh khac, hinh con dung nguyen duoc khong</h3>
+  <div class="test-block pass">
+    <strong>KET QUA: DAT, KEM 1 GIOI HAN THAT PHAI NEU RO (khong noi chung
+    chung).</strong> Cac nhan "phi bao hiem goc", "boi thuong", "nhuong tai
+    bao hiem" la thuat ngu CHI TON TAI trong nganh bao hiem, khong doi duoc
+    sang nganh khac ma van dung nghia. Tuy nhien phai thua nhan mot gioi han
+    that: BAN THAN hinh dang "2 be noi nhau qua ong tran, be lon co dong vao
+    dong ra" khong phai la hinh dang doc quyen cua bao hiem, no CUNG mo ta
+    duoc co che hop von/dong von ngan hang (tien gui vao, cho vay ra, mot
+    phan chuyen nhuong khoan vay cho ngan hang khac qua syndication) neu doi
+    nhan. Diem cuu duoc bai kiem nay khong nam o HINH DANG tank+pipe (von dung
+    duoc cho nhieu co che tich luy) ma nam o hai chi tiet gan chat vao doi
+    tuong: (a) chinh thuat ngu "du phong nghiep vu" trong nganh bao hiem VON
+    LA an du tu "ho chua" duoc chuan hoa boi ke toan bao hiem (khong phai
+    LLM tu nghi ra), va (b) co che "1 CONG TY chuyen giao rui ro cho MOT CONG
+    TY KHAC qua 1 hop dong nhuong tai" la dac thu bao hiem, khac ban chat voi
+    viec ngan hang giu lai rui ro tren chinh bang can doi cua minh du co ban
+    bot khoan vay. Ket luan: DAT nhung o muc "an du co che dung thuat ngu
+    nganh" chu khong dat muc "hinh dang hoc khong the swap", nen khi dung that
+    nen kem nhan chu ro rang (phi bao hiem/boi thuong/nhuong tai), khong nen
+    bo hinh nay dung mot minh khong chu nhu mau logistics/det may/thuy san.
+  </div>
+
+  <h3>3. Kiem danh sach den chart gia</h3>
+  <div class="test-block pass">
+    <strong>KET QUA: DAT.</strong> Khong gauge (khong kim/mat so cho muc du
+    phong, dung MUC CHAT LONG tren truc thang, cung ho ma bullet chart dung),
+    khong radar, khong pie/donut o dau bang so lieu thi phan.
+  </div>
+
+  <h2>Khi nao KHONG nen dung an du nay</h2>
+  <ul>
+    <li>Cong ty bao hiem khong mua tai bao hiem dang ke (giu lai gan het rui
+      ro): be phu gan nhu rong, mat 1 trong 5 bien neo, nen bo hinh be phu va
+      chi dung 4 bien con lai.</li>
+    <li>Bao hiem nhan tho co san pham lien ket dau tu/gia tri hoan lai: co
+      cau du phong that phuc tap hon nhieu (nhieu quy con, tai san doi ung
+      rieng tung hop dong), 1 be don o day la don gian hoa qua muc, de gay
+      hieu lam.</li>
+    <li>Nguoi doc bao cao chua quen thuat ngu "du phong nghiep vu"/"nhuong
+      tai": nen giai thich bang loi truoc, vi nhu bai tu kiem 2 da neu, hinh
+      nay dua vao NHAN CHU de tach khoi co che tank+pipe chung chung, bo hinh
+      dung rieng khong chu se doc sai thanh "dong tien" chung chung.</li>
+  </ul>
+
+  <p class="source">
+    File nguon SVG sach: research/09-metaphor/svg/insurance-reserve-tank.svg &middot;
+    Ngu phap tuan theo illustrations/grammar.md &middot; Xem bang tra day du o
+    research/09-metaphor/METAPHOR-TABLE-EXT.md
+  </p>
+</div>
+</body>
+</html>

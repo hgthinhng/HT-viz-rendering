@@ -73,7 +73,11 @@
     min-height: 297mm;
     margin: 24px auto;
     background: var(--paper);
-    box-shadow: 4px 4px 0 rgba(5,28,44,0.18);
+    /* Không dùng box-shadow: đã xác nhận thuộc tính này không tồn tại trong
+       WeasyPrint 69.0 (xem FINDINGS.md muc 0.1). Ở đây cũng không cần thay
+       bằng kỹ thuật khác (border/offset) vì độ tương phản trắng/xám-xanh
+       giữa .page và nền html đã đủ tách lớp thị giác, shadow chỉ là trang
+       trí thêm không mang việc phân tầng thật. */
     padding: 26mm 20mm 20mm 20mm;
     position: relative;
   }
@@ -251,7 +255,7 @@
   @media print {
     html, body { background: var(--paper); }
     .page {
-      width: auto; min-height: auto; margin: 0; box-shadow: none;
+      width: auto; min-height: auto; margin: 0;
       padding: 0;
     }
     .research-tag { display: none; }

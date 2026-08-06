@@ -1,0 +1,200 @@
+<!--
+  MINH HOẠ: khi CẢ MỘT Ô/THẺ CHỈ SỐ rỗng hoàn toàn (không phải một ô lẻ trong bảng), và khi một
+  doanh nghiệp ĐÃ QUÁ HẠN công bố nguyên một quý. Hai trạng thái rỗng toàn phần khác nhau, cần
+  hai cách viết khác nhau, không dùng chung một khối "chưa có dữ liệu" chung chung.
+
+  Vòng 4, vùng "Trạng thái rỗng và trạng thái thiếu dữ liệu". Xem research/11-empty-states/
+  FINDINGS.md mục 5 để có lý giải đầy đủ về ranh giới "chưa tới kỳ" so với "đã quá hạn".
+
+  MỘT NGOẠI LỆ THÀNH THẬT NGOÀI SÁU LOẠI GỐC: thẻ "P/E trượt 4 quý" dưới đây không rỗng vì
+  doanh nghiệp không công bố hay chưa tới kỳ - từng quý ĐÃ được công bố đầy đủ và đúng hạn, ô
+  rỗng vì CHỈ SỐ PHÁI SINH (cần tối thiểu 4 quý liên tục) chưa đủ điều kiện tính, một loại vắng
+  mặt thứ bảy nằm ngoài bảng sáu hàng gốc: "vắng mặt vì độ sâu lịch sử chưa đủ cho phép tính,
+  không phải vì thiếu số liệu nguồn". Ghi nhận trung thực case này trong FINDINGS.md, không ép
+  vào một trong sáu hàng cho gọn.
+
+  LẤY Ý TỪ: Thông tư 96/2020/TT-BTC Điều 14 (xác nhận qua WebFetch bản toàn văn) cho mốc hạn 20
+  ngày kể từ ngày kết thúc quý; VietnamPlus "Firms ask for delay financial statements release"
+  xác nhận việc xin gia hạn công bố "xảy ra hằng năm, hằng quý" ở TTCK Việt Nam - tức quá hạn
+  công bố là một tín hiệu ĐỦ PHỔ BIẾN để cần một cách trình bày riêng, không phải trường hợp hiếm
+  có thể bỏ qua.
+
+  Chỉ báo "quý đã có" dùng CHUỖI CHẤM rời rạc đếm được (●●○○), KHÔNG phải gauge: không có kim,
+  không có cung tròn, không có vùng ngưỡng màu - chỉ đếm số lượng đơn vị rời rạc, giống họ
+  "step indicator" đã có sẵn trong design-system/tokens.css (ghi chú "--radius-3, hiếm dùng, chỉ
+  ô tròn số bước, xem step-chain nâng cấp").
+
+  RÀNG BUỘC ĐÃ TÔN TRỌNG: không gauge/radar; không em/en dash; không box-shadow/text-shadow có
+  blur; media query có "screen"; font-family kết bằng generic keyword.
+
+  Doanh nghiệp, mã, và số liệu trong trang này là MINH HOẠ, tiếp nối từ samples/empty-bang-sau-
+  loai-vang-mat.html (Logistics Miền Đông* và Bất động sản Kim Long*).
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Trạng thái rỗng toàn phần: chưa đủ điều kiện so với đã quá hạn</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --paper-hi: #F7F9FC; --paper-hair: #EEF1F6;
+    --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6; --ink-faint: #AAB8C4;
+    --line: #DBE2EA; --line-lo: #EEF1F6;
+    --accent: #2251FF; --pos: #008A6D; --neg: #C22F4E; --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem; --fs-small: 0.825rem; --fs-body: 1rem;
+    --fs-h3: 1.333rem; --fs-h2: 1.777rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+  .page { width: 210mm; min-height: 297mm; margin: 24px auto; background: var(--paper); border: 1px solid var(--line); padding: 18mm; position: relative; }
+  .research-tag { position: absolute; top: 8px; right: 8px; font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper); padding: 2px 8px; letter-spacing: 0.04em; z-index: 5; }
+  .kicker { font-family: var(--font-mono); font-size: var(--fs-small); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 var(--space-2) 0; }
+  h1.headline { font-size: 2.0rem; font-weight: 600; line-height: 1.2; margin: 0 0 var(--space-3) 0; max-width: 32ch; }
+  p.lede { font-size: var(--fs-small); color: var(--ink-md); max-width: 68ch; line-height: 1.6; margin: 0 0 var(--space-6) 0; }
+  h2.section-title { font-size: var(--fs-h3); font-weight: 600; margin: var(--space-7) 0 var(--space-3) 0; }
+  h3.sub { font-family: var(--font-mono); font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 var(--space-2) 0; color: var(--ink-lo); }
+  h3.sub.bad { color: var(--neg); }
+
+  .kpi-row { display: flex; gap: var(--space-4); margin-bottom: var(--space-3); }
+  .kpi-tile { flex: 1; border: 1px solid var(--line); padding: var(--space-4); background: var(--paper-hi); }
+  .kpi-tile .k-label { font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 6px 0; }
+  .kpi-tile .k-value { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 600; }
+  .kpi-tile .k-value.blank { color: var(--ink-faint); }
+  .kpi-tile .k-note { font-size: 0.78rem; color: var(--ink-md); line-height: 1.4; margin-top: 6px; }
+
+  /* ── thẻ rỗng toàn phần đúng cách: chưa đủ điều kiện, trung tính ─────── */
+  .empty-card {
+    border: 1px solid var(--line); background: var(--paper); padding: var(--space-5);
+  }
+  .empty-card .e-label { font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 var(--space-2) 0; }
+  .empty-card .e-reason { font-size: var(--fs-body); line-height: 1.6; max-width: 60ch; margin: 0 0 var(--space-3) 0; }
+  .step-row { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
+  .step-dot { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--ink-md); background: var(--paper); }
+  .step-dot.filled { background: var(--ink-md); }
+  .step-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-lo); margin-left: var(--space-2); }
+  .have-note { font-size: 0.82rem; color: var(--ink-md); margin: 0 0 4px 0; }
+  .have-note b { color: var(--ink); font-weight: 600; }
+
+  /* ── thẻ quá hạn: cần chú ý, viền warn, không tô nền đỏ ─────────────── */
+  .overdue-card {
+    border: 1px solid var(--warn); background: var(--paper); padding: var(--space-5);
+  }
+  .overdue-card .o-label { font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--warn); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 var(--space-2) 0; }
+  .overdue-card .o-reason { font-size: var(--fs-body); line-height: 1.6; max-width: 62ch; margin: 0 0 var(--space-3) 0; }
+  .overdue-meta { font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-md); border-top: 1px solid var(--line); padding-top: var(--space-2); }
+  .overdue-meta div { margin-bottom: 2px; }
+
+  .two-col { display: flex; gap: var(--space-5); margin-top: var(--space-3); }
+  .two-col > div { flex: 1; min-width: 0; }
+  .coverage-line { font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo); margin: var(--space-3) 0 var(--space-6) 0; }
+
+  .verdict { margin-top: var(--space-7); padding: var(--space-5); background: var(--ink); color: var(--paper); }
+  .verdict .v-kicker { font-family: var(--font-mono); font-size: var(--fs-caption); letter-spacing: 0.08em; text-transform: uppercase; color: #7D9BFF; margin: 0 0 var(--space-2) 0; }
+  .verdict ul { margin: 0; padding-left: 1.1em; font-size: var(--fs-small); line-height: 1.7; }
+  .verdict li { margin-bottom: 4px; }
+
+  @media screen and (max-width: 900px) { .page { width: 100%; padding: 16px; } .kpi-row, .two-col { flex-direction: column; } }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; border: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 16mm; }
+    .kpi-row, .two-col, .verdict { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">RỖNG TOÀN PHẦN</span>
+
+  <p class="kicker">Trạng thái rỗng và thiếu dữ liệu &middot; Thẻ chỉ số rỗng hoàn toàn</p>
+  <h1 class="headline">Một thẻ chỉ số rỗng cần nói được TẠI SAO nó rỗng, không chỉ rỗng</h1>
+  <p class="lede">Hai tình huống dễ gộp nhầm làm một: "chưa đủ điều kiện tính vì mới niêm yết"
+  (trung tính, sẽ tự hết khi thời gian trôi qua) và "đã quá hạn công bố" (một tín hiệu quy trình
+  thật, không tự hết nếu không có động thái từ doanh nghiệp).</p>
+
+  <h2 class="section-title">Đừng làm vậy</h2>
+  <h3 class="sub bad">Ba con số, một dấu gạch ngang, không lời giải thích</h3>
+  <div class="kpi-row">
+    <div class="kpi-tile">
+      <p class="k-label">Doanh thu TTM</p>
+      <p class="k-value">1.520 tỷ</p>
+    </div>
+    <div class="kpi-tile">
+      <p class="k-label">Biên LN gộp Q2/26</p>
+      <p class="k-value">22,4%</p>
+    </div>
+    <div class="kpi-tile">
+      <p class="k-label">P/E trượt 4 quý</p>
+      <p class="k-value blank">-</p>
+      <p class="k-note">(không rõ vì sao)</p>
+    </div>
+  </div>
+  <p class="panel-note" style="font-size:0.82rem;color:var(--ink-md);max-width:64ch;line-height:1.5;">Người đọc không biết đây là "chưa đủ dữ liệu", "không áp dụng", hay "doanh nghiệp không
+  công bố" - đúng cái bẫy mở đầu của toàn bộ hồ sơ này, thu nhỏ vào quy mô một thẻ KPI đơn lẻ.</p>
+
+  <h2 class="section-title">Thay bằng</h2>
+  <div class="two-col">
+    <div>
+      <h3 class="sub">Chưa đủ điều kiện tính (trung tính, tạm thời)</h3>
+      <div class="empty-card">
+        <p class="e-label">P/E trượt 4 quý &middot; Logistics Miền Đông*</p>
+        <p class="e-reason">Cần tối thiểu 4 quý liên tục kể từ ngày niêm yết để tính TTM. Doanh
+        nghiệp mới có 2 quý (Q1, Q2/2026), cả hai đã công bố đúng hạn. Dự kiến đủ điều kiện tính
+        từ kỳ báo cáo Q4/2026.</p>
+        <div class="step-row">
+          <span class="step-dot filled"></span>
+          <span class="step-dot filled"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-label">Q1/26 &middot; Q2/26 đã có &middot; Q3/26 &middot; Q4/26 còn thiếu</span>
+        </div>
+        <p class="have-note">Đã có: <b>LNST quý gần nhất 42 tỷ</b>, <b>biên LN gộp Q2/26 22,4%</b> - xem hai thẻ liền kề.</p>
+      </div>
+    </div>
+    <div>
+      <h3 class="sub bad">Đã quá hạn công bố (cần chú ý, không tự hết)</h3>
+      <div class="overdue-card">
+        <p class="o-label">Q2/2026 &middot; Bất động sản Kim Long*</p>
+        <p class="o-reason">Chưa công bố báo cáo tài chính quý 2/2026. Hạn công bố theo Thông tư
+        96/2020/TT-BTC là 20 ngày kể từ ngày kết thúc quý (20/07/2026). Tính tới ngày chốt báo
+        cáo này, đã quá hạn 12 ngày, doanh nghiệp chưa công bố lý do gia hạn.</p>
+        <div class="overdue-meta">
+          <div>Kỳ kết thúc: 30/06/2026</div>
+          <div>Hạn công bố: 20/07/2026 (Đ.14, TT 96/2020/TT-BTC)</div>
+          <div>Ngày chốt báo cáo này: 01/08/2026 &middot; quá hạn 12 ngày</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="coverage-line">Bảng chỉ số ngành logistics và bất động sản trong báo cáo này phủ
+  11/12 doanh nghiệp đúng hạn; 1 trường hợp chưa đủ điều kiện tính TTM (trung tính) và 1 trường
+  hợp quá hạn công bố (cần theo dõi) được tách riêng thành hai thẻ ở trên thay vì gộp vào bảng
+  chính.</p>
+
+  <div class="verdict">
+    <p class="v-kicker">Khi nào KHÔNG dùng hai mẫu thẻ này</p>
+    <ul>
+      <li>Đừng dùng chuỗi chấm rời rạc (●●○○) cho những chỉ số cần LIÊN TỤC theo thời gian
+      (dòng tiền tích luỹ, tỷ lệ hoàn thành kế hoạch năm) - chuỗi chấm chỉ đúng khi đơn vị đếm
+      được và rời rạc thật (số quý, số kỳ báo cáo), dùng cho đại lượng liên tục sẽ trông giống
+      một gauge cải trang, đúng thứ danh sách đen của repo này cấm.</li>
+      <li>Đừng dùng viền --warn cho thẻ "chưa đủ điều kiện tính" (thẻ trái), viền đó phải để
+      dành riêng cho tín hiệu cần chú ý thật (thẻ phải); dùng chung sẽ làm loãng đúng lúc người
+      đọc cần phân biệt "trung tính" với "cần chú ý".</li>
+      <li>Đừng viết "dự kiến đủ điều kiện tính từ kỳ Q4/2026" nếu chưa chắc doanh nghiệp sẽ giữ
+      đúng lịch niêm yết liên tục (ví dụ nguy cơ huỷ niêm yết), lúc đó bỏ câu dự kiến, chỉ giữ lý
+      do hiện tại.</li>
+    </ul>
+  </div>
+</section>
+</body>
+</html>

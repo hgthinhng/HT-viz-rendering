@@ -46,15 +46,18 @@ WeasyPrint" ở bất kỳ vòng nào, không riêng shadow.
 
 ## Vùng chưa đụng tới, gợi ý cho vòng sau
 
-- **Ưu tiên cao, phát hiện mới từ vòng 3 tổng hợp**: kỹ thuật "khối nổi 2 phần tử lệch vị trí"
-  (`position:absolute` behind + `position:relative` front trong `display:inline-block`, catalog
-  ở `wow-do-noi-khong-blur.html`) VỠ khi text là một CỤM TỪ CÓ KHOẢNG TRẮNG (WeasyPrint tính sai
-  containing-block width của phần tử `absolute`, tự ngắt dòng dù phần tử `front` không ngắt) - đã
-  tái hiện thật và vá bằng `white-space:nowrap` trong `samples/BAO-CAO-LIEN-MACH.html` (xem mục
-  3.2 `research/08-synthesis/FINDINGS.md`), nhưng CHƯA quay lại vá `wow-do-noi-khong-blur.html`
-  gốc hay bất kỳ component nào trong `components/` có thể đang dùng lại đúng kỹ thuật này với
-  chữ nhiều từ. Cần một vòng audit riêng cho `components/` + thêm `white-space:nowrap` vào chính
-  catalog gốc để không ai phải tái khám phá lỗi này.
+- **ĐÃ VÁ (04-wow-layer tự quay lại sau phản biện của vòng 3 tổng hợp)**: kỹ thuật "khối nổi 2
+  phần tử lệch vị trí" trong `wow-do-noi-khong-blur.html` VỠ khi text là một CỤM TỪ CÓ KHOẢNG
+  TRẮNG, đúng như vòng 3 tổng hợp phát hiện và vá tạm trong `BAO-CAO-LIEN-MACH.html`. Đã quay lại
+  vá GỐC: thêm `white-space: nowrap` vào cả hai lớp (behind/front) ở cả 4 chỗ dùng kỹ thuật này
+  trong `samples/wow-*.html`, thêm một ô demo dùng đúng cụm "Dư cung" trong
+  `wow-do-noi-khong-blur.html` mục 2 làm bài kiểm hồi quy trực quan, và ghi ràng buộc bắt buộc
+  vào `research/04-wow-layer/FINDINGS.md` mục 8.2. Nghiệm thu bằng mở ảnh (không phải phép đếm,
+  vì lỗi là chồng chữ): cả 5 file lại đúng 1 trang A4 trừ `wow-do-noi-khong-blur.html` giờ 2
+  trang do thêm nội dung, 0 raster, "Dư cung" hiện đúng 1 dòng không đè lên caption bên dưới.
+  Việc CÒN LẠI, chưa làm: audit `components/` xem có chỗ nào khác đang tự dùng lại đúng mẫu
+  `position:absolute` không `right/bottom/width` cho text có khoảng trắng mà chưa có
+  `white-space:nowrap`.
 - **Ưu tiên cao, phát hiện mới từ vòng 3 tổng hợp**: `report-exec-brief-action-first.html` hiện
   vẫn còn `font-size:clamp(1.55rem, 1.1rem + 1.6vw, 2.15rem)` cho `h1.verdict`, vi phạm đúng phát
   hiện 0.3 mà chính `01-editorial/FINDINGS.md` đã cảnh báo từ vòng 1 (`clamp()` bị WeasyPrint bỏ
@@ -77,23 +80,26 @@ WeasyPrint" ở bất kỳ vòng nào, không riêng shadow.
   trong cùng tài liệu cỡ 12-16 trang - vòng 3 tổng hợp phát hiện lặp lại y hệt 2 lần đã đủ để cảm
   nhận thành khuôn mẫu, thấp hơn nhiều so với ngưỡng "quá 3 lần" mà `ANTI-SLOP.md` viết cho tài
   liệu dài hơn. Nếu cần đánh dấu ranh giới phần thứ 2 trở đi, dùng marker nhẹ dạng dòng chữ.
-- **Ưu tiên cao, ảnh hưởng toàn repo, KẾT LUẬN GỐC CỦA VÒNG 01-EDITORIAL LÀ ĐÚNG, ĐÃ VERIFY LẠI
-  bằng so ảnh mức byte ở vòng 04-wow-layer**: audit `components/` và `charts/` xem có bao nhiêu
-  chỗ đang dựa vào `box-shadow`/`text-shadow` (kể cả qua biến `--shadow-1/2/3/hairline`) để tạo
-  cảm giác "khối nổi". Vòng 04-wow-layer từng thử đính chính nguyên nhân sang "lỗi cú pháp màu
-  `rgba(R G B / A)`" dựa trên so sánh BẰNG MẮT, nhưng sau đó chính vòng đó tự kiểm lại bằng so
-  ảnh PNG ở MỨC BYTE (5-6 biến thể, chỉ đổi đúng một khai báo mỗi lần, so `bytes` trực tiếp) và
-  xác nhận: **kết luận gốc của vòng 01-editorial ĐÚNG** - `box-shadow` và `text-shadow` không
-  tồn tại trong WeasyPrint 69.0 dưới BẤT KỲ cú pháp màu nào, kể cả offset cứng blur=0 và kể cả
-  `rgba()` dấu phẩy cổ điển. Xem mục 8 `research/04-wow-layer/FINDINGS.md` cho bảng 6 phép so
-  ảnh. Quyết định cần đưa ra: chấp nhận không có hiệu ứng nổi kiểu shadow trong PDF, chuyển sang
-  kỹ thuật đã verify render thật (khối/chữ trùng lệch vị trí bằng `transform` + `z-index`,
-  border đặc, background-color khối) - ba kỹ thuật này đã có mẫu ở `samples/wow-do-noi-khong-blur.html`.
-- **Ưu tiên cao**: audit toàn repo (`components/`, `charts/`, mẫu HTML khác) xem có chỗ nào dùng
-  `clamp()`/`min()`/`max()` cho `font-size`/`width`/thuộc tính khác không - hàm này bị WeasyPrint
-  69.0 bỏ qua ÂM THẦM (chỉ warning trong log) và property rớt về giá trị kế thừa, đã bắt thật 1
-  lỗi trong lúc làm vòng 01-editorial (xem mục 0.3 `FINDINGS.md`). Không suy đoán được từ đọc CSS
-  bằng mắt, phải render qua WeasyPrint thật và đo giá trị xuất ra.
+- ~~Ưu tiên cao, ảnh hưởng toàn repo: audit `components/`/`charts/` xem có bao nhiêu chỗ dựa vào
+  `box-shadow`/`text-shadow`~~ **ĐÃ XONG (vòng 4, agent res-audit)**. Kết luận 1 dòng: chỉ 2/22
+  component thật sự bị (`.sg-card` ở `components/components.css:78`, xoá được ngay vì border đã
+  đủ; `.q-dot` ở dòng 238, nên thay bằng lớp phủ nhẹ), `text-shadow` 0 chỗ, 4/5 token
+  `--shadow-*` chưa từng được dùng ở đâu nên chưa hỏng gì, ba kỹ thuật thay thế đã verify (khối
+  lệch vị trí `position`/`transform`+`z-index`, border đặc, background-color phân lớp) phủ hết
+  mọi vai trò tìm thấy. Chi tiết đủ số đo: `research/10-weasyprint-audit/FINDINGS.md`, bảng sửa:
+  `research/10-weasyprint-audit/MIGRATION-TABLE.md`, mẫu đối chiếu:
+  `samples/audit-kpi-card.html`, `samples/audit-strong-layering.html`.
+- ~~Ưu tiên cao: audit toàn repo xem có chỗ nào dùng `clamp()`/`min()`/`max()`~~ **ĐÃ XONG (vòng
+  4)**. Kết luận 1 dòng: 0 chỗ trong `components/`/`charts/`/`design-system/`/`illustrations/`;
+  1 chỗ sống ở `components/gallery.html:19` nhưng đo render thật cho 0% ảnh hưởng PDF (nằm trong
+  `.no-print`); 1 chỗ THẬT SỰ VỠ nằm ngoài phạm vi 4 thư mục, ở
+  `samples/report-exec-brief-action-first.html:64` (`h1.verdict` đo ra 12pt thay vì ~19-26pt dự
+  kiến, đúng chỗ vòng 3 tổng hợp cũng vừa cảnh báo lại ở trên) - vẫn CHƯA sửa, ngoài phạm vi ghi
+  file của vòng 4. Bonus phát hiện cần chỉnh lại cách hiểu: `<svg height="auto">` dạng THUỘC TÍNH
+  HTML vẫn là bẫy thật (0 chỗ còn tồn tại trong repo), nhưng CÙNG GIÁ TRỊ khai qua CSS property
+  (`svg { height: auto }`, gặp ở 2 file `illustrations/examples/*.html`) đã đo render ĐÚNG,
+  KHÔNG phải bẫy - đừng báo nhầm pattern này ở vòng sau. `filter: grayscale`/mọi filter: 0 chỗ,
+  sạch tuyệt đối.
 - Xác minh riêng câu hỏi để ngỏ ở mục 3.3 `research/01-editorial/FINDINGS.md`: Spectral xuất số
   trong văn xuôi theo oldstyle hay lining figures theo mặc định, và WeasyPrint có đọc được
   `font-variant-numeric: oldstyle-nums` hay không - cần render thật một đoạn số qua WeasyPrint và

@@ -1,0 +1,219 @@
+<!--
+  MINH HOẠ: so sánh hai doanh nghiệp có ĐỘ DÀI CHUỖI THỜI GIAN khác hẳn nhau (18 năm so với 3
+  năm) mà không tạo ấn tượng sai về độ tin cậy - tình huống rất hay gặp ở TTCK Việt Nam khi so
+  một doanh nghiệp niêm yết lâu năm với một doanh nghiệp mới IPO.
+
+  Vòng 4, vùng "Trạng thái rỗng và trạng thái thiếu dữ liệu". Xem research/11-empty-states/
+  FINDINGS.md mục 4 để có lý giải đầy đủ.
+
+  BẪY CHÍNH được minh hoạ: rebase (chỉ số hoá) cả hai chuỗi về CÙNG một năm gốc xa hơn cả lịch sử
+  thật của chuỗi ngắn đòi hỏi phải BỊA số trước khi doanh nghiệp đó tồn tại trên sàn - dù kỹ
+  thuật giữ đường đó "phẳng ở mốc 100" (không tăng không giảm) thay vì bịa số dao động, một
+  đường phẳng vẫn ĐỌC RA LÀ "không có biến động", một phát biểu sai hoàn toàn khác với "doanh
+  nghiệp này chưa tồn tại trên sàn ở giai đoạn đó". Đây là cùng cơ chế lỗi với memory người dùng
+  "baseline phải rút TRONG nhóm" (feedback_baseline_must_be_drawn_inside_the_subgroup) - ở đây
+  không phải baseline thống kê mà là mốc gốc index hoá, nhưng cùng bản chất: một chuỗi có lịch sử
+  ngắn không nên bị ép vào khung mốc gốc của chuỗi dài hơn.
+
+  LẤY Ý TỪ: nguyên tắc IPO event-marker (vạch dọc đánh dấu ngày niêm yết) là quy ước phổ biến
+  trong biểu đồ giá cổ phiếu hậu IPO (xem loại báo cáo "post-IPO day 1" thường dùng vạch mốc
+  ngày chào sàn tách bạch giai đoạn trước/sau). Ký hiệu "." cho ô "không áp dụng" ở bảng dưới
+  LẤY THẲNG từ research/11-empty-states/ABSENCE-TABLE.md hàng 3 - giai đoạn trước khi niêm yết
+  không phải "không công bố" (hàng 4) mà là KHÔNG ÁP DỤNG thật, vì chưa có gì để công bố.
+
+  RÀNG BUỘC ĐÃ TÔN TRỌNG: vạch mốc IPO dùng NÉT LIỀN mảnh (không phải nét đứt, để không đụng quy
+  ước dự phóng của vòng 2, và không phải vùng tô xám, để không đụng quy ước "khoảng đứt dữ liệu"
+  của samples/empty-chart-dut-gay-du-lieu.html trong chính vòng này); SVG width="100%" cộng
+  viewBox, không khai height; không em/en dash; media query có "screen".
+
+  Hai doanh nghiệp, mã, và toàn bộ số liệu trong trang này là MINH HOẠ.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>So sánh hai chuỗi thời gian dài ngắn khác nhau</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --paper-hi: #F7F9FC; --paper-hair: #EEF1F6;
+    --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6; --ink-faint: #AAB8C4;
+    --line: #DBE2EA; --line-lo: #EEF1F6;
+    --accent: #2251FF; --accent-soft: #7D9BFF; --pos: #008A6D; --neg: #C22F4E; --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem; --fs-small: 0.825rem; --fs-body: 1rem;
+    --fs-h3: 1.333rem; --fs-h2: 1.777rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+  .page { width: 210mm; min-height: 297mm; margin: 24px auto; background: var(--paper); border: 1px solid var(--line); padding: 18mm; position: relative; }
+  .research-tag { position: absolute; top: 8px; right: 8px; font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper); padding: 2px 8px; letter-spacing: 0.04em; z-index: 5; }
+  .kicker { font-family: var(--font-mono); font-size: var(--fs-small); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 var(--space-2) 0; }
+  h1.headline { font-size: 2.0rem; font-weight: 600; line-height: 1.2; margin: 0 0 var(--space-3) 0; max-width: 32ch; }
+  p.lede { font-size: var(--fs-small); color: var(--ink-md); max-width: 68ch; line-height: 1.6; margin: 0 0 var(--space-6) 0; }
+  h2.panel-title { font-family: var(--font-mono); font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 6px 0; }
+  .panel-title.bad { color: var(--neg); }
+  .panel-title.good { color: var(--pos); }
+  h2.section-title { font-size: var(--fs-h3); font-weight: 600; margin: var(--space-7) 0 var(--space-3) 0; }
+  .panel { margin-bottom: var(--space-6); }
+  .chart-box { background: var(--paper-hi); border: 1px solid var(--line); padding: var(--space-4) var(--space-5); }
+  .chart-box svg { display: block; width: 100%; }
+  .panel-note { font-size: var(--fs-small); color: var(--ink-md); line-height: 1.6; margin: var(--space-2) 0 0 0; max-width: 70ch; }
+  .legend-row { display: flex; gap: var(--space-5); flex-wrap: wrap; font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-md); margin: var(--space-2) 0 0 0; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .swatch-line { display: inline-block; width: 20px; height: 0; border-top: 2.5px solid var(--ink); }
+  .swatch-line.soft { border-top: 2.5px solid var(--accent-soft); }
+
+  .two-col { display: flex; gap: var(--space-5); }
+  .two-col > div { flex: 1; min-width: 0; }
+
+  table.dt { width: 100%; border-collapse: collapse; font-family: var(--font-serif); font-size: 0.82rem; margin: var(--space-2) 0 var(--space-2) 0; }
+  table.dt caption { text-align: left; caption-side: top; margin-bottom: var(--space-2); font-size: var(--fs-small); color: var(--ink-md); }
+  table.dt th, table.dt td { padding: 6px var(--space-3); text-align: right; border-bottom: 1px solid var(--line-lo); }
+  table.dt th:first-child, table.dt td:first-child { text-align: left; }
+  table.dt thead th { font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-lo); font-weight: 600; border-bottom: 1px solid var(--ink); }
+  table.dt td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  table.dt td.v-na { font-family: var(--font-mono); color: var(--ink-faint); letter-spacing: 0.1em; }
+  .coverage-line { font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo); margin: var(--space-3) 0 var(--space-6) 0; }
+
+  .verdict { margin-top: var(--space-6); padding: var(--space-5); background: var(--ink); color: var(--paper); }
+  .verdict .v-kicker { font-family: var(--font-mono); font-size: var(--fs-caption); letter-spacing: 0.08em; text-transform: uppercase; color: #7D9BFF; margin: 0 0 var(--space-2) 0; }
+  .verdict ul { margin: 0; padding-left: 1.1em; font-size: var(--fs-small); line-height: 1.7; }
+  .verdict li { margin-bottom: 4px; }
+
+  @media screen and (max-width: 900px) { .page { width: 100%; padding: 16px; } .two-col { flex-direction: column; } }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; border: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 16mm; }
+    .panel, .verdict, table.dt { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">CHUỖI DÀI NGẮN KHÁC NHAU</span>
+
+  <p class="kicker">Trạng thái rỗng và thiếu dữ liệu &middot; So sánh chuỗi thời gian</p>
+  <h1 class="headline">Mười tám năm dữ liệu không thể so ngang ba năm dữ liệu bằng một trục
+  chung ngầm định</h1>
+  <p class="lede">Cảng Sông Tiền* niêm yết 2008 (18 năm dữ liệu). Logistics Miền Đông* niêm yết
+  T4/2023 (3 năm dữ liệu). Cùng ngành, cùng quy mô vốn hoá hiện tại, nhưng độ dài lịch sử chênh
+  nhau 6 lần - nếu trình bày sai cách, người đọc dễ kết luận nhầm về độ ổn định của doanh nghiệp
+  mới hơn là ổn định NGANG với doanh nghiệp cũ, chỉ vì cả hai được vẽ trên cùng một trục dài.</p>
+
+  <div class="panel">
+    <h2 class="panel-title bad">Đừng làm vậy: chỉ số hoá cả hai về gốc 2008 = 100</h2>
+    <div class="chart-box">
+      <svg viewBox="0 0 520 190" width="100%" xmlns="http://www.w3.org/2000/svg" role="img"
+        aria-label="Chỉ số hoá cả hai doanh nghiệp về gốc 2008, đường Logistics Miền Đông nằm phẳng ở mốc 100 suốt 15 năm trước khi niêm yết, đọc nhầm thành không biến động">
+        <line x1="40" y1="150" x2="500" y2="150" stroke="#DBE2EA" stroke-width="1"/>
+        <line x1="40" y1="100" x2="500" y2="100" stroke="#EEF1F6" stroke-width="1"/>
+        <polyline points="50,100 110,90 170,70 230,95 290,60 350,45 410,50 470,20"
+          fill="none" stroke="#051C2C" stroke-width="2.5"/>
+        <polyline points="50,100 110,100 170,100 230,100 290,100 350,100 410,45 470,15"
+          fill="none" stroke="#7D9BFF" stroke-width="2.5"/>
+        <text x="50" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">2008</text>
+        <text x="230" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">2015</text>
+        <text x="410" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">2023</text>
+        <text x="470" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">2026</text>
+      </svg>
+    </div>
+    <p class="panel-note">Đường xanh nhạt (Logistics Miền Đông) nằm phẳng tuyệt đối ở mốc 100
+    suốt 2008 tới đầu 2023 - đây KHÔNG phải "không biến động", đây là "chưa tồn tại trên sàn",
+    hai phát biểu khác hẳn nhau. Một đường phẳng 15 năm cạnh một đường dao động 15 năm vô tình
+    tạo ấn tượng thị giác về sự ổn định mà doanh nghiệp đó chưa từng được kiểm chứng.</p>
+  </div>
+
+  <h2 class="section-title">Hai cách thay thế, đánh đổi khác nhau</h2>
+  <div class="two-col">
+    <div>
+      <h2 class="panel-title good">Cách 1: thu hẹp về cửa sổ chung</h2>
+      <div class="chart-box">
+        <svg viewBox="0 0 260 190" width="100%" xmlns="http://www.w3.org/2000/svg" role="img"
+          aria-label="Chỉ số hoá lại về gốc T4 2023, ngày cả hai doanh nghiệp cùng có dữ liệu, chỉ vẽ ba năm chung">
+          <line x1="30" y1="150" x2="240" y2="150" stroke="#DBE2EA" stroke-width="1"/>
+          <polyline points="40,100 100,85 160,70 220,40" fill="none" stroke="#051C2C" stroke-width="2.5"/>
+          <polyline points="40,100 100,95 160,60 220,25" fill="none" stroke="#7D9BFF" stroke-width="2.5"/>
+          <text x="40" y="168" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8595A6" text-anchor="middle">T4/23</text>
+          <text x="220" y="168" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8595A6" text-anchor="middle">2026</text>
+        </svg>
+      </div>
+      <p class="panel-note">Bỏ hẳn 15 năm lịch sử của Cảng Sông Tiền* khỏi chart này, chỉ so
+      trong đúng khoảng cả hai CÙNG tồn tại trên sàn. Ưu điểm: mọi điểm trên chart đều là so
+      sánh công bằng. Nhược điểm: người đọc mất hoàn toàn bối cảnh dài hạn của doanh nghiệp cũ,
+      cần một câu trỏ sang hồ sơ dài hạn riêng.</p>
+    </div>
+    <div>
+      <h2 class="panel-title good">Cách 2: hai khung trục X riêng, cùng thang Y, vạch mốc IPO</h2>
+      <div class="chart-box">
+        <svg viewBox="0 0 260 190" width="100%" xmlns="http://www.w3.org/2000/svg" role="img"
+          aria-label="Một chart với vạch mốc dọc đánh dấu ngày niêm yết Logistics Miền Đông, đường của doanh nghiệp này chỉ bắt đầu vẽ từ đúng ngày đó, không kéo phẳng về trước">
+          <line x1="30" y1="150" x2="240" y2="150" stroke="#DBE2EA" stroke-width="1"/>
+          <polyline points="40,120 90,105 140,90 190,95 220,55" fill="none" stroke="#051C2C" stroke-width="2.5"/>
+          <line x1="190" y1="20" x2="190" y2="150" stroke="#051C2C" stroke-width="1"/>
+          <polyline points="190,95 220,45" fill="none" stroke="#7D9BFF" stroke-width="2.5"/>
+          <circle cx="190" cy="95" r="4" fill="#7D9BFF"/>
+          <text x="192" y="30" font-family="IBM Plex Mono, monospace" font-size="9" fill="#42566A">IPO T4/23</text>
+          <text x="40" y="168" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8595A6" text-anchor="middle">2008</text>
+          <text x="190" y="168" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8595A6" text-anchor="middle">2023</text>
+          <text x="220" y="168" font-family="IBM Plex Mono, monospace" font-size="10" fill="#8595A6" text-anchor="middle">2026</text>
+        </svg>
+      </div>
+      <p class="panel-note">Giữ đủ 18 năm của Cảng Sông Tiền*, đường của Logistics Miền Đông chỉ
+      bắt đầu vẽ đúng từ vạch mốc IPO (nét liền mảnh, không phải nét đứt vì đó là ranh giới sự
+      kiện chứ không phải dự báo). Ưu điểm: giữ trọn bối cảnh dài hạn. Nhược điểm: mắt vẫn có xu
+      hướng so sánh ĐỘ DỐC hai đường dù trục X hai bên vạch mốc phủ độ dài thời gian khác nhau,
+      cần chú thích rõ trong lời văn đi kèm, không chỉ dựa vào hình.</p>
+    </div>
+  </div>
+
+  <div class="legend-row">
+    <span class="legend-item"><span class="swatch-line"></span> Cảng Sông Tiền* &middot; 18 năm dữ liệu (2008 - 2026)</span>
+    <span class="legend-item"><span class="swatch-line soft"></span> Logistics Miền Đông* &middot; 3 năm dữ liệu (2023 - 2026)</span>
+  </div>
+
+  <table class="dt">
+    <caption>Vốn hoá cuối năm hai doanh nghiệp, 2020 tới 2026 (tỷ đồng, MINH HOẠ)</caption>
+    <thead><tr><th>Doanh nghiệp</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Cảng Sông Tiền* (từ 2008)</td>
+        <td class="num">2.140</td><td class="num">2.380</td><td class="num">2.010</td>
+        <td class="num">2.560</td><td class="num">2.890</td><td class="num">3.120</td><td class="num">3.340</td>
+      </tr>
+      <tr>
+        <td>Logistics Miền Đông* (từ T4/2023)</td>
+        <td class="v-na">.</td><td class="v-na">.</td><td class="v-na">.</td>
+        <td class="num">640</td><td class="num">880</td><td class="num">1.180</td><td class="num">1.520</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="coverage-line">Ký hiệu "." = không áp dụng vì doanh nghiệp chưa niêm yết ở thời điểm đó, không phải "không công bố" (xem research/11-empty-states/ABSENCE-TABLE.md hàng 3 và 4 để phân biệt hai ký hiệu). Độ phủ: Cảng Sông Tiền* 7/7 năm &middot; Logistics Miền Đông* 4/7 năm (57%, đúng bằng số năm doanh nghiệp đã niêm yết).</p>
+
+  <div class="verdict">
+    <p class="v-kicker">Khi nào KHÔNG dùng từng cách</p>
+    <ul>
+      <li>Đừng dùng Cách 1 (thu hẹp cửa sổ chung) nếu mục đích chính của trang là đánh giá ĐỘ
+      BỀN dài hạn của doanh nghiệp cũ, cắt còn 3 năm sẽ xoá đúng thứ người đọc cần thấy.</li>
+      <li>Đừng dùng Cách 2 (hai khung trục X, vạch mốc IPO) nếu báo cáo hướng tới so sánh ĐỊNH
+      LƯỢNG chặt (ví dụ tính hệ số tương quan, beta) giữa hai chuỗi, vì trục X không đều khoảng
+      giữa hai đoạn dễ khiến người đọc suy ra sai một con số tăng trưởng gộp không có thật.</li>
+      <li>Đừng bao giờ quay lại cách "chỉ số hoá cả hai về cùng gốc xa hơn lịch sử thật của
+      chuỗi ngắn" (panel đỏ ở trên) dù có ghi chú nhỏ ở chân trang - ghi chú nhỏ không đủ sức
+      chống lại ấn tượng thị giác của một đường phẳng dài 15 năm.</li>
+      <li>Với bảng số: đừng dùng ".." (không công bố) cho các ô trước ngày niêm yết, dùng đúng
+      "." (không áp dụng) vì đây là một sự thật cấu trúc, không phải lựa chọn công bố của doanh
+      nghiệp.</li>
+    </ul>
+  </div>
+</section>
+</body>
+</html>

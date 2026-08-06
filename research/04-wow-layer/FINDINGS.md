@@ -304,6 +304,20 @@ thật, đúng tinh thần "verify output not just runs" đã có trong memory c
   kích thước và font, sai lệch dù 1px cũng lộ ngay vì đây là hai lớp thật chứ không phải một hiệu
   ứng tự động. Thua: nếu nội dung động (độ dài số liệu thay đổi), phải đảm bảo cả hai lớp cùng
   cập nhật, dễ lệch khi sinh tự động từ template.
+  **RÀNG BUỘC BẮT BUỘC, phát hiện bởi mũi tổng hợp sau khi mũi này đóng:** lớp phía sau
+  (`position: absolute`, không khai `right`/`bottom`/`width`) PHẢI có `white-space: nowrap`. Kỹ
+  thuật này ban đầu chỉ được thử với token đơn không khoảng trắng ("150", "18%"), và khi mũi
+  tổng hợp dùng nó với cụm có khoảng trắng ("Dư cung"), WeasyPrint tính sai chiều rộng
+  containing-block của lớp phía sau, tự ngắt dòng RIÊNG lớp đó rồi đè lên nội dung bên dưới -
+  không phép đếm ảnh/raster nào bắt được, chỉ thấy khi mở ảnh bằng mắt. Đã vá cả 4 chỗ dùng kỹ
+  thuật này trong `samples/wow-*.html` (thêm `white-space: nowrap`, và thêm một ô demo dùng
+  đúng cụm "Dư cung" trong `wow-do-noi-khong-blur.html` để làm bài kiểm hồi quy). Hệ quả: kỹ
+  thuật offset duplicate chỉ dùng được cho NỘI DUNG MỘT DÒNG; nếu cần nhiều dòng, phải tách
+  offset theo từng dòng riêng (mỗi dòng một cặp phần tử), không dùng một cặp phần tử duy nhất
+  cho khối nhiều dòng.
+  **Bài học quy trình:** một kỹ thuật đưa vào catalog dùng chung phải được thử với ÍT NHẤT HAI
+  lớp đầu vào khác nhau trước khi tuyên bố là kỹ thuật chung - thử một token đơn rồi coi là đã
+  xong là chưa đủ, vì lớp đầu vào PHỔ BIẾN HƠN (chữ nhiều từ) mới chính là lớp làm nó vỡ.
 - **Border đặc thay cho shadow.** `border: 1px/2px solid var(--ink)` quanh một khối là cách rẻ
   nhất để phân định ranh giới khi không có shadow - không tạo cảm giác "nổi" thật nhưng tạo cảm
   giác "được đóng khung có chủ đích", khác hẳn việc không viền gì. Đây chính là lý do palette

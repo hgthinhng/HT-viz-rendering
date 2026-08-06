@@ -68,7 +68,7 @@
     min-height: 297mm;
     margin: 12px auto;
     background: var(--paper);
-    padding: 12mm 16mm 10mm;
+    padding: 10mm 16mm 8mm;
     font-family: var(--font-serif);
     color: var(--ink);
   }
@@ -92,22 +92,28 @@
     margin: 0 0 14px;
     line-height: 1.5;
   }
-  /* Dùng flexbox thay vì CSS Grid đa cột: đã thực nghiệm CSS Grid nhiều cột
-     bị WeasyPrint tính sai kích thước track khi một item chứa bảng dày đặc
-     (min-content tràn), làm mất 2 card và tràn trang. Flexbox với width cố
-     định render đúng và ổn định hơn cho engine in này. */
+  /* Dùng float thay vì CSS Grid/flexbox: đã thực nghiệm CSS Grid nhiều cột bị
+     WeasyPrint tính sai kích thước track khi item chứa bảng dày đặc (mất 2
+     card, tràn trang); flexbox thì KHÔNG tự ngắt trang giữa các card, đẩy cả
+     khối 4 card sang trang sau dù trang trước còn nhiều chỗ trống. Float là
+     box thường, ngắt trang tự nhiên giữa các hàng. */
   .grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7mm;
+    display: block;
   }
+  .grid::after { content: ""; display: table; clear: both; }
   .card {
+    float: left;
     width: calc(50% - 3.5mm);
     border: 1px solid var(--line);
     padding: 12px 14px 14px;
     box-sizing: border-box;
+    margin-bottom: 7mm;
+  }
+  .card:nth-child(odd) {
+    margin-right: 7mm;
   }
   .full-width {
+    clear: both;
     width: 100%;
   }
   .card h2 {

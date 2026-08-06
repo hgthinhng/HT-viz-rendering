@@ -93,6 +93,29 @@ ECharts SVG nhúng vào trang WeasyPrint render). Khắc phục: dùng font stac
 cho tới khi Task 2 gộp xong 2 subset thành 1 khối mỗi weight. Xem chi tiết
 `FINDINGS.md` mục 0.1.
 
+## Bẫy khi giao file: `<svg height="auto">` và `filter: grayscale()` rỗng/sai trong WeasyPrint
+
+Hai bẫy im lặng tuyệt đối, không lỗi không cảnh báo, chỉ lộ ra khi mở đúng file PDF (không phải
+xem trên Chromium) và đếm số vector vẽ được. Chi tiết đầy đủ, bảng số liệu trước/sau và bảng
+quy đổi hex ở `FINDINGS.md` mục 0.2.
+
+1. `<svg width="100%" height="auto" viewBox="...">` render RỖNG HOÀN TOÀN trên WeasyPrint 69.0
+   (0 object vẽ được), dù `viewBox` vẫn khai đủ và file mở trên Chromium vẫn đẹp bình thường.
+   Thủ phạm là `height="auto"` một mình nó đã đủ. Sửa: bỏ hẳn `height="auto"`, chỉ giữ
+   `width="100%"` + `viewBox`; khống chế chiều cao (nếu cần) bằng CSS trên phần tử bao ngoài.
+2. `filter: grayscale()` (và CSS `filter` nói chung) bị WeasyPrint bỏ qua hoàn toàn, không
+   raster hoá sai, chỉ đơn giản không áp dụng: 1 SVG màu bọc `filter: grayscale(1)` hiện lên
+   NGUYÊN MÀU trong PDF. Nguy hiểm hơn bẫy 1 vì chart vẫn "trông có nội dung" (số drawing vẫn
+   cao bình thường), chỉ sai đúng cái mà mắt cần soi kỹ mới thấy. Sửa: không dùng `filter`,
+   tính tay hex xám bằng công thức luminance BT.709 (`Y = 0,2126R + 0,7152G + 0,0722B`) và
+   nhúng làm giá trị `fill`/`stroke` tĩnh.
+
+Quy trình nghiệm thu bắt buộc cho mọi chart SVG cần ra PDF: (1) đếm object vẽ được bằng
+`fitz`/PyMuPDF (`page.get_drawings()`) sau khi render qua `weasyprint`, vài đơn vị trong khi
+SVG có nội dung phức tạp là dấu hiệu rỗng; (2) render ra PNG và tự mở ảnh nhìn tận mắt, vì đếm
+drawing không bắt được trường hợp vẽ SAI (bẫy 2); (3) không bao giờ coi "đẹp trên Chromium" là
+bằng chứng đủ cho bản sẽ đi qua WeasyPrint.
+
 ## Bảng phụ: khi câu hỏi trông giống 1 chart giả, chuyển sang chart nào
 
 | Người yêu cầu muốn thấy | Chart họ hay đòi (đã bị cấm/nên tránh) | Chart thay thế đúng nghĩa | Vì sao thay thế tốt hơn |

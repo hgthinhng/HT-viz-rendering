@@ -39,6 +39,109 @@ nhúng font riêng — đã kiểm lại bằng grep, không file nào tham chi�
 `@font-face`. Bài học chung cho tài liệu này: **nghiệm thu bản in bằng cách xem trên trình
 duyệt là không đủ**, phải mở PDF thật và đọc lại tầng text.
 
+### 0.2 Hai bẫy SVG/CSS khiến chart RỖNG hoàn toàn hoặc SAI hoàn toàn trong WeasyPrint, im lặng tuyệt đối
+
+Phát hiện khi controller nghiệm thu 8 mẫu của chính tài liệu này qua đúng pipeline PDF của
+repo (WeasyPrint 69.0), không phải qua Chromium. Cả 2 bẫy đều KHÔNG báo lỗi, KHÔNG cảnh báo,
+và đều "đẹp bình thường" khi mở bằng trình duyệt, nên nghiệm thu bằng mắt trên Chromium hay
+bằng cách đọc tầng text của PDF (như bẫy font ở mục 0.1) đều không bắt được. Cách duy nhất bắt
+được là đếm số object vẽ được (`page.get_drawings()` của PyMuPDF) VÀ tự mở ảnh render ra nhìn.
+
+**Bẫy 1: `<svg height="auto">` render RỖNG HOÀN TOÀN trên WeasyPrint, không phải chỉ méo tỷ lệ.**
+
+Cô lập bằng 4 biến thể trên cùng 1 SVG chỉ có đúng 1 `<rect>`:
+
+| Thuộc tính khai trên `<svg>` | Số object vẽ được trong PDF |
+|---|---|
+| `width="100%" height="auto"` | 0 (RỖNG) |
+| `height="auto"` (không có `width`) | 0 (RỖNG) |
+| `width="100%"` (không có `height`) | 1 (OK) |
+| `width="400" height="120"` (cả 2 cố định) | 1 (OK) |
+
+Thủ phạm là `height="auto"` một mình nó đã đủ gây rỗng, có hay không có `width="100%"` đi kèm
+không quan trọng. Cả 8 file mẫu ban đầu của tài liệu này đều khai `<svg width="100%"
+height="auto" viewBox="...">` (mẫu thường gặp để SVG co giãn theo chiều rộng cột mà vẫn giữ tỷ
+lệ qua `viewBox`) — đúng mẫu này là mẫu WeasyPrint không vẽ được gì. Thiệt hại đo bằng số
+object vẽ được (`page.get_drawings()`, PyMuPDF) trước khi sửa:
+
+| File | svg | height="auto" | drawing TRƯỚC | drawing SAU |
+|---|---|---|---|---|
+| `chart-radar-vs-cleveland.html` | 3 | 1 | 43 | 49 |
+| `chart-truc-cat-vs-tu-khong.html` | 3 | 3 | 10 | 34 |
+| `chart-football-field-dinh-gia.html` | 1 | 1 | 2 | 17 |
+| `chart-luoi-do-nhay-hai-chieu.html` | 1 | 1 | 2 | 43 |
+| `chart-annotation-vs-legend.html` | 3 | 3 | 8 | 34 |
+| `chart-mau-den-trang.html` | 2 | 2 | 6 | 4970 (patterns tile, xem giải thích dưới) |
+| `chart-bar-vs-dot-xep-hang.html` | 2 | 2 | 6 | 33 |
+| `chart-pie-vs-bar-thi-phan.html` | 2 | 2 | 6 | 19 |
+
+Con số "TRƯỚC" chỉ vài đơn vị là khung/đường kẻ layout HTML xung quanh, không phải nội dung
+chart: mọi cột, mọi điểm, mọi đường trong cả 8 file đều KHÔNG TỒN TẠI trong bản PDF trước khi
+sửa. Để so sánh, 1 mẫu của agent khác trong repo không dùng `height="auto"` cho ra 49 drawing
+từ 1 SVG duy nhất.
+
+Sửa: bỏ hẳn `height="auto"` khỏi mọi `<svg>`, chỉ giữ `width="100%"` cộng `viewBox="0 0 W H"`
+là đủ để co giãn đúng tỷ lệ. Nếu cần khống chế chiều cao hiển thị, đặt bằng CSS
+(`max-height`/`height`) trên phần tử BAO NGOÀI svg, không đặt thuộc tính `height` trực tiếp
+trên chính thẻ `<svg>`.
+
+Ghi chú về `chart-mau-den-trang.html` ra 4970 drawing (cao bất thường so các file còn lại):
+ĐÃ soi ảnh xác nhận không phải lỗi, đây là hệ quả hợp lý của 2 `<pattern>` (gạch chéo, chấm bi)
+lấp đầy 8 vùng lớn — PyMuPDF đếm MỖI Ô LẶP LẠI của pattern (mỗi mảnh 6x6px hay 7x7px) là 1
+object vẽ riêng, nên diện tích càng lớn số object càng nhiều. Bài học phụ: số drawing "cao bất
+thường" không tự động là dấu hiệu tốt hay xấu, phải luôn đối chiếu với ảnh render thật, không
+chỉ nhìn con số.
+
+**Bẫy 2: `filter: grayscale(1)` (và suy rộng ra là CSS `filter` nói chung) bị WeasyPrint BỎ QUA
+HOÀN TOÀN, không raster hoá sai, không lỗi, chỉ đơn giản là không áp dụng.**
+
+Phát hiện khi soi ảnh render thật của `chart-mau-den-trang.html` (file có lý do tồn tại DUY
+NHẤT là chứng minh 1 chart còn phân biệt được sau khi khử màu): panel bên phải, vốn được bọc
+`<div style="filter: grayscale(1)">` quanh 1 bản sao y hệt SVG màu, hiện lên NGUYÊN MÀU, giống
+hệt panel bên trái. Cô lập độc lập bằng phép thử tối giản (`<div>` 100x100px nền `#2251FF`, bọc
+`filter: grayscale(1)`): pixel đọc được bằng `pixmap.pixel(x,y)` sau khi render qua WeasyPrint
+vẫn là màu xanh gốc, không hề chuyển xám. Đây là giới hạn đã biết của WeasyPrint (CSS `filter`
+không nằm trong tập thuộc tính được hỗ trợ), nhưng KHÔNG có cảnh báo nào khi build, nên hoàn
+toàn im lặng.
+
+Đây là bẫy nguy hiểm hơn Bẫy 1 vì nó không làm chart biến mất mà làm chart hiện ra SAI Ý ĐỒ:
+nhìn qua vẫn "có chart, có màu, không rỗng", nên dễ được coi là hợp lệ nếu chỉ đếm số drawing
+(số drawing của panel này vẫn cao bình thường, vì nội dung SVG vẫn được vẽ, chỉ là vẽ đúng màu
+gốc thay vì màu xám) mà không đối chiếu bằng mắt xem 2 panel có thực sự khác nhau hay không.
+
+Sửa: bỏ hẳn `filter: grayscale()` khỏi mọi mẫu cần chạy qua WeasyPrint. Thay bằng hex xám TĨNH
+tính tay bằng đúng công thức luminance mà CSS `grayscale()` dùng nội bộ (ITU-R BT.709,
+`Y = 0,2126*R + 0,7152*G + 0,0722*B`, làm tròn về số nguyên 0-255 rồi đổi lại hex), áp trực tiếp
+làm giá trị `fill`/`stroke` thay vì một filter runtime. Bảng quy đổi đã dùng trong
+`chart-mau-den-trang.html`:
+
+| Màu gốc (PALETTE) | Hex xám BT.709 |
+|---|---|
+| `#2251FF` (accent) | `#545454` |
+| `#B07A10` (warn) | `#7E7E7E` |
+| `#051C2C` (ink) | `#181818` |
+| `#7D9BFF` (accentSoft) | `#9C9C9C` |
+| `#DBE2EA` (line) | `#E1E1E1` |
+| `#8595A6` (inkLo) | `#939393` |
+| `#42566A` (inkMd) | `#535353` |
+
+Cách này cho kết quả GIỐNG HỆT NHAU trên Chromium và WeasyPrint (vì không còn phụ thuộc 1 CSS
+feature hỗ trợ không đều), đồng thời chính xác hơn "tự nhìn cho giống xám" vì dùng đúng công
+thức chuẩn ngành thay vì áng chừng.
+
+**Quy trình nghiệm thu đúng cho MỌI chart SVG/CSS trong repo cần ra PDF (không riêng 8 mẫu
+này), rút ra từ 2 bẫy trên:**
+1. Đếm object vẽ được: `sum(len(p.get_drawings()) for p in fitz.open(pdf))` sau khi
+   `weasyprint.HTML(filename=...).write_pdf(...)`. Vài đơn vị trong khi file có SVG với nội
+   dung phức tạp là dấu hiệu RỖNG, cần điều tra ngay.
+2. Render ra PNG (`page.get_pixmap(dpi=110).save(...)`) và **tự mở ảnh bằng công cụ đọc ảnh,
+   nhìn tận mắt** — đếm drawing bắt được cái RỖNG, nhìn ảnh bắt được cái VẼ SAI (như bẫy filter
+   ở trên, nơi số drawing vẫn bình thường nhưng nội dung sai hoàn toàn ý đồ).
+3. Với bất kỳ thuộc tính SVG hoặc CSS nào nghi ngờ hành xử khác giữa Chromium và WeasyPrint,
+   cô lập bằng đúng phương pháp bốn biến thể: dựng 1 file tối giản (1 shape duy nhất), đổi
+   CHỈ MỘT thuộc tính giữa các biến thể, đo kết quả bằng số/pixel cụ thể, không suy đoán.
+4. Không tin "đẹp trên Chromium" là bằng chứng đủ cho bất kỳ file nào sẽ đi qua WeasyPrint.
+
 ## 1. Nguồn đã khảo sát (24 lượt WebSearch/WebFetch)
 
 | Nguồn | Loại | Truy cập được | Dùng cho mục |

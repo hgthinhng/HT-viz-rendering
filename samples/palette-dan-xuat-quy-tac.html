@@ -1,0 +1,174 @@
+<!--
+  Ý MINH HOẠ: trả lời câu hỏi "nếu phải sinh thêm màu, sinh từ đâu và theo
+  quy tắc nào". So sánh 3 cách dẫn xuất 6 màu từ accent gốc (#2251FF),
+  bằng SỐ ĐO THẬT (research/07-bw-palette/colormath.py, derive.py), không
+  chỉ bằng mắt:
+
+  A. TINT: trộn tuyến tính accent với paper (100% -> 0%). An toàn xám tuyệt
+     đối (hiệu liền kề đều 34, xem hàng số dưới mỗi dải) vì chỉ đổi 1 biến
+     (độ sáng), nhưng chỉ có 1 hue -- hợp dữ liệu CÓ THỨ TỰ (thời gian, xếp
+     hạng), không hợp dữ liệu KHÔNG THỨ TỰ (định danh) vì mắt nhìn 6 dải toàn
+     "các sắc xanh dương" không có tên riêng để nhớ. Dải cuối cùng trộn hết
+     về paper (#FFFFFF) -- không dùng được làm fill sát nền giấy nếu thiếu
+     viền, xem dải cuối trong hàng A.
+
+  B. XOAY HUE, GIỮ NGUYÊN ĐỘ SÁNG VÀ ĐỘ BÃO HOÀ: cách trực giác nhất (nghĩ
+     "muốn nhiều màu thì xoay bánh xe màu"), nhưng ĐÂY LÀ CÁCH SAI cho in ấn:
+     giữ y hệt L* và C* nghĩa là giữ gần y hệt độ xám, vì con mắt/máy in
+     phân biệt màu chủ yếu qua ĐỘ SÁNG khi mất sắc độ. Đo thật: 2 màu đầu có
+     ΔGrayCSS = 0 (xem hàng số), tức là 2 màu XANH DƯƠNG NHÌN RÕ KHÁC NHAU
+     ngoài đời lại thành CÙNG MỘT Ô XÁM khi in đen trắng.
+
+  D. THAM LAM (GREEDY) TRONG CIE LCH: mỗi màu mới được chọn để tối đa hoá
+     ĐỒNG THỜI khoảng cách xám nhỏ nhất (an toàn in) và khoảng cách sau mô
+     phỏng mù màu tệ nhất trong 3 dạng (an toàn CVD), trong cung hue an toàn
+     (tránh hue của pos/neg/warn). Đây là quy tắc dùng cho bảng chính thức ở
+     PALETTE-TABLE.md.
+
+  NGUỒN: WCAG 2.x, CSS Filter Effects Level 1, CIE 1976 Lab, Machado/
+  Oliveira/Fernandes 2009. Công thức tự viết, xem FINDINGS.md.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>3 cách sinh thêm màu: đo bằng số, không đoán bằng mắt</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #2251FF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 26px; max-width: 84ch; }
+  .method { border: 1px solid var(--line); padding: 14px 18px 16px; margin-bottom: 18px; }
+  .method-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .tag {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; color: var(--ink); border: 1px solid var(--ink);
+  }
+  .tag-bad { color: #C22F4E; border-color: #C22F4E; }
+  .tag-good { color: var(--accent); border-color: var(--accent); }
+  .method h2 { font-size: 0.92rem; margin: 0; }
+  .swrow { display: flex; border: 1px solid var(--line); }
+  .sw { flex: 1; height: 46px; border-right: 1px solid rgba(255,255,255,0.5); }
+  .sw:last-child { border-right: none; }
+  .gaprow { display: flex; }
+  .gap { flex: 1; text-align: center; font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; color: var(--ink-lo); padding-top: 3px; }
+  .gap.warn { color: #C22F4E; font-weight: 700; }
+  .caption { font-size: 0.8rem; color: var(--ink-md); margin: 8px 0 0; max-width: 90ch; }
+  .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.74rem; color: var(--ink-md); line-height: 1.65; margin: 20px 0 0; max-width: 90ch;
+  }
+  .note b { color: var(--ink); }
+  .source {
+    margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>3 cách sinh thêm màu từ accent gốc: đo bằng số, không đoán bằng mắt</h1>
+  <p class="dek">Cùng xuất phát từ accent #2251FF, sinh thêm 5 màu nữa cho đủ 6, theo 3 quy tắc khác nhau. Mỗi dải màu có một dải xám ngay dưới (giá trị xám đã tính, không dùng CSS filter). Số giữa 2 ô là ΔGrayCSS giữa 2 màu liền kề.</p>
+
+  <div class="method">
+    <div class="method-head"><span class="tag">A</span><h2>Tint: trộn với paper, chỉ đổi độ sáng</h2></div>
+    <div class="swrow">
+      <div class="sw" style="background:#2251FF"></div>
+      <div class="sw" style="background:#4E74FF"></div>
+      <div class="sw" style="background:#7A97FF"></div>
+      <div class="sw" style="background:#A7B9FF"></div>
+      <div class="sw" style="background:#D3DCFF"></div>
+      <div class="sw" style="background:#FFFFFF; border: 1px dashed #051C2C;"></div>
+    </div>
+    <div class="gaprow">
+      <div class="gap" style="flex:0.5"></div>
+      <div class="gap">34</div><div class="gap">34</div><div class="gap">34</div><div class="gap">35</div><div class="gap">34</div>
+      <div class="gap" style="flex:0.5"></div>
+    </div>
+    <div class="swrow">
+      <div class="sw" style="background:#545454"></div>
+      <div class="sw" style="background:#767676"></div>
+      <div class="sw" style="background:#989898"></div>
+      <div class="sw" style="background:#BABABA"></div>
+      <div class="sw" style="background:#DDDDDD"></div>
+      <div class="sw" style="background:#FFFFFF; border: 1px dashed #051C2C;"></div>
+    </div>
+    <p class="caption">An toàn xám tuyệt đối (hiệu liền kề đều quanh 34, cách đều). Hợp dữ liệu CÓ THỨ TỰ (quý, năm, xếp hạng). Không hợp dữ liệu định danh: 6 dải đều là "các sắc xanh dương", không có tên riêng để nhớ. Dải cuối trộn hết về trắng, không dùng làm fill sát nền giấy nếu thiếu viền (đã thêm viền nét đứt để thấy biên).</p>
+  </div>
+
+  <div class="method">
+    <div class="method-head"><span class="tag tag-bad">B</span><h2>Xoay hue, giữ nguyên L* và C*: trực giác nhưng SAI cho in ấn</h2></div>
+    <div class="swrow">
+      <div class="sw" style="background:#007FA8"></div>
+      <div class="sw" style="background:#007BCC"></div>
+      <div class="sw" style="background:#0071DC"></div>
+      <div class="sw" style="background:#1C60D5"></div>
+      <div class="sw" style="background:#8B46BA"></div>
+      <div class="sw" style="background:#B82490"></div>
+    </div>
+    <div class="gaprow">
+      <div class="gap warn">0</div><div class="gap">6</div><div class="gap">7</div><div class="gap">3</div><div class="gap">18</div>
+    </div>
+    <div class="swrow">
+      <div class="sw" style="background:#676767"></div>
+      <div class="sw" style="background:#676767"></div>
+      <div class="sw" style="background:#616161"></div>
+      <div class="sw" style="background:#5A5A5A"></div>
+      <div class="sw" style="background:#5D5D5D"></div>
+      <div class="sw" style="background:#4B4B4B"></div>
+    </div>
+    <p class="caption"><b>ΔGrayCSS = 0</b> giữa 2 ô đầu: 2 màu xanh dương-ngọc nhìn khác hẳn nhau trên màn hình lại đổ về ĐÚNG MỘT Ô XÁM khi in. Đây là cách làm phổ biến nhất khi ai đó "thêm màu bằng cách xoay bánh xe màu" mà không kiểm lại độ sáng, và là lỗi cụ thể mà repo cần tránh khi mở rộng palette.</p>
+  </div>
+
+  <div class="method">
+    <div class="method-head"><span class="tag tag-good">D</span><h2>Tham lam trong CIE LCH: tối đa hoá đồng thời ΔGrayCSS và ΔE mù màu</h2></div>
+    <div class="swrow">
+      <div class="sw" style="background:#051C2C"></div>
+      <div class="sw" style="background:#1233B8"></div>
+      <div class="sw" style="background:#2251FF"></div>
+      <div class="sw" style="background:#8595A6"></div>
+      <div class="sw" style="background:#82C0FF"></div>
+      <div class="sw" style="background:#DBE2EA"></div>
+    </div>
+    <div class="gaprow">
+      <div class="gap">30</div><div class="gap">30</div><div class="gap">63</div><div class="gap">36</div><div class="gap">42</div>
+    </div>
+    <div class="swrow">
+      <div class="sw" style="background:#181818"></div>
+      <div class="sw" style="background:#363636"></div>
+      <div class="sw" style="background:#545454"></div>
+      <div class="sw" style="background:#939393"></div>
+      <div class="sw" style="background:#B7B7B7"></div>
+      <div class="sw" style="background:#E1E1E1"></div>
+    </div>
+    <p class="caption">Kết hợp 3 token có sẵn (ink, accent-hi, accent) với 1 token trung tính (ink-lo) và 2 màu mới (accent-sky, và line) sinh trong cung hue an toàn. Khoảng cách liền kề nhỏ nhất là 30, không đều như cách A nhưng luôn trên ngưỡng an toàn 15-20. Đây là quy tắc dùng để dựng bảng 4/6/8 màu chính thức ở PALETTE-TABLE.md.</p>
+  </div>
+
+  <p class="note">
+    <b>Quy tắc rút ra:</b> (1) nếu dữ liệu CÓ THỨ TỰ, dùng cách A (tint một
+    hue), an toàn tuyệt đối và dễ dựng nhất; (2) đừng bao giờ sinh màu mới
+    bằng cách xoay hue mà giữ nguyên L*/C* như cách B, phải LUÔN đổi độ sáng
+    cùng lúc với hue; (3) với dữ liệu định danh cần nhiều hue thật (không chỉ
+    1 hue), dùng thuật toán kiểu D: quét lưới ứng viên trong cung hue an
+    toàn, chọn theo tiêu chí tối đa hoá khoảng cách nhỏ nhất, không chọn theo
+    cảm tính. Cả 3 cách đều phải tự kiểm bằng dải xám thật trước khi đưa vào
+    theme, không tin vào mắt nhìn trên màn hình màu.
+  </p>
+
+  <p class="source">
+    Nguồn: WCAG 2.x, CSS Filter Effects Level 1, CIE 1976 Lab &middot;
+    Số đo tự tính bằng colormath.py/derive.py &middot; Xem research/07-bw-palette/FINDINGS.md
+  </p>
+</div>
+</body>
+</html>

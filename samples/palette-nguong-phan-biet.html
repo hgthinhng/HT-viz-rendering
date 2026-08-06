@@ -1,0 +1,165 @@
+<!--
+  Ý MINH HOẠ: trả lời câu hỏi "hai màu cách nhau bao nhiêu về độ sáng thì còn
+  phân biệt được sau khi in đen trắng". Đây không phải suy đoán: 1 cặp màu
+  neo (#0E278B) được ghép với 6 màu khác, mỗi cặp có ΔGrayCSS mục tiêu khác
+  nhau (3, 6, 15, 20, 27, 38 trên thang 0-255), hiển thị 2 cỡ mảng (mảng lớn
+  60x44 mô phỏng cột/thanh, và nét mảnh 3px mô phỏng đường line chart) x 2
+  kênh (màu gốc, và giá trị xám đã tính sẵn). Đã tự kiểm bằng cách render
+  qua Chromium thật (playwright-core) và tự quan sát trước khi chốt ngưỡng
+  dưới đây, KHÔNG chỉ đọc số suông:
+
+  - Dưới 10: không phân biệt được ở cả 2 cỡ mảng.
+  - 10-15: mảng lớn bắt đầu phân biệt được (mờ nhạt), nét mảnh vẫn khó.
+  - 15-20: mảng lớn phân biệt rõ, nét mảnh phân biệt được nhưng cần nhìn kỹ.
+  - Từ 20 trở lên: phân biệt rõ ở cả 2 cỡ mảng.
+
+  Ngưỡng THỰC DỤNG đề xuất: ΔGrayCSS >= 15 cho mảng lớn (thanh, cột, vùng
+  tô), ΔGrayCSS >= 20 cho nét mảnh (đường line chart, viền mỏng). Khớp với
+  chuẩn bản đồ học "ΔE*ab >= 10 đảm bảo phân biệt được" (Mendeley Data,
+  CIELAB color coordinates for map legends) -- 2 phép đo khác không gian màu
+  (GrayCSS dùng sRGB gamma trực tiếp, ΔE dùng Lab) nên không quy đổi tuyến
+  tính được, nhưng cả 2 đều xác nhận vùng "an toàn" nằm trên một ngưỡng 2 chữ
+  số, không phải ngưỡng 1 chữ số.
+
+  NGUỒN: CSS Filter Effects Level 1 (công thức GrayCSS), CIE 1976 Lab (ΔE76),
+  Mendeley Data map-legend CIELAB thresholds. Tự đo bằng colormath.py, tự
+  quan sát bằng Chromium qua playwright-core.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Ngưỡng phân biệt khi in đen trắng: đo bằng số, xác nhận bằng mắt</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #2251FF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 24px; max-width: 86ch; }
+  table.ladder { border-collapse: collapse; width: 100%; }
+  table.ladder th {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-md);
+    text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--ink);
+  }
+  table.ladder td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .dgray { font-family: "IBM Plex Mono", monospace; font-size: 0.85rem; font-weight: 700; }
+  .verdict { font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; }
+  .verdict.no { color: #C22F4E; }
+  .verdict.mid { color: #B07A10; }
+  .verdict.yes { color: #008A6D; }
+  .pair-big { display: flex; width: 108px; height: 40px; border: 1px solid var(--ink); overflow: hidden; }
+  .pair-big div { flex: 1; }
+  .pair-thin { display: flex; flex-direction: column; width: 108px; max-width: 108px; gap: 5px; justify-content: center; height: 40px; overflow: hidden; }
+  .pair-thin div { height: 3px; width: 108px; max-width: 108px; flex: none; }
+  table.ladder td:nth-child(3), table.ladder td:nth-child(4),
+  table.ladder td:nth-child(5), table.ladder td:nth-child(6) { width: 118px; max-width: 118px; }
+  table.ladder td:last-child { min-width: 220px; }
+  .source {
+    margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+  .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.74rem; color: var(--ink-md); line-height: 1.65; margin: 20px 0 0; max-width: 90ch;
+  }
+  .note b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Ngưỡng phân biệt khi in đen trắng: bao nhiêu là đủ</h1>
+  <p class="dek">Một màu neo (#0E278B) ghép với 6 màu khác nhau, mỗi cặp cách nhau một mức ΔGrayCSS khác nhau. 4 cột mảng: màu cỡ lớn (mô phỏng thanh/cột), màu nét mảnh 3px (mô phỏng đường line chart), rồi 2 cột tương ứng ở giá trị xám đã tính sẵn.</p>
+
+  <table class="ladder">
+    <thead><tr>
+      <th>ΔGrayCSS mục tiêu</th><th>ΔE76</th>
+      <th>Màu, mảng lớn</th><th>Màu, nét mảnh</th>
+      <th>Xám, mảng lớn</th><th>Xám, nét mảnh</th>
+      <th>Kết luận</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="dgray">3.0</td><td>3.6</td>
+        <td><div class="pair-big"><div style="background:#0E278B"></div><div style="background:#0D2482"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#0E278B"></div><div style="background:#0D2482"></div></div></td>
+        <td><div class="pair-big"><div style="background:#292929"></div><div style="background:#262626"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#292929"></div><div style="background:#262626"></div></div></td>
+        <td><span class="verdict no">KHÔNG phân biệt được</span></td>
+      </tr>
+      <tr>
+        <td class="dgray">6.4</td><td>9.9</td>
+        <td><div class="pair-big"><div style="background:#0E278B"></div><div style="background:#102DA2"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#0E278B"></div><div style="background:#102DA2"></div></div></td>
+        <td><div class="pair-big"><div style="background:#292929"></div><div style="background:#2F2F2F"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#292929"></div><div style="background:#2F2F2F"></div></div></td>
+        <td><span class="verdict no">KHÔNG phân biệt được</span></td>
+      </tr>
+      <tr>
+        <td class="dgray">10.5</td><td>15.6</td>
+        <td><div class="pair-big"><div style="background:#0E278B"></div><div style="background:#1131B0"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#0E278B"></div><div style="background:#1131B0"></div></div></td>
+        <td><div class="pair-big"><div style="background:#292929"></div><div style="background:#333333"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#292929"></div><div style="background:#333333"></div></div></td>
+        <td><span class="verdict mid">Mảng lớn: mờ nhạt. Nét mảnh: khó</span></td>
+      </tr>
+      <tr>
+        <td class="dgray">14.8</td><td>23.0</td>
+        <td><div class="pair-big"><div style="background:#0E278B"></div><div style="background:#091958"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#0E278B"></div><div style="background:#091958"></div></div></td>
+        <td><div class="pair-big"><div style="background:#292929"></div><div style="background:#1A1A1A"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#292929"></div><div style="background:#1A1A1A"></div></div></td>
+        <td><span class="verdict mid">Mảng lớn: rõ. Nét mảnh: cần nhìn kỹ</span></td>
+      </tr>
+      <tr>
+        <td class="dgray">20.1</td><td>29.0</td>
+        <td><div class="pair-big"><div style="background:#0E278B"></div><div style="background:#153AD1"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#0E278B"></div><div style="background:#153AD1"></div></div></td>
+        <td><div class="pair-big"><div style="background:#292929"></div><div style="background:#3D3D3D"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#292929"></div><div style="background:#3D3D3D"></div></div></td>
+        <td><span class="verdict yes">Phân biệt rõ cả 2 cỡ</span></td>
+      </tr>
+      <tr>
+        <td class="dgray">27.2</td><td>45.4</td>
+        <td><div class="pair-big"><div style="background:#0E278B"></div><div style="background:#050D2E"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#0E278B"></div><div style="background:#050D2E"></div></div></td>
+        <td><div class="pair-big"><div style="background:#292929"></div><div style="background:#0E0E0E"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#292929"></div><div style="background:#0E0E0E"></div></div></td>
+        <td><span class="verdict yes">Phân biệt rõ cả 2 cỡ</span></td>
+      </tr>
+      <tr>
+        <td class="dgray">38.1</td><td>33.5</td>
+        <td><div class="pair-big"><div style="background:#0E278B"></div><div style="background:#254CE9"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#0E278B"></div><div style="background:#254CE9"></div></div></td>
+        <td><div class="pair-big"><div style="background:#292929"></div><div style="background:#4F4F4F"></div></div></td>
+        <td><div class="pair-thin"><div style="background:#292929"></div><div style="background:#4F4F4F"></div></div></td>
+        <td><span class="verdict yes">Phân biệt rõ cả 2 cỡ</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    <b>Ngưỡng thực dụng rút ra:</b> ΔGrayCSS &ge; 15 cho mảng lớn (thanh, cột,
+    vùng tô); ΔGrayCSS &ge; 20 cho nét mảnh (đường line chart, viền mỏng).
+    Dưới 10 gần như luôn thất bại ở mọi cỡ mảng. Đây là lý do bảng 8 màu ở
+    PALETTE-TABLE.md coi cặp có ΔGrayCSS=18.7 là "cần hoạ tiết bù thêm": nó
+    nằm giữa 2 ngưỡng, đủ cho mảng lớn (thanh cột trong ví dụ đó) nhưng chưa
+    chắc đủ nếu cùng 2 màu đó dùng làm 2 đường line chart cạnh nhau.
+  </p>
+
+  <p class="source">
+    Nguồn: CSS Filter Effects Level 1, CIE 1976 Lab, Mendeley Data (CIELAB map-legend
+    thresholds, ΔE*ab &ge; 10) &middot; Tự đo bằng colormath.py, tự quan sát bằng
+    Chromium qua playwright-core &middot; Xem research/07-bw-palette/FINDINGS.md
+  </p>
+</div>
+</body>
+</html>

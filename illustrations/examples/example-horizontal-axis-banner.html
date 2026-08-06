@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Test axis:'horizontal' - bố cục dải giữa kiểu banner biên tập</title>
+<style>
+  @font-face { font-family:'Be Vietnam Pro'; src:url('file:///home/hgthinhng/.fonts/BeVietnamPro-Regular.ttf'); font-weight:400; }
+  @font-face { font-family:'Be Vietnam Pro'; src:url('file:///home/hgthinhng/.fonts/BeVietnamPro-SemiBold.ttf'); font-weight:600; }
+  @font-face { font-family:'Be Vietnam Pro'; src:url('file:///home/hgthinhng/.fonts/BeVietnamPro-Bold.ttf'); font-weight:700; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:960px; background:#f8fafc; padding:32px; font-family:'Be Vietnam Pro',sans-serif; }
+  h2 { font-size:19px; font-weight:700; color:#0f172a; margin-bottom:6px; }
+  p.hint { font-size:12px; color:#64748b; margin-bottom:18px; }
+  #banner-svg { width:100%; height:auto; display:block; background:#F5EFE2; border:1px solid #e2e8f0; }
+</style>
+<link rel="stylesheet" href="../annotate.css">
+</head>
+<body>
+<h2>Test bố cục "dải giữa" (axis:'horizontal') - đối chiếu với template banner 97-motif</h2>
+<p class="hint">Chủ thể (giỏ hàng, tái dùng từ 05-retail-storefront.svg) nằm trong dải ngang giữa khung 900x500, không vẽ nền đất/trời. Giống đúng ràng buộc bố cục trong MOTIF_TABLE.md. Callout xếp HÀNG NGANG phía trên/dưới thay vì cột dọc trái/phải.</p>
+
+<svg id="banner-svg" viewBox="0 0 900 500" role="img" style="--accent:#C9A227; background:#F5EFE2">
+  <title>Giỏ hàng bán lẻ - bố cục dải giữa</title>
+  <desc>Giỏ hàng lưới đầy hàng hoá, đặt trong dải ngang giữa khung, viền trên/dưới để trống. Test bố cục banner biên tập.</desc>
+  <rect x="0" y="0" width="900" height="500" fill="#F5EFE2"/>
+  <g class="scene" transform="translate(120,0)">
+    <ellipse cx="205" cy="352" rx="150" ry="12" fill="#16283F" opacity="0.12"/>
+    <g class="cart">
+      <g class="wheels" stroke="#16283F" stroke-width="1.4">
+        <circle cx="152" cy="348" r="15" fill="#16283F"/>
+        <circle cx="152" cy="348" r="5" fill="#2F7E7A"/>
+        <circle cx="304" cy="355" r="15" fill="#16283F"/>
+        <circle cx="304" cy="355" r="5" fill="#2F7E7A"/>
+      </g>
+      <g class="frame" stroke="#16283F" stroke-width="2.4" fill="none">
+        <line x1="148" y1="308" x2="152" y2="333"/>
+        <line x1="298" y1="318" x2="304" y2="340"/>
+      </g>
+      <g class="basket" stroke="#16283F" stroke-width="2.4" fill="none">
+        <path d="M104,208 L322,238 L298,318 L144,308 Z"/>
+        <line x1="148" y1="222" x2="152" y2="302"/>
+        <line x1="194" y1="228" x2="194" y2="306"/>
+        <line x1="240" y1="234" x2="236" y2="310"/>
+        <line x1="280" y1="238" x2="273" y2="314"/>
+        <line x1="112" y1="248" x2="314" y2="272" stroke-width="1.8"/>
+        <line x1="108" y1="278" x2="306" y2="295" stroke-width="1.8"/>
+      </g>
+      <rect x="98" y="210" width="28" height="24" fill="#2F7E7A" stroke="#16283F" stroke-width="1.6"/>
+      <path d="M104,208 L68,172" stroke="#16283F" stroke-width="2.6" fill="none"/>
+      <path d="M68,172 L92,165" stroke="#16283F" stroke-width="2.6" fill="none"/>
+      <g class="goods">
+        <rect x="140" y="172" width="26" height="38" fill="#2F7E7A" stroke="#16283F" stroke-width="1.2"/>
+        <rect x="172" y="158" width="26" height="52" fill="#C9A227" stroke="#16283F" stroke-width="1.2"/>
+        <rect x="204" y="178" width="26" height="32" fill="#16283F" stroke="#16283F" stroke-width="1.2"/>
+        <rect x="236" y="166" width="24" height="44" fill="#2F7E7A" stroke="#16283F" stroke-width="1.2" opacity="0.8"/>
+      </g>
+    </g>
+  </g>
+</svg>
+
+<script src="../annotate.js"></script>
+<script>
+  const svg = document.getElementById('banner-svg');
+  // avoidBox ước lượng theo bbox chủ thể THẬT sau translate(120,0): x từ
+  // ~68 (tay cầm) +120=188 tới ~322+120=442, y từ ~158 (hàng hoá) tới ~360
+  // (bóng đổ dưới bánh xe).
+  const AVOID = { x: 180, y: 155, width: 270, height: 210 };
+  Annotate.annotate(svg, [
+    { anchor: [292, 165], label: { x: 260, y: 90 }, head: '18 SKU/GIỎ', sub: 'Số mặt hàng trung bình mỗi giỏ',
+      tone: 'accent', drill: { title: 'GIỎ HÀNG', value: '18 SKU', sub: 'Trung bình mỗi giao dịch.', source: 'Ví dụ minh hoạ' } },
+    { anchor: [214, 168], label: { x: 500, y: 100 }, head: '620.000Đ', sub: 'Giá trị giỏ hàng trung bình (AOV)',
+      tone: 'neutral', drill: { title: 'AOV', value: '620.000đ', sub: 'Tăng 8% so với cùng kỳ.', source: 'Ví dụ minh hoạ' } },
+    { anchor: [222, 265], label: { x: 260, y: 430 }, head: '12,4%', sub: 'Tỷ lệ trả hàng trong 30 ngày',
+      tone: 'negative', drill: { title: 'TỶ LỆ TRẢ HÀNG', value: '12,4%', sub: 'Cao hơn ngưỡng cảnh báo nội bộ 10%.', source: 'Ví dụ minh hoạ' } },
+    { anchor: [304, 355], label: { x: 480, y: 440 }, head: '3,2 NGÀY', sub: 'Thời gian giao hàng trung bình',
+      tone: 'neutral', drill: { title: 'VẬN CHUYỂN', value: '3,2 ngày', sub: 'Nhanh hơn cam kết 5 ngày.', source: 'Ví dụ minh hoạ' } },
+  ], { avoidBox: AVOID, axis: 'horizontal' });
+</script>
+</body>
+</html>

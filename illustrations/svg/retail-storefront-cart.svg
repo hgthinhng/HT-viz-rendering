@@ -1,0 +1,67 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" style="--accent:#f97316">
+  <title>Quầy bán lẻ và giỏ hàng</title>
+  <desc>Mặt tiền cửa hàng có mái hiên sọc, tủ kính trưng bày hàng, và một giỏ hàng lưới đầy hàng hoá ở phía trước. Dùng minh hoạ ngành bán lẻ và hàng tiêu dùng. Giỏ đầy hay vơi ánh xạ trực tiếp doanh số.</desc>
+  <g class="scene">
+    <g class="ground">
+      <rect x="0" y="430" width="800" height="70" fill="#cbd5e1"/>
+      <rect x="0" y="430" width="800" height="5" fill="#94a3b8"/>
+    </g>
+
+    <g class="storefront">
+      <rect x="60" y="225" width="280" height="205" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5"/>
+      <g class="awning">
+        <path d="M55,225 L345,225 L345,195 L55,195 Z" fill="var(--accent)" stroke="#0f172a" stroke-width="1.3"/>
+        <path d="M55,225 L345,225 L345,195 L55,195 Z" fill="none"/>
+        <g fill="#fff7ed" opacity="0.55">
+          <rect x="90" y="195" width="24" height="30"/>
+          <rect x="150" y="195" width="24" height="30"/>
+          <rect x="210" y="195" width="24" height="30"/>
+          <rect x="270" y="195" width="24" height="30"/>
+        </g>
+        <path d="M55,225 L72,238 L89,225 L106,238 L123,225 L140,238 L157,225 L174,238 L191,225 L208,238 L225,225 L242,238 L259,225 L276,238 L293,225 L310,238 L327,225 L345,225"
+              fill="#f8fafc" stroke="#0f172a" stroke-width="1"/>
+      </g>
+      <g class="window">
+        <rect x="85" y="248" width="180" height="130" fill="#e0f2fe" stroke="#0f172a" stroke-width="1.4"/>
+        <line x1="85" y1="352" x2="265" y2="352" stroke="#94a3b8" stroke-width="3"/>
+        <rect x="105" y="322" width="26" height="30" fill="#16a34a"/>
+        <rect x="145" y="312" width="26" height="40" fill="#f97316"/>
+        <rect x="185" y="328" width="26" height="24" fill="#2563eb"/>
+        <rect x="222" y="318" width="26" height="34" fill="#eab308"/>
+      </g>
+      <rect x="280" y="318" width="50" height="112" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+      <circle cx="322" cy="376" r="2.5" fill="#e2e8f0"/>
+    </g>
+
+    <g class="cart">
+      <g class="wheels" stroke="#0f172a" stroke-width="1.4">
+        <circle cx="452" cy="398" r="15" fill="#334155"/>
+        <circle cx="452" cy="398" r="5" fill="#94a3b8"/>
+        <circle cx="604" cy="405" r="15" fill="#334155"/>
+        <circle cx="604" cy="405" r="5" fill="#94a3b8"/>
+      </g>
+      <g class="frame" stroke="#0f172a" stroke-width="2.4" fill="none">
+        <line x1="448" y1="358" x2="452" y2="383"/>
+        <line x1="598" y1="368" x2="604" y2="390"/>
+      </g>
+      <g class="basket" stroke="#0f172a" stroke-width="2.4" fill="none">
+        <path d="M404,258 L622,288 L598,368 L444,358 Z"/>
+        <line x1="448" y1="272" x2="452" y2="352"/>
+        <line x1="494" y1="278" x2="494" y2="356"/>
+        <line x1="540" y1="284" x2="536" y2="360"/>
+        <line x1="580" y1="288" x2="573" y2="364"/>
+        <line x1="412" y1="298" x2="614" y2="322" stroke-width="1.8"/>
+        <line x1="408" y1="328" x2="606" y2="345" stroke-width="1.8"/>
+      </g>
+      <rect x="398" y="260" width="28" height="24" fill="#94a3b8" stroke="#0f172a" stroke-width="1.6"/>
+      <path d="M404,258 L368,222" stroke="#0f172a" stroke-width="2.6" fill="none"/>
+      <path d="M368,222 L392,215" stroke="#0f172a" stroke-width="2.6" fill="none"/>
+      <g class="goods">
+        <rect x="440" y="222" width="26" height="38" fill="#16a34a" stroke="#0f172a" stroke-width="1.2"/>
+        <rect x="472" y="208" width="26" height="52" fill="#f97316" stroke="#0f172a" stroke-width="1.2"/>
+        <rect x="504" y="228" width="26" height="32" fill="#2563eb" stroke="#0f172a" stroke-width="1.2"/>
+        <rect x="536" y="216" width="24" height="44" fill="#eab308" stroke="#0f172a" stroke-width="1.2"/>
+      </g>
+    </g>
+  </g>
+</svg>

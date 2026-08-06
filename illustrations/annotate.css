@@ -1,0 +1,60 @@
+/* annotate.css — style cho thẻ chi tiết (drill card) của annotate.js.
+   Bản thân callout (chấm neo, đường dẫn, hộp nhãn) là SVG thuần, không cần
+   CSS ngoài — chỉ thẻ chi tiết nổi trên trang mới cần CSS này. */
+
+#annotate-drill-card {
+  position: fixed;
+  z-index: 200;
+  min-width: 220px;
+  max-width: 320px;
+  background: #0f172a;
+  color: #eef2f6;
+  padding: 14px 18px;
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.35);
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  border-top: 3px solid var(--accent, #2563eb);
+}
+#annotate-drill-card .ad-title {
+  font-family: "IBM Plex Mono", Menlo, Consolas, monospace;
+  font-size: 10.5px;
+  color: #94a3b8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+#annotate-drill-card .ad-val {
+  font-family: "IBM Plex Mono", Menlo, Consolas, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 2px 0 4px;
+}
+#annotate-drill-card .ad-sub { color: #cbd5e1; font-size: 13px; }
+#annotate-drill-card .ad-src {
+  font-family: "IBM Plex Mono", Menlo, Consolas, monospace;
+  font-size: 10.5px;
+  color: #94a3b8;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+#annotate-drill-card .ad-close {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  color: #94a3b8;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  font-size: 13px;
+}
+
+/* callout luôn hiện (không dựa vào hover) nên không cần quy tắc @media
+   print đặc biệt — nhưng khai báo tường minh để không ai vô tình thêm
+   opacity:0 mặc định rồi quên bật lại khi in */
+@media print {
+  .annotations { opacity: 1 !important; }
+  #annotate-drill-card { display: none; } /* thẻ chi tiết là tương tác web-only */
+}

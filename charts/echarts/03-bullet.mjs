@@ -21,7 +21,7 @@ const rows = [
 const categories = rows.map((r) => r.label);
 const max = Math.max(...rows.map((r) => r.bands[2]));
 
-const bandColors = ['#eceae3', '#dbd8cf', '#c7c3b6']; // 3 sắc xám-be trung tính cùng ramp, KHÔNG traffic-light
+const bandColors = [PALETTE.bandLo, PALETTE.bandMid, PALETTE.bandHi]; // 3 sắc xám LẠNH cùng ramp (theme.mjs), KHÔNG traffic-light
 
 const chart = echarts.init(null, null, { renderer: 'svg', ssr: true, width: 700, height: 360 });
 chart.setOption({

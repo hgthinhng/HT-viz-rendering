@@ -30,6 +30,11 @@ chart.setOption({
   grid: { left: 60, right: 90, top: 60, bottom: 60 },
   xAxis: { type: 'category', data: periods, boundaryGap: false, axisLine: { lineStyle: { color: PALETTE.inkMd } }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
   yAxis: { type: 'value', min: 0, axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => fmtCompact(v, { baseUnit: 'ty', decimals: 0 }) }, splitLine: { lineStyle: { color: PALETTE.line } } },
+  // Override mang color mac dinh cua baseOption() ([accent, negative, inkLo, ink]):
+  // day la 3 manh doanh thu NGANG HANG, khong phai delta/so sanh bat loi, nen
+  // KHONG duoc de "Bat dong san KCN" roi dung vao slot negative/do chi vi trung
+  // vi tri index trong mang mac dinh. Dung rieng 1 bo hue trung tinh + accent.
+  color: [PALETTE.accent, PALETTE.accentHi, PALETTE.inkLo],
   series: Object.entries(seriesData).map(([name, data], i) => ({
     name, type: 'line', stack: 'total', areaStyle: { opacity: 0.55 }, lineStyle: { width: 2 },
     symbol: 'circle', symbolSize: 5, smooth: false, data,

@@ -40,8 +40,8 @@ chart.setOption({
     {
       type: 'treemap', top: 60, left: 8, right: 8, bottom: 8,
       roam: false, nodeClick: false, breadcrumb: { show: false },
-      label: { show: true, formatter: '{b}', ...TYPOGRAPHY.dataLabel, color: '#fff' },
-      upperLabel: { show: true, height: 24, color: '#fff', fontFamily: FONT_STACK, fontWeight: 'bold' },
+      label: { show: true, formatter: '{b}', ...TYPOGRAPHY.dataLabel, color: PALETTE.paper },
+      upperLabel: { show: true, height: 24, color: PALETTE.paper, fontFamily: FONT_STACK, fontWeight: 'bold' },
       itemStyle: { borderColor: PALETTE.paper, borderWidth: 2, gapWidth: 2 }, // surface gap giữa các ô, không dùng viền màu
       levels: [
         { itemStyle: { borderWidth: 0, gapWidth: 3 } },

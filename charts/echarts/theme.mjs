@@ -1,12 +1,20 @@
 // theme.mjs: Theme ECharts CANONICAL cho toàn bộ chart báo cáo tài chính VN.
 //
 // BẢNG MÀU (chốt theo design-system/tokens.css; CẤM traffic-light):
-//   - Màu mang nghĩa DIRECTION (tăng/giảm), KHÔNG mang nghĩa VALENCE (tốt/xấu).
+//   - Với DELTA THEO THỜI GIAN (một đại lượng đổi giữa 2 mốc, vd cầu nối P&L):
+//     màu mang nghĩa CHIỀU (tăng/giảm), KHÔNG mang nghĩa VALENCE (tốt/xấu).
 //     Vd: nợ vay GIẢM là tin tốt nhưng vẫn tô màu ÂM (đỏ) vì đó là một khoản
-//     giảm trong biểu đồ cầu nối, người đọc suy ra "tốt/xấu" từ NGỮ CẢNH
-//     (nhãn + chú thích), không suy từ màu. Đây là cách FT/Economist tránh
-//     traffic-light hoá: xanh lá=tốt/đỏ=xấu chỉ đúng một nửa thời gian trong
-//     tài chính (chi phí giảm=tốt nhưng doanh thu giảm=xấu, cùng là "giảm").
+//     giảm; người đọc suy ra "tốt/xấu" từ NGỮ CẢNH (nhãn + chú thích), không
+//     suy từ màu. Đây là cách FT/Economist tránh traffic-light hoá: xanh
+//     lá=tốt/đỏ=xấu chỉ đúng một nửa thời gian trong tài chính (chi phí giảm=
+//     tốt nhưng doanh thu giảm=xấu, cùng là "giảm").
+//   - Với NHẬN ĐỊNH SO SÁNH (không phải delta thời gian, vd cơ cấu vốn, kịch
+//     bản bi quan/lạc quan): để TRUNG TÍNH, hoặc dùng negative nếu một bên
+//     BẤT LỢI trong phép so sánh đó. TUYỆT ĐỐI không tô "màu dương" (accent
+//     hay positive) cho bên có lợi, đó chính là traffic-light trá hình dưới
+//     tên "chỉ là tô màu chủ đạo". negative CHỈ dùng cho giảm/rủi ro/cảnh báo/
+//     bất lợi, không dùng cho hạng mục trung tính khác (kể cả khi nó rơi vào
+//     đúng vị trí trong mảng color[] mặc định của baseOption()).
 //   - Bang mau chot theo design-system/tokens.css. Ba nguon doc lap hoi tu cung
 //     bo nay: reference-kimi.html, huashu-design design-styles.md muc Two-Font
 //     Consulting (McKinsey deep-blue), va giao trinh thiet ke dong 88.
@@ -34,13 +42,37 @@ export const PALETTE = {
 export const FONT_STACK = '"Spectral", Georgia, "Times New Roman", serif';
 export const FONT_STACK_MONO = '"IBM Plex Mono", Consolas, "Courier New", monospace';
 
+/** Tron hai mau hex theo ty le t (0=hexA, 1=hexB). Dung de dan xuat sac do tu
+ * PALETTE thay vi hardcode hex moi trong file chart. */
+function mixHex(hexA, hexB, t) {
+  const parse = (h) => {
+    const s = h.replace('#', '');
+    return [0, 2, 4].map((i) => parseInt(s.slice(i, i + 2), 16));
+  };
+  const [ar, ag, ab] = parse(hexA);
+  const [br, bg, bb] = parse(hexB);
+  const lerp = (a, b) => Math.round(a + (b - a) * t);
+  return '#' + [lerp(ar, br), lerp(ag, bg), lerp(ab, bb)]
+    .map((v) => v.toString(16).padStart(2, '0'))
+    .join('')
+    .toUpperCase();
+}
+
+// Ba sac xam LANH cho dai ngu canh (vd bullet chart), PHAI cung ho voi
+// ink/inkLo/line chu khong duoc la xam-be am (ban thao giay nga da bi bac bo,
+// ba nguon doc lap hoi tu ve trang lanh). Dan xuat bang cach tron PALETTE.paper
+// voi PALETTE.inkLo theo 3 ty le tang dan; KHONG hardcode hex moi o file chart.
+PALETTE.bandLo = mixHex(PALETTE.paper, PALETTE.inkLo, 0.15);
+PALETTE.bandMid = mixHex(PALETTE.paper, PALETTE.inkLo, 0.3);
+PALETTE.bandHi = mixHex(PALETTE.paper, PALETTE.inkLo, 0.45);
+
 export const TYPOGRAPHY = {
   title: { fontSize: 15, fontWeight: 'bold', fontFamily: FONT_STACK, color: PALETTE.ink },
   subtitle: { fontSize: 12, fontFamily: FONT_STACK, color: PALETTE.inkMd },
   axisLabel: { fontSize: 11, fontFamily: FONT_STACK_MONO, color: PALETTE.inkMd },
   axisName: { fontSize: 11, fontFamily: FONT_STACK, color: PALETTE.inkLo },
   legend: { fontSize: 11, fontFamily: FONT_STACK, color: PALETTE.inkMd },
-  dataLabel: { fontSize: 11, fontFamily: FONT_STACK, color: PALETTE.ink },
+  dataLabel: { fontSize: 11, fontFamily: FONT_STACK_MONO, color: PALETTE.ink },
   source: { fontSize: 10, fontFamily: FONT_STACK, color: PALETTE.inkLo },
 };
 
@@ -52,7 +84,6 @@ export function baseOption({ title, subtitle, width = 700, height = 400 } = {}) 
     title: {
       text: title || '',
       subtext: subtitle || '',
-      left: 'left',
       top: 8,
       left: 16,
       textStyle: TYPOGRAPHY.title,

@@ -5,9 +5,13 @@
 // Dữ liệu cần: {variable, low, high, base} — low/high là kết quả khi biến đó
 // ở kịch bản bi quan/lạc quan, base là giá trị trung tâm để tính lệch.
 // Bẫy thường gặp: (1) KHÔNG sắp theo biên độ -> mất hình phễu, khó đọc;
-// (2) dùng 2 màu tuỳ ý cho low/high thay vì accent/negative nhất quán chiều
-// (high luôn 1 màu, low luôn 1 màu) xuyên suốt mọi biến; (3) qua dùng nhãn %
-// mà không neo rõ base case.
+// (2) dùng 2 màu tuỳ ý cho low/high thay vì nhất quán xuyên suốt mọi biến;
+// (3) qua dùng nhãn % mà không neo rõ base case.
+// LƯU Ý MÀU: đây là NHẬN ĐỊNH SO SÁNH (dải kịch bản quanh 1 base case tĩnh,
+// không phải delta thời gian), không phải cầu nối P&L. Bi quan = negative
+// (bất lợi trong so sánh, được phép); lạc quan PHẢI trung tính, KHÔNG tô
+// accent, vì "kịch bản tốt hơn = xanh dương" chính là tô màu dương cho bên có
+// lợi, dạng traffic-light bị cấm dù đội lốt "chỉ là tô theo chiều tăng/giảm".
 import * as echarts from 'echarts';
 import fs from 'node:fs';
 import { baseOption, TYPOGRAPHY, PALETTE, tooltipDefault } from './theme.mjs';
@@ -44,7 +48,7 @@ chart.setOption({
     },
     {
       name: 'Kịch bản lạc quan', type: 'bar', stack: 'range', barWidth: 22,
-      itemStyle: { color: PALETTE.accent },
+      itemStyle: { color: PALETTE.inkLo },
       data: rows.map((r) => r.high - base),
       label: { show: true, position: 'right', formatter: (p) => fmtCompact(p.value + base, { baseUnit: 'ty', decimals: 0 }), ...TYPOGRAPHY.dataLabel },
     },

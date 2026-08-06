@@ -32,10 +32,15 @@ chart.setOption({
   grid: { left: 56, right: 24, top: 60, bottom: 60 },
   xAxis: { type: 'category', data: periods, axisLine: { lineStyle: { color: PALETTE.inkMd } }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
   yAxis: { type: 'value', max: 100, axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => v + '%' }, splitLine: { lineStyle: { color: PALETTE.line } } },
-  color: [PALETTE.negative, PALETTE.inkLo, PALETTE.accent], // nợ ngắn hạn=đỏ (rủi ro thanh khoản), nợ dài hạn=xám, VCSH=accent
+  // Đây là NHẬN ĐỊNH SO SÁNH cơ cấu (không phải delta thời gian): nợ vay ngắn
+  // hạn là bên BẤT LỢI trong so sánh (rủi ro tái cấp vốn/thanh khoản ngắn hạn)
+  // nên được phép dùng negative; hai hạng mục còn lại PHẢI trung tính, TUYỆT
+  // ĐỐI không tô accent/positive cho VCSH dù nó thường là bên "tốt hơn", vì đó
+  // là tô màu dương cho bên có lợi, đúng thứ traffic-light bị cấm.
+  color: [PALETTE.negative, PALETTE.inkLo, PALETTE.inkMd],
   series: Object.entries(rows).map(([name, data]) => ({
     name, type: 'bar', stack: 'total', barWidth: 44, data,
-    label: { show: true, formatter: (p) => fmtPercent(p.value, { decimals: 0 }), color: '#fff', ...TYPOGRAPHY.dataLabel },
+    label: { show: true, formatter: (p) => fmtPercent(p.value, { decimals: 0 }), ...TYPOGRAPHY.dataLabel, color: PALETTE.paper },
   })),
 });
 

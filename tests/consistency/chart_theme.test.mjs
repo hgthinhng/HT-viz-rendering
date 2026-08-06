@@ -57,3 +57,19 @@ test('khong chart nao la gauge hoac radar', () => {
     assert.doesNotMatch(s, /type\s*:\s*['"]radar['"]/, `${f} dung series radar, da bi cam`);
   }
 });
+
+// F1 fix round 1: chan hardcode hex/ten mau CSS tran o BAT KY file chart nao
+// ngoai theme.mjs. theme.mjs la nguon chan ly duy nhat cho mau (PALETTE) nen
+// duoc mien; moi file chart khac PHAI tham chieu PALETTE.<khoa>, khong duoc
+// tu bien hex hay ten mau tran (kể cả trung tinh nhu '#fff'), vi mot gia tri
+// sot lai se lech am tham khi PALETTE doi ma khong test nao bat duoc.
+test('khong file chart nao hardcode hex hoac ten mau CSS tran ngoai theme.mjs', () => {
+  const dir = path.join(ROOT, 'charts/echarts');
+  const hexPattern = /#[0-9a-fA-F]{3,8}\b/;
+  const namedColorPattern = /\b(?:color|fill|stroke|background(?:Color)?|stop-color|borderColor)\s*:\s*['"]?(white|black|red|green|blue|yellow|gray|grey|orange|purple|pink|cyan|magenta|brown)\b/i;
+  for (const f of readdirSync(dir).filter((x) => x.endsWith('.mjs') && x !== 'theme.mjs')) {
+    const s = readFileSync(path.join(dir, f), 'utf8');
+    assert.doesNotMatch(s, hexPattern, `${f} hardcode hex, phai lay tu PALETTE trong theme.mjs`);
+    assert.doesNotMatch(s, namedColorPattern, `${f} dung ten mau CSS tran, phai lay tu PALETTE trong theme.mjs`);
+  }
+});

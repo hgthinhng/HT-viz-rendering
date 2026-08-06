@@ -19,18 +19,20 @@ thật qua WeasyPrint và đếm ảnh raster bằng `scripts/count_raster.py` �
 
 ---
 
-## 0. Tám phát hiện kỹ thuật xác minh bằng cách render THẬT qua WeasyPrint 69.0, cộng một nguyên tắc bao trùm
+## 0. Chín phát hiện kỹ thuật xác minh bằng cách render THẬT qua WeasyPrint 69.0, cộng hai nguyên tắc bao trùm
 
 Trong lúc render 5 mẫu HTML của mục nghiên cứu này qua WeasyPrint 69.0 để tự kiểm (đúng yêu
 cầu "mỗi file phải in ra A4 được"), nhiều giới hạn CSS sau xuất hiện, được cô lập và tái hiện lại
 bằng file test tối giản riêng để loại trừ khả năng lỗi do nội dung cụ thể; mục 0.4 là một cảnh
 báo nhận từ controller trong lúc làm vòng này, đã đối chiếu lại với 5 mẫu của chính agent này để
 xác nhận không dính; mục 0.6-0.8 phát hiện thêm khi dọn `box-shadow` chết theo yêu cầu controller
-ở một vòng làm việc sau. Đây không phải phát hiện thiết kế editorial, mà là giới hạn ENGINE hoặc
-bug cụ thể, ảnh hưởng đến toàn bộ repo chứ không riêng gì các mẫu ở đây, nên ghi lại rõ ràng để
-không ai phải tái khám phá. Mục 0.2 đã được controller sửa lại sau một lần đọc phản biện (bản
-đầu kết luận sai, xem ghi chú "SỬA LẠI" ngay đầu mục 0.2); mục 0.5 đúc kết nguyên
-tắc chung rút ra từ cả bốn phát hiện.
+ở một vòng làm việc sau, trong đó mục 0.7 đã bị controller phản biện và cô lập lại một lần nữa
+(xem "ĐÍNH CHÍNH lần hai" ngay đầu mục 0.7). Đây không phải phát hiện thiết kế editorial, mà là
+giới hạn ENGINE hoặc bug cụ thể, ảnh hưởng đến toàn bộ repo chứ không riêng gì các mẫu ở đây, nên
+ghi lại rõ ràng để không ai phải tái khám phá. Mục 0.2 và 0.7 đã được controller sửa lại sau
+phản biện (xem ghi chú "SỬA LẠI"/"ĐÍNH CHÍNH" ngay đầu mỗi mục); mục 0.5 đúc kết nguyên tắc "đã
+verify phải kèm tên engine"; mục 0.9 đúc kết nguyên tắc "cô lập từng yếu tố, không quy nạp từ ca
+phức tạp" - hai nguyên tắc này áp dụng vượt ra ngoài phạm vi nghiên cứu editorial.
 
 ### 0.1 `box-shadow` KHÔNG được WeasyPrint hỗ trợ, dưới bất kỳ hình thức nào, kể cả blur = 0
 
@@ -202,45 +204,127 @@ nghĩa. Xác nhận bằng toạ độ glyph thật (`rawdict` của PyMuPDF), k
 nhỏ. Áp dụng: TRÁNH mọi kỹ thuật float cao-nhiều-dòng ở vị trí đầu dòng văn bản khi render qua
 WeasyPrint 69.0.
 
-### 0.7 `width` phần trăm bên trong một item của flex container tính sai chiều rộng tham chiếu
+### 0.7 `width` phần trăm SAI, nhưng chỉ khi containing block là flex-item TỰ NÓ cũng là flex container theo hướng cột: đã cô lập lại sau khi controller không tái hiện được bản đầu
 
-**Thực nghiệm**: cấu trúc `.wrap { display: flex }` chứa nhiều `.col { flex: 1 }`, mỗi `.col`
-chứa một `.bar { width: 62% }` - đúng theo CSS, `62%` phải tính theo chiều rộng ĐÃ PHÂN GIẢI của
-`.col` (containing block trực tiếp của `.bar`). Đo bằng toạ độ path thật (`page.get_drawings()`)
-trên một file test cô lập 5 cột: `.col` được tính đúng (mỗi cột rộng bằng nhau, chia đều chiều
-rộng `.wrap` trừ gap). NHƯNG `.bar` bên trong lại rộng ĐÚNG BẰNG 62% của `.wrap` (container flex
-NGOÀI CÙNG), không phải 62% của `.col` (item chứa nó) - chênh lệch tới 3-4 lần chiều rộng dự
-kiến, khiến mỗi cột biểu đồ tràn lấn sang các cột bên phải, đè lên nhãn số của chính nó và của
-các cột sau. Bug tái hiện được trên file cô lập, không phụ thuộc nội dung cụ thể.
+**ĐÍNH CHÍNH lần hai trong cùng mục 0.7, đọc kỹ vì đây là bài học về PHƯƠNG PHÁP, không chỉ về
+CSS**: bản viết trước quy nạp nguyên nhân là "`width` phần trăm bên trong MỘT flex-item nói
+chung" từ một ca test có nhiều yếu tố cộng dồn cùng lúc (nested flex, `flex-direction: column`,
+`justify-content`, `height: 100%`, `gap`). Controller dựng lại đúng cấu trúc tối giản
+`.row{display:flex}` > `.col{flex:1}` (KHÔNG tự là flex) > `.bar{width:50%}` và đo được KẾT QUẢ
+ĐÚNG (bar rộng đúng bằng 50% của `.col`, không phải của `.row`). Ca của controller mâu thuẫn với
+kết luận cũ, và kết luận cũ SAI vì lý do đúng nguyên tắc ở mục 0.9: quy nạp từ một ca phức tạp
+thay vì cô lập từng yếu tố.
 
-**Sửa**: đổi `width` phần trăm bên trong flex-item sang **giá trị px cố định** khi containing
-block của phần tử đó là một flex-item khác (không phải chính flex container hay một khối có
-chiều rộng khai báo tường minh). Đã sửa trong `editorial-luoi-modular-spiegel.html`
-(`.hero-bars .bar` từ `width: 62%` sang `width: 40px`), xác nhận bằng ảnh sau khi sửa: 5 cột
-đứng đúng vị trí, nhãn số không còn bị đè.
+**Cô lập lại từ đầu, bắt đầu từ ca ĐÃ BIẾT ĐÚNG của controller, thêm dần từng yếu tố một** (7
+biến thể, file test còn giữ trong lịch sử phiên làm việc, có thể dựng lại bằng đúng đoạn CSS
+trích dưới đây):
 
-**Phạm vi ảnh hưởng chưa xác minh hết**: đây có thể là biểu hiện của một lớp lỗi rộng hơn (phần
-trăm trong ngữ cảnh flex lồng nhau), chưa kiểm tra toàn bộ `charts/` và `components/` xem có chỗ
-nào khác dùng `width`/`height` phần trăm bên trong flex-item lồng nhau - để lại cho vòng sau.
+| Biến thể | Cấu trúc `.col` (containing block của `.bar{width:50%}`) | Kết quả đo |
+|---|---|---|
+| v0 (baseline, ca của controller) | `.col{flex:1}` - KHÔNG tự là flex | ĐÚNG (50% của `.col`) |
+| v1 | `.col{flex:1;display:flex;flex-direction:column;align-items:center}` | SAI (50% của `.row` ngoài cùng) |
+| v2 | v1 + `justify-content:flex-end` | SAI, giống hệt v1 |
+| v3 | v2 + `height:100%` (và `.row` có `height` cố định) | SAI, giống hệt v1 |
+| v4 | v3 + `gap` trên `.row` | SAI, giống hệt v1 |
+| v5 | `.col{display:flex;flex-direction:column}` NHƯNG đứng ĐỘC LẬP, không nằm trong flex container nào khác | ĐÚNG (50% của chính `.col`) |
+| v6 | `.col{flex:1}` (không tự flex) trong `.row` rộng hơn (900px thay vì 600px) | ĐÚNG, tỷ lệ theo đúng `.col` mới |
+| v7 | `.col{flex:1;display:flex}` nhưng **`flex-direction` mặc định (row), không phải column** | ĐÚNG (50% của chính `.col`) |
 
-### 0.8 `display: inline-flex` đặt giữa dòng văn bản làm WeasyPrint ngắt dòng sai và văng dấu câu
+**Kết luận đúng, thay hoàn toàn bản trước**: lỗi CHỈ xuất hiện khi containing block của phần tử
+`width: %` đồng thời thoả CẢ HAI điều kiện: (1) bản thân nó là một flex-item của một flex
+container khác (bị lồng), VÀ (2) bản thân nó cũng là flex container với **`flex-direction:
+column`** cho các con của nó. Thiếu một trong hai điều kiện (v0, v5, v6, v7) đều cho kết quả
+ĐÚNG. `justify-content`, `height: 100%`, `gap` (v2-v4) KHÔNG phải nguyên nhân, dù chúng có mặt
+trong ca gốc gây bug. Cách hiểu hợp lý nhất: khi containing block là flex-column, `width` của
+con nó là kích thước theo trục NGANG (cross axis), và thuật toán tính phần trăm cross-axis của
+WeasyPrint cho flex lồng nhau đang tham chiếu nhầm sang flex container ông/bà thay vì flex
+container cha trực tiếp - nhưng đây là suy đoán về CƠ CHẾ, phần ĐÃ ĐO ĐƯỢC chắc chắn là bảng
+trên, không suy đoán thêm.
 
-**Thực nghiệm**: một `<span>` mang `display: inline-flex` (dùng để căn giữa icon SVG với chữ,
-`align-items: center`) đặt CHEN GIỮA một câu văn xuôi bình thường (ví dụ "... đã nêu ở Phần 2
-`<span class="xref-mark">...</span>`, hay là ..."). So ảnh và toạ độ chữ thật: nội dung bên
-trong `inline-flex` bị đẩy XUỐNG DÒNG MỚI dù còn đủ chỗ trên dòng hiện tại, và dấu câu NGAY SAU
-span (dấu phẩy) bị văng tới một toạ độ hoàn toàn không liên quan (giữa hai dòng, lệch hẳn sang
-phải), tách rời khỏi chữ nó đáng lẽ phải bám sát. Tái hiện trên file cô lập, không phụ thuộc icon
-SVG cụ thể.
+**Ca tối giản để người sau kiểm lại trong 30 giây (đúng biến thể v1 gây lỗi)**:
+```css
+.row{display:flex;width:600px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center}
+.bar{width:50%;background:blue;height:20px}
+```
+Bar phải rộng ~150pt (50% của cột ~300pt) nếu đúng, nhưng WeasyPrint 69.0 vẽ ra ~225pt (50% của
+`.row` 450pt) - đo bằng `page.get_drawings()`, không cần đọc ảnh bằng mắt.
+
+**Sửa**: đổi `width` phần trăm sang **giá trị px cố định** khi containing block vừa là flex-item
+vừa là flex container `flex-direction: column`. Đã sửa trong `editorial-luoi-modular-spiegel.html`
+(`.hero-bars .bar` từ `width: 62%` sang `width: 40px`; `.hero-bars .bar-col` đúng là
+`flex-direction: column`, khớp điều kiện gây lỗi), xác nhận bằng ảnh sau khi sửa: 5 cột đứng
+đúng vị trí, nhãn số không còn bị đè.
+
+**Phạm vi ảnh hưởng chưa xác minh hết**: chưa kiểm tra toàn bộ `charts/` và `components/` xem có
+chỗ nào khác dùng `width`/`height` phần trăm bên trong một flex-item đồng thời là
+`flex-direction: column` - để lại cho vòng sau, kèm bảng 7 biến thể ở trên để không phải đo lại
+từ đầu.
+
+### 0.8 `display: inline-flex` đặt giữa dòng văn bản làm WeasyPrint ngắt dòng sai và văng dấu câu: đã cô lập tới ca tối giản, giữ nguyên kết luận
+
+**Soi lại theo đúng phương pháp của mục 0.7** (vì controller yêu cầu kiểm tra chéo mọi chẩn đoán
+mới, không riêng cái bị bác): dựng 6 biến thể từ một baseline ĐÃ BIẾT ĐÚNG (span thường không
+flex, chỉ đổi màu chữ) rồi thêm dần TỪNG yếu tố một của `.xref-mark` thật (inline-flex, rồi
+align-items, rồi gap, rồi white-space:nowrap, rồi SVG con).
+
+| Biến thể | Thêm gì so với dòng trước | Dấu phẩy theo sau có bám đúng vị trí không |
+|---|---|---|
+| w0 (baseline) | `<span style="color:blue">` thường, không flex | CÓ (đúng) |
+| w1 | + `display: inline-flex` (KHÔNG thêm gì khác) | KHÔNG - đã vỡ ngay từ đây |
+| w2 | + `align-items: center` | KHÔNG, giống hệt w1 |
+| w3 | + `gap: 3px` | KHÔNG, giống hệt w1 |
+| w4 | + `white-space: nowrap` | KHÔNG, giống hệt w1 |
+| w5 | + SVG con bên trong span (đúng cấu trúc `.xref-mark` thật) | KHÔNG, giống hệt w1 |
+
+**Kết luận: chẩn đoán ban đầu ĐƯỢC GIỮ NGUYÊN, đã cô lập chặt hơn**. Nguyên nhân duy nhất và đủ
+là `display: inline-flex` tự nó, không cần `align-items`, `gap`, `white-space`, hay SVG con -
+một `<span style="display:inline-flex">` chỉ chứa CHỮ THƯỜNG đặt giữa câu văn xuôi đã đủ làm
+WeasyPrint 69.0 ngắt dòng sai chỗ và văng dấu câu theo sau ra một toạ độ không liên quan (đo
+bằng toạ độ từ thật qua `page.get_text('words')`, không phải bằng mắt).
+
+**Ca tối giản để người sau kiểm lại trong 30 giây (đúng biến thể w1)**:
+```html
+<p>Câu văn dài trước khi tới điểm tham chiếu chéo <span style="display:inline-flex">Xem Hình 2</span>, hay là điều gì khác.</p>
+```
+So với bản không có `display:inline-flex`: dấu phẩy sau "2" phải bám ngay sau nó, nhưng
+WeasyPrint 69.0 đặt dấu phẩy ở một dòng/toạ độ khác hẳn.
 
 **Sửa**: đổi `display: inline-flex; align-items: center` sang `display: inline-block;
 vertical-align: middle`, và thay `gap` giữa icon/chữ bằng `margin-right` trên chính SVG. Sau khi
 đổi, dấu câu theo sau bám đúng vị trí và đoạn văn chảy tiếp bình thường trên cùng dòng khi đủ
 chỗ. Đã sửa trong `editorial-chu-thich-nguon-rest-of-world.html` (`.xref-mark`).
 
-**Quy tắc rút ra**: TRÁNH `display: inline-flex`/`inline-grid` cho các cụm nhỏ (icon + nhãn ngắn)
-chen giữa văn xuôi khi render qua WeasyPrint 69.0. Dùng `inline-block` + `vertical-align` để căn
-chỉnh dọc thay cho `align-items` của flex.
+**Quy tắc rút ra**: TRÁNH `display: inline-flex`/`inline-grid` cho bất kỳ phần tử nào chen giữa
+văn xuôi khi render qua WeasyPrint 69.0, bất kể nội dung bên trong đơn giản hay phức tạp. Dùng
+`inline-block` + `vertical-align` để căn chỉnh dọc thay cho `align-items` của flex.
+
+### 0.9 Bài học phương pháp bao trùm 0.2, 0.7 và mục 2.3: cô lập từng yếu tố một, không quy nạp từ ca phức tạp
+
+Phiên nghiên cứu này có BA lần một chẩn đoán "nguyên nhân" bị chứng minh sai và phải viết lại
+(mục 0.2 về `@media`, mục 0.7 ở trên về `width` phần trăm), cộng thêm mục 2.3 (drop cap) là một
+chẩn đoán ĐÚNG nhưng lúc đầu được gọi là "đã kiểm chứng" khi mới chỉ kiểm "không có CSS warning",
+chưa trích toạ độ glyph thật. Mục 0.1 (`box-shadow`) và 0.8 (`inline-flex`, sau khi soi lại) KHÔNG
+nằm trong nhóm này - cả hai đều đã được controller hoặc chính agent này tái hiện độc lập và giữ
+nguyên kết luận. Ba lần sai/thiếu chứng cứ kể trên đều cùng một cơ chế: **đo trên một ca có nhiều
+yếu tố cộng dồn cùng lúc, rồi quy nạp ra một quy tắc chung dựa trên cảm giác "cái này chắc là
+nguyên nhân"**, thay vì cô lập từng yếu tố.
+
+**Quy trình đã chứng minh hoạt động, dùng lại cho mọi bug WeasyPrint phát hiện sau này**:
+1. Dựng một ca TỐI GIẢN đã biết chắc chắn ĐÚNG (không có triệu chứng) - càng ít yếu tố càng tốt.
+2. Thêm ĐÚNG MỘT yếu tố nghi ngờ mỗi lần từ file thật gây lỗi, đo lại bằng toạ độ/path thật
+   (`page.get_drawings()`, `page.get_text('words')` hoặc `rawdict`) sau mỗi lần thêm.
+3. Yếu tố nào làm triệu chứng xuất hiện chính là nguyên nhân thật; các yếu tố thêm sau đó mà
+   không đổi kết quả (như `justify-content`, `gap`, `white-space`, SVG con ở hai mục trên) được
+   loại khỏi danh sách nguyên nhân, dù chúng CÓ MẶT trong ca gốc gây lỗi.
+4. Luôn để lại CA TỐI GIẢN GÂY LỖI trong hồ sơ (không chỉ mô tả bằng lời) để người sau kiểm lại
+   trong 30 giây thay vì phải dựng lại từ đầu.
+
+Nếu không cô lập được nguyên nhân dù đã thử, viết TRUNG THỰC: mô tả triệu chứng đã quan sát, ghi
+rõ nguyên nhân CHƯA xác định, ghi rõ ca tối giản đơn giản nhất vẫn cho kết quả ĐÚNG (để khoanh
+vùng), và ghi cách sửa đã dùng là một cách NÉ, không phải một bản vá cho nguyên nhân đã biết. Một
+chẩn đoán sai nghe hợp lý nguy hiểm hơn nhiều so với một triệu chứng thành thật kèm "chưa rõ vì
+sao".
 
 ---
 

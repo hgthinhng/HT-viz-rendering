@@ -15,9 +15,11 @@ grayscale` hay bất kỳ `filter` nào khác: 0 chỗ. `<svg height="auto">` d�
 bẫy đã xác nhận ở các vòng trước: 0 chỗ trong mã đang chạy (chỉ còn nhắc tới trong comment của 1
 file `samples/`, không phải một hiện diện thật). `clamp()`/`min()`/`max()`: 0 chỗ trong cả 4 thư
 mục mục tiêu; có ĐÚNG 1 chỗ sống trong `components/gallery.html` nhưng đã đo bằng render thật là
-**0% ảnh hưởng lên PDF** (giải thích ở mục 3). Rủi ro thật duy nhất đo được nằm NGOÀI phạm vi 4
+**0% ảnh hưởng lên PDF** (giải thích ở mục 3). Có 1 chỗ khác từng THẬT SỰ VỠ nằm NGOÀI phạm vi 4
 thư mục mục tiêu, trong một file `samples/` của vòng nghiên cứu khác (`report-exec-brief-action-
-first.html`) - nêu ở mục 3 vì nằm trong "mọi HTML mẫu" mà team lead yêu cầu quét, dù không thuộc
+first.html`) - **ĐÃ ĐƯỢC SỬA bởi một vòng khác trong lúc audit này đang chạy** (commit
+`75e5ffb`, xác nhận lại bằng render: nay ra đúng 22.8pt cố định thay vì rớt về 12.0pt), nêu ở mục
+3 để đủ sổ sách và vì nằm trong "mọi HTML mẫu" mà team lead yêu cầu quét, dù không thuộc
 phạm vi sửa của agent này.
 
 **2. Ba kỹ thuật thay thế đã verify (khối lệch vị trí `position`/`transform`+`z-index`, `border`
@@ -93,7 +95,7 @@ trong toàn repo, đo riêng từng chỗ:
 | # | Chỗ dùng | Giá trị CSS khai báo | Đo thật qua WeasyPrint (`get_text("dict")`, đọc `span["size"]`) | Kết luận |
 |---|---|---|---|---|
 | 2.1 | `components/gallery.html:19`, inline `style` trên `<h1>` demo đầu trang catalog | `font-size:clamp(1.8rem, 1.2rem + 2.2vw, 2.6rem)` | **Dòng chữ H1 này KHÔNG XUẤT HIỆN trong PDF WeasyPrint** - render `components/gallery.html` (16 trang), tìm chuỗi `"22 component"` trong `get_text()` của mọi trang: 0 kết quả. Lý do: `<h1>` nằm trong `<header class="gallery-shell no-print">`, và `.no-print { display: none !important; }` khai TRONG `@media print` (dòng 467 `components.css`) - WeasyPrint luôn ở ngữ cảnh in nên toàn bộ header biến mất, độc lập với việc `clamp()` có parse được hay không. | **0% ảnh hưởng PDF, đã đo bằng render thật, không phải suy đoán từ vị trí trong DOM.** Vẫn là một bug thật cần dọn (nếu có ai copy pattern này ra ngoài `.no-print` thì vỡ ngay), nhưng KHÔNG đóng góp gì vào rủi ro hiện tại. |
-| 2.2 | `samples/report-exec-brief-action-first.html:64`, selector `h1.verdict` (NGOÀI 4 thư mục mục tiêu, nằm trong `samples/`, thuộc "mọi HTML mẫu" theo yêu cầu quét - không thuộc phạm vi sửa của agent này) | `font-size:clamp(1.55rem, 1.1rem + 1.6vw, 2.15rem)` (tức khoảng 18,6pt-25,8pt tuỳ viewport) | Render trực tiếp `samples/report-exec-brief-action-first.html`, đọc span chứa `"NÊN tham gia"`: **`size = 12.0`** - đúng bằng font-size mặc định của UA (`body` trong file không khai `font-size` riêng). Property `font-size` bị bỏ hoàn toàn, cascade rớt xuống tận UA default vì không còn rule `font-size` nào khác áp cho `h1.verdict`. | **THẬT SỰ VỠ.** Đây là dòng tiêu đề "verdict" quan trọng nhất của một exec brief (kết luận hành động chính), lẽ ra phải nổi bật ~19-26px đậm serif; trong PDF WeasyPrint nó render CÙNG CỠ với văn bản thân bài (12pt), mất hoàn toàn phân cấp thị giác. Đúng khớp mẫu hình đã ghi trong `research/08-synthesis/FINDINGS.md` dòng 176-178 (đã cảnh báo trước, CHƯA sửa vì ngoài phạm vi ghi file của round đó). |
+| 2.2 | `samples/report-exec-brief-action-first.html`, selector `h1.verdict` (NGOÀI 4 thư mục mục tiêu, nằm trong `samples/`, thuộc "mọi HTML mẫu" theo yêu cầu quét - không thuộc phạm vi sửa của agent này) | **ĐO LÚC PHÁT HIỆN (đầu phiên audit này):** `font-size:clamp(1.55rem, 1.1rem + 1.6vw, 2.15rem)` không có fallback nào khác → đo ra `size = 12.0` (rớt về UA default, `body` không khai `font-size` riêng) → **THẬT SỰ VỠ**, tiêu đề verdict lẽ ra ~19-26px đậm serif lại render CÙNG CỠ văn bản thân bài, mất hoàn toàn phân cấp. Đúng khớp cảnh báo đã có ở `research/08-synthesis/FINDINGS.md` dòng 176-178. **ĐÃ ĐƯỢC SỬA bởi một vòng khác (commit `75e5ffb`) trong lúc audit này đang chạy**: nay `h1.verdict` khai `font-size: 1.9rem` cố định làm mặc định in ấn, `clamp()` bản gốc chuyển vào trong `@media screen { }` chỉ áp cho xem trên trình duyệt. Đo lại NGAY TRƯỚC KHI CHỐT hồ sơ này: `size = 22.8` (= 1.9rem × 12pt cố định, đúng như khai). | **Đã đóng, không còn là rủi ro tại thời điểm chốt hồ sơ.** Giữ lại trong bảng để làm ví dụ cách đo "trước/sau" đúng chuẩn của quy tắc "đo, đừng suy diễn" - không phải một khuyến nghị còn treo. |
 
 Ghi chú kỹ thuật quan trọng cho vòng sau: khi `clamp()`/`min()`/`max()` bị bỏ qua, WeasyPrint
 KHÔNG giữ giá trị min/max/preferred nào trong ba giá trị đã khai - toàn bộ khai báo `font-size`

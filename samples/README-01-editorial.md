@@ -54,10 +54,14 @@ không phải box-shadow, nhưng trực tiếp phá "phân lớp thị giác rõ
    left }` (và cả một `<span>` float thật) không được WeasyPrint 69.0 chừa chỗ đúng ở dòng đầu,
    chữ theo sau in đè lên chữ cái phóng to. ĐÃ GỠ drop cap khỏi file, xem mục 2.3 và 0.6
    `FINDINGS.md` (đính chính một khẳng định sai trước đó rằng kỹ thuật này "đã kiểm chứng an toàn").
-2. **`width` phần trăm trong flex-item lồng nhau tính sai** (`editorial-luoi-modular-spiegel.html`):
-   `.bar { width: 62% }` bên trong một cột `flex: 1` bị WeasyPrint tính theo chiều rộng flex
-   container NGOÀI CÙNG thay vì cột chứa nó, khiến mỗi cột biểu đồ tràn lấn sang cột bên phải. Đã
-   đổi sang `width: 40px` cố định. Xem mục 0.7 `FINDINGS.md`.
+2. **`width` phần trăm tính sai, chỉ khi cột chứa nó vừa là flex-item vừa là flex container theo
+   hướng cột** (`editorial-luoi-modular-spiegel.html`): `.bar { width: 62% }` bên trong
+   `.bar-col { flex: 1; display: flex; flex-direction: column }` bị WeasyPrint tính theo chiều
+   rộng flex container NGOÀI CÙNG thay vì `.bar-col`, khiến mỗi cột biểu đồ tràn lấn sang cột bên
+   phải. Đã đổi sang `width: 40px` cố định. LƯU Ý: chẩn đoán nguyên nhân đã được controller phản
+   biện và cô lập lại một lần (bản đầu quy nạp quá rộng thành "mọi flex-item lồng nhau", ca tối
+   giản của controller chứng minh KHÔNG PHẢI vậy - chỉ sai khi cột đó CÙNG LÚC là flex-item và
+   flex-column). Xem mục 0.7 `FINDINGS.md` (đã viết lại, có bảng 7 biến thể cô lập).
 3. **`display: inline-flex` giữa dòng văn bản làm ngắt dòng sai** (`editorial-chu-thich-nguon-rest-of-world.html`):
    mô-típ tham chiếu chéo `.xref-mark` dùng `inline-flex` bị đẩy xuống dòng mới dù còn chỗ, và
    dấu câu ngay sau nó văng tới vị trí vô nghĩa. Đã đổi sang `inline-block` + `vertical-align`.

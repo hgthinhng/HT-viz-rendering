@@ -108,6 +108,36 @@ function hasRealCssAnchor(tail) {
   return false;
 }
 
+// Fix round 3 (F1 van mo): re-reviewer viet duoc 2 cau rong nghia moi lot
+// qua ca ba neo da siet o round 2, vi ca ba neo chi hoi "co mot MANH tin
+// hieu nao do trong doan hay khong", khong hoi "MANH tin hieu do co thuc su
+// la LY DO hay khong":
+//   A. "...hay xem note-box de biet them" -> qua vi crossRef=true (trung
+//      slug that "note-box"), nhung cau khong noi ro TAI SAO khong dung.
+//   B. "...da dung o 3 trang khac" -> qua vi threshold=true ("3 trang" khop
+//      dung mau so+don vi), nhung "da dung o dau" la so lan su dung, KHONG
+//      phai mot NGUONG cua component.
+// Ca hai cau co diem chung: cum tu NGAY SAU trigger ("khong phu hop",
+// "khong hop") la mot LY DO RONG, moi thu phia sau (slug that, con so that)
+// chi la trang tri gan vao mot cai khung rong. Day la gioi han cau truc cua
+// ca 3 neo hien co: chung kiem "co mot manh THAT o dau do trong doan" chu
+// khong kiem duoc "cau co Y NGHIA hay khong" (kiem y nghia van xuoi tu do
+// bang regex la bat kha thi noi chung).
+//
+// Da can nhac 3 huong (xem task-7-report.md muc Fix round 3 de co phan
+// tich day du): (1) ha ky vong, ghi ro gioi han; (2) doi thanh ">=2 loai
+// neo" thay vi ">=1"; (3) danh sach den cum rong nghia hay gap. Loai (2) vi
+// chay thu tren 24 file that cho thay ~15/24 file TOT hien chi co DUNG MOT
+// loai neo, ep len 2 se buoc phai viet them noi dung gia tao vao gan nua so
+// file dang dung, dung chinh cai bay da gay ra F2 (bia mot su that CSS de
+// thoa neo). Chon KET HOP (1) + (3): them mot danh sach den nham THANG vao
+// cum mo dau rong nghia da biet (VACUOUS_OPENING), VA ghi ro trong comment
+// nay rang test khong the kiem duoc y nghia noi dung noi chung, chi chan
+// duoc cac dang rong nghia da biet + doi hoi it nhat mot manh THAT di kem.
+// Day la gioi han THAT, khong phai loi chua sua.
+const VACUOUS_OPENING =
+  /^(?:KHÔNG dùng|không nên dùng|Khong dung)\s*(?:khi|để|cho|nếu)?\s*(?:không\s+)?(?:phù\s*hợp|hợp\s*lý|thích\s*hợp|hợp\b|cần\s*thiết|đúng(?:\s+ngữ\s*cảnh)?|tùy\s*(?:trường\s*hợp|tình\s*huống))/i;
+
 test('co du 24 file catalog', () => {
   assert.equal(catalogFiles.length, 24, `co ${catalogFiles.length} file, mong doi 24`);
 });
@@ -178,6 +208,31 @@ for (const file of catalogFiles) {
 // `.src-badge` chi dinh nghia mau cho dung 4 gia tri data-tier) thay vi noi
 // long dieu kien, dung tinh than "sua file that su thieu, dung sua-cho-vua-
 // test" da lam o round 1 voi 17-methodology-box.md. Sau do ca 24 file qua.
+//
+// F2 nghiem trong o Fix round 3: cau bo sung cho 13-options-comparison-
+// table.md o buoc tren KHANG DINH SAI SU THAT ("table.opt-compare khong co
+// tr{break-inside:avoid} nhu table.dt") - ca hai thuc ra co CUNG mot rule
+// (`components.css` dong 302 va 314, gop chung o dong 471), rule dong 314
+// co tu commit Task 3 (`f458261`), tuc TRUOC CA round 1 lan round 2 cua
+// chinh file test nay. Day la catalog drift THAT, tu tay dua vao chi de
+// thoa dung cai test nay sinh ra de chong drift - bai hoc: mot gate doi
+// bang chung CSS ma khong ai doi chieu lai se tao dong co bia bang chung.
+// Da sua: bo han cau CSS bia, chi giu nguong so hang voi ly do thiet ke
+// that (lay thang tu chinh cau "Tra loi" cua file, khong bia them CSS moi).
+// Xem task-7-report.md muc Fix round 3 phan "F2" de co file:dong lam bang
+// chung cho MOI khang dinh CSS con lai trong ca 4 file (07/13/18/20).
+//
+// GIOI HAN THAT cua test nay (ghi ro de khong ai tuong no bao dam hon thuc
+// te): no KHONG the kiem "cau nay co Y NGHIA that hay khong" bang regex.
+// No chi kiem duoc: (a) co du dai toi thieu, (b) co it nhat mot MANH THAT
+// (con so kem nguong, slug catalog that, hoac class/property CSS that), va
+// (c) phan mo dau ngay sau trigger khong roi vao mot danh sach cum rong
+// nghia DA BIET (VACUOUS_OPENING). Mot cau du de deliberately gian nguoi
+// van co the lot qua neu no tranh duoc ca ba dieu nay (vi du ghep mot slug
+// that vao mot ly do vo ly nhung khong mo dau bang cum rong nghia da biet).
+// Test nay LA MOT SMOKE TEST CHONG DRIFT HINH THUC RO RANG, khong phai mot
+// bo kiem duyet noi dung hoan chinh; nguoi doc report van la lop kiem cuoi
+// cung cho chat luong ly do.
 test('moi catalog deu noi ro khi nao KHONG nen dung, co neo cu the chu khong rong nghia', () => {
   const TRIGGER = /KHÔNG dùng|không nên dùng|Khong dung/i;
   const MIN_TAIL_LEN = 40;
@@ -197,15 +252,18 @@ test('moi catalog deu noi ro khi nao KHONG nen dung, co neo cu the chu khong ron
     const hasCrossRef = hasRealCrossRef(tail, ownSlug);
     const hasCssAnchor = hasRealCssAnchor(tail);
     const anchorOk = hasThreshold || hasCrossRef || hasCssAnchor;
+    const vacuousOpening = VACUOUS_OPENING.test(tail);
 
-    // Mot assert DUY NHAT, bao ca hai dieu kien cung luc: nguoi sua khong
+    // Mot assert DUY NHAT, bao ca ba dieu kien cung luc: nguoi sua khong
     // the chi doc "thieu do dai" roi viet dai ra ma van rong nghia, vi
-    // thong bao luon noi ro CA trang thai neo (Fix round 2, re-reviewer).
+    // thong bao luon noi ro CA trang thai neo VA trang thai mo dau
+    // (Fix round 2 + round 3, re-reviewer).
     assert.ok(
-      lenOk && anchorOk,
+      lenOk && anchorOk && !vacuousOpening,
       `${file}: do dai=${tail.length} ky tu (can >= ${MIN_TAIL_LEN}, ${lenOk ? 'OK' : 'THIEU'}); ` +
         `neo=[nguong:${hasThreshold ? 'co' : 'khong'}, tham-chieu-component-that:${hasCrossRef ? 'co' : 'khong'}, ` +
-        `css-anchor-that:${hasCssAnchor ? 'co' : 'khong'}] (can it nhat 1 "co", hien ${anchorOk ? 'OK' : 'THIEU CA BA'}). ` +
+        `css-anchor-that:${hasCssAnchor ? 'co' : 'khong'}] (can it nhat 1 "co", hien ${anchorOk ? 'OK' : 'THIEU CA BA'}); ` +
+        `mo-dau-rong-nghia:${vacuousOpening ? 'CO, BI CHAN' : 'khong'}. ` +
         `Day la dang cau rong nghia ma test nay sinh ra de chan. Noi dung dang xet: "${tail}"`,
     );
   }

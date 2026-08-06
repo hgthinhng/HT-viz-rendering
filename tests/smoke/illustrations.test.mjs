@@ -41,6 +41,17 @@ test('moi SVG co role img va title tieng Viet', () => {
 // top-level theo dau phay o do sau 0 (bo qua dau phay/ngoac ben trong tung
 // object con nhu { line, text, border, bg }), chi lay khoa CAP MOT. Nhan ca
 // khoa bareword (neutral:) lan khoa co nhay ('neutral':, "neutral":).
+//
+// GIOI HAN DA BIET (chua sua, muc do thap): regex trich khoa bat dau bang
+// "^\s*" nen KHONG nhay qua duoc mot dong "// ghi chu" chen giua hai entry
+// cap mot. Neu ai do them comment ngay truoc "accent:" trong TONES, khoa
+// "accent" se bi roi khoi danh sach trich duoc va test se FAIL — nhung FAIL
+// VOI LY DO SAI (bao thieu "accent" trong khi no van con trong code, chi la
+// bi che boi comment phia truoc). Khong sua vi hien annotate.js khong co
+// comment nao chen giua cac entry TONES (da doc truc tiep de xac nhan), va
+// day la truong hop CHUA XAY RA chu khong phai dang xay ra; ghi lai o day
+// de nguoi sau khong ngac nhien neu gap dung tinh huong nay.
+
 function extractToneKeys(source) {
   const start = source.match(/TONES\s*=\s*\{/);
   if (!start) {

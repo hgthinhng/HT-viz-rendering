@@ -28,14 +28,49 @@ for (const file of examples) {
   const filePath = path.join(ROOT, 'illustrations/examples', file);
   const url = pathToFileURL(filePath).href;
 
-  // Bat loi JS THAT xay ra luc tai trang (vd ReferenceError khi mot script
-  // goi ham cua thu vien chua nap duoc) — dung ben duoi de phan biet "file
-  // khong dinh dung annotation" voi "file co dinh dung nhung load hong".
+  // Bat hai loai tin hieu THAT xay ra luc tai trang, dung de phan biet "file
+  // khong dinh dung annotation" voi "file co dinh dung nhung lop annotation
+  // hong":
+  //   1) requestfailed voi URL chua "annotate.js" — bang chung TRUC TIEP
+  //      nhat cho kich ban loader hong (script src tro sai/file khong ton
+  //      tai). Da tu kiem chung thuc nghiem: duoi file://, mot <script src>
+  //      tro toi file khong ton tai LAM NO Playwright ban 'requestfailed'
+  //      that voi failure().errorText = "net::ERR_FILE_NOT_FOUND", khong
+  //      phai suy doan.
+  //   2) pageerror (loi JS khong bat duoc, lam mot <script> dung giua
+  //      chung) — chi coi la lien quan annotation NEU noi dung loi co nhac
+  //      "annotate"/"Annotate" (vd "ReferenceError: Annotate is not
+  //      defined"). Loi JS KHONG nhac gi toi annotate (vd mot script do
+  //      luong/demo khac tren cung trang loi rieng) KHONG duoc quy cho lop
+  //      annotation.
   const pageErrors = [];
+  const failedRequests = [];
   const onPageError = (e) => pageErrors.push(String(e));
+  const onRequestFailed = (req) => failedRequests.push(req.url());
   page.on('pageerror', onPageError);
+  page.on('requestfailed', onRequestFailed);
+  // RANG BUOC: moi file examples/*.html PHAI goi Annotate.annotate() DONG BO
+  // (khong duoc trong setTimeout, Promise.then, hay bat ky async handler
+  // nao chua chac chan da no truoc moc networkidle). "networkidle" chi cho
+  // biet mang da ngung, khong dam bao mot lenh goi bi hoan (deferred) da
+  // chay xong. Neu sau nay them example goi annotate() bat dong bo, script
+  // nay se FAIL SAI (bao "khong tim thay path.anno-leader" trong khi thu
+  // vien se ve dung, chi la chua kip). Chap nhan rang buoc dong bo thay vi
+  // doi them mot tin hieu khac (vd cho toi khi thay g.annotations xuat
+  // hien) vi hai file that hien tai deu goi dong bo, va mot khoang cho co
+  // dinh se la doan mo (guess) chu khong phai do bang so that.
   await page.goto(url, { waitUntil: 'networkidle' });
   page.off('pageerror', onPageError);
+  page.off('requestfailed', onRequestFailed);
+
+  // Dung "includes('annotate')" (khong doi hoi ".js" dinh kem) vi mot
+  // duong dan hong that su co the doi ten hoan toan (vd go sai thanh
+  // "annotate-DUONG-DAN-SAI.js" — van con chua "annotate" nhung khong con
+  // nguyen cum "annotate.js"). Van an toan vi day la URL cua MOT REQUEST
+  // DA THAT SU 404, khong phai doan tu van ban tuy y trong file.
+  const annotateLoadFailed = failedRequests.some((u) => u.toLowerCase().includes('annotate'));
+  const annotateRelatedErrors = pageErrors.filter((e) => /annotate/i.test(e));
+  const unrelatedErrors = pageErrors.filter((e) => !/annotate/i.test(e));
 
   // Khong phai moi file .html trong examples/ deu dung lop annotation:
   // vietnam-simplification-comparison.html la demo do-luong 3 muc don gian
@@ -44,40 +79,43 @@ for (const file of examples) {
   // khong lien quan se tao FAIL gia (khong phai loi hinh hoc that ma la
   // sai pham vi).
   //
-  // Dieu kien SKIP DO HANH VI THAT sau khi trang da tai xong, KHONG doan tu
-  // van ban nguon. Ban truoc dua vao doc chuoi tho trong file .html (lan 1:
-  // ten file "annotate.js"; lan 2: loi goi "Annotate.annotate(") — bi qua
-  // mat neu ai do goi qua bien trung gian nhu
-  // `const fn = Annotate.annotate; fn(svg, items)`, vi chuoi tho khong con
-  // khop dang "Annotate.annotate(" du annotate.js van chay dung (DA TU KIEM
-  // CHUNG THUC NGHIEM: kich ban nay lam window.Annotate = true, dung nhu ky
-  // vong).
-  //
-  // Chi doi sang kiem `window.Annotate` khong thoi la CHUA DU: da tu kiem
-  // chung thuc nghiem bang cach dung lai kich ban hong loader cua vong 1
-  // (pha duong dan <script src>, giu nguyen loi goi Annotate.annotate(...))
-  // va thay `window.Annotate` VAN la undefined trong truong hop nay — vi
-  // annotate.js chua bao gio chay duoc nen khong co gi gan window.Annotate
-  // ca. Neu chi dung mot dieu kien "khong ton tai -> SKIP" thi day lai la
-  // dung CHINH LOAI SKIP OAN da sua o vong 1, chi khac co che phat hien.
-  // Ket hop them tin hieu "co loi JS that luc tai trang khong" de phan
-  // biet hai truong hop giong het nhau ve mat window.Annotate:
-  //   - Khong co window.Annotate VA KHONG co loi JS nao -> file thuc su
-  //     khong dinh dung annotation (vietnam-simplification-comparison.html)
-  //     -> SKIP hop le.
-  //   - Khong co window.Annotate NHUNG CO loi JS (vd "ReferenceError:
-  //     Annotate is not defined") -> file co dinh goi annotation nhung
-  //     thu vien khong nap duoc -> day la mot su co that, phai FAIL, khong
-  //     duoc SKIP.
-  //   - Co window.Annotate -> file co nap thu vien -> PHAI sinh ra
-  //     path.anno-leader, khong sinh ra thi FAIL (nhanh nay khong doi).
+  // Dieu kien SKIP/FAIL DO HANH VI THAT sau khi trang da tai xong, KHONG
+  // doan tu van ban nguon (lich su sua qua 2 vong truoc: vong 1 doc chuoi
+  // "annotate.js" trong HTML -> bi qua mat khi loader hong; vong 2 doi sang
+  // kiem window.Annotate + BAT KY loi JS nao -> qua RONG, se FAIL oan cho
+  // lop annotation neu trang co loi JS o mot script khac khong lien quan).
+  // Ban nay THU HEP pham vi quy loi: chi coi la loi cua lop annotation khi
+  // co BANG CHUNG THAT no lien quan (xem annotateLoadFailed/
+  // annotateRelatedErrors o tren, tinh tu requestfailed + pageerror loc
+  // theo tu khoa "annotate").
+  //   - window.Annotate TON TAI -> file co nap thu vien -> PHAI sinh ra
+  //     path.anno-leader, khong sinh ra thi FAIL (nhanh nay khong doi qua
+  //     ca 3 vong).
+  //   - window.Annotate KHONG ton tai, VA co bang chung annotate.js nap
+  //     hong (requestfailed dung URL) HOAC loi JS nhac toi annotate -> FAIL,
+  //     nghi hong lop annotation, khong phai file ngoai pham vi.
+  //   - window.Annotate KHONG ton tai, KHONG co bang chung lien quan
+  //     annotate, NHUNG co loi JS khac (vd mot script do luong/demo khac
+  //     tren cung trang loi rieng) -> DAY LA CA MOI o vong 3: khong duoc
+  //     FAIL do toi nham cho annotation (repo cam quy nhan sai chu the loi),
+  //     nhung cung khong duoc nuot im lang (repo cam fallback im lang) ->
+  //     SKIP kem CANH BAO in nguyen van loi JS do, de nguoi chay biet trang
+  //     co van de khac dang cho xu ly rieng.
+  //   - window.Annotate KHONG ton tai, khong loi gi ca -> SKIP hop le nhu
+  //     cac vong truoc.
   const hasAnnotate = await page.evaluate(() => typeof window.Annotate !== 'undefined');
   if (!hasAnnotate) {
-    if (pageErrors.length > 0) {
+    if (annotateLoadFailed || annotateRelatedErrors.length > 0) {
+      const evidence = [
+        ...(annotateLoadFailed ? [`requestfailed voi URL nhac annotate (${failedRequests.filter((u) => u.toLowerCase().includes('annotate')).join('; ')})`] : []),
+        ...annotateRelatedErrors,
+      ].join('; ');
       log(
         false,
-        `${file}: window.Annotate khong ton tai VA co loi JS luc tai trang (${pageErrors.join('; ')}) -> nghi hong lop annotation, khong phai file ngoai pham vi`,
+        `${file}: window.Annotate khong ton tai VA co bang chung lien quan annotate (${evidence}) -> nghi hong lop annotation, khong phai file ngoai pham vi`,
       );
+    } else if (unrelatedErrors.length > 0) {
+      console.log(`[SKIP] ${file}: window.Annotate khong ton tai, khong thuoc pham vi kiem tra lop annotation. CANH BAO: trang co ${unrelatedErrors.length} loi JS KHONG lien quan annotate (${unrelatedErrors.join('; ')}) -> co the la van de khac tren trang nay, can nguoi xem lai.`);
     } else {
       console.log(`[SKIP] ${file}: window.Annotate khong ton tai, khong co loi JS nao luc tai trang -> khong thuoc pham vi kiem tra lop annotation`);
     }

@@ -21,20 +21,45 @@ derive.py, derive2.py) vì phạm vi ghi của phiên này giới hạn ở `res
 Trước khi có được số liệu đáng tin, phải sửa 2 lỗi phát hiện được ngay trên chính mẫu đầu tiên
 đang viết (và xác nhận chúng có ở ít nhất 8 file khác trong `samples/` từ vòng 1):
 
-**Bẫy 1: `<svg width="100%" height="auto">` bị WeasyPrint 69.0 bỏ qua hoàn toàn.** Tự kiểm bằng
-`weasyprint.HTML(...).write_pdf()` rồi `fitz` chụp lại trang: SVG với `width="100%"` (dù đặt trực
-tiếp trên `<svg>` hay qua CSS `style="width:100%"`) render ra Ô TRỐNG trong PDF, không lỗi không
-cảnh báo. Trình duyệt (Chromium) render đúng, nên lỗi này CHỈ lộ ra khi kiểm PDF thật, đúng kịch
-bản rủi ro nêu trong yêu cầu nghiên cứu. Test tối thiểu tái lập: một `<svg viewBox="0 0 100 100"
-width="100%">` cùng file với một `<svg width="200">` cố định, cùng file, chỉ cái thứ hai render.
-Cách sửa an toàn: `<svg>` phải có `width`/`height` là SỐ PX CỐ ĐỊNH khớp `viewBox`; muốn co giãn
-theo màn hình thì đặt CSS `svg { max-width: 100%; height: auto; }` trên chính `<svg>` (không đặt
-`width="100%"` làm thuộc tính của `<svg>`). Grep nhanh `width="100%" height="auto"` trong
-`samples/*.html` ra ít nhất 8 file khác từ vòng 1 (toàn bộ nhóm `chart-*.html` của
-`research/03-chart-doctrine`) cùng dùng đúng pattern lỗi này -- khả năng cao các mẫu đó cũng render
-rỗng khi ra PDF dù trông hoàn hảo trên trình duyệt, cần một lượt kiểm lại riêng (xem mục "Đề xuất
-cho vòng sau"). Đây CHÍNH XÁC là loại lỗi mà nhiệm vụ nghiên cứu này đã cảnh báo trước: "đã có mẫu
-của agent khác trông hoàn hảo trên trình duyệt nhưng vỡ nát khi ra PDF thật."
+**Bẫy 1: thuộc tính `height="auto"` TRÊN CHÍNH THẺ `<svg>` bị WeasyPrint 69.0 bỏ qua toàn bộ nội
+dung.** Đã tự kiểm bằng phép cô lập 5 biến thể trên cùng một `<rect>` (dùng đúng phép controller
+yêu cầu: đếm `<svg\b>` bằng regex, đếm `page.get_drawings()` bằng PyMuPDF, RỒI mở ảnh bằng Read để
+nhìn tận mắt, không chỉ tin con số):
+
+| Biến thể | Kết quả |
+|---|---|
+| `width="100%" height="auto"` (thuộc tính) | RỖNG, 0 drawing |
+| `height="auto"` (thuộc tính, không kèm `width`) | RỖNG, 0 drawing |
+| `width="100%"` (thuộc tính, không khai `height`) | OK, nhưng co giãn theo TOÀN BỘ chiều rộng khối chứa (không phải kích thước "vừa mắt" như viewBox gợi ý, cần div bọc có `width` cố định nếu muốn kiểm soát) |
+| `width="300" height="180"` (thuộc tính, số cố định) | OK |
+| `width="300" height="180"` (thuộc tính, số cố định) CỘNG CSS `max-width:100%; height:auto;` trên chính `<svg>` | OK -- ĐÂY LÀ PATTERN DÙNG TRONG TOÀN BỘ 5 MẪU CỦA TÀI LIỆU NÀY |
+
+Kết luận chính xác: thủ phạm là `height="auto"` Ở DẠNG THUỘC TÍNH HTML/SVG (`<svg height="auto">`),
+không phải CSS `height: auto`. Khi `<svg>` đã có `width`/`height` là SỐ PX CỐ ĐỊNH làm thuộc tính,
+việc THÊM CSS `max-width: 100%; height: auto;` lên trên để co giãn màn hình vẫn AN TOÀN (đã verify
+lại bằng chính 5 mẫu `samples/palette-*.html` của tài liệu này, `min(page.get_drawings())` = 97,
+tối đa 2563, không mẫu nào rỗng, xem bảng round-trip cuối mục 0). Cách sửa an toàn tổng quát:
+KHÔNG BAO GIỜ khai `height="auto"` làm thuộc tính của thẻ `<svg>`; luôn khai `width`/`height` bằng
+số px cố định khớp `viewBox`, muốn co giãn màn hình thì thêm RIÊNG một khai báo CSS
+`svg { max-width: 100%; height: auto; }` bên cạnh (không thay thế) thuộc tính số cố định đó.
+
+Grep nhanh `width="100%" height="auto"` trong `samples/*.html` ra ít nhất 8 file khác từ vòng 1
+(toàn bộ nhóm `chart-*.html` của `research/03-chart-doctrine`) cùng dùng đúng thuộc tính lỗi này
+trực tiếp trên `<svg>` (không có số cố định đi kèm) -- khả năng cao các mẫu đó render rỗng khi ra
+PDF dù trông hoàn hảo trên trình duyệt, cần một lượt kiểm lại riêng (xem mục "Đề xuất cho vòng
+sau"). Đây CHÍNH XÁC là loại lỗi mà nhiệm vụ nghiên cứu này đã cảnh báo trước: "đã có mẫu của agent
+khác trông hoàn hảo trên trình duyệt nhưng vỡ nát khi ra PDF thật."
+
+**Bảng round-trip 3 phép của 5 mẫu chính thức** (đếm `<svg\b>` bằng regex, đếm vector bằng
+`page.get_drawings()`, đã mở từng trang bằng Read để nhìn tận mắt xác nhận không có gì rỗng):
+
+| Mẫu | Số thẻ svg | Tổng drawing | Số trang | Đã soi ảnh |
+|---|---|---|---|---|
+| `palette-mau-vs-thang-xam.html` | 2 (+3 khớp giả trong comment mô tả lỗi) | 2092 | 1 | Có |
+| `palette-8-chuoi.html` | 2 | 2563 | 2 | Có |
+| `palette-khong-dung-mau.html` | 2 | 157 | 2 | Có |
+| `palette-dan-xuat-quy-tac.html` | 0 (chỉ dùng `<div>` swatch) | 97 | 2 | Có |
+| `palette-nguong-phan-biet.html` | 0 (chỉ dùng `<div>` swatch) | 128 | 1 | Có |
 
 **Bẫy 2: `filter: grayscale(1)` không được WeasyPrint 69.0 thực thi.** Đây là kỹ thuật chính mẫu
 `chart-mau-den-trang.html` (vòng 1) dùng để "chứng minh bằng thực nghiệm" chart vẫn đọc được sau
@@ -58,6 +83,33 @@ lệ, biến 170x320 thành ví dụ 300x564 và đè lên nội dung phía dư�
 WeasyPrint (đúng theo spec CSS Box Alignment, trình duyệt thật cũng làm vậy), nhưng dễ bị bỏ sót
 vì nhìn ảnh chụp màn hình nhỏ không thấy ngay chỗ tràn. Sửa bằng `justify-self: start` trên chính
 `<svg>` khi nó là item của `display:grid`.
+
+**Bẫy 4 (phát hiện khi controller yêu cầu kiểm riêng `<pattern>`): `patternTransform="rotate(45)"`
+làm WeasyPrint vẽ LƯỚI CHÉO HAI HƯỚNG thay vì vẫn là các đường SONG SONG một hướng như Chromium.**
+Cô lập bằng một `<pattern>` tối giản: 1 ô 6x6, nền xanh dương, 1 đường kẻ trắng dọc ở cạnh trái,
+tile bằng `patternUnits="userSpaceOnUse"`, rồi xoay cả pattern 45 độ bằng `patternTransform`. Chụp
+cùng markup bằng Chromium thật (playwright-core) và bằng WeasyPrint (`write_pdf` rồi
+`page.get_pixmap()`), đặt cạnh nhau:
+
+- Chromium: các đường kẻ chéo SONG SONG, đúng một hướng, đúng ý đồ thiết kế của một hoạ tiết
+  "gạch chéo" đơn giản.
+- WeasyPrint: LƯỚI CHÉO hai hướng (hình thoi/ca-rô chéo), như thể đường kẻ được nhân đôi và phản
+  chiếu.
+
+Đã kiểm đối chứng: bỏ hẳn `patternTransform` (giữ pattern trục thẳng, không xoay) thì cả hai engine
+render Y HỆT NHAU (đường kẻ dọc song song, không lệch). Vậy lỗi khoanh vùng chính xác vào
+`patternTransform` khi có góc xoay khác 0/90/180/270 độ, không phải bản thân `<pattern>`.
+
+**Hệ quả cho mẫu trong tài liệu này**: cả `palette-mau-vs-thang-xam.html` và `palette-8-chuoi.html`
+dùng đúng `patternTransform="rotate(45)"` cho hoạ tiết "gạch chéo" (dải Nông nghiệp/DN F). Trong
+PDF thật, hoạ tiết này KHÔNG hiện ra như một dải gạch chéo đơn giản mà hiện ra như một lưới ca-rô
+chéo dày đặc hơn dự tính khi thiết kế trên trình duyệt. Đây KHÔNG phải lỗi làm hỏng mục đích phân
+biệt (lưới ca-rô vẫn tương phản rõ với hoạ tiết chấm bi ở dải liền kề, thậm chí còn dễ nhận ra hơn
+vì đậm đặc hơn), nhưng là một khác biệt THẬT giữa bản xem trình duyệt và bản in cần biết trước,
+đúng tinh thần "một khẳng định 'an toàn khi in' mà không ghi rõ TÊN ENGINE là khẳng định không đầy
+đủ" đã đúc kết ở `RESEARCH-LEDGER.md`. Khuyến nghị: nếu cần hoạ tiết chéo ĐÚNG NHƯ THIẾT KẾ ở cả
+hai kênh, dùng 2 đường `<line>` được vẽ tay theo đúng góc mong muốn bên trong ô `<pattern>` (không
+dùng `patternTransform` để xoay), thay vì xoay cả pattern.
 
 ## 1. Ngưỡng phân biệt khi chuyển sang thang xám
 

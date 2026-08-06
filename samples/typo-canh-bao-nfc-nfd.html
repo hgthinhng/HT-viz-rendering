@@ -95,31 +95,31 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: var(--paper-hi); }
   body { font-family: var(--font-serif); color: var(--ink); }
-  .sheet { width: 717px; margin: 24px auto; background: var(--paper); padding: 48px 56px 64px; }
-  .kicker { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-lo); margin: 0 0 6px; }
-  h1.page-title { font-size: 22px; font-weight: 600; margin: 0 0 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .sheet { width: 717px; margin: 24px auto; background: var(--paper); padding: 36px 56px 36px; }
+  .kicker { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-lo); margin: 0 0 5px; }
+  h1.page-title { font-size: 20px; font-weight: 600; margin: 0 0 18px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 
   .compare { display: flex; gap: 20px; }
-  .compare > div { flex: 1; border: 1px solid var(--line); padding: 20px 22px; }
-  .compare .tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 12px; }
+  .compare > div { flex: 1; border: 1px solid var(--line); padding: 14px 18px; }
+  .compare .tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 8px; }
   .compare .ok .tag { color: var(--pos); }
   .compare .bad .tag { color: var(--neg); }
-  .compare .sample { font-size: 26px; line-height: 1.5; margin: 0; }
-  .compare .meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-lo); margin-top: 14px; }
+  .compare .sample { font-size: 22px; line-height: 1.4; margin: 0; }
+  .compare .meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-lo); margin-top: 10px; }
 
-  .block { margin: 32px 0; }
-  .section-title { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
-  .caption { font-family: var(--font-mono); font-size: 12px; color: var(--ink-md); line-height: 1.6; margin: 10px 0 0; }
+  .block { margin: 20px 0; }
+  .section-title { font-size: 12.5px; font-weight: 600; margin: 0 0 4px; }
+  .caption { font-family: var(--font-mono); font-size: 11px; color: var(--ink-md); line-height: 1.5; margin: 8px 0 0; }
   .caption b { color: var(--ink); font-weight: 600; }
 
   .code {
-    font-family: var(--font-mono); font-size: 12px; background: var(--paper-hi);
-    border: 1px solid var(--line); padding: 12px 14px; white-space: pre-wrap;
-    word-break: break-word; color: var(--ink); line-height: 1.6;
+    font-family: var(--font-mono); font-size: 11px; background: var(--paper-hi);
+    border: 1px solid var(--line); padding: 10px 14px; white-space: pre-wrap;
+    word-break: break-word; color: var(--ink); line-height: 1.5;
   }
 
-  table.cov { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
-  table.cov th, table.cov td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); }
+  table.cov { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 11px; }
+  table.cov th, table.cov td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); }
   table.cov th { font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-lo); }
   table.cov td.yes { color: var(--pos); }
   table.cov td.no { color: var(--neg); }
@@ -171,7 +171,6 @@
   <div class="block">
     <p class="section-title">Kiểm tra và sửa</p>
     <p class="code">python3 -c "import unicodedata as u; s=open('file.html',encoding='utf-8').read(); assert s==u.normalize('NFC',s), 'lech chuan hoa NFC'"
-
 # sua tai diem nap du lieu, khong sua o tang render:
 text = unicodedata.normalize('NFC', text)</p>
     <p class="caption">Chạy kiểm tra này trong pipeline nạp dữ liệu (đọc CSV, nhận

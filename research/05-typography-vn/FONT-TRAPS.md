@@ -11,6 +11,63 @@ lại. **CHƯA ĐO SÂU** = có cơ sở lý thuyết nhưng phiên này chưa �
 
 ---
 
+## Phương pháp dùng lại được: đo chữ có CHẠM/CẮT hay không bằng bbox thật của engine
+
+Mọi câu hỏi dạng "dấu có chạm mép khung không", "dòng trên có đè dòng dưới không",
+"chữ có bị cắt không" đều quy về MỘT phép đo: lấy hộp bao (bounding box) THẬT mà
+chính engine render đã tính cho từng đoạn chữ, rồi so nó với hộp bao của khung chứa
+hoặc với hộp bao của đoạn chữ liền kề. Không suy đoán từ CSS.
+
+**Cách lấy bbox chữ thật từ PDF (không phải từ trình duyệt)**:
+```python
+import fitz
+doc = fitz.open("file.pdf")
+page = doc[0]
+for b in page.get_text("dict")["blocks"]:
+    for l in b.get("lines", []):
+        for s in l["spans"]:
+            print(s["text"][:30], s["bbox"], s["size"])
+```
+`s["bbox"]` là `(x0, y0, x1, y1)` do WeasyPrint/Pango tính khi đặt glyph, phản ánh
+đúng đường biên mực glyph đã layout, không phải suy từ `font-size × line-height`.
+
+**Cách lấy bbox khung chứa (border/nền) THẬT từ PDF**:
+```python
+rects = [d["rect"] for d in page.get_drawings() if d.get("rect")]
+```
+`get_drawings()` trả về mọi hình vẽ vector (border, nền tô, viền bảng) mà WeasyPrint
+đã vẽ, kèm toạ độ `rect` thật. So `rect` của khung với `bbox` của span chữ nằm trong
+đó: nếu `span.bbox.y0 < khung.rect.y0` (chữ bắt đầu SỚM HƠN, tức Ở TRÊN, cạnh trên
+của khung), phần chênh lệch đó chính là số điểm (pt) bị `overflow:hidden` cắt mất.
+
+**Ví dụ thật đã đo trong phiên này** (`samples/typo-tieu-de-lon-dau-chong.html`,
+khối minh hoạ SAI/ĐÚNG cho headroom dấu chồng):
+- Khung "SAI": `rect` = `(70.76, 177.60)` đến `(524.51, 258.60)`. Span "Ấn tượng"
+  (cỡ 48pt) có `bbox` top = `172.66`. Vì `172.66 < 177.60`, đỉnh dấu sắc trên chữ
+  Ấ bị cắt mất `177.60 - 172.66 = 4.94pt` (~6,6px CSS) bởi `overflow:hidden` của
+  khung: đúng ý đồ minh hoạ lỗi, xác nhận bằng SỐ chứ không chỉ bằng mắt.
+- Khung "ĐÚNG": `rect` top = `378.15`. Span cùng chữ có `bbox` top = `393.31`.
+  Chênh lệch dương `393.31 - 378.15 = 15.16pt` (~20px CSS) là khoảng an toàn thật
+  sự tồn tại phía trên đỉnh dấu, không bị cắt.
+
+**Cách đo va chạm GIỮA HAI DÒNG (không cần khung chứa)**: lấy `bbox` của span dòng
+trên và span dòng dưới, so `dòng_trên.bbox.y1` (đáy dòng trên, nơi dấu nặng kéo
+xuống) với `dòng_dưới.bbox.y0` (đỉnh dòng dưới, nơi dấu mũ/thanh điệu nhô lên).
+Hiệu số dương là khe hở an toàn thật; hiệu số âm hoặc bằng 0 là đã chạm.
+
+**Cảnh báo bắt buộc đọc trước khi dùng phương pháp này**: `bbox`/`rect` ở đây là hộp
+bao do CHÍNH ENGINE tính sau khi đã layout và shape glyph: nó đo được thứ THẬT đã
+xảy ra, kể cả các hiệu ứng không suy ra được từ CSS (overshoot của glyph tròn, mark
+attachment lệch do mượn font, làm tròn subpixel). **Đừng bao giờ thay bằng phép so
+`fontSize × lineHeight` với chiều cao đo được**: hai đại lượng đó, nếu đo bằng cách
+suy diễn từ chính công thức CSS, LUÔN bằng nhau theo định nghĩa (tautology), không
+bao giờ phát hiện được lệch dù có lệch thật. Đây chính là lỗi đã tránh xuyên suốt
+mọi phép đo headroom trong `FINDINGS.md`: mọi con số ở đó đến từ pixel-scan ảnh
+render (Chromium) hoặc từ `bbox` PDF thật (WeasyPrint) như mô tả ở trên, không từ
+suy diễn CSS.
+
+---
+
 ## Bẫy #1: hai khối `@font-face` trùng family/style/weight do tách subset kiểu web (ĐÃ SỬA ở round 3, ghi lại để không tái phạm)
 
 **Triệu chứng**: đọc tầng text PDF ra sai ký tự tại đúng vị trí có dấu tiếng Việt.

@@ -182,8 +182,14 @@
   p.nut-graf .anchor { color: var(--accent); font-weight: 600; }
 
   .cover-foot {
-    position: absolute;
-    left: 20mm; right: 20mm; bottom: 14mm;
+    /* Cố ý KHÔNG dùng position: absolute + bottom cố định: với nội dung
+       nut-graf dài (biến thiên theo báo cáo thật), .page cao hơn 297mm và
+       một footer neo cứng vào "bottom" của .page sẽ đè lên đoạn văn phía
+       trên thay vì nằm dưới nó (đã tự bắt lỗi này bằng cách xuất PDF thật
+       và nhìn ảnh, không chỉ xem trên trình duyệt - đúng nguyên tắc ở mục
+       0.5 FINDINGS.md). Đặt vào luồng bình thường ngay sau nut-graf, luôn
+       đứng dưới nội dung bất kể đoạn văn dài ngắn thế nào. */
+    margin-top: var(--space-6);
     font-family: var(--font-mono);
     font-size: var(--fs-caption);
     color: var(--ink-lo);

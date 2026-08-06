@@ -8,3 +8,7 @@ out/
 .omc/
 .superpowers/
 charts/echarts/out-*.svg
+components/verify-print.pdf
+components/verify-screenshot.png
+components/verify-report.json
+components/verify-pages/

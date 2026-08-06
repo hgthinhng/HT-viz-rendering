@@ -1,0 +1,9 @@
+{
+  "name": "lab-gate",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "playwright-core": "^1.62.1"
+  }
+}

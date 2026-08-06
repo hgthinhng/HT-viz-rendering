@@ -1,0 +1,74 @@
+[
+  {
+    "name": "football_field",
+    "fmt": "png",
+    "svg_fonttype": null,
+    "path": "/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/football_field.png",
+    "bytes": 90664,
+    "seconds": 0.089
+  },
+  {
+    "name": "football_field",
+    "fmt": "svg",
+    "svg_fonttype": "path",
+    "path": "/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/football_field_path.svg",
+    "bytes": 86466,
+    "seconds": 0.047
+  },
+  {
+    "name": "football_field",
+    "fmt": "svg",
+    "svg_fonttype": "none",
+    "path": "/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/football_field_none.svg",
+    "bytes": 11502,
+    "seconds": 0.037
+  },
+  {
+    "name": "tornado",
+    "fmt": "png",
+    "svg_fonttype": null,
+    "path": "/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/tornado.png",
+    "bytes": 169027,
+    "seconds": 0.112
+  },
+  {
+    "name": "tornado",
+    "fmt": "svg",
+    "svg_fonttype": "path",
+    "path": "/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/tornado_path.svg",
+    "bytes": 156517,
+    "seconds": 0.058
+  },
+  {
+    "name": "tornado",
+    "fmt": "svg",
+    "svg_fonttype": "none",
+    "path": "/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/tornado_none.svg",
+    "bytes": 12877,
+    "seconds": 0.043
+  },
+  {
+    "name": "exec_dashboard",
+    "fmt": "png",
+    "svg_fonttype": null,
+    "path": "/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/exec_dashboard.png",
+    "bytes": 182327,
+    "seconds": 0.213
+  },
+  {
+    "name": "exec_dashboard",
+    "fmt": "svg",
+    "svg_fonttype": "path",
+    "path": "/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/exec_dashboard_path.svg",
+    "bytes": 147919,
+    "seconds": 0.144
+  },
+  {
+    "name": "exec_dashboard",
+    "fmt": "svg",
+    "svg_fonttype": "none",
+    "path": "/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/exec_dashboard_none.svg",
+    "bytes": 32439,
+    "seconds": 0.131
+  }
+]

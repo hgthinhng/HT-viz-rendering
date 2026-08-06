@@ -1,0 +1,113 @@
+/* =============================================================================
+   StoiX · tokens.css  ·  Brand Theme (FINAL)
+   2 mode: Light (Paper) = :root  ·  Dark (Noir) = [data-theme="dark"]
+   Sinh từ theme.md. Hex là giá trị thật trong code. 0 em-dash trong nội dung.
+   Fonts canonical đều hỗ trợ tiếng Việt (Google Fonts vietnamese subset).
+   Google Fonts:
+   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400&family=EB+Garamond:ital,wght@0,400..700;1,400..600&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400;600&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@500..700&family=Caveat:wght@400..600&display=swap');
+   ========================================================================== */
+
+:root {
+  /* ---- Type ------------------------------------------------------------- */
+  --font-display: 'Fraunces','Playfair Display',Georgia,serif;
+  --font-serif:   'EB Garamond','Be Vietnam Pro',Georgia,serif;
+  --font-sans:    'Inter','Be Vietnam Pro',system-ui,-apple-system,sans-serif;
+  --font-mono:    'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --font-script:  'Caveat',cursive;            /* decorative Latin/numerals only */
+
+  /* ---- LIGHT (Paper) - default ------------------------------------------ */
+  --paper:        #F2E9D2;
+  --paper-deep:   #F8F1DF;
+  --paper-card:   #ECE1C4;
+  --paper-elev:   #E4D6B0;
+  --paper-edge:   #B8A47A;
+
+  --ink:          #1A1610;
+  --ink-strong:   #07060A;
+  --ink-soft:     #4A3F28;
+  --ink-muted:    #7A6B4A;
+  --ink-faint:    #A8997A;
+
+  --gold:         #5A4A14;   /* primary on paper (deep) */
+  --gold-mid:     #9F7E1B;   /* hairline rule / mid */
+  --accent:       #B0302D;   /* pen-red */
+  --success:      #5C8A3C;
+  --error:        #C73E3A;
+
+  /* surface aliases for shared component code */
+  --bg:           var(--paper);
+  --surface:      var(--paper-card);
+  --text:         var(--ink);
+  --text-2:       var(--ink-soft);
+  --text-muted:   var(--ink-muted);
+  --rule:         var(--paper-edge);
+
+  /* ---- Gold scale (1 thang) --------------------------------------------- */
+  --gold-deep:    #5A4A14;
+  --gold-bright:  #D4AF37;   /* dùng trên nền tối */
+  --gold-glow:    #F0CF55;
+
+  /* ---- Functional · semantic status ------------------------------------- */
+  --status-error:   #C73E3A;
+  --status-success: #5C8A3C;
+  --status-danger:  #E55A4A;
+
+  /* ---- Functional · formula variable cycle (CFA Notes, 8) --------------- */
+  --fvar-1:#B83030; --fvar-2:#2B5597; --fvar-3:#2D6A4F; --fvar-4:#7B3FA0;
+  --fvar-5:#A07820; --fvar-6:#1A7A7A; --fvar-7:#A04030; --fvar-8:#5B3FA0;
+
+  /* ---- Functional · callout boxes (bg / accent) ------------------------- */
+  --box-key-bg:#F6EDD5;     --box-key-acc:#8B6B20;
+  --box-example-bg:#E4F0E9; --box-example-acc:#2D6A4F;
+  --box-warn-bg:#F7E9E6;    --box-warn-acc:#A04030;
+  --box-note-bg:#E4ECF6;    --box-note-acc:#2B5597;
+  --box-purple-bg:#EEE8F7;  --box-purple-acc:#6B3FA0;
+
+  /* ---- Functional · CFA subject taxonomy (10) --------------------------- */
+  --subj-pm:#6B4010; --subj-fi:#1A5270; --subj-eq:#2E6B3E; --subj-der:#5C3A8B;
+  --subj-ai:#1A5B5B; --subj-ci:#8B3A20; --subj-fsa:#6B2020; --subj-eco:#3A5A20;
+  --subj-qm:#3A3A7C; --subj-eth:#204A7B;
+
+  /* ---- Functional · StoiX Read editorial categories --------------------- */
+  --cat-series:#2A4F7A; --cat-upside:#2F6F4D; --cat-highlight:#A87A1C; --cat-archived:#6A2A2A;
+
+  /* ---- Functional · Notes section-number accent ------------------------- */
+  --notes-section-num:#B85A1C;
+}
+
+/* =============================================================================
+   DARK (Noir)  ·  set <html data-theme="dark"> hoặc <body data-theme="dark">
+   ========================================================================== */
+[data-theme="dark"] {
+  --bg:         #06090F;
+  --surface:    #0A0F18;
+  --raised:     #101723;
+  --border:     #263148;
+
+  --text:       #EEF2F8;
+  --text-2:     #C8D0D8;
+  --text-muted: #9AA5B2;
+
+  --gold:       #D4AF37;     /* bright on dark */
+  --gold-mid:   #D4AF37;
+  --gold-glow:  #F0CF55;
+  --accent:     #E5645F;     /* pen-red on dark */
+  --success:    #8FD6A8;
+  --error:      #E5645F;
+
+  --rule:       var(--border);
+  --glass-bg:     rgba(255,255,255,0.03);
+  --glass-border: rgba(255,255,255,0.08);
+
+  /* paper aliases neutralized in dark (kept for safety) */
+  --paper:      var(--bg);
+  --paper-card: var(--surface);
+  --ink:        var(--text);
+}
+
+/* Optional: auto dark theo hệ điều hành nếu chưa set data-theme.
+   Bỏ comment nếu muốn.
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { ...copy block dark... }
+}
+*/

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bao cao mau sach</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  body {
+    font-family: "Segoe UI", "Times New Roman", Arial, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.5;
+    margin: 0;
+    padding: 24px;
+  }
+  .num {
+    font-family: "Consolas", "Courier New", monospace;
+  }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  h2 { font-size: 16px; margin: 0 0 8px; }
+  .card {
+    border: 1px solid #cfd6e4;
+    background: #f4f6fb;
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 0 0 220px 0;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .card:last-child { margin-bottom: 0; }
+  footer { margin-top: 24px; font-size: 11px; color: #666; }
+</style>
+</head>
+<body>
+<h1>Danh gia kha thi thi truong tai tro thuong mai</h1>
+<p>Tai lieu phuc vu thao luan noi bo, khong phai khuyen nghi mua ban chung khoan.</p>
+
+<div class="card">
+  <h2>Quy mo vi mo</h2>
+  <p>GDP Viet Nam dat <span class="num" data-evid="v_gdp">476,3 ty USD</span> nam 2024, gap doi muc 239,3 ty USD cua 2015.</p>
+  <p>Kim ngach xuat nhap khau dat <span class="num" data-evid="v_xnk">786,3 ty USD</span>, tang 15,4% so voi nam truoc.</p>
+</div>
+
+<div class="card">
+  <h2>Kieu hoi</h2>
+  <p>Kieu hoi ve Viet Nam nam 2024 dat <span class="num" data-evid="v_remit">16,0 ty USD</span>, thuoc nhom 10 nuoc nhan kieu hoi lon nhat the gioi. Cac tu duong nhu ừ, ộ, ẫ, ợ, ữ, ể, ỗ can hien dung, khong vo dau khi in PDF.</p>
+</div>
+
+<div class="card">
+  <h2>Doanh thu du kien</h2>
+  <p>Dong chi tra kieu hoi dong gop <span class="num" data-evid="v_rev_remit">9,6 trieu USD</span> mot nam trong kich ban co so.</p>
+  <p>Dong thanh toan xuat nhap khau dong gop <span class="num" data-evid="v_rev_pay">32,0 trieu USD</span> mot nam trong kich ban co so.</p>
+</div>
+
+<div class="card">
+  <h2>Ket luan</h2>
+  <p>Dong chay thuong mai 930 ty USD nam 2025 tao co so cho hai dong doanh thu chinh: kieu hoi va thanh toan xuat nhap khau. Uu tien trien khai kenh chi tra kieu hoi truoc vi khong can giay phep rieng.</p>
+</div>
+
+<footer>LƯU HÀNH HẠN CHẾ.</footer>
+
+<script type="application/json" id="evidence-ledger">
+{
+  "version": "1.0",
+  "generated_date": "2026-08-06",
+  "sources": [
+    {
+      "id": "K1", "org": "World Bank", "tier": "T1_official", "sensitivity": "public",
+      "published_date": "2026-08-05",
+      "cite": "World Bank - World Development Indicators, NY.GDP.MKTP.CD - truy xuat 2026-08-05"
+    },
+    {
+      "id": "K4", "org": "Tong cuc Thong ke / Tong cuc Hai quan Viet Nam", "tier": "T1_official", "sensitivity": "public",
+      "published_date": "2025-01",
+      "cite": "Tong cuc Thong ke / Tong cuc Hai quan Viet Nam - 2025-01"
+    },
+    {
+      "id": "K6", "org": "NHNN qua bao chi nha nuoc", "tier": "T1_official", "sensitivity": "public",
+      "published_date": "2025-01",
+      "cite": "NHNN qua bao chi nha nuoc (VnExpress/Tuoi Tre) - 2025-01"
+    },
+    {
+      "id": "K30", "org": "Phan tich noi bo", "tier": "T5_derived", "sensitivity": "internal_only",
+      "published_date": "2026-08-05",
+      "cite": "Suy dien tu K1-K22, mo hinh take-rate noi bo, chua kiem chung so cap",
+      "public_label": "can cu suy luan tren du lieu da cong bo"
+    }
+  ],
+  "values": [
+    { "id": "v_gdp", "display": "476,3 ty USD", "value": 476.3, "unit": "ty USD", "period": "2024", "source_id": "K1", "retrieved_date": "2026-08-05", "tier": "T1_official", "chart_id": "macro" },
+    { "id": "v_xnk", "display": "786,3 ty USD", "value": 786.3, "unit": "ty USD", "period": "2024", "source_id": "K4", "retrieved_date": "2025-01", "tier": "T1_official", "chart_id": "macro" },
+    { "id": "v_remit", "display": "16,0 ty USD", "value": 16.0, "unit": "ty USD", "period": "2024", "source_id": "K6", "retrieved_date": "2025-01", "tier": "T1_official", "chart_id": "remit" },
+    { "id": "v_rev_remit", "display": "9,6 trieu USD", "value": 9.6, "unit": "trieu USD", "period": "nam 5", "source_id": "K30", "retrieved_date": "2026-08-05", "tier": "T5_derived", "chart_id": "revenue" },
+    { "id": "v_rev_pay", "display": "32,0 trieu USD", "value": 32.0, "unit": "trieu USD", "period": "nam 5", "source_id": "K30", "retrieved_date": "2026-08-05", "tier": "T5_derived", "chart_id": "revenue" }
+  ]
+}
+</script>
+</body>
+</html>

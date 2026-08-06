@@ -1,0 +1,3692 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Sửa Thông tư 22 và vận tải biển - OPVIA thực nghiệm</title>
+<style>
+
+
+@font-face { font-family: 'Inter'; font-weight: 400; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/inter-latin-400.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 500; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/inter-latin-500.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 600; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/inter-latin-600.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-weight: 700; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/inter-latin-700.woff2') format('woff2'); }
+@font-face { font-family: 'InterVN'; font-weight: 400; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/inter-vn-400.woff2') format('woff2'); }
+@font-face { font-family: 'InterVN'; font-weight: 500; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/inter-vn-500.woff2') format('woff2'); }
+@font-face { font-family: 'InterVN'; font-weight: 600; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/inter-vn-600.woff2') format('woff2'); }
+@font-face { font-family: 'InterVN'; font-weight: 700; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/inter-vn-700.woff2') format('woff2'); }
+
+/* JBM/JBMVN aliases → IBM Plex Mono (numbers, ticker badges) */
+@font-face { font-family: 'JBM'; font-weight: 400; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/plex-mono-vn-400.woff2') format('woff2'); }
+@font-face { font-family: 'JBM'; font-weight: 500; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/plex-mono-vn-500.woff2') format('woff2'); }
+@font-face { font-family: 'JBM'; font-weight: 600; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/plex-mono-vn-600.woff2') format('woff2'); }
+@font-face { font-family: 'JBM'; font-weight: 700; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/plex-mono-vn-600.woff2') format('woff2'); }
+@font-face { font-family: 'JBMVN'; font-weight: 400; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/plex-mono-vn-400.woff2') format('woff2'); }
+@font-face { font-family: 'JBMVN'; font-weight: 500; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/plex-mono-vn-500.woff2') format('woff2'); }
+@font-face { font-family: 'JBMVN'; font-weight: 600; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/plex-mono-vn-600.woff2') format('woff2'); }
+@font-face { font-family: 'JBMVN'; font-weight: 700; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/plex-mono-vn-600.woff2') format('woff2'); }
+
+/* PFD/PFDVN aliases → Lora (heading + body serif) */
+@font-face { font-family: 'PFD'; font-weight: 400; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-400.woff2') format('woff2'); }
+@font-face { font-family: 'PFD'; font-weight: 500; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-500.woff2') format('woff2'); }
+@font-face { font-family: 'PFD'; font-weight: 600; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-600.woff2') format('woff2'); }
+@font-face { font-family: 'PFD'; font-weight: 700; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-700.woff2') format('woff2'); }
+@font-face { font-family: 'PFD'; font-weight: 400; font-style: italic; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-400i.woff2') format('woff2'); }
+@font-face { font-family: 'PFD'; font-weight: 500; font-style: italic; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-500i.woff2') format('woff2'); }
+@font-face { font-family: 'PFDVN'; font-weight: 400; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-400.woff2') format('woff2'); }
+@font-face { font-family: 'PFDVN'; font-weight: 500; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-500.woff2') format('woff2'); }
+@font-face { font-family: 'PFDVN'; font-weight: 600; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-600.woff2') format('woff2'); }
+@font-face { font-family: 'PFDVN'; font-weight: 700; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-700.woff2') format('woff2'); }
+@font-face { font-family: 'PFDVN'; font-weight: 400; font-style: italic; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-400i.woff2') format('woff2'); }
+@font-face { font-family: 'PFDVN'; font-weight: 500; font-style: italic; src: url('file:///tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-opvia/opvia-deepanalysis-polish/fonts/lora-vn-500i.woff2') format('woff2'); }
+
+
+:root {
+  --prussian: #003153; --prussian-50: #E8F2F9; --prussian-100: #B3D1E6; --prussian-700: #001A2E; --prussian-900: #000d18;
+  --brass: #B5A642; --brass-300: #CCC46B; --brass-100: #E8E2B8;
+  --slate: #4A6FA5; --slate-light: #7B96BD;
+  --ivory: #F5F1E8; --ivory-deep: #EDE6D3; --paper: #FAF7F0;
+  --charcoal: #2B2B2B; --ink: #1A1A1A;
+  --text-secondary: #6B6760; --text-muted: #9A9688;
+  --bordeaux: #722F37; --bordeaux-50: #F5ECED;
+  --positive: #2E7D52; --positive-bg: #EDF7F1;
+  --negative: #C0392B; --negative-bg: #FBEEEC;
+  --rule-soft: rgba(181,166,66,0.30);
+  --rule-hard: rgba(181,166,66,0.62);
+}
+
+/* ============ PAGE RULES ============ */
+@page {
+  size: A4;
+  margin: 18mm 0 14mm 0;
+  @top-center {
+    content: "OPVIA RESEARCH  ·  THÔNG TƯ 22 VÀ VẬN TẢI BIỂN  ·  06/08/2026";
+    font-family: 'Inter', 'InterVN', sans-serif; font-size: 6.5pt; font-weight: 600;
+    letter-spacing: 0.12em; color: var(--text-muted);
+    padding-bottom: 5px; padding-top: 5mm;
+    border-bottom: 0.6px solid var(--rule-soft);
+    width: calc(100% - 44mm); margin: 0 22mm;
+  }
+  @bottom-left {
+    content: "OPVIA RESEARCH  ·  06/08/2026";
+    font-family: 'Inter', 'InterVN', sans-serif; font-size: 7pt; color: var(--text-muted);
+    border-top: 1px solid var(--rule-soft);
+    padding-top: 4px; padding-left: 22mm; width: 50%;
+  }
+  @bottom-right {
+    content: counter(page);
+    font-family: 'JBM', 'JBMVN', monospace; font-size: 7pt; color: var(--text-muted);
+    border-top: 1px solid var(--rule-soft);
+    padding-top: 4px; padding-right: 22mm; text-align: right; width: 50%;
+  }
+}
+@page :first {
+  margin: 0;
+  background-color: #000d18;
+  @top-center { content: ""; border: none; }
+  @bottom-left { content: ""; border: none; }
+  @bottom-right { content: ""; border: none; }
+}
+@page toc {
+  margin: 18mm 0 14mm 0;
+  @top-center { content: ""; border: none; }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'PFD', 'PFDVN', serif; font-size: 10.5pt; line-height: 1.7;
+  font-weight: 450;
+  color: var(--charcoal); orphans: 3; widows: 3;
+  hyphens: manual;
+  background: var(--paper);
+}
+
+/* Explicit body paragraph - Lora 450 cho long-form readability */
+p {
+  font-family: 'PFD', 'PFDVN', serif; font-weight: 450;
+}
+
+/* ============ COVER (page 1, full bleed) - hero landing ============ */
+.cover-deep {
+  background: var(--prussian-900);
+  height: 297mm; width: 100%;
+  padding: 24mm 24mm 18mm 24mm;
+  display: flex; flex-direction: column;
+  page-break-after: always; position: relative;
+  color: var(--ivory);
+}
+/* MAGAZINE MASTHEAD - brand center, info row 2-cột */
+.cover-masthead {
+  margin-bottom: 14mm;
+}
+.masthead-rule-top {
+  height: 1.5px; background: var(--brass);
+  width: 56mm; margin: 0 auto 5mm;
+}
+.masthead-brand {
+  font-family: 'PFD', 'PFDVN', serif; font-size: 14pt; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--brass); text-align: center;
+  margin-bottom: 5mm;
+}
+.masthead-rule-mid {
+  height: 0.6px; background: rgba(181,166,66,0.45);
+  width: 100%; margin-bottom: 4mm;
+}
+.masthead-meta {
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.masthead-meta .meta-left {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8.5pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--brass-300);
+}
+.masthead-meta .meta-right {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 8pt; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(245,241,232,0.72);
+}
+.cover-deep h1 {
+  font-family: 'PFD', 'PFDVN', serif; font-size: 38pt; font-weight: 700;
+  color: var(--ivory); line-height: 1.04; letter-spacing: -0.01em;
+  margin-bottom: 6mm; max-width: 95%;
+}
+.cover-deep .cover-subtitle {
+  font-family: 'PFD', 'PFDVN', serif; font-style: italic; font-weight: 400;
+  font-size: 13pt; line-height: 1.4;
+  color: var(--brass-300); margin-bottom: 8mm; max-width: 80%;
+}
+.cover-deep .cover-dek {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 10pt; font-weight: 400;
+  line-height: 1.62; color: rgba(245,241,232,0.78);
+  max-width: 78%; margin-bottom: 8mm;
+  border-left: 2px solid var(--brass); padding-left: 14px;
+}
+
+/* Cover hero stat block - 1 con số signature */
+.cover-deep .cover-hero-stat {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 6mm; padding-top: 4mm;
+  border-top: 0.6px solid rgba(181,166,66,0.35);
+}
+.cover-deep .cover-hero-num {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 44pt; font-weight: 700;
+  color: var(--brass); line-height: 1;
+  letter-spacing: -0.03em;
+  flex-shrink: 0;
+}
+.cover-deep .cover-hero-cap { flex: 1; }
+.cover-deep .cover-hero-label {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--brass-300); margin-bottom: 4px;
+}
+.cover-deep .cover-hero-desc {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 10pt; font-weight: 400;
+  line-height: 1.5; color: rgba(245,241,232,0.85);
+}
+
+/* Cover key takeaways - 3 bullets đề mục chính */
+.cover-deep .cover-takeaways {
+  margin-bottom: auto; padding-top: 5mm;
+  border-top: 0.6px solid rgba(181,166,66,0.35);
+}
+.cover-deep .cover-takeaways-label {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 4mm;
+}
+.cover-deep .cover-takeaways ul { list-style: none; padding: 0; margin: 0; }
+.cover-deep .cover-takeaways li {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 9.5pt; line-height: 1.5;
+  color: rgba(245,241,232,0.88); margin-bottom: 7px;
+  padding-left: 16px; position: relative;
+}
+.cover-deep .cover-takeaways li::before {
+  content: '▸'; color: var(--brass); position: absolute;
+  left: 0; top: 0; font-size: 9pt;
+}
+.cover-deep .cover-takeaways li strong {
+  color: var(--brass-300); font-weight: 700;
+}
+
+.cover-deep .cover-bottom-rule {
+  height: 0.6px; background: rgba(181,166,66,0.4); margin: 8mm 0 6mm;
+}
+.cover-deep .cover-meta-strip {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7.5pt; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(245,241,232,0.55);
+}
+.cover-deep .cover-meta-strip strong {
+  color: var(--brass-300); font-weight: 700; display: block;
+  font-size: 8.5pt; letter-spacing: 0.12em; margin-bottom: 2px;
+}
+.cover-deep .cover-meta-strip .meta-block { flex: 1; }
+.cover-deep .cover-meta-strip .meta-block:nth-child(2) { text-align: center; }
+.cover-deep .cover-meta-strip .meta-block:nth-child(3) { text-align: right; }
+
+/* ============ TOC (page 2) - compressed + alert inline ============ */
+.toc-page { page: toc; padding: 0 24mm; page-break-after: always; }
+.toc-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 3mm;
+}
+.toc-title-main {
+  font-family: 'PFD', 'PFDVN', serif; font-size: 20pt; font-weight: 700;
+  color: var(--prussian); line-height: 1.08; margin-bottom: 3mm;
+}
+.toc-intro {
+  font-family: 'PFD', 'PFDVN', serif; font-style: italic; font-size: 10pt;
+  line-height: 1.5; color: var(--slate); margin-bottom: 4mm;
+  max-width: 85%;
+}
+.toc-rule { height: 1.5px; background: var(--brass); width: 100%; margin-bottom: 3mm; }
+
+.toc-list { display: block; }
+.toc-entry {
+  display: grid;
+  grid-template-columns: 22mm 1fr 14mm;
+  gap: 12px;
+  padding: 3mm 0 3mm;
+  border-bottom: 0.6px solid var(--rule-soft);
+  page-break-inside: avoid;
+}
+.toc-entry:last-child { border-bottom: none; }
+.toc-num {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 18pt; font-weight: 700;
+  color: var(--brass); line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+.toc-body { display: flex; flex-direction: column; }
+.toc-name {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-secondary); margin-bottom: 2px;
+}
+.toc-headline {
+  font-family: 'PFD', 'PFDVN', serif; font-size: 11.5pt; font-weight: 700;
+  color: var(--prussian); line-height: 1.18; margin-bottom: 2px;
+}
+.toc-hook {
+  font-family: 'PFD', 'PFDVN', serif; font-style: italic; font-size: 9pt;
+  line-height: 1.38; color: var(--charcoal); opacity: 0.78;
+}
+.toc-page-num {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 10pt; font-weight: 600;
+  color: var(--prussian); text-align: right;
+  align-self: flex-start; padding-top: 4px;
+}
+
+/* Alert box inline trên TOC page (cuối trang) */
+.toc-alert {
+  margin-top: 6mm;
+  background: var(--bordeaux-50); border-left: 3px solid var(--bordeaux);
+  padding: 11px 16px;
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8.5pt; line-height: 1.55;
+  color: var(--charcoal); border-radius: 0 4px 4px 0;
+  page-break-inside: avoid;
+}
+.toc-alert strong { color: var(--bordeaux); font-weight: 700; }
+.toc-alert .toc-alert-label {
+  display: block; font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--bordeaux); margin-bottom: 4px;
+}
+
+/* ============ CONTENT PAGES ============ */
+.content { padding: 0 24mm; }
+
+/* Critical lưu ý đầu bài */
+.alert-banner {
+  background: var(--bordeaux-50); border-left: 3px solid var(--bordeaux);
+  padding: 14px 18px; margin: 0 0 18mm;
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 9pt; line-height: 1.6;
+  color: var(--charcoal); border-radius: 0 4px 4px 0;
+  page-break-inside: avoid;
+}
+.alert-banner strong { color: var(--bordeaux); font-weight: 700; }
+
+/* SECTION OPENER - mỗi Phần bắt đầu trang mới */
+.section-opener {
+  margin: 0 0 6mm; padding-top: 2mm;
+  page-break-before: always;
+  page-break-after: avoid;
+  page-break-inside: avoid;
+  position: relative;
+}
+.section-opener.no-break { page-break-before: auto; }
+.section-opener .section-num-large {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 8.5pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 3mm;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-opener .section-num-large::after {
+  content: ''; flex: 1; height: 0.6px;
+  background: var(--rule-soft);
+}
+/* Roman numeral background - decorative, mờ phía sau */
+.section-opener .section-roman {
+  position: absolute; top: 8mm; right: 0;
+  font-family: 'PFD', 'PFDVN', serif; font-size: 76pt; font-weight: 700;
+  color: var(--brass); opacity: 0.10;
+  line-height: 0.85; letter-spacing: -0.04em;
+  z-index: 0; pointer-events: none;
+}
+.section-opener .section-title-large {
+  font-family: 'PFD', 'PFDVN', serif; font-size: 20pt; font-weight: 700;
+  color: var(--prussian); line-height: 1.15;
+  letter-spacing: -0.005em; margin-bottom: 3mm;
+  max-width: 90%; position: relative; z-index: 1;
+}
+.section-opener .section-dek {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 10pt; font-weight: 400;
+  line-height: 1.55; color: var(--slate); max-width: 80%;
+  position: relative; z-index: 1;
+}
+.section-opener .section-rule-double {
+  margin-top: 4mm;
+  border-top: 1px solid var(--brass);
+  border-bottom: 0.4px solid rgba(181,166,66,0.5);
+  height: 2.5px;
+}
+
+/* End-of-section ornament - ĐÃ BỎ, không dùng nữa */
+
+/* BODY paragraphs */
+p { margin-bottom: 12px; text-align: justify; font-size: 10.5pt; }
+p.lede { font-size: 11.5pt; line-height: 1.7; color: var(--charcoal); margin-bottom: 14px; }
+
+/* PSEUDO DROP CAP - chỉ tăng size + brass color, KHÔNG float */
+p.dropcap-deep { margin-bottom: 12px; }
+p.dropcap-deep .dc {
+  font-family: 'PFD', 'PFDVN', serif; font-size: 1.7em; font-weight: 700;
+  color: var(--brass); line-height: 1;
+  margin-right: 1px;
+  vertical-align: -2px;
+}
+
+mark {
+  background: rgba(181,166,66,0.16); border-bottom: 1.5px solid var(--brass);
+  padding: 0 3px 1px; border-radius: 2px; color: inherit; font-weight: 600;
+}
+.t { font-weight: 700; color: var(--prussian); }
+strong { font-weight: 700; }
+
+/* H3 subheading - cleaner, KHÔNG uppercase letterspaced */
+h3 {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 10.5pt; font-weight: 700;
+  color: var(--prussian); margin: 14px 0 6px;
+  letter-spacing: -0.005em;
+  page-break-after: avoid;
+  border-bottom: 0.6px solid var(--rule-soft); padding-bottom: 3px;
+  position: relative;
+}
+h3::before {
+  content: ""; display: inline-block;
+  width: 8px; height: 8px;
+  background: var(--brass); margin-right: 7px;
+  vertical-align: 1px;
+}
+
+/* H4 micro-subheading */
+h4 {
+  font-family: 'PFD', 'PFDVN', serif; font-style: italic; font-size: 11.5pt;
+  font-weight: 600; color: var(--prussian); margin: 11px 0 5px;
+  page-break-after: avoid;
+}
+
+/* ============ TABLES editorial ============ */
+table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  margin: 10px 0 14px; page-break-inside: avoid;
+  background: transparent;
+}
+thead tr { background: transparent; color: var(--prussian); }
+thead th {
+  font-family: 'Inter', 'InterVN', sans-serif; font-weight: 700; padding: 7px 10px;
+  text-align: left; font-size: 7.5pt; letter-spacing: 0.10em;
+  text-transform: uppercase; color: var(--prussian);
+  border-bottom: 1.5px solid var(--brass);
+}
+thead th.th-num { text-align: right; }
+tbody tr { background: transparent; }
+tbody tr.spotlight { background: rgba(181,166,66,0.10); }
+tbody tr.spotlight td:first-child { box-shadow: inset 3px 0 0 var(--brass); }
+td {
+  padding: 6px 10px; border-bottom: 0.5px solid rgba(74,111,165,0.12);
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 9.5pt; vertical-align: middle; line-height: 1.45;
+}
+tbody tr:last-child td { border-bottom: none; }
+td:first-child { font-weight: 600; color: var(--prussian); }
+
+/* Comparison table - 2 cột vs nhau */
+table.compare thead th:nth-child(2),
+table.compare thead th:nth-child(3) { text-align: center; width: 32%; }
+table.compare tbody td:nth-child(2),
+table.compare tbody td:nth-child(3) { text-align: center; }
+table.compare .col-winner { background: rgba(181,166,66,0.10); font-weight: 700; }
+
+.ticker-badge {
+  display: inline-block; background: var(--prussian-50); color: var(--prussian);
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 8pt; font-weight: 700;
+  padding: 1px 7px; border-radius: 3px;
+  border: 1px solid var(--prussian-100); white-space: nowrap;
+}
+.num { font-family: 'JBM', 'JBMVN', monospace; font-size: 10pt; font-weight: 600; color: var(--ink); text-align: right; }
+.pos { color: var(--positive); font-weight: 700; font-family: 'JBM', 'JBMVN', monospace; font-size: 10pt; text-align: right; }
+.neg { color: var(--negative); font-weight: 700; font-family: 'JBM', 'JBMVN', monospace; font-size: 10pt; text-align: right; }
+.sig-pos { color: var(--positive); font-weight: 700; }
+.sig-neg { color: var(--negative); font-weight: 700; }
+.muted { color: var(--text-muted); font-size: 9pt; }
+
+/* ============ PULL QUOTES - 2 variants ============ */
+blockquote {
+  border-top: 1.5px solid var(--brass); border-bottom: 1.5px solid var(--brass);
+  margin: 7mm 8mm; padding: 5mm 0; text-align: center;
+  page-break-inside: avoid;
+  page-break-before: avoid;
+}
+blockquote p {
+  font-family: 'PFD', 'PFDVN', serif; font-style: italic; font-size: 13pt;
+  color: var(--prussian); line-height: 1.5; margin: 0; text-align: center;
+}
+
+/* Hero pull quote - full width prussian bg */
+blockquote.hero {
+  border: none; background: var(--prussian);
+  margin: 8mm 0; padding: 11mm 12mm 9mm 18mm; text-align: left;
+  border-radius: 4px; position: relative;
+  box-shadow: 0 2px 6px rgba(0,49,83,0.18);
+}
+blockquote.hero p {
+  color: var(--ivory); font-size: 18pt; line-height: 1.45;
+  text-align: left; font-style: italic;
+  margin: 0;
+}
+blockquote.hero p::before {
+  content: '"';
+  font-family: 'PFD', 'PFDVN', serif; font-size: 60pt;
+  color: var(--brass); line-height: 1;
+  position: absolute;
+  left: 7mm; top: 4mm;
+  font-style: normal;
+}
+blockquote.hero cite {
+  display: block; margin-top: 5mm; font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-style: normal; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--brass-300);
+}
+
+/* ============ CALLOUT - 5 levels ============ */
+.callout {
+  border-left: 3px solid var(--brass); background: rgba(181,166,66,0.07);
+  padding: 12px 16px; margin: 12px 0; border-radius: 0 4px 4px 0;
+  page-break-inside: avoid; font-size: 10pt; line-height: 1.65;
+}
+.callout p { margin: 0; text-align: left; font-size: 10pt; }
+.callout p + p { margin-top: 8px; }
+
+.callout.warn { border-left-color: var(--bordeaux); background: var(--bordeaux-50); }
+.callout.warn strong { color: var(--bordeaux); }
+
+.callout.formula {
+  border: none; background: var(--ivory-deep);
+  border-top: 1px solid var(--brass); border-bottom: 1px solid var(--brass);
+  text-align: center; padding: 10mm 8mm; margin: 7mm 12mm;
+  border-radius: 0;
+  box-shadow: 0 1px 3px rgba(0,49,83,0.06);
+}
+.callout.formula p {
+  font-family: 'PFD', 'PFDVN', serif; font-style: italic; font-size: 13pt;
+  color: var(--prussian); text-align: center; line-height: 1.5;
+}
+.callout.formula .formula-label {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 6px;
+}
+
+/* ---------- FORMULA FRACTION (proper math display - table layout) ---------- */
+.formula-fraction {
+  background: var(--ivory-deep);
+  border-top: 1px solid var(--brass);
+  border-bottom: 1px solid var(--brass);
+  padding: 10mm 8mm 9mm 8mm;
+  margin: 7mm 0;
+  text-align: center;
+  page-break-inside: avoid;
+}
+.formula-fraction .ff-label {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 6mm;
+}
+.formula-fraction .ff-equation {
+  display: table; margin: 0 auto;
+  border-collapse: collapse;
+}
+.formula-fraction .ff-cell {
+  display: table-cell; vertical-align: middle;
+  padding: 0 4mm;
+}
+.formula-fraction .ff-var {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 16pt; font-weight: 700;
+  color: var(--prussian); letter-spacing: 0.02em;
+}
+.formula-fraction .ff-eq {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 18pt; font-weight: 600;
+  color: var(--brass);
+}
+.formula-fraction .ff-result {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 16pt; font-weight: 700;
+  color: var(--prussian); letter-spacing: 0;
+}
+.formula-fraction .ff-frac {
+  display: table-cell; vertical-align: middle;
+  padding: 0 4mm;
+  min-width: 72mm;
+}
+.formula-fraction .ff-num {
+  display: block; padding: 0 4mm 2.5mm 4mm;
+  border-bottom: 1.2px solid var(--prussian);
+  font-family: 'PFD', 'PFDVN', serif; font-size: 11pt;
+  font-style: italic; color: var(--prussian);
+  line-height: 1.3; text-align: center;
+}
+.formula-fraction .ff-den {
+  display: block; padding: 2.5mm 4mm 0 4mm;
+  font-family: 'PFD', 'PFDVN', serif; font-size: 11pt;
+  font-style: italic; color: var(--prussian);
+  line-height: 1.3; text-align: center;
+}
+.formula-fraction .ff-component-key {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 11pt;
+  font-weight: 700; font-style: normal;
+  color: var(--brass); letter-spacing: 0.04em;
+  margin-right: 2mm;
+}
+.formula-fraction .ff-condition {
+  margin-top: 6mm;
+  font-family: 'PFD', 'PFDVN', serif; font-size: 9pt;
+  font-style: italic; color: var(--slate);
+  line-height: 1.5;
+  max-width: 130mm; margin-left: auto; margin-right: auto;
+}
+
+.callout.contrast {
+  background: transparent; border: none; padding: 0; margin: 12px 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.callout.contrast .side {
+  padding: 12px 14px; border-radius: 4px;
+  font-size: 9.5pt; line-height: 1.55;
+}
+.callout.contrast .side-a {
+  background: var(--positive-bg); border-left: 3px solid var(--positive);
+}
+.callout.contrast .side-b {
+  background: var(--negative-bg); border-left: 3px solid var(--negative);
+}
+.callout.contrast .side-label {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.callout.contrast .side-a .side-label { color: var(--positive); }
+.callout.contrast .side-b .side-label { color: var(--negative); }
+
+.callout.key {
+  border: none; border-radius: 4px; background: var(--prussian);
+  padding: 8mm 10mm; margin: 8mm 0;
+  box-shadow: 0 2px 6px rgba(0,49,83,0.18);
+}
+.callout.key .key-label {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--brass-300); margin-bottom: 8px;
+}
+.callout.key p {
+  font-family: 'PFD', 'PFDVN', serif; font-style: italic; font-size: 13pt;
+  color: var(--ivory); line-height: 1.55; margin: 0; text-align: left;
+}
+.callout.key p + p { margin-top: 10px; }
+.callout.key strong { color: var(--brass-300); font-weight: 700; font-style: normal; }
+
+/* ============ HERO STAT (huge number callout) ============ */
+.hero-stat {
+  page-break-inside: avoid; margin: 6mm 0;
+  display: grid; grid-template-columns: auto 1fr; gap: 18px;
+  align-items: center;
+}
+.hero-stat-number {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 42pt; font-weight: 700;
+  color: var(--brass); line-height: 0.9; letter-spacing: -0.03em;
+}
+.hero-stat-caption { display: flex; flex-direction: column; }
+.hero-stat-label {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-secondary); margin-bottom: 5px;
+}
+.hero-stat-desc {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 10.5pt; font-weight: 400;
+  color: var(--prussian); line-height: 1.45;
+}
+
+/* ============ GLOSSARY ============ */
+.glossary-section { margin-top: 12mm; page-break-before: auto; }
+.glossary-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 3mm;
+}
+.glossary-title {
+  font-family: 'PFD', 'PFDVN', serif; font-size: 22pt; font-weight: 700;
+  color: var(--prussian); margin-bottom: 4mm;
+}
+.glossary-intro {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 10pt; font-weight: 400;
+  color: var(--slate); margin-bottom: 6mm; max-width: 85%;
+  line-height: 1.55;
+}
+/* 2-column layout cho glossary groups */
+.glossary-columns {
+  column-count: 2;
+  column-gap: 10mm;
+  column-rule: 0.4px solid var(--rule-soft);
+}
+.glossary-group {
+  margin-bottom: 6mm;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.glossary-group-label {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--prussian); margin-bottom: 3mm;
+  border-bottom: 0.6px solid var(--rule-soft); padding-bottom: 3px;
+}
+.glossary-term-row {
+  display: block;
+  padding: 4px 0;
+  border-bottom: 0.4px solid rgba(74,111,165,0.08);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.glossary-term {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 9pt; font-weight: 700;
+  color: var(--prussian);
+  display: block;
+  margin-bottom: 2px;
+}
+.glossary-def {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8.5pt; line-height: 1.5;
+  color: var(--charcoal);
+  display: block;
+}
+.glossary-def .note {
+  display: block; margin-top: 2px; font-size: 8pt;
+  color: var(--text-secondary); font-style: italic;
+}
+
+/* ============ CONCLUSION BLOCK ============ */
+.conclusion-block {
+  margin: 10mm 0 6mm; padding: 8mm 10mm;
+  background: var(--ivory);
+  border-top: 2px solid var(--brass); border-bottom: 2px solid var(--brass);
+  page-break-inside: avoid;
+  box-shadow: 0 2px 4px rgba(0,49,83,0.08);
+}
+.conclusion-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 4mm;
+}
+.conclusion-block p {
+  font-family: 'PFD', 'PFDVN', serif; font-style: italic; font-size: 13pt;
+  line-height: 1.6; color: var(--prussian); text-align: left;
+  margin-bottom: 10px;
+}
+.conclusion-block strong { color: var(--brass); font-style: normal; font-weight: 700; }
+
+/* ============ CONTACT/DISCLAIMER PAGE - tách trang riêng ============ */
+.contact-page {
+  page-break-before: always;
+  margin-top: 0; padding-top: 4mm;
+}
+.contact-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 3mm;
+}
+.contact-title {
+  font-family: 'PFD', 'PFDVN', serif; font-size: 28pt; font-weight: 700;
+  color: var(--prussian); line-height: 1.1;
+  margin-bottom: 4mm; letter-spacing: -0.005em;
+}
+.contact-intro {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 10pt; font-weight: 400;
+  color: var(--slate); line-height: 1.55;
+  max-width: 90%; margin-bottom: 8mm;
+}
+
+/* CTA card - prussian bg highlighted */
+.contact-cta {
+  background: var(--prussian); color: var(--ivory);
+  padding: 9mm 10mm; margin-bottom: 8mm;
+  border-radius: 4px;
+  border-top: 3px solid var(--brass);
+  box-shadow: 0 3px 8px rgba(0,49,83,0.18);
+  page-break-inside: avoid;
+}
+.cta-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--brass-300); margin-bottom: 3mm;
+}
+.cta-title {
+  font-family: 'PFD', 'PFDVN', serif; font-size: 17pt; font-weight: 700;
+  color: var(--ivory); line-height: 1.2; margin-bottom: 3mm;
+}
+.cta-text {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 10pt; line-height: 1.55;
+  color: rgba(245,241,232,0.85); margin-bottom: 6mm;
+  max-width: 92%;
+}
+.cta-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 6mm; padding-top: 4mm;
+  border-top: 0.6px solid rgba(181,166,66,0.4);
+}
+.cta-item {
+  display: flex; flex-direction: column;
+}
+.cta-label {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--brass-300); margin-bottom: 4px;
+}
+.cta-value {
+  font-family: 'JBM', 'JBMVN', monospace; font-size: 9pt; font-weight: 500;
+  color: var(--ivory); line-height: 1.4;
+}
+
+/* Sources & Disclaimer sections - paper bg */
+.contact-section {
+  background: var(--ivory); padding: 6mm 7mm;
+  margin-bottom: 6mm;
+  border-top: 1.5px solid var(--brass);
+  page-break-inside: avoid;
+}
+.contact-section .section-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 3mm;
+}
+.contact-section p {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 9.5pt; line-height: 1.62;
+  color: var(--charcoal); text-align: left;
+  margin-bottom: 0;
+}
+.contact-section p strong { color: var(--bordeaux); font-weight: 700; }
+
+/* Footer signature */
+.contact-signature {
+  margin-top: 10mm; padding-top: 5mm;
+  border-top: 0.6px solid var(--rule-soft);
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 8pt; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-secondary); text-align: center;
+}
+
+/* Legacy disclaimer-card vẫn giữ để backward compat */
+.disclaimer-card {
+  margin-top: 8mm; padding: 6mm 7mm;
+  background: var(--paper); border-top: 2px solid var(--brass);
+  border-radius: 0 0 4px 4px; page-break-inside: avoid;
+}
+.disclaimer-label {
+  font-family: 'Inter', 'InterVN', sans-serif; font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--brass); margin-bottom: 6px;
+}
+.disclaimer-card p {
+  font-size: 8.5pt; color: var(--text-secondary);
+  font-family: 'Inter', 'InterVN', sans-serif; line-height: 1.6; margin: 0; text-align: left;
+}
+.disclaimer-card strong { color: var(--charcoal); font-weight: 600; }
+
+/* ============ COVER SHARED STYLES ============ */
+.cover-v {
+  height: 297mm; width: 100%;
+  padding: 24mm 24mm 18mm 24mm;
+  page-break-after: always;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+
+/* ---------- COVER 1: MACRO HERO (current default, kept for reference) ---------- */
+/* Existing .cover-deep handles this - reuse it */
+
+/* ---------- COVER 2: QUICK TAKE ---------- */
+.cover-quick-take {
+  background: #FAF7F0; color: #003153;
+}
+.cover-quick-take .qt-header {
+  display: flex; justify-content: space-between;
+  align-items: baseline; padding-bottom: 6mm;
+  border-bottom: 0.5px solid rgba(74,111,165,0.2);
+  margin-bottom: 18mm;
+}
+.cover-quick-take .qt-brand {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 9pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #003153;
+}
+.cover-quick-take .qt-meta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; color: #6B6760;
+}
+.cover-quick-take .qt-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 6mm;
+}
+.cover-quick-take h1 {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 700; font-size: 30pt;
+  line-height: 1.1; letter-spacing: -0.005em;
+  color: #003153; margin-bottom: 6mm;
+  max-width: 150mm;
+}
+.cover-quick-take .qt-dek {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 450; font-size: 12pt;
+  line-height: 1.55; color: #4A6FA5;
+  font-style: italic; margin-bottom: 14mm;
+  max-width: 140mm;
+  border-left: 2px solid #B5A642;
+  padding-left: 6mm;
+}
+.cover-quick-take .qt-takeaway {
+  background: #003153; color: #FAF7F0;
+  padding: 8mm 9mm;
+  margin-bottom: 12mm;
+}
+.cover-quick-take .qt-takeaway-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #B5A642;
+  margin-bottom: 3mm;
+}
+.cover-quick-take .qt-takeaway-text {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 13pt; font-weight: 500;
+  line-height: 1.4;
+}
+.cover-quick-take .qt-footer {
+  margin-top: auto;
+  display: flex; gap: 14mm;
+  padding-top: 6mm;
+  border-top: 0.5px solid rgba(74,111,165,0.2);
+}
+.cover-quick-take .qt-footer-item {
+  font-family: 'Inter', 'InterVN', sans-serif;
+}
+.cover-quick-take .qt-footer-label {
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.16em; color: #B5A642;
+  margin-bottom: 1mm; text-transform: uppercase;
+}
+.cover-quick-take .qt-footer-value {
+  font-size: 9pt; font-weight: 600; color: #003153;
+}
+
+/* ---------- COVER 3: SECTOR BRIEF ---------- */
+.cover-sector-brief {
+  background: #FAF7F0; color: #003153;
+}
+.cover-sector-brief .sb-header {
+  display: flex; justify-content: space-between;
+  padding-bottom: 6mm;
+  border-bottom: 1px solid #003153;
+  margin-bottom: 14mm;
+}
+.cover-sector-brief .sb-brand {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #003153;
+}
+.cover-sector-brief .sb-meta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; color: #6B6760;
+}
+.cover-sector-brief .sb-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 5mm;
+}
+.cover-sector-brief h1 {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 700; font-size: 28pt;
+  line-height: 1.1;
+  color: #003153; margin-bottom: 8mm;
+  max-width: 140mm;
+}
+.cover-sector-brief .sb-dek {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 500; font-size: 11pt;
+  font-style: italic; color: #4A6FA5;
+  line-height: 1.55; margin-bottom: 12mm;
+  max-width: 145mm;
+}
+.cover-sector-brief .sb-entities-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 4mm;
+  padding-bottom: 2mm;
+  border-bottom: 0.5px solid rgba(181,166,66,0.4);
+}
+.cover-sector-brief .sb-entity {
+  display: grid; grid-template-columns: 24mm 1fr 18mm;
+  gap: 6mm; padding: 4mm 0;
+  border-bottom: 0.4px solid rgba(74,111,165,0.18);
+  align-items: baseline;
+}
+.cover-sector-brief .sb-entity-ticker {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 11pt; font-weight: 700;
+  color: #003153;
+}
+.cover-sector-brief .sb-entity-take {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 10pt; font-weight: 450;
+  line-height: 1.4; color: #2B2B2B;
+}
+.cover-sector-brief .sb-entity-direction {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  text-align: right;
+  letter-spacing: 0.06em;
+}
+.cover-sector-brief .sb-entity-direction.up { color: #2E7D52; }
+.cover-sector-brief .sb-entity-direction.down { color: #C0392B; }
+.cover-sector-brief .sb-entity-direction.neutral { color: #6B6760; }
+
+/* ---------- COVER 4: POLICY WATCH ---------- */
+.cover-policy-watch {
+  background: #000d18; color: #FAF7F0;
+}
+.cover-policy-watch .pw-header {
+  display: flex; justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 4mm;
+  border-bottom: 1px solid rgba(181,166,66,0.4);
+  margin-bottom: 14mm;
+}
+.cover-policy-watch .pw-brand {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #B5A642;
+}
+.cover-policy-watch .pw-meta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; color: rgba(250,247,240,0.6);
+}
+.cover-policy-watch .pw-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 5mm;
+}
+.cover-policy-watch h1 {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 700; font-size: 32pt;
+  line-height: 1.05;
+  color: #FAF7F0; margin-bottom: 6mm;
+  max-width: 145mm;
+}
+.cover-policy-watch .pw-dek {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 500; font-size: 11pt;
+  font-style: italic; color: rgba(250,247,240,0.85);
+  line-height: 1.55; margin-bottom: 12mm;
+  max-width: 145mm;
+  padding-left: 6mm;
+  border-left: 2px solid #B5A642;
+}
+.cover-policy-watch .pw-timeline-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.2em; color: #B5A642;
+  margin-bottom: 6mm; text-transform: uppercase;
+}
+.cover-policy-watch .pw-timeline {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 4mm;
+  margin-bottom: 8mm;
+}
+.cover-policy-watch .pw-event {
+  padding: 4mm;
+  background: rgba(74,111,165,0.18);
+  border-top: 2px solid #B5A642;
+}
+.cover-policy-watch .pw-event.current {
+  border-top-color: #C0392B;
+  background: rgba(192,57,43,0.15);
+}
+.cover-policy-watch .pw-event-date {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; font-weight: 700;
+  color: #B5A642; margin-bottom: 2mm;
+}
+.cover-policy-watch .pw-event-name {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8.5pt; font-weight: 600;
+  color: #FAF7F0;
+  line-height: 1.35;
+}
+.cover-policy-watch .pw-scenarios {
+  margin-top: auto;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 5mm;
+  padding-top: 6mm;
+  border-top: 0.5px solid rgba(181,166,66,0.3);
+}
+.cover-policy-watch .pw-scenario {
+  text-align: center;
+}
+.cover-policy-watch .pw-scenario-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.16em; color: rgba(250,247,240,0.7);
+  margin-bottom: 1mm; text-transform: uppercase;
+}
+.cover-policy-watch .pw-scenario-prob {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 22pt; font-weight: 700;
+  color: #B5A642; line-height: 1;
+}
+.cover-policy-watch .pw-scenario-name {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 9pt; font-weight: 500;
+  font-style: italic;
+  color: rgba(250,247,240,0.85);
+  margin-top: 1mm;
+}
+
+/* ---------- COVER 5: EARNINGS BRIEF ---------- */
+.cover-earnings {
+  background: #FAF7F0; color: #003153;
+}
+.cover-earnings .eb-header {
+  display: flex; justify-content: space-between;
+  padding-bottom: 4mm;
+  border-bottom: 1px solid #003153;
+  margin-bottom: 12mm;
+}
+.cover-earnings .eb-brand {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #003153;
+}
+.cover-earnings .eb-meta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; color: #6B6760;
+}
+.cover-earnings .eb-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 4mm;
+}
+.cover-earnings .eb-ticker-row {
+  display: flex; align-items: baseline; gap: 5mm;
+  margin-bottom: 4mm;
+}
+.cover-earnings .eb-ticker {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 30pt; font-weight: 700;
+  color: #003153; line-height: 1;
+}
+.cover-earnings .eb-period {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 14pt; font-weight: 500;
+  font-style: italic; color: #4A6FA5;
+}
+.cover-earnings h1 {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 600; font-size: 22pt;
+  line-height: 1.15; color: #003153;
+  margin-bottom: 4mm; max-width: 140mm;
+}
+.cover-earnings .eb-dek {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 500; font-size: 10.5pt;
+  font-style: italic; color: #4A6FA5;
+  line-height: 1.5; margin-bottom: 10mm;
+  max-width: 140mm;
+}
+.cover-earnings .eb-metrics {
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 4mm; margin-bottom: 8mm;
+}
+.cover-earnings .eb-metric {
+  background: #FFFFFF;
+  padding: 5mm;
+  border-top: 3px solid #B5A642;
+}
+.cover-earnings .eb-metric-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #6B6760; margin-bottom: 2mm;
+}
+.cover-earnings .eb-metric-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 18pt; font-weight: 700;
+  color: #003153; line-height: 1;
+  margin-bottom: 1mm;
+}
+.cover-earnings .eb-metric-delta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; font-weight: 700;
+}
+.cover-earnings .eb-metric-delta.up { color: #2E7D52; }
+.cover-earnings .eb-metric-delta.down { color: #C0392B; }
+.cover-earnings .eb-metric-delta.flat { color: #6B6760; }
+.cover-earnings .eb-takeaway {
+  margin-top: auto;
+  padding: 6mm 7mm;
+  background: #003153;
+  color: #FAF7F0;
+}
+.cover-earnings .eb-takeaway-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #B5A642;
+  margin-bottom: 2mm; text-transform: uppercase;
+}
+.cover-earnings .eb-takeaway-text {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 11pt; font-weight: 500;
+  font-style: italic; line-height: 1.5;
+}
+
+/* ---------- COVER 6: THEMATIC MACRO ---------- */
+.cover-thematic {
+  background: #FAF7F0; color: #003153;
+}
+.cover-thematic .tm-header {
+  display: flex; justify-content: space-between;
+  padding-bottom: 4mm;
+  border-bottom: 0.5px solid rgba(74,111,165,0.3);
+  margin-bottom: 12mm;
+}
+.cover-thematic .tm-brand {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #003153;
+}
+.cover-thematic .tm-meta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; color: #6B6760;
+}
+.cover-thematic .tm-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 4mm;
+}
+.cover-thematic h1 {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 700; font-size: 30pt;
+  line-height: 1.1; letter-spacing: -0.005em;
+  color: #003153; margin-bottom: 6mm;
+  max-width: 145mm;
+}
+.cover-thematic .tm-dek {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 500; font-size: 11.5pt;
+  font-style: italic; color: #4A6FA5;
+  line-height: 1.55; margin-bottom: 8mm;
+  max-width: 145mm;
+}
+.cover-thematic .tm-chart-wrap {
+  background: #003153;
+  padding: 8mm 6mm 6mm 6mm;
+  margin-bottom: 8mm;
+}
+.cover-thematic .tm-chart-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.16em; color: #B5A642;
+  margin-bottom: 4mm; text-transform: uppercase;
+}
+.cover-thematic .tm-chart-svg {
+  display: block; width: 100%; height: auto;
+}
+.cover-thematic .tm-chart-caption {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 7.5pt; color: rgba(250,247,240,0.7);
+  margin-top: 3mm;
+  display: flex; justify-content: space-between;
+}
+.cover-thematic .tm-stats {
+  margin-top: auto;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 5mm;
+  padding-top: 5mm;
+  border-top: 0.5px solid rgba(74,111,165,0.2);
+}
+.cover-thematic .tm-stat {
+  text-align: center;
+}
+.cover-thematic .tm-stat-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 18pt; font-weight: 700;
+  color: #003153; line-height: 1;
+  margin-bottom: 1mm;
+}
+.cover-thematic .tm-stat-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #6B6760;
+}
+
+/* ---------- COVER 7: ALERT/FLASH ---------- */
+.cover-alert {
+  background: #FAF7F0; color: #003153;
+}
+.cover-alert .al-banner {
+  background: #C0392B; color: #FAF7F0;
+  margin: -24mm -24mm 12mm -24mm;
+  padding: 8mm 24mm;
+  display: flex; justify-content: space-between;
+  align-items: center;
+}
+.cover-alert .al-banner-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 11pt; font-weight: 700;
+  letter-spacing: 0.32em;
+}
+.cover-alert .al-banner-meta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 9pt; font-weight: 600;
+}
+.cover-alert .al-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: #C0392B; margin-bottom: 5mm;
+}
+.cover-alert h1 {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 700; font-size: 32pt;
+  line-height: 1.05; color: #003153;
+  margin-bottom: 8mm; max-width: 145mm;
+}
+.cover-alert .al-stat {
+  display: flex; align-items: baseline; gap: 6mm;
+  padding: 6mm 0;
+  border-top: 2px solid #C0392B;
+  border-bottom: 2px solid #C0392B;
+  margin-bottom: 12mm;
+}
+.cover-alert .al-stat-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 50pt; font-weight: 700;
+  color: #C0392B; line-height: 1;
+  letter-spacing: -0.02em;
+}
+.cover-alert .al-stat-label {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 11pt; font-weight: 500;
+  font-style: italic; color: #003153;
+  line-height: 1.45; max-width: 80mm;
+}
+.cover-alert .al-summary-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #B5A642;
+  margin-bottom: 3mm; text-transform: uppercase;
+}
+.cover-alert .al-summary {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 11pt; font-weight: 450;
+  line-height: 1.55; color: #2B2B2B;
+  margin-bottom: 8mm;
+}
+.cover-alert .al-actions {
+  margin-top: auto;
+  padding: 5mm 6mm;
+  background: #003153; color: #FAF7F0;
+  border-left: 4px solid #C0392B;
+}
+.cover-alert .al-actions-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.16em; color: #B5A642;
+  margin-bottom: 2mm; text-transform: uppercase;
+}
+.cover-alert .al-actions-text {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 10pt; font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ---------- COVER 8: YEAR-END REVIEW ---------- */
+.cover-yearend {
+  background: #000d18; color: #FAF7F0;
+}
+.cover-yearend .ye-header {
+  display: flex; justify-content: space-between;
+  padding-bottom: 4mm;
+  border-bottom: 1px solid #B5A642;
+  margin-bottom: 12mm;
+}
+.cover-yearend .ye-brand {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #B5A642;
+}
+.cover-yearend .ye-meta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; color: rgba(250,247,240,0.6);
+}
+.cover-yearend .ye-year {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 700; font-size: 96pt;
+  line-height: 1; letter-spacing: -0.04em;
+  color: #B5A642; margin-bottom: 2mm;
+}
+.cover-yearend h1 {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 600; font-size: 22pt;
+  line-height: 1.15; color: #FAF7F0;
+  margin-bottom: 6mm; max-width: 140mm;
+}
+.cover-yearend .ye-dek {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 500; font-size: 11pt;
+  font-style: italic; color: rgba(250,247,240,0.82);
+  line-height: 1.55; margin-bottom: 10mm;
+  max-width: 140mm;
+}
+.cover-yearend .ye-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 4mm; margin-bottom: 8mm;
+}
+.cover-yearend .ye-stat {
+  background: rgba(74,111,165,0.2);
+  padding: 5mm 6mm;
+  border-top: 2px solid #B5A642;
+}
+.cover-yearend .ye-stat-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 2mm;
+}
+.cover-yearend .ye-stat-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 16pt; font-weight: 700;
+  color: #FAF7F0; line-height: 1;
+  margin-bottom: 1mm;
+}
+.cover-yearend .ye-stat-context {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 8pt; font-weight: 450;
+  font-style: italic; color: rgba(250,247,240,0.7);
+  line-height: 1.4;
+}
+.cover-yearend .ye-themes {
+  margin-top: auto;
+}
+.cover-yearend .ye-themes-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #B5A642;
+  margin-bottom: 4mm; text-transform: uppercase;
+  padding-bottom: 2mm;
+  border-bottom: 0.5px solid rgba(181,166,66,0.4);
+}
+.cover-yearend .ye-theme {
+  display: grid; grid-template-columns: 14mm 1fr;
+  gap: 4mm; padding: 2mm 0;
+  font-size: 9pt;
+}
+.cover-yearend .ye-theme-num {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-weight: 700; color: #B5A642;
+}
+.cover-yearend .ye-theme-text {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 450; line-height: 1.5;
+  color: rgba(250,247,240,0.92);
+}
+
+/* ---------- COVER 9: PITCH DECK ---------- */
+.cover-pitch {
+  background: #FAF7F0; color: #003153;
+}
+.cover-pitch .pd-header {
+  display: flex; justify-content: space-between;
+  padding-bottom: 4mm;
+  border-bottom: 1px solid #003153;
+  margin-bottom: 14mm;
+}
+.cover-pitch .pd-brand {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #003153;
+}
+.cover-pitch .pd-meta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; color: #6B6760;
+}
+.cover-pitch .pd-recommendation {
+  display: grid; grid-template-columns: 50mm 1fr;
+  gap: 8mm; margin-bottom: 10mm;
+  padding: 6mm; background: #FFFFFF;
+  border-left: 6px solid;
+}
+.cover-pitch .pd-recommendation.buy { border-left-color: #2E7D52; }
+.cover-pitch .pd-recommendation.sell { border-left-color: #C0392B; }
+.cover-pitch .pd-recommendation.hold { border-left-color: #B5A642; }
+.cover-pitch .pd-rec-action {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 24pt; font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+.cover-pitch .pd-recommendation.buy .pd-rec-action { color: #2E7D52; }
+.cover-pitch .pd-recommendation.sell .pd-rec-action { color: #C0392B; }
+.cover-pitch .pd-recommendation.hold .pd-rec-action { color: #B5A642; }
+.cover-pitch .pd-rec-target {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 14pt; font-weight: 700;
+  color: #003153; text-align: center;
+  margin-top: 1mm;
+}
+.cover-pitch .pd-rec-upside {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 600;
+  text-align: center; color: #6B6760;
+  margin-top: 1mm;
+}
+.cover-pitch .pd-rec-thesis {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 11pt; font-weight: 500;
+  font-style: italic; line-height: 1.5;
+  color: #003153;
+}
+.cover-pitch h1 {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 600; font-size: 22pt;
+  line-height: 1.15; color: #003153;
+  margin-bottom: 8mm; max-width: 145mm;
+}
+.cover-pitch .pd-thesis-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.18em; color: #B5A642;
+  margin-bottom: 4mm; text-transform: uppercase;
+}
+.cover-pitch .pd-bullet {
+  display: grid; grid-template-columns: 5mm 1fr;
+  gap: 3mm; padding: 3mm 0;
+  font-size: 10pt;
+  border-bottom: 0.4px solid rgba(74,111,165,0.15);
+}
+.cover-pitch .pd-bullet-mark {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-weight: 700; color: #B5A642;
+}
+.cover-pitch .pd-bullet-text {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 450; line-height: 1.5;
+  color: #2B2B2B;
+}
+.cover-pitch .pd-footer {
+  margin-top: auto;
+  padding-top: 5mm;
+  border-top: 0.5px solid rgba(74,111,165,0.2);
+  display: flex; justify-content: space-between;
+}
+.cover-pitch .pd-footer-item .pd-footer-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.14em; color: #B5A642;
+  text-transform: uppercase; margin-bottom: 1mm;
+}
+.cover-pitch .pd-footer-item .pd-footer-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 9pt; font-weight: 600; color: #003153;
+}
+
+/* ============ SECTION OPENER VARIANTS ============ */
+
+/* ---------- VARIANT 1: STANDARD (current) ---------- */
+/* Existing .section-opener handles this - reuse */
+
+/* ---------- VARIANT 2: HERO-STAT OPENER ---------- */
+.section-opener-hero {
+  margin: 14mm -24mm 12mm -24mm;
+  padding: 12mm 24mm 10mm 24mm;
+  background: #FAF7F0;
+  border-top: 3px solid #B5A642;
+  border-bottom: 3px solid #B5A642;
+  position: relative;
+  page-break-after: avoid;
+  page-break-inside: avoid;
+}
+.section-opener-hero .so-h-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 4mm;
+}
+.section-opener-hero .so-h-grid {
+  display: grid; grid-template-columns: 70mm 1fr;
+  gap: 10mm; align-items: start;
+}
+.section-opener-hero .so-h-mega {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 60pt; font-weight: 700;
+  color: #003153; line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: 1mm;
+}
+.section-opener-hero .so-h-unit {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 9pt; font-weight: 600;
+  letter-spacing: 0.05em; color: #4A6FA5;
+}
+.section-opener-hero .so-h-content h2 {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 22pt; font-weight: 700;
+  line-height: 1.15; color: #003153;
+  margin: 0 0 4mm 0; letter-spacing: -0.005em;
+}
+.section-opener-hero .so-h-dek {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 10.5pt; font-weight: 500;
+  font-style: italic; color: #4A6FA5;
+  line-height: 1.55;
+}
+
+/* ---------- VARIANT 3: QUOTE OPENER ---------- */
+.section-opener-quote {
+  margin: 14mm 0 12mm 0;
+  padding: 0;
+  page-break-after: avoid;
+  page-break-inside: avoid;
+}
+.section-opener-quote .so-q-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 4mm;
+}
+.section-opener-quote .so-q-mark {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 80pt; font-weight: 700;
+  color: #B5A642; line-height: 0.6;
+  margin: 0 0 -6mm -2mm;
+  font-style: italic;
+}
+.section-opener-quote .so-q-text {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 18pt; font-weight: 500;
+  font-style: italic; color: #003153;
+  line-height: 1.4; margin-bottom: 6mm;
+  max-width: 150mm;
+}
+.section-opener-quote .so-q-attribution {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8.5pt; font-weight: 600;
+  color: #6B6760; margin-bottom: 8mm;
+  letter-spacing: 0.04em;
+}
+.section-opener-quote .so-q-attribution::before {
+  content: "-- ";
+  color: #B5A642;
+}
+.section-opener-quote h2 {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 22pt; font-weight: 700;
+  line-height: 1.15; color: #003153;
+  margin: 0 0 4mm 0; letter-spacing: -0.005em;
+  padding-top: 6mm;
+  border-top: 1px solid rgba(74,111,165,0.25);
+}
+.section-opener-quote .so-q-dek {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 10.5pt; font-weight: 500;
+  font-style: italic; color: #4A6FA5;
+  line-height: 1.55; max-width: 145mm;
+}
+
+/* ============ SIDEBAR CALLOUTS ============ */
+.sidebar-note {
+  margin: 6mm 0;
+  padding: 5mm 6mm;
+  background: #FAF7F0;
+  border-left: 3px solid #B5A642;
+  page-break-inside: avoid;
+}
+.sidebar-note.methodology {
+  border-left-color: #4A6FA5;
+}
+.sidebar-note.warning {
+  border-left-color: #C0392B;
+  background: #FBF0EE;
+}
+.sidebar-note.tip {
+  border-left-color: #2E7D52;
+  background: #EFF5F1;
+}
+.sidebar-note-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  margin-bottom: 2mm;
+}
+.sidebar-note .sidebar-note-label { color: #B5A642; }
+.sidebar-note.methodology .sidebar-note-label { color: #4A6FA5; }
+.sidebar-note.warning .sidebar-note-label { color: #C0392B; }
+.sidebar-note.tip .sidebar-note-label { color: #2E7D52; }
+.sidebar-note-content {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 9pt; font-weight: 450;
+  line-height: 1.55; color: #2B2B2B;
+}
+.sidebar-note-content em {
+  font-style: italic; color: #4A6FA5;
+}
+.sidebar-note-content strong {
+  font-weight: 700; color: #003153;
+}
+
+/* ============ GLOSSARY ALPHABETICAL (compact inline letter) ============ */
+.glossary-alpha {
+  margin-top: 8mm;
+  page-break-inside: auto;
+}
+.glossary-alpha-header {
+  display: flex; justify-content: space-between;
+  align-items: baseline; padding-bottom: 3mm;
+  border-bottom: 1px solid #B5A642; margin-bottom: 4mm;
+}
+.glossary-alpha-title {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 14pt; font-weight: 700;
+  color: #003153;
+}
+.glossary-alpha-meta {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 600;
+  color: #6B6760; letter-spacing: 0.1em;
+}
+/* Compact 3-column row: letter | term | definition */
+.glossary-alpha-row {
+  display: grid; grid-template-columns: 6mm 30mm 1fr;
+  gap: 4mm; padding: 2mm 0;
+  border-bottom: 0.4px solid rgba(74,111,165,0.10);
+  font-size: 9.5pt;
+  align-items: baseline;
+  page-break-inside: avoid;
+}
+.glossary-alpha-row.letter-start {
+  border-top: 0.5px solid rgba(181,166,66,0.35);
+  padding-top: 3mm; margin-top: 1mm;
+}
+.glossary-alpha-row.letter-start:first-child {
+  border-top: none; padding-top: 2mm; margin-top: 0;
+}
+.glossary-alpha-letter-cell {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 13pt; font-weight: 700;
+  color: #B5A642; line-height: 1;
+  letter-spacing: -0.01em;
+}
+.glossary-alpha-term {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-weight: 700; color: #003153;
+}
+.glossary-alpha-def {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 450; color: #2B2B2B;
+  line-height: 1.5;
+}
+.glossary-alpha-def em {
+  font-style: italic; color: #6B6760;
+}
+
+/* ============ FOOTNOTES ============ */
+.fn-marker {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  vertical-align: super; line-height: 0;
+  color: #B5A642; padding: 0 0.5mm;
+}
+.footnotes-list {
+  margin-top: 12mm;
+  padding-top: 4mm;
+  border-top: 1px solid rgba(74,111,165,0.3);
+  page-break-inside: auto;
+}
+.footnotes-list-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 3mm;
+}
+.fn-item {
+  display: grid; grid-template-columns: 8mm 1fr;
+  gap: 2mm; padding: 1.5mm 0;
+  font-size: 8.5pt;
+}
+.fn-num {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-weight: 700; color: #B5A642;
+  text-align: right; padding-right: 1mm;
+}
+.fn-text {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 450; line-height: 1.45;
+  color: #4A6FA5;
+}
+.fn-text em {
+  font-style: italic; color: #6B6760;
+}
+
+/* ============================================================
+   OPVIA DATA VIZ - components stylesheet
+   ============================================================ */
+
+/* ---------- BAR HORIZONTAL ---------- */
+.viz-bar {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-bar-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm; padding-bottom: 3px;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+}
+.viz-bar-subtitle {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8.5pt; font-weight: 400; color: #4A6FA5;
+  margin-bottom: 4mm;
+}
+.viz-bar-row {
+  display: grid; grid-template-columns: 22mm 1fr 18mm;
+  gap: 8px; align-items: center;
+  padding: 5px 0; border-bottom: 0.4px solid rgba(74,111,165,0.08);
+}
+.viz-bar-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 9pt; font-weight: 600; color: #003153;
+}
+.viz-bar-note {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 400; font-style: italic;
+  color: #6B6760;
+}
+.viz-bar-track {
+  position: relative; height: 14px;
+  background: rgba(74,111,165,0.08); border-radius: 2px;
+}
+.viz-bar-fill {
+  height: 100%; border-radius: 2px;
+  background: #003153;
+}
+.viz-bar-fill.danger { background: #C0392B; }
+.viz-bar-fill.warn { background: #B5A642; }
+.viz-bar-fill.positive { background: #2E7D52; }
+.viz-bar-threshold {
+  position: absolute; top: -3px; bottom: -3px;
+  width: 1.5px; background: #722F37;
+}
+.viz-bar-threshold-label {
+  position: absolute; top: -16px; transform: translateX(-50%);
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 7pt; font-weight: 600; color: #722F37;
+  white-space: nowrap; letter-spacing: 0.06em;
+}
+.viz-bar-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 9pt; font-weight: 600; color: #003153;
+  text-align: right;
+}
+.viz-bar-value.danger { color: #C0392B; font-weight: 700; }
+
+/* ---------- GAUGE ---------- */
+.viz-gauge {
+  display: inline-block; vertical-align: top;
+  margin: 4mm 0; page-break-inside: avoid;
+  width: 100%; max-width: 110mm;
+}
+.viz-gauge-svg { display: block; width: 100%; height: auto; }
+.viz-gauge-bg-arc { fill: none; stroke: #E5E0D5; stroke-width: 14; stroke-linecap: round; }
+.viz-gauge-fill-arc { fill: none; stroke-width: 14; stroke-linecap: round; }
+.viz-gauge-fill-arc.normal { stroke: #B5A642; }
+.viz-gauge-fill-arc.danger { stroke: #C0392B; }
+.viz-gauge-threshold-tick { stroke: #722F37; stroke-width: 2.5; }
+.viz-gauge-value-text {
+  font-family: 'JBM', 'JBMVN', monospace; font-weight: 700; fill: #003153;
+}
+.viz-gauge-label-text {
+  font-family: 'Inter', 'InterVN', sans-serif; font-weight: 700; fill: #6B6760;
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.viz-gauge-threshold-text {
+  font-family: 'JBM', 'JBMVN', monospace; font-weight: 600; fill: #722F37;
+  letter-spacing: 0.06em;
+}
+.viz-gauge-desc {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 9pt; line-height: 1.4; color: #2B2B2B;
+  margin-top: 2mm; max-width: 88mm;
+}
+
+/* ---------- HEATMAP ---------- */
+.viz-heatmap {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-heatmap-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm; padding-bottom: 3px;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+}
+.viz-heatmap-subtitle {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8.5pt; color: #4A6FA5; margin-bottom: 4mm;
+}
+.viz-heatmap-grid {
+  display: grid; gap: 2px;
+  border: 0.6px solid rgba(74,111,165,0.15);
+  background: rgba(74,111,165,0.10);
+}
+.viz-heatmap-cell {
+  padding: 6px 10px; min-height: 32px;
+  display: flex; flex-direction: column; justify-content: center;
+  background: #FAF7F0;
+  font-family: 'Inter', 'InterVN', sans-serif;
+  text-align: left;
+}
+.viz-heatmap-corner {
+  background: #FAF7F0;
+}
+.viz-heatmap-row-header {
+  background: #FAF7F0; font-weight: 700; color: #003153;
+  font-size: 8.5pt; padding: 6px 8px; min-height: 32px;
+  display: flex; align-items: center;
+}
+.viz-heatmap-col-header {
+  background: #FAF7F0; font-weight: 700; color: #003153;
+  font-size: 7.5pt; letter-spacing: 0.10em; text-transform: uppercase;
+  padding: 5px 8px; text-align: center;
+}
+.viz-heatmap-cell .cell-text {
+  font-size: 8.5pt; font-weight: 600;
+}
+.viz-heatmap-cell .cell-note {
+  font-size: 7pt; color: #6B6760;
+  margin-top: 2px;
+}
+.viz-heatmap-cell.pos-strongest {
+  background: #2E7D52; color: #FFFFFF;
+}
+.viz-heatmap-cell.pos-strong {
+  background: rgba(46,125,82,0.55); color: #003153;
+}
+.viz-heatmap-cell.pos {
+  background: rgba(46,125,82,0.22); color: #003153;
+}
+.viz-heatmap-cell.neutral {
+  background: rgba(74,111,165,0.08); color: #4A6FA5;
+}
+.viz-heatmap-cell.neg {
+  background: rgba(192,57,43,0.18); color: #722F37;
+}
+.viz-heatmap-cell.neg-strong {
+  background: rgba(192,57,43,0.45); color: #722F37;
+}
+.viz-heatmap-cell.neg-strongest {
+  background: #C0392B; color: #FFFFFF;
+}
+.viz-heatmap-cell.pos-strongest .cell-note,
+.viz-heatmap-cell.neg-strongest .cell-note { color: rgba(255,255,255,0.8); }
+
+/* ---------- FLOW BRIDGE ---------- */
+.viz-flow {
+  margin: 7mm auto; page-break-inside: avoid;
+  text-align: center;
+  max-width: 110mm;
+}
+.viz-flow-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm; padding-bottom: 3px;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+  text-align: left;
+}
+.viz-flow-svg { display: block; margin: 0 auto; width: 100%; height: auto; }
+.viz-flow-node-rect.cause { fill: #003153; }
+.viz-flow-node-rect.intermediate { fill: #FAF7F0; stroke: #4A6FA5; stroke-width: 0.8; }
+.viz-flow-node-rect.result { fill: #B5A642; }
+.viz-flow-node-text {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8.5pt; font-weight: 600;
+}
+.viz-flow-node-text.light { fill: #FAF7F0; }
+.viz-flow-node-text.dark { fill: #003153; }
+.viz-flow-arrow { stroke: #4A6FA5; stroke-width: 1.2; fill: none; }
+.viz-flow-arrowhead { fill: #4A6FA5; }
+
+/* ---------- SCENARIO CARDS ---------- */
+.viz-scenarios {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 4mm; margin: 7mm 0;
+  page-break-inside: avoid;
+}
+.viz-scenario {
+  background: #FAF7F0; border-top: 3px solid #B5A642;
+  padding: 5mm 5mm 5mm; border-radius: 2px;
+  page-break-inside: avoid;
+  display: flex; flex-direction: column;
+}
+.viz-scenario.base { border-top-color: #4A6FA5; }
+.viz-scenario.positive { border-top-color: #2E7D52; }
+.viz-scenario.negative { border-top-color: #C0392B; }
+.viz-scenario-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 3mm; padding-bottom: 2mm;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+}
+.viz-scenario-name {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 12pt; font-weight: 700; color: #003153;
+}
+.viz-scenario-prob {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 11pt; font-weight: 700; color: #B5A642;
+}
+.viz-scenario-row {
+  margin-bottom: 2.5mm;
+}
+.viz-scenario-row:last-child { margin-bottom: 0; }
+.viz-scenario-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #6B6760;
+  margin-bottom: 1px;
+}
+.viz-scenario-value {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8.5pt; line-height: 1.45; color: #2B2B2B;
+}
+.viz-scenario-value.winners { color: #2E7D52; font-weight: 600; }
+.viz-scenario-value.losers { color: #C0392B; font-weight: 600; }
+
+/* ---------- TIMELINE HORIZONTAL ---------- */
+.viz-timeline {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-timeline-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm; padding-bottom: 3px;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+}
+.viz-timeline-svg { display: block; width: 100%; height: auto; margin-top: 4mm; }
+.viz-timeline-axis { stroke: #4A6FA5; stroke-width: 0.8; }
+.viz-timeline-tick { stroke: #4A6FA5; stroke-width: 0.8; }
+.viz-timeline-dot.milestone { fill: #4A6FA5; }
+.viz-timeline-dot.decision { fill: #B5A642; }
+.viz-timeline-dot.result { fill: #2E7D52; }
+.viz-timeline-dot.current { fill: #C0392B; }
+.viz-timeline-date {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 7pt; font-weight: 600; fill: #003153;
+}
+.viz-timeline-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; fill: #2B2B2B;
+}
+
+/* ---------- WATERFALL CHART ---------- */
+.viz-waterfall {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-waterfall-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm; padding-bottom: 3px;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+}
+.viz-waterfall-subtitle {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8.5pt; color: #4A6FA5; margin-bottom: 4mm;
+}
+.viz-waterfall-svg { display: block; width: 100%; height: auto; }
+
+/* ---------- RANKING LADDER ---------- */
+.viz-ranking {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-ranking-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm; padding-bottom: 3px;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+}
+.viz-ranking-subtitle {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8.5pt; color: #4A6FA5; margin-bottom: 4mm;
+}
+.viz-ranking-row {
+  display: grid; grid-template-columns: 8mm 1fr 18mm 14mm;
+  gap: 8px; align-items: center;
+  padding: 6px 0; border-bottom: 0.4px solid rgba(74,111,165,0.10);
+}
+.viz-ranking-rank {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 11pt; font-weight: 700; color: #B5A642;
+  text-align: center;
+}
+.viz-ranking-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 9pt; font-weight: 700; color: #003153;
+}
+.viz-ranking-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 9pt; font-weight: 600; color: #003153;
+  text-align: right;
+}
+.viz-ranking-delta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; font-weight: 600;
+  text-align: right;
+}
+.viz-ranking-delta.up { color: #2E7D52; }
+.viz-ranking-delta.down { color: #C0392B; }
+.viz-ranking-delta.flat { color: #6B6760; }
+.viz-ranking-delta.new { color: #B5A642; font-style: italic; }
+
+/* ---------- COMPARISON CARDS ---------- */
+.viz-comparison {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-comparison-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm; padding-bottom: 3px;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+}
+.viz-comparison-grid {
+  display: grid; gap: 4mm;
+}
+.viz-comparison-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.viz-comparison-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.viz-comparison-grid.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.viz-comparison-card {
+  background: #FAF7F0; padding: 5mm;
+  border-top: 3px solid #4A6FA5;
+  border-radius: 2px;
+  page-break-inside: avoid;
+}
+.viz-comparison-card.fork-a { border-top-color: #B5A642; }
+.viz-comparison-card.fork-b { border-top-color: #4A6FA5; }
+.viz-comparison-card.positive { border-top-color: #2E7D52; }
+.viz-comparison-card.negative { border-top-color: #C0392B; }
+.viz-comparison-card.neutral { border-top-color: #6B6760; }
+.viz-comparison-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 2mm;
+}
+.viz-comparison-card-title {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 12pt; font-weight: 700; color: #003153;
+  margin-bottom: 3mm; line-height: 1.25;
+}
+.viz-comparison-metrics {
+  margin-bottom: 3mm; padding-bottom: 3mm;
+  border-bottom: 0.5px solid rgba(74,111,165,0.15);
+}
+.viz-comparison-metric-row {
+  display: flex; justify-content: space-between;
+  padding: 3px 0; font-size: 8.5pt;
+}
+.viz-comparison-metric-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  color: #6B6760;
+}
+.viz-comparison-metric-value {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-weight: 600; color: #003153;
+}
+.viz-comparison-summary {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8.5pt; line-height: 1.5;
+  color: #2B2B2B; font-style: italic;
+}
+
+/* ---------- STAT DASHBOARD ---------- */
+.viz-dashboard {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-dashboard-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm; padding-bottom: 3px;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+}
+.viz-dashboard-grid {
+  display: grid; gap: 3mm;
+}
+.viz-dashboard-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.viz-dashboard-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.viz-dashboard-grid.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.viz-dashboard-stat {
+  background: #FAF7F0; padding: 4mm 5mm;
+  border-left: 2px solid #B5A642;
+  border-radius: 2px;
+  page-break-inside: avoid;
+}
+.viz-dashboard-stat-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #6B6760; margin-bottom: 2mm;
+}
+.viz-dashboard-stat-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 17pt; font-weight: 700; color: #003153;
+  line-height: 1.1; margin-bottom: 1mm;
+}
+.viz-dashboard-stat-delta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 8pt; font-weight: 600;
+}
+.viz-dashboard-stat-delta.up { color: #2E7D52; }
+.viz-dashboard-stat-delta.down { color: #C0392B; }
+.viz-dashboard-stat-delta.flat { color: #6B6760; }
+.viz-dashboard-stat-unit {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; color: #6B6760;
+  margin-top: 2px;
+}
+
+/* ---------- MINI SPARKLINE (inline) ---------- */
+.viz-sparkline {
+  display: inline-block;
+  vertical-align: -1px;
+  margin: 0 2px;
+}
+
+/* ---------- DISTRIBUTION DOT PLOT ---------- */
+.viz-distribution {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-distribution-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 10pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm; padding-bottom: 3px;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+}
+.viz-distribution-svg { display: block; width: 100%; height: auto; margin-top: 4mm; }
+
+/* ---------- POLICY FORK ---------- */
+.viz-policy-fork {
+  margin: 8mm 0; page-break-inside: avoid;
+}
+.viz-policy-fork-title {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 14pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm;
+}
+.viz-policy-fork-context {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 9.5pt; font-weight: 450; color: #4A6FA5;
+  font-style: italic;
+  margin-bottom: 5mm; padding-bottom: 4mm;
+  border-bottom: 0.6px solid rgba(74,111,165,0.18);
+}
+.viz-policy-fork-options {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4mm; margin-bottom: 5mm;
+}
+.viz-policy-fork-option {
+  background: #FAF7F0; padding: 5mm;
+  border-top: 3px solid #B5A642;
+  border-radius: 2px;
+}
+.viz-policy-fork-option.fork-a { border-top-color: #B5A642; }
+.viz-policy-fork-option.fork-b { border-top-color: #4A6FA5; }
+.viz-policy-fork-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 2mm;
+}
+.viz-policy-fork-option.fork-b .viz-policy-fork-label { color: #4A6FA5; }
+.viz-policy-fork-name {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 12pt; font-weight: 700; color: #003153;
+  margin-bottom: 3mm; line-height: 1.25;
+}
+.viz-policy-fork-winners {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8.5pt; font-weight: 600;
+  color: #2E7D52; margin-bottom: 3mm;
+}
+.viz-policy-fork-summary {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 9pt; font-weight: 450;
+  font-style: italic; color: #2B2B2B;
+  line-height: 1.5;
+}
+.viz-policy-fork-decision {
+  background: #FAF7F0;
+  padding: 5mm 6mm;
+  border-top: 2px solid #003153;
+}
+.viz-policy-fork-decision-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: #6B6760; margin-bottom: 4mm;
+}
+/* Header row with A / B columns */
+.viz-policy-fork-factor-header {
+  display: grid; grid-template-columns: 1fr 16mm 16mm;
+  gap: 3mm; padding: 0 0 3mm 0;
+  border-bottom: 1px solid #003153;
+  margin-bottom: 1mm;
+  align-items: baseline;
+}
+.viz-policy-fork-factor-header-name {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #6B6760;
+}
+.viz-policy-fork-factor-header-col {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 9.5pt; font-weight: 700;
+  text-align: center; letter-spacing: 0.1em;
+}
+.viz-policy-fork-factor-header-col.fork-a { color: #B5A642; }
+.viz-policy-fork-factor-header-col.fork-b { color: #4A6FA5; }
+.viz-policy-fork-factor {
+  display: grid; grid-template-columns: 1fr 16mm 16mm;
+  gap: 3mm; padding: 2.5mm 0;
+  border-bottom: 0.4px solid rgba(74,111,165,0.10);
+  font-size: 9pt;
+  align-items: center;
+}
+.viz-policy-fork-factor:last-child { border-bottom: none; }
+.viz-policy-fork-factor-label {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 450; color: #2B2B2B;
+}
+/* Filled / empty circles - colored by column */
+.viz-policy-fork-factor-mark {
+  text-align: center;
+  font-size: 13pt; line-height: 1;
+}
+.viz-policy-fork-factor-mark.win-a { color: #B5A642; }
+.viz-policy-fork-factor-mark.win-b { color: #4A6FA5; }
+.viz-policy-fork-factor-mark.lose { color: rgba(74,111,165,0.18); }
+
+/* ---------- WINNERS-LOSERS SPLIT ---------- */
+.viz-wl {
+  margin: 8mm 0; page-break-inside: avoid;
+}
+.viz-wl-title {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 14pt; font-weight: 700; color: #003153;
+  margin-bottom: 2mm;
+}
+.viz-wl-summary {
+  background: #003153; color: #FAF7F0;
+  padding: 4mm 6mm;
+  margin-bottom: 5mm;
+  display: grid; grid-template-columns: 32mm 1fr;
+  gap: 5mm; align-items: center;
+}
+.viz-wl-summary-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 18pt; font-weight: 700; color: #B5A642;
+  line-height: 1;
+}
+.viz-wl-summary-label {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 9pt; font-weight: 450;
+  font-style: italic; color: rgba(250,247,240,0.85);
+  line-height: 1.4;
+}
+.viz-wl-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 5mm;
+}
+.viz-wl-column {
+  background: #FAF7F0; padding: 5mm;
+  border-top: 3px solid;
+}
+.viz-wl-column.winners { border-top-color: #2E7D52; }
+.viz-wl-column.losers { border-top-color: #C0392B; }
+.viz-wl-col-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  margin-bottom: 2mm;
+}
+.viz-wl-column.winners .viz-wl-col-label { color: #2E7D52; }
+.viz-wl-column.losers .viz-wl-col-label { color: #C0392B; }
+.viz-wl-col-summary {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 9pt; font-weight: 500;
+  font-style: italic; color: #2B2B2B;
+  margin-bottom: 4mm; padding-bottom: 3mm;
+  border-bottom: 0.5px solid rgba(74,111,165,0.18);
+}
+.viz-wl-item {
+  padding: 3mm 0;
+  border-bottom: 0.4px solid rgba(74,111,165,0.10);
+}
+.viz-wl-item:last-child { border-bottom: none; }
+.viz-wl-item-row {
+  display: flex; justify-content: space-between;
+  margin-bottom: 1mm; align-items: baseline;
+}
+.viz-wl-item-name {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 9.5pt; font-weight: 700;
+  color: #003153;
+}
+.viz-wl-item-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 9.5pt; font-weight: 700;
+}
+.viz-wl-column.winners .viz-wl-item-value { color: #2E7D52; }
+.viz-wl-column.losers .viz-wl-item-value { color: #C0392B; }
+.viz-wl-item-detail {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 8.5pt; font-weight: 450;
+  color: #6B6760;
+  line-height: 1.4;
+}
+
+/* ---------- DATA HERO ---------- */
+.viz-hero {
+  margin: 10mm 0; page-break-inside: avoid;
+  background: #FAF7F0;
+  padding: 12mm 10mm;
+  border-top: 3px solid #B5A642;
+  border-bottom: 3px solid #B5A642;
+  text-align: center;
+}
+.viz-hero-eyebrow {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 6mm;
+}
+.viz-hero-mega {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 80pt; font-weight: 700;
+  color: #003153;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 2mm;
+}
+.viz-hero-unit {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 11pt; font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #4A6FA5; margin-bottom: 4mm;
+}
+.viz-hero-label {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 12pt; font-weight: 500;
+  font-style: italic;
+  color: #003153; margin-bottom: 8mm;
+  line-height: 1.4;
+  max-width: 130mm; margin-left: auto; margin-right: auto;
+}
+.viz-hero-sub-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 5mm; margin-bottom: 6mm;
+  padding-top: 5mm;
+  border-top: 0.5px solid rgba(74,111,165,0.18);
+}
+.viz-hero-sub-stat {
+  text-align: center;
+}
+.viz-hero-sub-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 16pt; font-weight: 700;
+  color: #003153; line-height: 1;
+  margin-bottom: 1mm;
+}
+.viz-hero-sub-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: #6B6760;
+}
+.viz-hero-story {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 10pt; font-weight: 450;
+  font-style: italic; color: #2B2B2B;
+  line-height: 1.55;
+  max-width: 140mm; margin: 0 auto;
+}
+
+/* ---------- MECHANISM BREAKDOWN ---------- */
+.viz-mech {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-mech-title {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 13pt; font-weight: 700; color: #003153;
+  margin-bottom: 4mm;
+}
+.viz-mech-stages {
+  display: grid;
+  grid-template-columns: 1fr 8mm 1fr 8mm 1fr;
+  gap: 0; align-items: stretch;
+  margin-bottom: 4mm;
+}
+.viz-mech-stage {
+  background: #FAF7F0;
+  padding: 5mm 4mm;
+  border-top: 3px solid;
+  border-radius: 2px;
+}
+.viz-mech-stage.input { border-top-color: #4A6FA5; }
+.viz-mech-stage.process { border-top-color: #B5A642; }
+.viz-mech-stage.output { border-top-color: #2E7D52; }
+.viz-mech-arrow {
+  display: flex; align-items: center;
+  justify-content: center;
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 18pt; font-weight: 700;
+  color: #B5A642;
+}
+.viz-mech-stage-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  margin-bottom: 2mm;
+}
+.viz-mech-stage.input .viz-mech-stage-label { color: #4A6FA5; }
+.viz-mech-stage.process .viz-mech-stage-label { color: #B5A642; }
+.viz-mech-stage.output .viz-mech-stage-label { color: #2E7D52; }
+.viz-mech-stage-name {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 11pt; font-weight: 700;
+  color: #003153; margin-bottom: 2mm;
+  line-height: 1.25;
+}
+.viz-mech-stage-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 12pt; font-weight: 700;
+  color: #003153; margin-bottom: 2mm;
+}
+.viz-mech-stage-detail {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 8.5pt; font-weight: 450;
+  color: #4A6FA5;
+  line-height: 1.45;
+}
+.viz-mech-outcome {
+  background: #003153; color: #FAF7F0;
+  padding: 4mm 6mm;
+  border-left: 3px solid #B5A642;
+}
+.viz-mech-outcome-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 2mm;
+}
+.viz-mech-outcome-text {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 10pt; font-weight: 500;
+  font-style: italic;
+  color: rgba(250,247,240,0.95);
+  line-height: 1.5;
+}
+
+/* ---------- BEFORE-AFTER COMPARISON ---------- */
+.viz-ba {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-ba-title {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 13pt; font-weight: 700; color: #003153;
+  margin-bottom: 4mm;
+}
+.viz-ba-grid {
+  display: grid; grid-template-columns: 1fr 18mm 1fr;
+  gap: 0; align-items: stretch;
+  margin-bottom: 4mm;
+}
+.viz-ba-state {
+  padding: 5mm;
+  background: #FAF7F0;
+  border-top: 3px solid;
+}
+.viz-ba-state.before { border-top-color: #6B6760; opacity: 0.92; }
+.viz-ba-state.after { border-top-color: #2E7D52; }
+.viz-ba-state-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7.5pt; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  margin-bottom: 2mm;
+}
+.viz-ba-state.before .viz-ba-state-label { color: #6B6760; }
+.viz-ba-state.after .viz-ba-state-label { color: #2E7D52; }
+.viz-ba-state-name {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 9.5pt; font-weight: 500;
+  font-style: italic; color: #4A6FA5;
+  margin-bottom: 3mm;
+}
+.viz-ba-state-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 28pt; font-weight: 700;
+  color: #003153; line-height: 1;
+  margin-bottom: 4mm;
+}
+.viz-ba-metric {
+  display: flex; justify-content: space-between;
+  padding: 2mm 0; font-size: 8.5pt;
+  border-bottom: 0.4px solid rgba(74,111,165,0.10);
+}
+.viz-ba-metric:last-child { border-bottom: none; }
+.viz-ba-metric-label {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 450; color: #6B6760;
+}
+.viz-ba-metric-value {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-weight: 600; color: #003153;
+}
+.viz-ba-arrow {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.viz-ba-arrow-symbol {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 22pt; font-weight: 700;
+  color: #B5A642; line-height: 1;
+}
+.viz-ba-arrow-delta {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-size: 9pt; font-weight: 700;
+  color: #2E7D52; margin-top: 2mm;
+}
+.viz-ba-changes {
+  background: #FAF7F0;
+  border-left: 3px solid #B5A642;
+  padding: 4mm 5mm;
+}
+.viz-ba-changes-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 3mm;
+}
+.viz-ba-change {
+  display: flex; justify-content: space-between;
+  padding: 2mm 0; font-size: 9pt;
+}
+.viz-ba-change-text {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 450; color: #2B2B2B;
+}
+.viz-ba-change-impact {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-weight: 600; color: #003153;
+}
+
+/* ---------- EXECUTIVE SUMMARY BOX ---------- */
+.viz-exec {
+  margin: 8mm 0; page-break-inside: avoid;
+}
+.viz-exec-title {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: #B5A642;
+  margin-bottom: 3mm;
+  padding-bottom: 2mm;
+  border-bottom: 1px solid #B5A642;
+}
+.viz-exec-takeaway {
+  background: #003153; color: #FAF7F0;
+  padding: 6mm 7mm;
+  margin-bottom: 4mm;
+  border-left: 4px solid #B5A642;
+}
+.viz-exec-takeaway-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: #B5A642; margin-bottom: 3mm;
+}
+.viz-exec-takeaway-headline {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 13pt; font-weight: 600;
+  color: #FAF7F0;
+  line-height: 1.35; margin-bottom: 3mm;
+}
+.viz-exec-takeaway-body {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 9.5pt; font-weight: 450;
+  font-style: italic;
+  color: rgba(250,247,240,0.85);
+  line-height: 1.5;
+}
+.viz-exec-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 4mm;
+}
+.viz-exec-cell {
+  background: #FAF7F0;
+  padding: 4mm 5mm;
+  border-top: 2px solid;
+}
+.viz-exec-cell.findings { border-top-color: #2E7D52; }
+.viz-exec-cell.risks { border-top-color: #C0392B; }
+.viz-exec-cell.watch { border-top-color: #4A6FA5; }
+.viz-exec-cell-label {
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 7pt; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  margin-bottom: 3mm;
+}
+.viz-exec-cell.findings .viz-exec-cell-label { color: #2E7D52; }
+.viz-exec-cell.risks .viz-exec-cell-label { color: #C0392B; }
+.viz-exec-cell.watch .viz-exec-cell-label { color: #4A6FA5; }
+.viz-exec-bullet {
+  display: grid; grid-template-columns: 4mm 1fr;
+  gap: 2mm; padding: 2mm 0;
+  font-size: 8.5pt;
+  align-items: baseline;
+}
+.viz-exec-bullet-mark {
+  font-family: 'JBM', 'JBMVN', monospace;
+  font-weight: 700;
+}
+.viz-exec-cell.findings .viz-exec-bullet-mark { color: #2E7D52; }
+.viz-exec-cell.risks .viz-exec-bullet-mark { color: #C0392B; }
+.viz-exec-cell.watch .viz-exec-bullet-mark { color: #4A6FA5; }
+.viz-exec-bullet-text {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-weight: 450; color: #2B2B2B;
+  line-height: 1.45;
+}
+
+/* ---------- SCENARIO MATRIX ---------- */
+.viz-matrix {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-matrix-title {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 13pt; font-weight: 700; color: #003153;
+  margin-bottom: 4mm;
+}
+.viz-matrix-svg { display: block; width: 100%; height: auto; }
+
+/* ---------- RISK RADAR ---------- */
+.viz-radar {
+  margin: 7mm 0; page-break-inside: avoid;
+}
+.viz-radar-title {
+  font-family: 'PFD', 'PFDVN', serif;
+  font-size: 13pt; font-weight: 700; color: #003153;
+  margin-bottom: 4mm;
+}
+.viz-radar-svg { display: block; max-width: 130mm; height: auto; margin: 0 auto; }
+.viz-radar-legend {
+  display: flex; justify-content: center;
+  gap: 8mm; margin-top: 3mm;
+  font-family: 'Inter', 'InterVN', sans-serif;
+  font-size: 8pt; font-weight: 600;
+}
+.viz-radar-legend-item {
+  display: flex; align-items: center; gap: 2mm;
+}
+.viz-radar-legend-swatch {
+  width: 8px; height: 8px;
+}
+
+/* ============ WAVE 8 - CHART LANGUAGE ============ */
+
+/* Universal chart container */
+.vw-line-chart, .vw-dot-plot, .vw-multi-grid, .vw-quadrant, .vw-slopegraph, .vw-sankey {
+  background: var(--paper, #FAF7F0);
+  border: 0.6px solid var(--rule-soft, rgba(181,166,66,0.30));
+  border-radius: 4px;
+  padding: 14px 16px 12px 16px;
+  margin: 14px 0;
+  page-break-inside: avoid;
+}
+
+.vw-line-svg, .vw-dot-svg, .vw-multi-svg, .vw-quad-svg, .vw-slope-svg, .vw-sankey-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+/* Titles - shared pattern */
+.vw-line-title, .vw-dot-title, .vw-multi-title, .vw-quad-title, .vw-slope-title, .vw-sankey-title {
+  font-family: 'PFD','PFDVN',Georgia,serif;
+  font-size: 11pt;
+  font-weight: 600;
+  color: var(--prussian, #003153);
+  margin-bottom: 2px;
+  line-height: 1.25;
+}
+
+.vw-line-sub, .vw-dot-sub, .vw-multi-sub, .vw-quad-sub, .vw-slope-sub, .vw-sankey-sub {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 8pt;
+  color: var(--text-secondary, #6B6760);
+  margin-bottom: 10px;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+/* Slopegraph - extra spacing for side labels */
+.vw-slopegraph {
+  padding: 14px 8px 12px 8px;
+}
+
+/* ============ COMPASS CALLOUT (Wave 9) ============ */
+
+.vw-compass {
+  display: flex;
+  gap: 18px;
+  align-items: stretch;
+  margin: 16px 0;
+  page-break-inside: avoid;
+}
+
+.vw-compass-right .vw-compass-inner { flex: 1 1 75%; min-width: 0; }
+.vw-compass-right .vw-compass-sidebar { flex: 0 0 23%; }
+
+.vw-compass-left { flex-direction: row-reverse; }
+.vw-compass-left .vw-compass-inner { flex: 1 1 75%; min-width: 0; }
+.vw-compass-left .vw-compass-sidebar { flex: 0 0 23%; }
+
+.vw-compass-sidebar {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 4px 0 4px 14px;
+}
+
+.vw-compass-rule {
+  position: absolute;
+  left: 0; top: 8px; bottom: 8px;
+  width: 1.4px;
+  background: var(--brass, #B5A642);
+}
+
+.vw-compass-label {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 6.5pt;
+  font-weight: 700;
+  color: var(--brass, #B5A642);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.vw-compass-text {
+  font-family: 'PFD','PFDVN',Georgia,serif;
+  font-size: 9pt;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--charcoal, #2B2B2B);
+}
+
+/* ============ FINE-TUNING for SVG text */
+/* Small multiples and quadrant frames need slightly tighter padding */
+.vw-multi-grid { padding: 12px 14px; }
+.vw-quadrant { padding: 12px 14px; }
+
+/* Center sankey/slopegraph SVG */
+.vw-sankey-svg, .vw-slope-svg, .vw-quad-svg {
+  margin: 0 auto;
+}
+
+/* ============ WAVE 9 - EDITORIAL SIGNATURES ============ */
+
+/* Marginalia */
+.vw-marginalia {
+  display: flex;
+  gap: 3%;
+  align-items: flex-start;
+  margin: 14px 0 18px 0;
+  page-break-inside: avoid;
+}
+.vw-marginalia.vw-margin-left { flex-direction: row-reverse; }
+
+.vw-margin-body { min-width: 0; }
+.vw-margin-body p {
+  margin: 0 0 8px 0;
+  font-family: 'PFD','PFDVN','Lora',Georgia,serif;
+  font-size: 10pt;
+  line-height: 1.65;
+  color: var(--charcoal, #2B2B2B);
+}
+
+.vw-margin-note {
+  position: relative;
+  padding: 4px 0 4px 12px;
+  min-height: 60px;
+}
+.vw-margin-rule {
+  position: absolute;
+  left: 0; top: 6px; bottom: 6px;
+  width: 1.4px;
+  background: var(--brass, #B5A642);
+}
+.vw-margin-label {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 6.5pt;
+  font-weight: 700;
+  color: var(--brass, #B5A642);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.vw-margin-text {
+  font-family: 'PFD','PFDVN','Lora',Georgia,serif;
+  font-size: 8.8pt;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--text-secondary, #6B6760);
+}
+
+/* Chart Dropcap */
+.vw-chart-dropcap {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 12px 0 18px 0;
+  page-break-inside: avoid;
+}
+.vw-chart-dropcap.vw-cd-chart-right { flex-direction: row-reverse; }
+
+.vw-cd-chart {
+  flex-shrink: 0;
+}
+.vw-cd-body {
+  flex: 1;
+  min-width: 0;
+  font-family: 'PFD','PFDVN','Lora',Georgia,serif;
+  font-size: 10.5pt;
+  line-height: 1.7;
+  color: var(--charcoal, #2B2B2B);
+  font-weight: 450;
+  text-align: justify;
+}
+.vw-cd-letter {
+  float: left;
+  font-family: 'PFD','PFDVN','Lora',Georgia,serif;
+  font-size: 32pt;
+  font-weight: 700;
+  color: var(--prussian, #003153);
+  line-height: 0.92;
+  padding-right: 8px;
+  padding-top: 4px;
+  margin-top: 2px;
+  margin-bottom: -3px;
+}
+
+/* Path Progression */
+.vw-path-progression {
+  margin: 14px 0;
+  padding: 10px 14px;
+  background: var(--paper, #FAF7F0);
+  border: 0.6px solid var(--rule-soft, rgba(181,166,66,0.30));
+  border-radius: 4px;
+  page-break-inside: avoid;
+}
+.vw-path-title {
+  font-family: 'PFD','PFDVN','Lora',Georgia,serif;
+  font-size: 10.5pt;
+  font-weight: 600;
+  color: var(--prussian, #003153);
+  margin-bottom: 2px;
+  line-height: 1.25;
+}
+.vw-path-sub {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 7.8pt;
+  color: var(--text-secondary, #6B6760);
+  margin-bottom: 8px;
+  line-height: 1.4;
+  font-style: italic;
+}
+.vw-path-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ============ WAVE 10 - COMPOSITE LAYOUTS ============ */
+
+/* ============ DASHBOARD GRID ============ */
+.vw-dashboard {
+  background: var(--paper, #FAF7F0);
+  border: 0.6px solid var(--rule-soft, rgba(181,166,66,0.30));
+  border-radius: 4px;
+  padding: 14px 16px 12px 16px;
+  margin: 14px 0;
+  page-break-inside: avoid;
+}
+.vw-dash-title {
+  font-family: 'PFD','PFDVN','Lora',Georgia,serif;
+  font-size: 11pt;
+  font-weight: 600;
+  color: var(--prussian, #003153);
+  margin-bottom: 2px;
+}
+.vw-dash-sub {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 8pt;
+  color: var(--text-secondary, #6B6760);
+  margin-bottom: 12px;
+  line-height: 1.4;
+  font-style: italic;
+}
+.vw-dash-grid {
+  display: grid;
+  gap: 10px;
+}
+.vw-dash-cell {
+  background: white;
+  border: 0.6px solid var(--rule-soft, rgba(181,166,66,0.30));
+  border-radius: 4px;
+  padding: 10px 12px 8px 12px;
+  position: relative;
+}
+.vw-dash-cell-hl {
+  background: rgba(181,166,66,0.06);
+  border-color: rgba(181,166,66,0.55);
+}
+.vw-dash-label {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--text-secondary, #6B6760);
+  margin-bottom: 4px;
+}
+.vw-dash-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.vw-dash-kpi {
+  font-family: 'JBM','JBMVN','IBM Plex Mono',monospace;
+  font-size: 18pt;
+  font-weight: 700;
+  color: var(--prussian, #003153);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.vw-dash-delta {
+  font-family: 'JBM','JBMVN','IBM Plex Mono',monospace;
+  font-size: 9pt;
+  font-weight: 600;
+}
+.vw-dash-spark {
+  width: 100%;
+  height: 22px;
+  display: block;
+  margin: 4px 0 4px 0;
+}
+.vw-dash-context {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 7.5pt;
+  color: var(--text-secondary, #6B6760);
+  line-height: 1.45;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+/* ============ NARRATIVE STRIP ============ */
+.vw-narrative-strip {
+  background: var(--paper, #FAF7F0);
+  border: 0.6px solid var(--rule-soft, rgba(181,166,66,0.30));
+  border-radius: 4px;
+  padding: 14px 16px 14px 16px;
+  margin: 14px 0;
+  page-break-inside: avoid;
+}
+.vw-strip-title {
+  font-family: 'PFD','PFDVN','Lora',Georgia,serif;
+  font-size: 11pt;
+  font-weight: 600;
+  color: var(--prussian, #003153);
+  margin-bottom: 8px;
+}
+.vw-strip-grid {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.vw-strip-panel-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: white;
+  border: 0.6px solid var(--rule-soft, rgba(181,166,66,0.20));
+  border-radius: 3px;
+}
+.vw-strip-caption {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.vw-strip-rule {
+  flex-shrink: 0;
+  width: 2px;
+  background: var(--brass, #B5A642);
+  align-self: stretch;
+  min-height: 22px;
+}
+.vw-strip-text {
+  font-family: 'PFD','PFDVN','Lora',Georgia,serif;
+  font-size: 9.5pt;
+  font-style: italic;
+  font-weight: 450;
+  line-height: 1.55;
+  color: var(--charcoal, #2B2B2B);
+}
+
+/* ============ INFOGRAPHIC PANEL ============ */
+.vw-infographic {
+  background: var(--prussian, #003153);
+  border-radius: 6px;
+  padding: 22px 24px 22px 24px;
+  margin: 16px 0;
+  page-break-inside: avoid;
+  color: var(--ivory, #F5F1E8);
+}
+.vw-info-title {
+  font-family: 'PFD','PFDVN','Lora',Georgia,serif;
+  font-size: 11pt;
+  font-weight: 600;
+  color: var(--brass-300, #CCC46B);
+  margin-bottom: 2px;
+}
+.vw-info-sub {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 8pt;
+  color: rgba(245,241,232,0.65);
+  margin-bottom: 14px;
+  line-height: 1.4;
+  font-style: italic;
+}
+.vw-info-row {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+.vw-info-hero {
+  flex: 0 0 38%;
+  position: relative;
+}
+.vw-info-hero-label {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: rgba(245,241,232,0.6);
+  margin-bottom: 6px;
+}
+.vw-info-hero-num {
+  font-family: 'JBM','JBMVN','IBM Plex Mono',monospace;
+  font-size: 56pt;
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+.vw-info-hero-unit {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 9pt;
+  font-weight: 500;
+  color: rgba(245,241,232,0.85);
+  margin-bottom: 10px;
+}
+.vw-info-hero-rule {
+  width: 36px;
+  height: 2px;
+  margin-bottom: 10px;
+}
+.vw-info-hero-caption {
+  font-family: 'PFD','PFDVN','Lora',Georgia,serif;
+  font-size: 9.5pt;
+  font-style: italic;
+  font-weight: 450;
+  line-height: 1.55;
+  color: rgba(245,241,232,0.85);
+}
+.vw-info-facts {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-left: 0.8px solid rgba(181,166,66,0.40);
+  padding-left: 22px;
+}
+.vw-info-fact {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  padding-bottom: 10px;
+  border-bottom: 0.5px solid rgba(245,241,232,0.12);
+}
+.vw-info-fact:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.vw-info-fact-value {
+  flex: 0 0 70px;
+  font-family: 'JBM','JBMVN','IBM Plex Mono',monospace;
+  font-size: 13pt;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.vw-info-fact-body {
+  flex: 1;
+  min-width: 0;
+}
+.vw-info-fact-label {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 9pt;
+  font-weight: 600;
+  color: var(--ivory, #F5F1E8);
+  line-height: 1.35;
+  margin-bottom: 1px;
+}
+.vw-info-fact-detail {
+  font-family: 'Inter','InterVN',sans-serif;
+  font-size: 7.8pt;
+  font-style: italic;
+  color: rgba(245,241,232,0.65);
+  line-height: 1.45;
+}
+
+</style>
+</head>
+<body>
+
+
+<section class="cover-deep">
+  <div class="cover-masthead">
+    <div class="masthead-rule-top"></div>
+    <div class="masthead-brand">OPVIA ACADEMY</div>
+    <div class="masthead-rule-mid"></div>
+    <div class="masthead-meta">
+      <span class="meta-left">Ngân hàng &amp; Vận tải biển</span>
+      <span class="meta-right">Số tháng 8 · 2026</span>
+    </div>
+  </div>
+  <h1>Sửa Thông tư 22 và cơn khát vốn của đội tàu Việt Nam</h1>
+  <p class="cover-subtitle">Ai được vay rẻ hơn để đóng tàu, ai bị siết lại?</p>
+  <p class="cover-dek">
+    Khi LDR hệ thống chạm 111,9% và NHNN cân nhắc nới trần SFL cho nhóm vận tải biển,
+    ba doanh nghiệp niêm yết HAH, VOS, PVT đứng trước ngã ba: được bơm vốn giá rẻ để
+    thay đội tàu cũ, hay tiếp tục vay ngoại tệ đắt đỏ từ ngân hàng nước ngoài.
+  </p>
+  <div class="cover-hero-stat">
+    <div class="cover-hero-num">111,9%</div>
+    <div class="cover-hero-cap">
+      <div class="cover-hero-label">TỶ LỆ LDR HỆ THỐNG · 30/6/2026</div>
+      <div class="cover-hero-desc">Vượt xa trần quy chế 85% - tín hiệu hệ thống đang căng, room tín dụng tàu biển bị bóp nghẹt.</div>
+    </div>
+  </div>
+  <div class="cover-takeaways">
+    <div class="cover-takeaways-label">TRONG BÀI NÀY</div>
+    <ul>
+      <li><strong>Tái phân phối, không phải nới lỏng.</strong> Sửa Thông tư 22 chỉnh quy tắc kỹ thuật, không bơm thêm tiền vào hệ thống.</li>
+      <li><strong>Ba mã vận tải biển chịu tác động trái chiều.</strong> PVT hưởng lợi rõ nhất, VOS rủi ro tái cấp vốn cao nhất.</li>
+      <li><strong>Cửa sổ chính sách hẹp, chỉ 2 quý.</strong> Sau Q1/2027 áp lực tỷ giá có thể đảo ngược toàn bộ lợi thế.</li>
+    </ul>
+  </div>
+  <div class="cover-bottom-rule"></div>
+  <div class="cover-meta-strip">
+    <div class="meta-block"><strong>BIÊN SOẠN</strong>OPVIA ACADEMY</div>
+    <div class="meta-block"><strong>ĐỌC TRONG</strong>12 PHÚT</div>
+    <div class="meta-block"><strong>PHÁT HÀNH</strong>06/08/2026</div>
+  </div>
+</section>
+
+
+<section class="toc-page" style="display:none"><!-- bo qua TOC that trong thi nghiem nay --></section>
+
+<div class="content" style="padding: 0 24mm;">
+  <div class="section-opener">
+    <div class="section-roman">I</div>
+    <div class="section-eyebrow">TÍN DỤNG NGÂN HÀNG</div>
+    <h2 class="section-title-large">Hệ thống đã sát trần thanh khoản</h2>
+    <p class="section-dek">Áp lực LDR buộc NHNN phải chọn giữa nới quy chế hoặc siết tăng trưởng tín dụng.</p>
+  </div>
+
+  
+<div class="viz-hero">
+  <div class="viz-hero-eyebrow">ĐIỂM NHẤN CHÍNH SÁCH</div>
+  <div class="viz-hero-mega">111,9</div>
+  <div class="viz-hero-unit">%</div>
+  <div class="viz-hero-label">LDR hệ thống ngân hàng Q2/2026, vượt trần 85% quy định</div>
+  <div class="viz-hero-sub-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="viz-hero-sub-stat">
+              <div class="viz-hero-sub-value">35%</div>
+              <div class="viz-hero-sub-label">Trần SFL hiện hành</div>
+            </div>
+            
+            <div class="viz-hero-sub-stat">
+              <div class="viz-hero-sub-value">+8 đp</div>
+              <div class="viz-hero-sub-label">Đề xuất nới cho tàu biển</div>
+            </div>
+            </div>
+  <div class="viz-hero-story">Room tín dụng đóng tàu mới bị bó hẹp do hệ thống ngân hàng đã sát trần thanh khoản.</div>
+</div>
+
+  
+<div class="viz-gauge">
+  <svg class="viz-gauge-svg" viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(20, 0)">
+    <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="#E5E0D5" stroke-width="14" stroke-linecap="round"/>
+    <path d="M 20 110 A 80 80 0 0 1 172.47 76.11" fill="none" stroke="#C0392B" stroke-width="14" stroke-linecap="round"/>
+    <line x1="137.18" y1="39.16" x2="131.60" y2="49.79" stroke="#722F37" stroke-width="2.5"/>
+    <text x="140.90" y="32.08" text-anchor="start" font-family="JBM,JBMVN,monospace" font-size="7" font-weight="600" fill="#722F37">Trần 85,0%</text>
+    
+            <line x1="172.5" y1="76.1" x2="182.5" y2="75.1" stroke="#722F37" stroke-width="0.6" stroke-dasharray="1.5,1"/>
+            <text x="182.5" y="72.1" text-anchor="start" font-family="Inter,InterVN,sans-serif" font-size="6.5" font-weight="600" fill="#722F37">Vượt trần 26,9 điểm</text>
+            
+    <text x="100" y="92" text-anchor="middle" font-family="JBM,JBMVN,monospace" font-size="22" font-weight="700" fill="#003153">111,9%</text>
+    <text x="100" y="115" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="6.5" font-weight="700" fill="#6B6760" letter-spacing="0.5">TỶ LỆ LDR HỆ THỐNG NGÂN HÀNG</text>
+    </g>
+  </svg>
+  <div class="viz-gauge-desc">Vượt xa trần quy chế 85%, tín hiệu hệ thống đang căng thanh khoản.</div>
+</div>
+
+  
+<div class="viz-bar">
+  <div class="viz-bar-title">Tỷ lệ SFL (Short-term Funding for Long-term lending) theo mã</div>
+  <div class="viz-bar-subtitle">Dữ liệu minh hoạ Q2/2026, đơn vị %</div>
+  
+        <div class="viz-bar-row" style="height: 14px; padding: 0; border: none; position: relative; margin-top: 14px;">
+          <div></div>
+          <div style="position: relative; height: 1px;">
+            <div class="viz-bar-threshold" style="left: 82.0%; height: 200%; top: -8px;"></div>
+            <div class="viz-bar-threshold-label" style="left: 82.0%;">Trần SFL đề xuất 30%</div>
+          </div>
+          <div></div>
+        </div>
+        
+  
+        <div class="viz-bar-row">
+          <div class="viz-bar-label">VPB<span class="viz-bar-note"> Sát trần SFL</span></div>
+          <div class="viz-bar-track">
+            <div class="viz-bar-fill warn" style="width: 77.4%"></div>
+          </div>
+          <div class="viz-bar-value ">28,3%</div>
+        </div>
+        
+        <div class="viz-bar-row">
+          <div class="viz-bar-label">PVT<span class="viz-bar-note"> Room còn rộng</span></div>
+          <div class="viz-bar-track">
+            <div class="viz-bar-fill positive" style="width: 53.3%"></div>
+          </div>
+          <div class="viz-bar-value ">19,5%</div>
+        </div>
+        
+        <div class="viz-bar-row">
+          <div class="viz-bar-label">HAH<span class="viz-bar-note"> Trung bình ngành</span></div>
+          <div class="viz-bar-track">
+            <div class="viz-bar-fill " style="width: 65.9%"></div>
+          </div>
+          <div class="viz-bar-value ">24,1%</div>
+        </div>
+        
+        <div class="viz-bar-row">
+          <div class="viz-bar-label">VOS<span class="viz-bar-note"> Vượt trần đề xuất</span></div>
+          <div class="viz-bar-track">
+            <div class="viz-bar-fill danger" style="width: 87.0%"></div>
+          </div>
+          <div class="viz-bar-value danger">31,8%</div>
+        </div>
+        
+        <div class="viz-bar-row">
+          <div class="viz-bar-label">GMD</div>
+          <div class="viz-bar-track">
+            <div class="viz-bar-fill " style="width: 60.2%"></div>
+          </div>
+          <div class="viz-bar-value ">22%</div>
+        </div>
+        
+</div>
+
+  
+<div class="viz-heatmap">
+  <div class="viz-heatmap-title">Ai hưởng lợi, ai chịu thiệt: LDR theo mã vận tải biển</div>
+  <div class="viz-heatmap-subtitle">So sánh trước/sau đề xuất sửa Thông tư 22</div>
+  <div class="viz-heatmap-grid" style="grid-template-columns: 22mm repeat(3, 1fr);">
+    <div class="viz-heatmap-corner"></div><div class="viz-heatmap-col-header">LDR Q1/2026</div><div class="viz-heatmap-col-header">LDR Q2/2026</div><div class="viz-heatmap-col-header">Delta (đp)</div>
+    <div class="viz-heatmap-row-header">PVT</div>
+            <div class="viz-heatmap-cell neutral">
+              <div class="cell-text">92,0%</div>
+              
+            </div>
+            
+            <div class="viz-heatmap-cell pos">
+              <div class="cell-text">94,5%</div>
+              
+            </div>
+            
+            <div class="viz-heatmap-cell pos">
+              <div class="cell-text">+2,5</div>
+              
+            </div>
+            <div class="viz-heatmap-row-header">HAH</div>
+            <div class="viz-heatmap-cell neutral">
+              <div class="cell-text">88,0%</div>
+              
+            </div>
+            
+            <div class="viz-heatmap-cell neutral">
+              <div class="cell-text">89,5%</div>
+              
+            </div>
+            
+            <div class="viz-heatmap-cell neutral">
+              <div class="cell-text">+1,5</div>
+              
+            </div>
+            <div class="viz-heatmap-row-header">VOS</div>
+            <div class="viz-heatmap-cell neg">
+              <div class="cell-text">101,0%</div>
+              
+            </div>
+            
+            <div class="viz-heatmap-cell neg-strong">
+              <div class="cell-text">108,2%</div>
+              
+            </div>
+            
+            <div class="viz-heatmap-cell neg-strong">
+              <div class="cell-text">+7,2</div>
+              
+            </div>
+            <div class="viz-heatmap-row-header">Big4 (bình quân)</div>
+            <div class="viz-heatmap-cell neg">
+              <div class="cell-text">108,5%</div>
+              
+            </div>
+            
+            <div class="viz-heatmap-cell neg-strongest">
+              <div class="cell-text">111,9%</div>
+              
+            </div>
+            
+            <div class="viz-heatmap-cell neg">
+              <div class="cell-text">+3,4</div>
+              
+            </div>
+            
+  </div>
+</div>
+
+
+  <div class="section-opener">
+    <div class="section-roman">II</div>
+    <div class="section-eyebrow">TÁC ĐỘNG NGÀNH VẬN TẢI BIỂN</div>
+    <h2 class="section-title-large">Ai được vay rẻ, ai bị siết lại</h2>
+    <p class="section-dek">Ba mã niêm yết chính đối diện tác động trái chiều tuỳ hồ sơ tài chính.</p>
+  </div>
+
+  
+<div class="viz-waterfall">
+  <div class="viz-waterfall-title">Cầu nối chi phí vốn vay đóng tàu PVT, trước và sau đề xuất</div>
+  <div class="viz-waterfall-subtitle">Đơn vị: %/năm, minh hoạ</div>
+  <svg class="viz-waterfall-svg" viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <line x1="30" y1="230.0" x2="580" y2="230.0" stroke="#4A6FA5" stroke-width="0.6" stroke-opacity="0.4"/><rect x="46.5" y="48.2" width="77.0" height="181.8" fill="#003153" rx="1.5"/><text x="85.0" y="44.2" text-anchor="middle" font-family="JBM,JBMVN,monospace" font-size="8" font-weight="600" fill="#003153">8,5%</text><text x="85.0" y="244.0" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="7.5" fill="#2B2B2B">Chi phí vốn</text><text x="85.0" y="254.0" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="7.5" fill="#2B2B2B">hiện hành</text><line x1="123.5" y1="48.2" x2="156.5" y2="48.2" stroke="#6B6760" stroke-width="0.6" stroke-dasharray="2,2"/><rect x="156.5" y="48.2" width="77.0" height="19.3" fill="#C0392B" rx="1.5"/><text x="195.0" y="44.2" text-anchor="middle" font-family="JBM,JBMVN,monospace" font-size="8" font-weight="600" fill="#003153">-0,9%</text><text x="195.0" y="244.0" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="7.5" fill="#2B2B2B">Nới trần SFL +8đp</text><line x1="233.5" y1="48.2" x2="266.5" y2="48.2" stroke="#6B6760" stroke-width="0.6" stroke-dasharray="2,2"/><rect x="266.5" y="58.9" width="77.0" height="8.6" fill="#2E7D52" rx="1.5"/><text x="305.0" y="54.9" text-anchor="middle" font-family="JBM,JBMVN,monospace" font-size="8" font-weight="600" fill="#003153">+0,4%</text><text x="305.0" y="244.0" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="7.5" fill="#2B2B2B">Tỷ giá</text><text x="305.0" y="254.0" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="7.5" fill="#2B2B2B">USD/VND tăng</text><line x1="343.5" y1="58.9" x2="376.5" y2="58.9" stroke="#6B6760" stroke-width="0.6" stroke-dasharray="2,2"/><rect x="376.5" y="54.6" width="77.0" height="4.3" fill="#2E7D52" rx="1.5"/><text x="415.0" y="50.6" text-anchor="middle" font-family="JBM,JBMVN,monospace" font-size="8" font-weight="600" fill="#003153">+0,2%</text><text x="415.0" y="244.0" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="7.5" fill="#2B2B2B">Phí bảo lãnh tín</text><text x="415.0" y="254.0" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="7.5" fill="#2B2B2B">dụng xuất khẩu</text><line x1="453.5" y1="54.6" x2="486.5" y2="54.6" stroke="#6B6760" stroke-width="0.6" stroke-dasharray="2,2"/><rect x="486.5" y="54.6" width="77.0" height="175.4" fill="#003153" rx="1.5"/><text x="525.0" y="50.6" text-anchor="middle" font-family="JBM,JBMVN,monospace" font-size="8" font-weight="600" fill="#003153">8,2%</text><text x="525.0" y="244.0" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="7.5" fill="#2B2B2B">Chi phí vốn</text><text x="525.0" y="254.0" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="7.5" fill="#2B2B2B">dự kiến</text>
+  </svg>
+</div>
+
+  
+<div class="viz-radar">
+  <div class="viz-radar-title">Hồ sơ rủi ro VOS so với mục tiêu ngành</div>
+  <svg class="viz-radar-svg" viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <polygon points="240.0,167.5 266.2,186.5 256.2,217.2 223.8,217.2 213.8,186.5" fill="none" stroke="#4A6FA5" stroke-width="0.5" stroke-opacity="0.08"/><polygon points="240.0,140.0 292.3,178.0 272.3,239.5 207.7,239.5 187.7,178.0" fill="none" stroke="#4A6FA5" stroke-width="0.5" stroke-opacity="0.08"/><polygon points="240.0,112.5 318.5,169.5 288.5,261.7 191.5,261.7 161.5,169.5" fill="none" stroke="#4A6FA5" stroke-width="0.5" stroke-opacity="0.08"/><polygon points="240.0,85.0 344.6,161.0 304.7,284.0 175.3,284.0 135.4,161.0" fill="none" stroke="#4A6FA5" stroke-width="0.5" stroke-opacity="0.25"/><line x1="240.0" y1="195.0" x2="240.0" y2="85.0" stroke="#4A6FA5" stroke-width="0.4" stroke-opacity="0.2"/><line x1="240.0" y1="195.0" x2="344.6" y2="161.0" stroke="#4A6FA5" stroke-width="0.4" stroke-opacity="0.2"/><line x1="240.0" y1="195.0" x2="304.7" y2="284.0" stroke="#4A6FA5" stroke-width="0.4" stroke-opacity="0.2"/><line x1="240.0" y1="195.0" x2="175.3" y2="284.0" stroke="#4A6FA5" stroke-width="0.4" stroke-opacity="0.2"/><line x1="240.0" y1="195.0" x2="135.4" y2="161.0" stroke="#4A6FA5" stroke-width="0.4" stroke-opacity="0.2"/><polygon points="240.0,140.0 281.8,181.4 269.1,235.0 207.7,239.5 203.4,183.1" fill="#B5A642" fill-opacity="0.08" stroke="#B5A642" stroke-width="1" stroke-dasharray="3,2"/><polygon points="240.0,101.5 313.2,171.2 298.2,275.1 201.2,248.4 161.5,169.5" fill="#4A6FA5" fill-opacity="0.25" stroke="#003153" stroke-width="1.5"/><circle cx="240.0" cy="101.5" r="2.5" fill="#003153"/><circle cx="313.2" cy="171.2" r="2.5" fill="#003153"/><circle cx="298.2" cy="275.1" r="2.5" fill="#003153"/><circle cx="201.2" cy="248.4" r="2.5" fill="#003153"/><circle cx="161.5" cy="169.5" r="2.5" fill="#003153"/><text x="240.0" y="67.0" text-anchor="middle" font-family="Inter,InterVN,sans-serif" font-size="8" font-weight="700" fill="#003153" dominant-baseline="middle">Rủi ro thanh khoản</text><text x="361.7" y="155.4" text-anchor="start" font-family="Inter,InterVN,sans-serif" font-size="8" font-weight="700" fill="#003153" dominant-baseline="middle">Rủi ro tỷ giá</text><text x="315.2" y="298.6" text-anchor="start" font-family="Inter,InterVN,sans-serif" font-size="8" font-weight="700" fill="#003153" dominant-baseline="middle">Rủi ro tái cấp vốn</text><text x="164.8" y="298.6" text-anchor="end" font-family="Inter,InterVN,sans-serif" font-size="8" font-weight="700" fill="#003153" dominant-baseline="middle">Rủi ro giá cước</text><text x="118.3" y="155.4" text-anchor="end" font-family="Inter,InterVN,sans-serif" font-size="8" font-weight="700" fill="#003153" dominant-baseline="middle">Rủi ro đội tàu già</text>
+  </svg>
+  
+    <div class="viz-radar-legend">
+      <div class="viz-radar-legend-item">
+        <div class="viz-radar-legend-swatch" style="background: #003153;"></div>
+        <span>Hiện tại</span>
+      </div>
+    
+      <div class="viz-radar-legend-item">
+        <div class="viz-radar-legend-swatch" style="background: #B5A642;"></div>
+        <span>Mục tiêu</span>
+      </div>
+        </div>
+</div>
+
+  
+<div class="vw-line-chart">
+  <div class="vw-line-title">Chỉ số cước vận tải hàng rời và kỳ vọng chính sách</div>
+  
+  <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" class="vw-line-svg">
+    <text x="14" y="95.0" text-anchor="middle" transform="rotate(-90, 14, 95.0)" font-family="'Inter','InterVN',sans-serif" font-size="7" fill="#6B6760" font-weight="600" letter-spacing="0.08em">ĐIỂM CHỈ SỐ</text>
+    <line x1="56" y1="149.7" x2="688" y2="149.7" stroke="#E5E0D5" stroke-width="0.5" stroke-dasharray="2,2"/><line x1="56" y1="108.6" x2="688" y2="108.6" stroke="#E5E0D5" stroke-width="0.5" stroke-dasharray="2,2"/><line x1="56" y1="67.4" x2="688" y2="67.4" stroke="#E5E0D5" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <text x="48" y="152.7" text-anchor="end" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5" fill="#6B6760">1500</text><text x="48" y="111.6" text-anchor="end" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5" fill="#6B6760">2000</text><text x="48" y="70.4" text-anchor="end" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5" fill="#6B6760">2500</text>
+    <text x="56.0" y="178" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="7.5" fill="#6B6760" font-weight="500">T1/25</text><text x="161.3" y="178" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="7.5" fill="#6B6760" font-weight="500">T4/25</text><text x="266.7" y="178" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="7.5" fill="#6B6760" font-weight="500">T7/25</text><text x="372.0" y="178" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="7.5" fill="#6B6760" font-weight="500">T10/25</text><text x="477.3" y="178" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="7.5" fill="#6B6760" font-weight="500">T1/26</text><text x="582.7" y="178" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="7.5" fill="#6B6760" font-weight="500">T4/26</text><text x="688.0" y="178" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="7.5" fill="#6B6760" font-weight="500">T7/26</text>
+    
+    <path d="M 56.00 153.80 C 74.96 151.28, 123.41 147.66, 161.33 139.81 C 199.25 131.97, 228.75 120.86, 266.67 110.21 C 304.59 99.55, 334.08 82.37, 372.00 80.60 C 409.92 78.82, 439.41 102.85, 477.33 100.34 C 515.25 97.82, 544.75 76.68, 582.67 66.61 C 620.59 56.55, 669.04 48.41, 688.00 44.41 L 688.00 162.00 L 56.00 162.00 Z" fill="#003153" fill-opacity="0.08" stroke="none"/><path d="M 56.00 153.80 C 74.96 151.28, 123.41 147.66, 161.33 139.81 C 199.25 131.97, 228.75 120.86, 266.67 110.21 C 304.59 99.55, 334.08 82.37, 372.00 80.60 C 409.92 78.82, 439.41 102.85, 477.33 100.34 C 515.25 97.82, 544.75 76.68, 582.67 66.61 C 620.59 56.55, 669.04 48.41, 688.00 44.41" fill="none" stroke="#003153" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="372.0" cy="80.6" r="3.5" fill="#B5A642" stroke="#F5F1E8" stroke-width="1.5"/><line x1="372.0" y1="80.6" x2="372.0" y2="68.6" stroke="#B5A642" stroke-width="0.7" stroke-dasharray="1.5,1.5"/><text x="372.0" y="64.6" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="7" fill="#6B6760" font-style="italic">Đỉnh mùa cao điểm Q4/2025</text><circle cx="688.0" cy="44.4" r="3.5" fill="#B5A642" stroke="#F5F1E8" stroke-width="1.5"/><line x1="688.0" y1="44.4" x2="688.0" y2="32.4" stroke="#B5A642" stroke-width="0.7" stroke-dasharray="1.5,1.5"/><text x="688.0" y="28.4" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="7" fill="#6B6760" font-style="italic">Kỳ vọng đề xuất TT22 thông qua</text>
+    
+  </svg>
+</div>
+
+  
+<div class="vw-sankey">
+  <div class="vw-sankey-title">Dòng vốn tín dụng đóng tàu, minh hoạ</div>
+  
+  <svg viewBox="0 0 560 280" xmlns="http://www.w3.org/2000/svg" class="vw-sankey-svg">
+    <text x="117.0" y="20" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="8" font-weight="700" fill="#003153" letter-spacing="0.1em">NGUỒN</text><text x="457.0" y="20" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="8" font-weight="700" fill="#003153" letter-spacing="0.1em">ĐÍCH</text>
+    <path d="M 124 36.00 C 287.0 36.00, 287.0 139.81, 450 139.81 L 450 237.65 C 287.0 237.65, 287.0 133.85, 124 133.85 Z" fill="#003153" fill-opacity="0.32" stroke="none"/><path d="M 124 133.85 C 287.0 133.85, 287.0 36.00, 450 36.00 L 450 101.23 C 287.0 101.23, 287.0 199.08, 124 199.08 Z" fill="#003153" fill-opacity="0.32" stroke="none"/><path d="M 124 207.08 C 287.0 207.08, 287.0 101.23, 450 101.23 L 450 131.81 C 287.0 131.81, 287.0 237.65, 124 237.65 Z" fill="#4A6FA5" fill-opacity="0.32" stroke="none"/><path d="M 124 237.65 C 287.0 237.65, 287.0 237.65, 450 237.65 L 450 256.00 C 287.0 256.00, 287.0 256.00, 124 256.00 Z" fill="#4A6FA5" fill-opacity="0.32" stroke="none"/>
+    <rect x="110" y="36.0" width="14" height="163.1" fill="#003153" rx="1.5"/><text x="102" y="115.5" text-anchor="end" font-family="'Inter','InterVN',sans-serif" font-size="8" font-weight="600" fill="#2B2B2B">Tiền gửi &lt;12 tháng</text><text x="102" y="125.5" text-anchor="end" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">+800 tỷ VND</text><rect x="110" y="207.1" width="14" height="48.9" fill="#4A6FA5" rx="1.5"/><text x="102" y="229.5" text-anchor="end" font-family="'Inter','InterVN',sans-serif" font-size="8" font-weight="600" fill="#2B2B2B">Vốn vay nước ngoài</text><text x="102" y="239.5" text-anchor="end" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">+240 tỷ VND</text><rect x="450" y="36.0" width="14" height="95.8" fill="#B5A642" rx="1.5"/><text x="472" y="81.9" text-anchor="start" font-family="'Inter','InterVN',sans-serif" font-size="8" font-weight="600" fill="#2B2B2B">Tín dụng đóng tàu</text><text x="472" y="91.9" text-anchor="start" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">-470 tỷ VND</text><rect x="450" y="139.8" width="14" height="116.2" fill="#722F37" rx="1.5"/><text x="472" y="195.9" text-anchor="start" font-family="'Inter','InterVN',sans-serif" font-size="8" font-weight="600" fill="#2B2B2B">Lĩnh vực khác</text><text x="472" y="205.9" text-anchor="start" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">-570 tỷ VND</text>
+  </svg>
+</div>
+
+  
+<div class="vw-quadrant">
+  <div class="vw-quad-title">Định giá và hiệu quả nhóm vận tải biển niêm yết</div>
+  
+  <svg viewBox="0 0 540 320" xmlns="http://www.w3.org/2000/svg" class="vw-quad-svg">
+    <rect x="56" y="36" width="460" height="240" fill="#FAF7F0" stroke="#E5E0D5" stroke-width="0.6" rx="2"/>
+    <line x1="321.4" y1="36" x2="321.4" y2="276" stroke="#E5E0D5" stroke-width="0.8" stroke-dasharray="3,2"/><line x1="56" y1="104.2" x2="516" y2="104.2" stroke="#E5E0D5" stroke-width="0.8" stroke-dasharray="3,2"/>
+    <text x="64" y="50" text-anchor="start" font-family="'PFD','PFDVN',Georgia,serif" font-size="9.5" fill="#4A6FA5" font-style="italic" opacity="0.55">Đắt nhưng yếu</text><text x="508" y="50" text-anchor="end" font-family="'PFD','PFDVN',Georgia,serif" font-size="9.5" fill="#B5A642" font-style="italic" opacity="0.7">Sweet spot</text><text x="64" y="270" text-anchor="start" font-family="'PFD','PFDVN',Georgia,serif" font-size="9.5" fill="#722F37" font-style="italic" opacity="0.55">Rẻ và yếu</text><text x="508" y="270" text-anchor="end" font-family="'PFD','PFDVN',Georgia,serif" font-size="9.5" fill="#4A6FA5" font-style="italic" opacity="0.55">Rẻ và hiệu quả</text>
+    <text x="132.7" y="288" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">1</text><text x="250.6" y="288" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">1,5</text><text x="368.6" y="288" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">2</text><text x="486.5" y="288" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">2,5</text><text x="50" y="228.7" text-anchor="end" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">5</text><text x="50" y="169.1" text-anchor="end" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">10</text><text x="50" y="109.6" text-anchor="end" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">15</text><text x="50" y="50.0" text-anchor="end" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">20</text>
+    <circle cx="203.4" cy="104.2" r="9.0" fill="#2E7D52" opacity="0.18"/><circle cx="203.4" cy="104.2" r="7.0" fill="#2E7D52" stroke="#F5F1E8" stroke-width="1.5"/><text x="203.4" y="92.2" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5" fill="#003153" font-weight="700">PVT</text><circle cx="321.4" cy="149.4" r="9.0" fill="#4A6FA5" opacity="0.18"/><circle cx="321.4" cy="149.4" r="7.0" fill="#4A6FA5" stroke="#F5F1E8" stroke-width="1.5"/><text x="321.4" y="137.4" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5" fill="#003153" font-weight="700">HAH</text><circle cx="109.1" cy="248.3" r="9.0" fill="#C0392B" opacity="0.18"/><circle cx="109.1" cy="248.3" r="7.0" fill="#C0392B" stroke="#F5F1E8" stroke-width="1.5"/><text x="109.1" y="236.3" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5" fill="#003153" font-weight="700">VOS</text><circle cx="462.9" cy="63.7" r="9.0" fill="#B5A642" opacity="0.18"/><circle cx="462.9" cy="63.7" r="7.0" fill="#B5A642" stroke="#F5F1E8" stroke-width="1.5"/><text x="462.9" y="51.7" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5" fill="#003153" font-weight="700">GMD</text>
+    <text x="270.0" y="314" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="8" fill="#2B2B2B" font-weight="600" letter-spacing="0.06em">P/B (X)</text><text x="14" y="160.0" text-anchor="middle" transform="rotate(-90, 14, 160.0)" font-family="'Inter','InterVN',sans-serif" font-size="8" fill="#2B2B2B" font-weight="600" letter-spacing="0.06em">ROE (%)</text>
+  </svg>
+</div>
+
+  
+<div class="vw-slopegraph">
+  <div class="vw-slope-title">Xếp hạng lại LDR sau khi sửa Thông tư 22</div>
+  
+  <svg viewBox="0 0 520 280" xmlns="http://www.w3.org/2000/svg" class="vw-slope-svg">
+    <text x="130.0" y="20" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="8.5" font-weight="700" fill="#003153" letter-spacing="0.08em">LDR TRƯỚC ĐỀ XUẤT</text><text x="390.0" y="20" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="8.5" font-weight="700" fill="#003153" letter-spacing="0.08em">LDR SAU ĐỀ XUẤT</text>
+    <line x1="130" y1="36" x2="130" y2="252" stroke="#E5E0D5" stroke-width="0.6"/><line x1="390" y1="36" x2="390" y2="252" stroke="#E5E0D5" stroke-width="0.6"/>
+    <line x1="130" y1="74.4" x2="390" y2="50.9" stroke="#B5A642" stroke-width="1.6" opacity="1"/><line x1="130" y1="202.5" x2="390" y2="195.6" stroke="#2E7D52" stroke-width="1.0" opacity="0.55"/><line x1="130" y1="216.3" x2="390" y2="185.2" stroke="#B5A642" stroke-width="1.6" opacity="1"/><line x1="130" y1="237.1" x2="390" y2="226.7" stroke="#2E7D52" stroke-width="1.0" opacity="0.55"/>
+    <circle cx="130" cy="74.4" r="3.6" fill="#B5A642" stroke="#F5F1E8" stroke-width="1"/><circle cx="390" cy="50.9" r="3.6" fill="#B5A642" stroke="#F5F1E8" stroke-width="1"/><circle cx="130" cy="202.5" r="2.8" fill="#2E7D52" stroke="#F5F1E8" stroke-width="1"/><circle cx="390" cy="195.6" r="2.8" fill="#2E7D52" stroke="#F5F1E8" stroke-width="1"/><circle cx="130" cy="216.3" r="3.6" fill="#B5A642" stroke="#F5F1E8" stroke-width="1"/><circle cx="390" cy="185.2" r="3.6" fill="#B5A642" stroke="#F5F1E8" stroke-width="1"/><circle cx="130" cy="237.1" r="2.8" fill="#2E7D52" stroke="#F5F1E8" stroke-width="1"/><circle cx="390" cy="226.7" r="2.8" fill="#2E7D52" stroke="#F5F1E8" stroke-width="1"/>
+    <text x="120" y="77.4" text-anchor="end" font-family="'Inter','InterVN',sans-serif" font-size="8" fill="#003153" font-weight="700" opacity="1"><tspan>VOS</tspan> <tspan fill="#6B6760" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5">108,5%</tspan></text><text x="120" y="205.5" text-anchor="end" font-family="'Inter','InterVN',sans-serif" font-size="8" fill="#2B2B2B" font-weight="500" opacity="0.55"><tspan>HAH</tspan> <tspan fill="#6B6760" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5">90%</tspan></text><text x="120" y="219.3" text-anchor="end" font-family="'Inter','InterVN',sans-serif" font-size="8" fill="#003153" font-weight="700" opacity="1"><tspan>PVT</tspan> <tspan fill="#6B6760" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5">88%</tspan></text><text x="120" y="240.1" text-anchor="end" font-family="'Inter','InterVN',sans-serif" font-size="8" fill="#2B2B2B" font-weight="500" opacity="0.55"><tspan>GMD</tspan> <tspan fill="#6B6760" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5">85%</tspan></text>
+    <text x="400" y="53.9" text-anchor="start" font-family="'Inter','InterVN',sans-serif" font-size="8" fill="#003153" font-weight="700" opacity="1"><tspan fill="#6B6760" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5">111,9%</tspan> <tspan>VOS</tspan></text><text x="400" y="198.9" text-anchor="start" font-family="'Inter','InterVN',sans-serif" font-size="8" fill="#2B2B2B" font-weight="500" opacity="0.55"><tspan fill="#6B6760" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5">91%</tspan> <tspan>HAH</tspan></text><text x="400" y="187.9" text-anchor="start" font-family="'Inter','InterVN',sans-serif" font-size="8" fill="#003153" font-weight="700" opacity="1"><tspan fill="#6B6760" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5">92,5%</tspan> <tspan>PVT</tspan></text><text x="400" y="229.7" text-anchor="start" font-family="'Inter','InterVN',sans-serif" font-size="8" fill="#2B2B2B" font-weight="500" opacity="0.55"><tspan fill="#6B6760" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5">86,5%</tspan> <tspan>GMD</tspan></text>
+  </svg>
+</div>
+
+  
+<div class="vw-dot-plot">
+  <div class="vw-dot-title">Phân phối tỷ lệ SFL nhóm vận tải biển</div>
+  
+  <svg viewBox="0 0 720 130" xmlns="http://www.w3.org/2000/svg" class="vw-dot-svg">
+    <rect x="199.9" y="43.0" width="168.4" height="36" fill="#F5F2DD" stroke="#CCC46B" stroke-width="0.6" rx="2"/>
+    <line x1="24" y1="61.0" x2="696" y2="61.0" stroke="#9A9688" stroke-width="0.6"/>
+    <line x1="93.9" y1="83.0" x2="93.9" y2="87.0" stroke="#9A9688" stroke-width="0.6"/><text x="93.9" y="110" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#6B6760">20%</text><line x1="188.1" y1="83.0" x2="188.1" y2="87.0" stroke="#9A9688" stroke-width="0.6"/><text x="188.1" y="110" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#6B6760">22%</text><line x1="282.3" y1="83.0" x2="282.3" y2="87.0" stroke="#9A9688" stroke-width="0.6"/><text x="282.3" y="110" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#6B6760">24%</text><line x1="376.5" y1="83.0" x2="376.5" y2="87.0" stroke="#9A9688" stroke-width="0.6"/><text x="376.5" y="110" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#6B6760">26%</text><line x1="470.7" y1="83.0" x2="470.7" y2="87.0" stroke="#9A9688" stroke-width="0.6"/><text x="470.7" y="110" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#6B6760">28%</text><line x1="564.9" y1="83.0" x2="564.9" y2="87.0" stroke="#9A9688" stroke-width="0.6"/><text x="564.9" y="110" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#6B6760">30%</text><line x1="659.1" y1="83.0" x2="659.1" y2="87.0" stroke="#9A9688" stroke-width="0.6"/><text x="659.1" y="110" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#6B6760">32%</text>
+    <line x1="564.9" y1="31.0" x2="564.9" y2="91.0" stroke="#722F37" stroke-width="1.4" stroke-dasharray="3,2"/><text x="564.9" y="103.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7.5" fill="#722F37" font-weight="700">Trần SFL đề xuất 30%</text>
+    <line x1="261.1" y1="39.0" x2="261.1" y2="83.0" stroke="#003153" stroke-width="1.6"/><text x="261.1" y="35.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#003153" font-weight="600">Trung vị 23,6</text>
+    <circle cx="70.3" cy="61.0" r="4.0" fill="#003153" stroke="#F5F1E8" stroke-width="1.2" opacity="0.85"/><text x="70.3" y="53.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#2B2B2B" font-weight="500">PVT</text><circle cx="287.0" cy="61.0" r="4.0" fill="#003153" stroke="#F5F1E8" stroke-width="1.2" opacity="0.85"/><text x="287.0" y="53.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#2B2B2B" font-weight="500">HAH</text><circle cx="188.1" cy="61.0" r="4.0" fill="#003153" stroke="#F5F1E8" stroke-width="1.2" opacity="0.85"/><text x="188.1" y="53.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#2B2B2B" font-weight="500">GMD</text><circle cx="649.7" cy="61.0" r="5.5" fill="#B5A642" stroke="#F5F1E8" stroke-width="1.2" opacity="1"/><text x="649.7" y="51.5" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#B5A642" font-weight="700">VOS</text><text x="649.7" y="42.5" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="6.5" fill="#6B6760" font-style="italic">Vượt trần</text><circle cx="395.3" cy="61.0" r="4.0" fill="#003153" stroke="#F5F1E8" stroke-width="1.2" opacity="0.85"/><text x="395.3" y="53.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#2B2B2B" font-weight="500">VTO</text><circle cx="235.2" cy="61.0" r="4.0" fill="#003153" stroke="#F5F1E8" stroke-width="1.2" opacity="0.85"/><text x="235.2" y="53.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="6.8" fill="#2B2B2B" font-weight="500">VSC</text>
+  </svg>
+</div>
+
+
+  <div class="section-opener">
+    <div class="section-roman">III</div>
+    <div class="section-eyebrow">LỘ TRÌNH VÀ TÓM TẮT</div>
+    <h2 class="section-title-large">Cửa sổ chính sách và các mốc cần theo dõi</h2>
+  </div>
+
+  
+<div class="vw-path-progression">
+  <div class="vw-path-title">Lộ trình sửa đổi Thông tư 22 cho nhóm vận tải biển</div>
+  
+  <svg viewBox="0 0 720 104" xmlns="http://www.w3.org/2000/svg" class="vw-path-svg">
+    <path d="M 60.00 38.00 C 96.00 38.00, 188.00 38.00, 260.00 38.00 C 332.00 38.00, 388.00 38.00, 460.00 38.00 C 532.00 38.00, 624.00 38.00, 660.00 38.00" fill="none" stroke="#B5A642"
+          stroke-width="0.8" opacity="0.5" stroke-dasharray="0"/>
+    <circle cx="60.0" cy="38.0" r="5" fill="#003153" stroke="#F5F1E8" stroke-width="1.4"/><circle cx="60.0" cy="38.0" r="5" fill="none" stroke="#003153" stroke-width="0.8" opacity="0.6"/><text x="60.0" y="57.0" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="8.5" fill="#2B2B2B" font-weight="600">Dự thảo nội bộ NHNN</text><text x="60.0" y="68.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">T4/2026</text><text x="160.0" y="39.0" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="9" fill="#B5A642" opacity="0.7">▸</text><circle cx="260.0" cy="38.0" r="5" fill="#003153" stroke="#F5F1E8" stroke-width="1.4"/><circle cx="260.0" cy="38.0" r="5" fill="none" stroke="#003153" stroke-width="0.8" opacity="0.6"/><text x="260.0" y="57.0" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="8.5" fill="#2B2B2B" font-weight="600">Lấy ý kiến hiệp hội chủ tàu</text><text x="260.0" y="68.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">T6/2026</text><text x="360.0" y="39.0" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="9" fill="#B5A642" opacity="0.7">▸</text><circle cx="460.0" cy="38.0" r="10" fill="#B5A642" opacity="0.20"/><circle cx="460.0" cy="38.0" r="6" fill="#B5A642" stroke="#F5F1E8" stroke-width="1.4"/><circle cx="460.0" cy="38.0" r="6" fill="none" stroke="#80762F" stroke-width="0.8" opacity="0.6"/><text x="460.0" y="58.0" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="8.5" fill="#003153" font-weight="700">Trình Chính phủ</text><text x="460.0" y="69.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">T9/2026</text><text x="560.0" y="39.0" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="9" fill="#B5A642" opacity="0.7">▸</text><circle cx="660.0" cy="38.0" r="5" fill="#FAF7F0" stroke="#F5F1E8" stroke-width="1.4"/><circle cx="660.0" cy="38.0" r="5" fill="none" stroke="#B5A642" stroke-width="0.8" opacity="0.6"/><text x="660.0" y="57.0" text-anchor="middle" font-family="'Inter','InterVN',sans-serif" font-size="8.5" fill="#2B2B2B" font-weight="600">Ban hành chính thức</text><text x="660.0" y="68.0" text-anchor="middle" font-family="'JBM','JBMVN','IBM Plex Mono',monospace" font-size="7" fill="#6B6760">Q1/2027</text>
+  </svg>
+</div>
+
+  
+<div class="vw-dashboard">
+  <div class="vw-dash-title">Bảng chỉ số nhanh: ngân hàng và vận tải biển</div>
+  
+  <div class="vw-dash-grid" style="grid-template-columns: repeat(2, 1fr);">
+    
+<div class="vw-dash-cell">
+  <div class="vw-dash-label">CHỈ SỐ CƯỚC BDI</div>
+  <div class="vw-dash-row">
+    <div class="vw-dash-kpi">2.780</div>
+    <div class="vw-dash-delta" style="color: #2E7D52;">▲ +10,7%</div>
+  </div>
+  <svg viewBox="0 0 100 24" xmlns="http://www.w3.org/2000/svg" class="vw-dash-spark" preserveAspectRatio="none"><path d="M 0.00 22.00 C 4.50 21.47, 16.00 20.38, 25.00 19.06 C 34.00 17.74, 41.00 16.29, 50.00 14.65 C 59.00 13.01, 66.00 12.22, 75.00 9.94 C 84.00 7.66, 95.50 3.43, 100.00 2.00 L 100.00 23 L 0.00 23 Z" fill="#2E7D52" fill-opacity="0.12" stroke="none"/><path d="M 0.00 22.00 C 4.50 21.47, 16.00 20.38, 25.00 19.06 C 34.00 17.74, 41.00 16.29, 50.00 14.65 C 59.00 13.01, 66.00 12.22, 75.00 9.94 C 84.00 7.66, 95.50 3.43, 100.00 2.00" fill="none" stroke="#2E7D52" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100.0" cy="2.0" r="2" fill="#2E7D52" stroke="#F5F1E8" stroke-width="1"/></svg>
+  <div class="vw-dash-context">Tăng 4 phiên liên tiếp.</div>
+</div>
+
+<div class="vw-dash-cell vw-dash-cell-hl">
+  <div class="vw-dash-label">LDR HỆ THỐNG</div>
+  <div class="vw-dash-row">
+    <div class="vw-dash-kpi">111,9%</div>
+    <div class="vw-dash-delta" style="color: #2E7D52;">▲ +3,4 đp</div>
+  </div>
+  <svg viewBox="0 0 100 24" xmlns="http://www.w3.org/2000/svg" class="vw-dash-spark" preserveAspectRatio="none"><path d="M 0.00 22.00 C 4.50 20.96, 16.00 18.03, 25.00 16.20 C 34.00 14.38, 41.00 13.42, 50.00 11.86 C 59.00 10.29, 66.00 9.28, 75.00 7.51 C 84.00 5.73, 95.50 2.99, 100.00 2.00 L 100.00 23 L 0.00 23 Z" fill="#2E7D52" fill-opacity="0.12" stroke="none"/><path d="M 0.00 22.00 C 4.50 20.96, 16.00 18.03, 25.00 16.20 C 34.00 14.38, 41.00 13.42, 50.00 11.86 C 59.00 10.29, 66.00 9.28, 75.00 7.51 C 84.00 5.73, 95.50 2.99, 100.00 2.00" fill="none" stroke="#2E7D52" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100.0" cy="2.0" r="2" fill="#2E7D52" stroke="#F5F1E8" stroke-width="1"/></svg>
+  <div class="vw-dash-context">Vượt trần quy định 85%.</div>
+</div>
+
+<div class="vw-dash-cell">
+  <div class="vw-dash-label">CHI PHÍ VỐN PVT</div>
+  <div class="vw-dash-row">
+    <div class="vw-dash-kpi">8,2%</div>
+    <div class="vw-dash-delta" style="color: #C0392B;">▼ -0,3 đp</div>
+  </div>
+  <svg viewBox="0 0 100 24" xmlns="http://www.w3.org/2000/svg" class="vw-dash-spark" preserveAspectRatio="none"><path d="M 0.00 2.00 C 4.50 3.20, 16.00 6.27, 25.00 8.67 C 34.00 11.07, 41.00 13.53, 50.00 15.33 C 59.00 17.13, 66.00 17.47, 75.00 18.67 C 84.00 19.87, 95.50 21.40, 100.00 22.00 L 100.00 23 L 0.00 23 Z" fill="#C0392B" fill-opacity="0.12" stroke="none"/><path d="M 0.00 2.00 C 4.50 3.20, 16.00 6.27, 25.00 8.67 C 34.00 11.07, 41.00 13.53, 50.00 15.33 C 59.00 17.13, 66.00 17.47, 75.00 18.67 C 84.00 19.87, 95.50 21.40, 100.00 22.00" fill="none" stroke="#C0392B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100.0" cy="22.0" r="2" fill="#C0392B" stroke="#F5F1E8" stroke-width="1"/></svg>
+  <div class="vw-dash-context">Giảm nhờ đề xuất nới SFL.</div>
+</div>
+
+<div class="vw-dash-cell">
+  <div class="vw-dash-label">SFL VOS</div>
+  <div class="vw-dash-row">
+    <div class="vw-dash-kpi">31,8%</div>
+    <div class="vw-dash-delta" style="color: #2E7D52;">▲ +1,8 đp</div>
+  </div>
+  <svg viewBox="0 0 100 24" xmlns="http://www.w3.org/2000/svg" class="vw-dash-spark" preserveAspectRatio="none"><path d="M 0.00 22.00 C 4.50 21.05, 16.00 18.82, 25.00 16.74 C 34.00 14.65, 41.00 12.32, 50.00 10.42 C 59.00 8.53, 66.00 7.73, 75.00 6.21 C 84.00 4.69, 95.50 2.76, 100.00 2.00 L 100.00 23 L 0.00 23 Z" fill="#2E7D52" fill-opacity="0.12" stroke="none"/><path d="M 0.00 22.00 C 4.50 21.05, 16.00 18.82, 25.00 16.74 C 34.00 14.65, 41.00 12.32, 50.00 10.42 C 59.00 8.53, 66.00 7.73, 75.00 6.21 C 84.00 4.69, 95.50 2.76, 100.00 2.00" fill="none" stroke="#2E7D52" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100.0" cy="2.0" r="2" fill="#2E7D52" stroke="#F5F1E8" stroke-width="1"/></svg>
+  <div class="vw-dash-context">Vượt trần đề xuất 30%.</div>
+</div>
+
+  </div>
+</div>
+
+  
+<div class="vw-infographic">
+  <div class="vw-info-title">Bức tranh tín dụng đóng tàu</div>
+  
+  <div class="vw-info-row">
+    <div class="vw-info-hero">
+      <div class="vw-info-hero-label">DƯ NỢ TÍN DỤNG ĐÓNG TÀU TOÀN HỆ THỐNG</div>
+      <div class="vw-info-hero-num" style="color: #B5A642;">406</div>
+      <div class="vw-info-hero-unit">nghìn tỷ VND</div>
+      <div class="vw-info-hero-rule" style="background: #B5A642;"></div>
+      <div class="vw-info-hero-caption">Ước tính dư nợ tín dụng dành cho đóng mới và cải tạo đội tàu biển Việt Nam, cuối Q2/2026.</div>
+    </div>
+    <div class="vw-info-facts">
+      
+<div class="vw-info-fact">
+  <div class="vw-info-fact-value" style="color: #B5A642;">+18%</div>
+  <div class="vw-info-fact-body">
+    <div class="vw-info-fact-label">so với Q4/2025</div>
+    <div class="vw-info-fact-detail">Tăng trưởng chủ yếu từ nhóm PVT, HAH.</div>
+  </div>
+</div>
+
+<div class="vw-info-fact">
+  <div class="vw-info-fact-value" style="color: #B5A642;">3</div>
+  <div class="vw-info-fact-body">
+    <div class="vw-info-fact-label">mã niêm yết chính</div>
+    <div class="vw-info-fact-detail">PVT, HAH, VOS.</div>
+  </div>
+</div>
+
+<div class="vw-info-fact">
+  <div class="vw-info-fact-value" style="color: #B5A642;">35%</div>
+  <div class="vw-info-fact-body">
+    <div class="vw-info-fact-label">trần SFL hiện hành</div>
+    <div class="vw-info-fact-detail">Đề xuất nới lên 43% cho nhóm tàu biển.</div>
+  </div>
+</div>
+
+<div class="vw-info-fact">
+  <div class="vw-info-fact-value" style="color: #B5A642;">Q1/2027</div>
+  <div class="vw-info-fact-body">
+    <div class="vw-info-fact-label">mốc ban hành dự kiến</div>
+    <div class="vw-info-fact-detail">Có thể trễ nếu Quốc hội yêu cầu đánh giá lại.</div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+
+
+  <div class="disclaimer-card">
+    <div class="disclaimer-label">MIỄN TRỪ TRÁCH NHIỆM (nội dung giữa bài)</div>
+    <p>Đây là tài liệu thực nghiệm kỹ thuật, số liệu minh hoạ.</p>
+  </div>
+</div>
+
+
+<section class="contact-page">
+  <div class="contact-eyebrow">THAM KHẢO &amp; LIÊN HỆ</div>
+  <h2 class="contact-title">Đọc thêm cùng OPVIA</h2>
+  <p class="contact-intro">
+    Phân tích này nằm trong chuỗi nghiên cứu chuyên sâu về ngân hàng và vận tải biển
+    của OPVIA Academy. Để đào sâu hơn từng góc nhìn, hãy liên hệ trực tiếp với đội ngũ.
+  </p>
+  <div class="contact-cta">
+    <div class="cta-eyebrow">LIÊN HỆ ĐỘI NGŨ OPVIA</div>
+    <div class="cta-title">Đọc thêm phân tích chuyên sâu hoặc đặt lịch tư vấn 1-1</div>
+    <div class="cta-text">OPVIA Academy phát hành báo cáo định kỳ về ngân hàng, vĩ mô và vận tải biển.</div>
+    <div class="cta-grid">
+      <div class="cta-item"><div class="cta-label">EMAIL</div><div class="cta-value">contact@opvia.vn</div></div>
+      <div class="cta-item"><div class="cta-label">WEBSITE</div><div class="cta-value">opvia.vn/research</div></div>
+      <div class="cta-item"><div class="cta-label">ĐẶT LỊCH</div><div class="cta-value">opvia.vn/book</div></div>
+    </div>
+  </div>
+  <div class="contact-section">
+    <div class="glossary-eyebrow">NGUỒN</div>
+    <p>Số liệu minh hoạ cho mục đích thực nghiệm mổ xẻ kỹ thuật, không phải số liệu thật.</p>
+  </div>
+  <div class="disclaimer-card">
+    <div class="disclaimer-label">MIỄN TRỪ TRÁCH NHIỆM</div>
+    <p>Toàn bộ phân tích và số liệu trong tài liệu này chỉ mang tính minh hoạ kỹ thuật,
+    không phải khuyến nghị đầu tư.</p>
+  </div>
+  <div class="contact-signature">OPVIA ACADEMY · MỤC ĐÍCH GIÁO DỤC · © 2026</div>
+</section>
+
+
+</body>
+</html>

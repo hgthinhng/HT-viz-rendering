@@ -1,0 +1,10 @@
+import { chromium } from 'playwright-core';
+import fs from 'node:fs';
+const svg = fs.readFileSync('/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/test_fallback_list_fixed.svg', 'utf8');
+const browser = await chromium.launch({ executablePath: '/home/hgthinhng/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome', headless: true });
+const page = await browser.newPage({ viewport: { width: 500, height: 200 } });
+await page.setContent(`<html><body style="margin:0;background:white">${svg}</body></html>`);
+await page.waitForTimeout(150);
+await page.screenshot({ path: '/tmp/claude-1000/-home-hgthinhng/28783fef-7078-47d7-af0a-c84d36f8435e/scratchpad/lab-A-charts/exp-matplotlib-svg/browser-render-fallback-fixed.png' });
+await browser.close();
+console.log('done');

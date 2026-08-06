@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lộ trình ôn thi CFA Level II</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF7F1;--band:#F1EADC;--ink:#1B2330;--ink-soft:#5b6273;
+    --line:#E4DBCB;--accent:#A8702A;--accent-lt:#C99A56;--accent-soft:#F3E6CF;
+    --teal:#2F5D52;--exam:#8A2F2F;--white:#FFFFFF;--maxw:1120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:100;transition:width .1s linear}
+  .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:13px clamp(18px,5vw,56px);background:rgba(250,247,241,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .topbar .brand{font-family:'Fraunces',serif;font-weight:600;font-size:1.02rem}
+  .chip{font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:6px 12px;border-radius:999px;white-space:nowrap}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,5vw,56px)}
+  section{padding:clamp(40px,6vw,72px) 0}
+  .band{background:var(--band);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(2.4rem,6vw,4rem);line-height:1.02;letter-spacing:-.01em}
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.6rem,3.4vw,2.3rem);line-height:1.12;letter-spacing:-.01em}
+  .sub{color:var(--ink-soft);font-size:1.05rem;margin-top:6px}
+
+  /* HERO stat tiles */
+  .hero{padding-top:clamp(44px,7vw,84px)}
+  .hero h1{max-width:14ch}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px}
+  .stat{background:var(--white);border:1px solid var(--line);border-radius:13px;padding:20px}
+  .stat .k{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+  .stat .v{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:600;margin-top:7px;line-height:1.1}
+  .stat .v small{display:block;font-family:'Inter';font-size:.82rem;font-weight:500;color:var(--ink-soft);margin-top:3px;letter-spacing:0}
+
+  /* PROBLEM tiles */
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+  .tile{background:var(--white);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:20px}
+  .tile .t{font-weight:700;font-size:1.05rem}
+  .tile .d{color:var(--ink-soft);font-size:.92rem;margin-top:4px}
+
+  /* FLOW (vòng lặp) */
+  .flow{display:flex;align-items:stretch;flex-wrap:wrap;gap:8px;margin-top:30px}
+  .node{flex:1 1 150px;min-width:138px;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:16px 14px;display:flex;flex-direction:column;justify-content:center;position:relative}
+  .node .b{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:.82rem;font-family:'Fraunces',serif;margin-bottom:9px}
+  .node .nt{font-weight:600;font-size:1rem;line-height:1.25}
+  .node.loopstep{border-color:var(--accent-lt)}
+  .node.exit{background:var(--teal);border-color:var(--teal)}
+  .node.exit .nt{color:#fff}
+  .node.exit .b{background:rgba(255,255,255,.2);color:#fff}
+  .sep{align-self:center;color:var(--accent);font-size:1.3rem;font-weight:700;flex:0 0 auto;padding:0 2px}
+  .errtags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+  .errtag{font-size:.8rem;font-weight:600;color:var(--ink);background:var(--accent-soft);border-radius:999px;padding:5px 12px}
+  .loopcap{margin-top:14px;font-size:.9rem;color:var(--ink-soft)}
+  .loopcap b{color:var(--accent)}
+
+  /* GANTT */
+  .gantt-scroll{overflow-x:auto;margin-top:28px;padding-bottom:6px}
+  .gantt{min-width:760px}
+  .grow{display:grid;grid-template-columns:148px repeat(11,minmax(48px,1fr));align-items:center}
+  .ghead .gc{font-size:.66rem;font-weight:700;color:var(--ink-soft);text-align:center;padding:0 2px 10px;border-bottom:1px solid var(--line)}
+  .ghead .gc .wn{display:block;color:var(--ink);font-size:.74rem}
+  .ghead .gc.examh{color:var(--exam)}
+  .ghead .gc.examh .wn{color:var(--exam)}
+  .glabel{font-size:.82rem;font-weight:700;padding-right:12px}
+  .gbar{height:34px;border-radius:8px;display:flex;align-items:center;padding:0 12px;color:#fff;font-weight:600;font-size:.85rem;margin:5px 0;white-space:nowrap;overflow:hidden}
+  .gbar.p0{background:var(--accent-lt)}
+  .gbar.p1{background:var(--accent)}
+  .gbar.p2{background:var(--teal)}
+  .gbar.p3{background:var(--ink)}
+  .gbar.light{height:24px;background:repeating-linear-gradient(45deg,#d9cdb6,#d9cdb6 6px,#ece3d2 6px,#ece3d2 12px);color:var(--ink-soft);font-weight:600;font-size:.74rem}
+  .gflag{height:34px;margin:5px 0;background:var(--exam);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem}
+
+  /* WEIGHTS */
+  .weights{margin-top:26px;display:grid;gap:9px}
+  .wrow{display:grid;grid-template-columns:210px 1fr 78px;align-items:center;gap:16px}
+  .wrow .name{font-size:.95rem;font-weight:500}
+  .wrow.heavy .name{font-weight:700}
+  .bar{height:15px;border-radius:8px;background:#e9e0d0;overflow:hidden}
+  .bar span{display:block;height:100%;border-radius:8px;background:#cdbf9f}
+  .wrow.heavy .bar span{background:var(--accent)}
+  .wrow .pct{font-size:.85rem;color:var(--ink-soft);text-align:right;font-variant-numeric:tabular-nums}
+  .wrow.heavy .pct{color:var(--ink);font-weight:600}
+  .cap{margin-top:18px;font-size:.92rem;color:var(--ink-soft);padding-left:14px;border-left:3px solid var(--accent)}
+
+  /* SERVICES */
+  .svc{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+  .si{background:var(--paper);padding:22px}
+  .si .n{font-family:'Fraunces',serif;font-weight:600;color:var(--accent);font-size:.95rem}
+  .si .h{font-weight:700;font-size:1.05rem;margin:7px 0 3px}
+  .si .x{color:var(--ink-soft);font-size:.9rem}
+
+  /* TWO col bullets */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-top:26px}
+  .listy{list-style:none}
+  .listy li{position:relative;padding:11px 0 11px 24px;border-top:1px solid var(--line);font-size:.98rem}
+  .listy li:first-child{border-top:none}
+  .listy li:before{content:"";position:absolute;left:0;top:19px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+
+  footer{padding:30px 0;border-top:1px solid var(--line);text-align:center;color:var(--ink-soft);font-size:.82rem}
+
+  @media(max-width:780px){
+    .stats{grid-template-columns:1fr 1fr}
+    .tiles,.svc{grid-template-columns:1fr}
+    .two{grid-template-columns:1fr;gap:28px}
+    .wrow{grid-template-columns:130px 1fr 62px;gap:10px}
+    .sep{display:none}
+  }
+  @media print{.topbar,.progress{display:none}section{padding:26px 0;break-inside:avoid}body{background:#fff}.gantt-scroll{overflow:visible}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<div class="topbar">
+  <span class="brand">CFA Level II</span>
+  <span class="chip">Kỳ thi 25 đến 29 / 8 / 2026</span>
+</div>
+
+<!-- HERO -->
+<header class="hero wrap">
+  <div class="eyebrow">Kế hoạch ôn thi</div>
+  <h1>Lộ trình 10 tuần</h1>
+  <div class="stats">
+    <div class="stat"><div class="k">Ngày thi</div><div class="v">25 đến 29/8<small>2026</small></div></div>
+    <div class="stat"><div class="k">Còn lại</div><div class="v">~10 tuần<small>tính từ 16/6</small></div></div>
+    <div class="stat"><div class="k">Cường độ</div><div class="v">Toàn thời gian<small>học cả sáng và chiều</small></div></div>
+    <div class="stat"><div class="k">Nền tảng</div><div class="v">Hết 1 lượt<small>Schweser, đã xong reading</small></div></div>
+  </div>
+</header>
+
+<!-- PROBLEM -->
+<section class="band">
+  <div class="wrap">
+    <div class="eyebrow">Điểm nghẽn</div>
+    <h2>Không phải thiếu kiến thức</h2>
+    <div class="tiles">
+      <div class="tile"><div class="t">Quên lý thuyết</div><div class="d">Học một chiều nên không bền</div></div>
+      <div class="tile"><div class="t">Chưa định vị lỗ hổng</div><div class="d">Biết yếu nhưng không rõ yếu đâu</div></div>
+      <div class="tile"><div class="t">Ngợp khi làm bài</div><div class="d">Bài tập quá nhiều và rời rạc</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOOP -->
+<section class="wrap">
+  <div class="eyebrow">Cách học mỗi môn</div>
+  <h2>Vòng lặp, không phải đọc lại</h2>
+  <div class="flow">
+    <div class="node"><span class="b">1</span><span class="nt">Chẩn đoán đầu vào</span></div>
+    <div class="sep">›</div>
+    <div class="node loopstep"><span class="b">2</span><span class="nt">Học lại phần LOS còn yếu</span></div>
+    <div class="sep">›</div>
+    <div class="node loopstep"><span class="b">3</span><span class="nt">Làm bài item-set</span></div>
+    <div class="sep">›</div>
+    <div class="node loopstep"><span class="b">4</span><span class="nt">Chữa bài và phân loại lỗi</span></div>
+    <div class="sep">›</div>
+    <div class="node loopstep"><span class="b">5</span><span class="nt">Tạo card nhớ chủ động</span></div>
+    <div class="sep">›</div>
+    <div class="node exit"><span class="b">6</span><span class="nt">Làm mock</span></div>
+  </div>
+  <div class="errtags">
+    <span class="errtag">Lỗi do hổng khái niệm</span>
+    <span class="errtag">Lỗi do làm ẩu</span>
+    <span class="errtag">Lỗi do đọc sai vignette</span>
+  </div>
+  <div class="loopcap"><b>Lặp lại bước 2 đến 5</b> cho từng môn, rồi mới chuyển sang làm mock toàn đề.</div>
+</section>
+
+<!-- GANTT -->
+<section class="band">
+  <div class="wrap">
+    <div class="eyebrow">Lộ trình</div>
+    <h2>10 tuần, 4 chặng</h2>
+    <div class="gantt-scroll">
+      <div class="gantt">
+        <div class="grow ghead">
+          <div class="gc"></div>
+          <div class="gc"><span class="wn">W1</span>16/6</div>
+          <div class="gc"><span class="wn">W2</span>23/6</div>
+          <div class="gc"><span class="wn">W3</span>30/6</div>
+          <div class="gc"><span class="wn">W4</span>7/7</div>
+          <div class="gc"><span class="wn">W5</span>14/7</div>
+          <div class="gc"><span class="wn">W6</span>21/7</div>
+          <div class="gc"><span class="wn">W7</span>28/7</div>
+          <div class="gc"><span class="wn">W8</span>4/8</div>
+          <div class="gc"><span class="wn">W9</span>11/8</div>
+          <div class="gc"><span class="wn">W10</span>18/8</div>
+          <div class="gc examh"><span class="wn">Thi</span>25/8</div>
+        </div>
+        <div class="grow">
+          <div class="glabel">Chặng 0</div>
+          <div class="gbar p0" style="grid-column:2 / 3">Khởi động và chẩn đoán</div>
+        </div>
+        <div class="grow">
+          <div class="glabel">Chặng 1</div>
+          <div class="gbar p1" style="grid-column:2 / 8">Củng cố và luyện theo môn</div>
+        </div>
+        <div class="grow">
+          <div class="glabel">Chặng 2</div>
+          <div class="gbar p2" style="grid-column:8 / 11">Mock và vá lỗi tập trung</div>
+        </div>
+        <div class="grow">
+          <div class="glabel">Chặng 3</div>
+          <div class="gbar p3" style="grid-column:11 / 12">Ôn chốt về đích</div>
+          <div class="gflag" style="grid-column:12 / 13">Thi</div>
+        </div>
+        <div class="grow">
+          <div class="glabel" style="font-weight:500;color:var(--ink-soft)">Tải nhẹ</div>
+          <div class="gbar light" style="grid-column:3 / 5">Nghỉ nhẹ 27/6 đến 4/7</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WEIGHTS -->
+<section class="wrap">
+  <div class="eyebrow">Ưu tiên</div>
+  <h2>Trọng số môn trong đề</h2>
+  <div class="weights">
+    <div class="wrow heavy"><span class="name">Ethics</span><div class="bar"><span style="width:92%"></span></div><span class="pct">10 đến 15%</span></div>
+    <div class="wrow heavy"><span class="name">Financial Statement Analysis</span><div class="bar"><span style="width:92%"></span></div><span class="pct">10 đến 15%</span></div>
+    <div class="wrow heavy"><span class="name">Equity Investments</span><div class="bar"><span style="width:92%"></span></div><span class="pct">10 đến 15%</span></div>
+    <div class="wrow heavy"><span class="name">Fixed Income</span><div class="bar"><span style="width:92%"></span></div><span class="pct">10 đến 15%</span></div>
+    <div class="wrow heavy"><span class="name">Portfolio Management</span><div class="bar"><span style="width:92%"></span></div><span class="pct">10 đến 15%</span></div>
+    <div class="wrow"><span class="name">Quantitative Methods</span><div class="bar"><span style="width:56%"></span></div><span class="pct">5 đến 10%</span></div>
+    <div class="wrow"><span class="name">Economics</span><div class="bar"><span style="width:56%"></span></div><span class="pct">5 đến 10%</span></div>
+    <div class="wrow"><span class="name">Corporate Issuers</span><div class="bar"><span style="width:56%"></span></div><span class="pct">5 đến 10%</span></div>
+    <div class="wrow"><span class="name">Derivatives</span><div class="bar"><span style="width:56%"></span></div><span class="pct">5 đến 10%</span></div>
+    <div class="wrow"><span class="name">Alternative Investments</span><div class="bar"><span style="width:56%"></span></div><span class="pct">5 đến 10%</span></div>
+  </div>
+  <div class="cap">5 môn tô đậm chiếm khoảng 50 đến 65% số câu.</div>
+</section>
+
+<!-- SERVICES -->
+<section class="band">
+  <div class="wrap">
+    <div class="eyebrow">Anh hỗ trợ</div>
+    <h2>6 việc xuyên suốt</h2>
+    <div class="svc">
+      <div class="si"><div class="n">01</div><div class="h">Chẩn đoán đầu vào</div><div class="x">Định vị lỗ hổng theo từng môn</div></div>
+      <div class="si"><div class="n">02</div><div class="h">Bản đồ dạng bài</div><div class="x">Vignette mỗi môn thường vặn kiểu gì</div></div>
+      <div class="si"><div class="n">03</div><div class="h">Hệ thống ghi nhớ</div><div class="x">Flashcard, Feynman, spaced repetition</div></div>
+      <div class="si"><div class="n">04</div><div class="h">Luyện và chữa bài</div><div class="x">Phân loại từng lỗi, vá rồi kiểm tra lại</div></div>
+      <div class="si"><div class="n">05</div><div class="h">Kỹ thuật làm vignette</div><div class="x">Đọc đề, lọc dữ liệu, canh giờ</div></div>
+      <div class="si"><div class="n">06</div><div class="h">Làm mock</div><div class="x">Ghi sổ lỗi nhân trọng số môn để ra ưu tiên</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW + START -->
+<section class="wrap">
+  <div class="two">
+    <div>
+      <div class="eyebrow">Nhịp làm việc</div>
+      <ul class="listy">
+        <li>Gặp 1 đến 2 buổi mỗi tuần, nộp bài giữa các buổi</li>
+        <li>Mỗi môn có một sổ lỗi riêng để theo dõi tiến độ</li>
+        <li>Thứ tự ưu tiên đổi mỗi tuần theo kết quả thực tế</li>
+      </ul>
+    </div>
+    <div>
+      <div class="eyebrow">Cần nắm để bắt đầu</div>
+      <ul class="listy">
+        <li>Môn nào đang yếu, môn nào đã ổn</li>
+        <li>Đã làm bao nhiêu bài tập, EOC, qbank và điểm tầm nào</li>
+        <li>Có dùng được EOC và mock chính chủ của CFA Institute chưa</li>
+        <li>Mức thoải mái với phần tính toán: Derivatives, Fixed Income</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer>Lộ trình CFA Level II · Kỳ thi tháng 8, 2026</footer>
+
+<script>
+  var prog=document.getElementById('progress');
+  function onScroll(){var h=document.documentElement;var max=h.scrollHeight-h.clientHeight;prog.style.width=(max>0?(h.scrollTop/max*100):0)+'%';}
+  document.addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+{
+  "density": {
+    "khong_dau_it": {
+      "firstLineBreak": 80,
+      "totalLines": 2,
+      "textLength": 86,
+      "widthPx": 530.390625
+    },
+    "co_dau_thuong": {
+      "firstLineBreak": 80,
+      "totalLines": 2,
+      "textLength": 86,
+      "widthPx": 530.390625
+    },
+    "dau_chong_day": {
+      "firstLineBreak": 76,
+      "totalLines": 2,
+      "textLength": 101,
+      "widthPx": 530.390625
+    },
+    "cau_dai_thuc_te": {
+      "firstLineBreak": 79,
+      "totalLines": 2,
+      "textLength": 119,
+      "widthPx": 530.390625
+    }
+  },
+  "diacriticCheck": {
+    "body_17_lh1_7_ebgaramond": {
+      "renderedHeight": 28.890625,
+      "expectedLineBox": 28.9,
+      "overflowRisk": false
+    },
+    "h2_30_lh1_32_fraunces": {
+      "renderedHeight": 39.859375,
+      "expectedLineBox": 39.864000000000004,
+      "overflowRisk": false
+    },
+    "h3_23_lh1_32_fraunces": {
+      "renderedHeight": 29.953125,
+      "expectedLineBox": 29.964000000000002,
+      "overflowRisk": false
+    },
+    "h1_44_lh1_32_fraunces": {
+      "renderedHeight": 58.078125,
+      "expectedLineBox": 58.080000000000005,
+      "overflowRisk": false
+    },
+    "label_11_mono": {
+      "renderedHeight": 17.59375,
+      "expectedLineBox": 17.6,
+      "overflowRisk": false
+    },
+    "label_11_sans": {
+      "renderedHeight": 17.59375,
+      "expectedLineBox": 17.6,
+      "overflowRisk": false
+    }
+  },
+  "inkVsLineBox": {
+    "ebgaramond_body": {
+      "ascent": 16,
+      "descent": 5,
+      "inkHeight": 21,
+      "lineBox": 28.9,
+      "marginPx": 7.9
+    },
+    "fraunces_h2": {
+      "ascent": 23,
+      "descent": 6,
+      "inkHeight": 29,
+      "lineBox": 39.864000000000004,
+      "marginPx": 10.86
+    },
+    "fraunces_h1": {
+      "ascent": 35,
+      "descent": 10,
+      "inkHeight": 45,
+      "lineBox": 58.080000000000005,
+      "marginPx": 13.08
+    }
+  }
+}

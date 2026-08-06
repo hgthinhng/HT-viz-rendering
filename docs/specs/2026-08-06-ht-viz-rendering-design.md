@@ -335,11 +335,22 @@ Một lưu ý về vn-humanizer: register R6 **miễn trừ** bị động và d
 - Bốn chart ECharts chưa có code và vẫn cần: scatter bubble, funnel, box plot, lollipop. Hai loại còn lại trong danh mục 18 đã bị loại có chủ đích là gauge (cấm) và trục kép (thay bằng chỉ số hoá về gốc 100)
 - Ẩn dụ tảng băng chưa vẽ, để đợt mở rộng sau
 
-## 14. Thứ tự thi công
+## 14. Khoảng trống đã kiểm chứng: package chưa tự đủ
+
+Đã thử chạy `scripts/verify.mjs` của nhóm B từ vị trí mới trong repo, sau khi loại `node_modules`. Kết quả `ERR_MODULE_NOT_FOUND: Cannot find package 'playwright-core'`, exit 1. Máy cũng không có bản global.
+
+Phụ thuộc thật của hai PACKAGE:
+- Nhóm B: `playwright-core`
+- Nhóm C: `playwright-core`, `d3-geo`, `topojson-client`, `topojson-simplify`
+- Nhóm A (ECharts): `echarts`, và symlink `node_modules` trỏ sang `pipeline-lab`, sẽ gãy nếu thư mục đó bị dọn
+
+Việc phải làm khi thi công: một `package.json` ở gốc repo khai báo đủ dependency, một lệnh cài đặt duy nhất, và mọi script bỏ symlink chuyển sang import bình thường. Đây chính là bệnh mà smoke test sinh ra để chống: mọi thứ trong repo phải chạy được từ máy sạch, không phải chỉ chạy được trên máy đã dựng nó.
+
+## 15. Thứ tự thi công
 
 Anh chọn đổ hết tài sản trước rồi mới nối pipeline.
 
-1. Dựng khung repo và đổ toàn bộ tài sản thu hoạch vào đúng chỗ
+1. Dựng khung repo, đổ tài sản vào đúng chỗ, và dựng package.json cộng lệnh cài đặt duy nhất
 2. Viết doctrine bảy file
 3. Hợp nhất design system, vá bug font
 4. Nối pipeline và ba checkpoint

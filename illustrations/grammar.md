@@ -194,6 +194,12 @@ với reference-kimi.html khối P17 (con tàu bằng chứng, ~45 primitive) v�
   bạch "hình" (tái dùng nhiều báo cáo) khỏi "số liệu chú thích" (đổi mỗi
   báo cáo). File .svg trong illustrations/ vì vậy LUÔN sạch, không có callout, để làm
   thư viện gốc.
+- BẮT BUỘC gọi `Annotate.annotate(svg, callouts, opts)` ĐỒNG BỘ ngay trong
+  `<script>` nạp trang, không được đặt trong `setTimeout`/`Promise.then`/bất
+  kỳ handler bất đồng bộ nào. `scripts/verify-illustrations.mjs` đo hình
+  học ngay sau khi trang tải xong (`networkidle`), một lời gọi bị hoãn sẽ
+  khiến verify báo FAIL SAI (không tìm thấy `path.anno-leader`) dù thư viện
+  vẫn đúng, chỉ là chưa kịp chạy.
 
 ## 9. BÀI HỌC RÚT RA TỪ CHÍNH LAB NÀY (thất bại thật -> sửa thật, xem examples/example-vertical-axis-ship.html + annotate.js để đối chiếu code)
 - <script type="module"> KHÔNG chạy được khi mở file HTML trực tiếp qua

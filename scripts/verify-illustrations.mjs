@@ -11,6 +11,40 @@ const EXE = `${process.env.HOME}/.cache/ms-playwright/chromium-1228/chrome-linux
 const MAX_RATIO = 1.6;
 const MARGIN = 8;
 
+// (G1, vong 4) Danh sach TUONG MINH cac tai nguyen thuoc lop annotation.
+// Lich su 3 vong sua nhanh SKIP deu hong theo cung 1 khuon: moi lan thay 1
+// phep so khop LONG bang 1 phep so khop LONG KHAC. Vong 1 dung chuoi ten
+// file "annotate.js" trong HTML, hong khi loader hong. Vong 2 dung chuoi
+// loi goi ham "Annotate.annotate(", hong khi goi qua bien trung gian.
+// Vong 3 dung chuoi con "annotate" o bat ky dau trong URL, khop nham ca
+// "annotated-source-badge.png" hay "unannotated-diagram-print.css" (sai
+// chu the loi). Lan nay CHAT HAN bang danh sach tuong minh: so khop DUNG
+// BANG ten file cuoi cung cua URL, khong so khop chuoi con o bat ky vi tri
+// nao. Ai them tai nguyen moi cho lop annotation (vd mot annotate-icons.svg
+// dung chung) PHAI tu tay them ten vao day, quyet dinh hien ra ro rang,
+// khong an trong 1 regex.
+const ANNOTATION_ASSET_NAMES = ['annotate.js', 'annotate.css'];
+
+function isAnnotationAssetUrl(url) {
+  // Lay ten file cuoi cung cua URL (bo query/hash neu co) de so sanh CHINH
+  // XAC, khong dung includes(). Vi du voi 1 url dang
+  // "file:///.../illustrations/annotated-source-badge.png", ten file cuoi
+  // la "annotated-source-badge.png", KHAC "annotate.js"/"annotate.css" nen
+  // khong khop, dung nhu mong doi.
+  const basename = url.split(/[\\/]/).pop().split(/[?#]/)[0];
+  return ANNOTATION_ASSET_NAMES.includes(basename);
+}
+
+// (G2, vong 4) So khop noi dung loi JS bang RANH GIOI TU (\b...\b), khong
+// phai chuoi con tuy y. Cung mot ly do voi G1: "annotate" lam chuoi con se
+// khop nham "annotated"/"unannotated"/"reannotated". "\bannotate\b"
+// (khong phan biet hoa/thuong) chi khop khi "annotate" dung mot minh nhu 1
+// tu/token, van khop dung voi "ReferenceError: Annotate is not defined"
+// hay mot dong stack "at annotate (file:///.../annotate.js:12:3)", nhung
+// KHONG khop "annotated-...", "unannotated-...", "reannotate...". Da tu do
+// thuc nghiem ca hai chieu truoc khi cai (xem report muc Fix round 4).
+const MENTIONS_ANNOTATE = /\bannotate\b/i;
+
 let failed = 0;
 const log = (ok, msg) => {
   console.log(`${ok ? '[PASS]' : '[FAIL]'} ${msg}`);
@@ -31,21 +65,36 @@ for (const file of examples) {
   // Bat hai loai tin hieu THAT xay ra luc tai trang, dung de phan biet "file
   // khong dinh dung annotation" voi "file co dinh dung nhung lop annotation
   // hong":
-  //   1) requestfailed voi URL chua "annotate.js" — bang chung TRUC TIEP
-  //      nhat cho kich ban loader hong (script src tro sai/file khong ton
-  //      tai). Da tu kiem chung thuc nghiem: duoi file://, mot <script src>
-  //      tro toi file khong ton tai LAM NO Playwright ban 'requestfailed'
-  //      that voi failure().errorText = "net::ERR_FILE_NOT_FOUND", khong
-  //      phai suy doan.
+  //   1) requestfailed voi URL la CHINH XAC mot trong ANNOTATION_ASSET_NAMES.
+  //      Day la bang chung TRUC TIEP nhat cho kich ban loader hong (script
+  //      src tro sai/file khong ton tai). Da tu kiem chung thuc nghiem: duoi
+  //      file://, mot <script src> tro toi file khong ton tai LAM NO
+  //      Playwright ban 'requestfailed' that voi failure().errorText =
+  //      "net::ERR_FILE_NOT_FOUND", khong phai suy doan.
   //   2) pageerror (loi JS khong bat duoc, lam mot <script> dung giua
-  //      chung) — chi coi la lien quan annotation NEU noi dung loi co nhac
-  //      "annotate"/"Annotate" (vd "ReferenceError: Annotate is not
-  //      defined"). Loi JS KHONG nhac gi toi annotate (vd mot script do
-  //      luong/demo khac tren cung trang loi rieng) KHONG duoc quy cho lop
-  //      annotation.
+  //      chung). Chi coi la lien quan annotation NEU noi dung loi (CA
+  //      message LAN stack) co nhac "annotate" nhu MOT TU rieng (xem
+  //      MENTIONS_ANNOTATE). Bat ca stack chu khong chi message: mot loi
+  //      runtime that su ben trong annotate.js (vd goi thuoc tinh tren mot
+  //      gia tri undefined trong logic xu ly callout) co the co MESSAGE
+  //      chung chung khong nhac "annotate" (vd "Cannot read properties of
+  //      undefined (reading 'x')"), nhung STACK luon co it nhat 1 dong
+  //      trich dan duong dan file noi loi phat sinh. Neu file do la
+  //      annotate.js, dong stack se nhac "annotate.js", stack moi la noi co
+  //      bang chung. Chi doc message (String(e)) bo sot dung loai loi nay,
+  //      day la dung F1/F2/G1 "so khop long" nhung o CHIEU NGUOC LAI: bo
+  //      sot chu khong khop nham.
   const pageErrors = [];
   const failedRequests = [];
-  const onPageError = (e) => pageErrors.push(String(e));
+  const onPageError = (e) => {
+    const full = (e && e.stack) || String(e);
+    // Dong DAU TIEN trong full khop MENTIONS_ANNOTATE (co the la chinh dong
+    // thong diep, hoac 1 dong "at ..." trong stack). Dung de HIEN THI GON,
+    // khong dump nguyen ca khoi stack nhieu dong ra log.
+    const lines = full.split('\n').map((l) => l.trim()).filter(Boolean);
+    const matchedLine = lines.find((l) => MENTIONS_ANNOTATE.test(l));
+    pageErrors.push({ full, summary: matchedLine || lines[0] || full });
+  };
   const onRequestFailed = (req) => failedRequests.push(req.url());
   page.on('pageerror', onPageError);
   page.on('requestfailed', onRequestFailed);
@@ -63,14 +112,9 @@ for (const file of examples) {
   page.off('pageerror', onPageError);
   page.off('requestfailed', onRequestFailed);
 
-  // Dung "includes('annotate')" (khong doi hoi ".js" dinh kem) vi mot
-  // duong dan hong that su co the doi ten hoan toan (vd go sai thanh
-  // "annotate-DUONG-DAN-SAI.js" — van con chua "annotate" nhung khong con
-  // nguyen cum "annotate.js"). Van an toan vi day la URL cua MOT REQUEST
-  // DA THAT SU 404, khong phai doan tu van ban tuy y trong file.
-  const annotateLoadFailed = failedRequests.some((u) => u.toLowerCase().includes('annotate'));
-  const annotateRelatedErrors = pageErrors.filter((e) => /annotate/i.test(e));
-  const unrelatedErrors = pageErrors.filter((e) => !/annotate/i.test(e));
+  const annotateLoadFailed = failedRequests.some(isAnnotationAssetUrl);
+  const annotateRelatedErrors = pageErrors.filter((pe) => MENTIONS_ANNOTATE.test(pe.full));
+  const unrelatedErrors = pageErrors.filter((pe) => !MENTIONS_ANNOTATE.test(pe.full));
 
   // Khong phai moi file .html trong examples/ deu dung lop annotation:
   // vietnam-simplification-comparison.html la demo do-luong 3 muc don gian
@@ -107,15 +151,15 @@ for (const file of examples) {
   if (!hasAnnotate) {
     if (annotateLoadFailed || annotateRelatedErrors.length > 0) {
       const evidence = [
-        ...(annotateLoadFailed ? [`requestfailed voi URL nhac annotate (${failedRequests.filter((u) => u.toLowerCase().includes('annotate')).join('; ')})`] : []),
-        ...annotateRelatedErrors,
+        ...(annotateLoadFailed ? [`requestfailed voi URL dung ten tai nguyen annotation (${failedRequests.filter(isAnnotationAssetUrl).join('; ')})`] : []),
+        ...annotateRelatedErrors.map((pe) => pe.summary),
       ].join('; ');
       log(
         false,
         `${file}: window.Annotate khong ton tai VA co bang chung lien quan annotate (${evidence}) -> nghi hong lop annotation, khong phai file ngoai pham vi`,
       );
     } else if (unrelatedErrors.length > 0) {
-      console.log(`[SKIP] ${file}: window.Annotate khong ton tai, khong thuoc pham vi kiem tra lop annotation. CANH BAO: trang co ${unrelatedErrors.length} loi JS KHONG lien quan annotate (${unrelatedErrors.join('; ')}) -> co the la van de khac tren trang nay, can nguoi xem lai.`);
+      console.log(`[SKIP] ${file}: window.Annotate khong ton tai, khong thuoc pham vi kiem tra lop annotation. CANH BAO: trang co ${unrelatedErrors.length} loi JS KHONG lien quan annotate (${unrelatedErrors.map((pe) => pe.summary).join('; ')}) -> co the la van de khac tren trang nay, can nguoi xem lai.`);
     } else {
       console.log(`[SKIP] ${file}: window.Annotate khong ton tai, khong co loi JS nao luc tai trang -> khong thuoc pham vi kiem tra lop annotation`);
     }
@@ -131,9 +175,9 @@ for (const file of examples) {
       // Gia dinh: cap so cuoi cung trong "d" la DIEM CUOI THAT cua path, chu
       // khong phai toa do dieu khien cua lenh Q (bo goc bang cong tron). Da
       // tu kiem lai truc tiep trong annotate.js (ham roundedElbow, hien
-      // dang o dong 197-207, so dong co the doi khi file duoc sua sau nay —
-      // tim theo ten ham cho chac): CA BA nhanh deu ket thuc bang lenh L,
-      // ke ca nhanh bo goc "...Q cx cy p2x p2y L lx ly" — hai so cuoi la
+      // dang o dong 197-207, so dong co the doi khi file duoc sua sau nay,
+      // tim theo ten ham cho chac). CA BA nhanh deu ket thuc bang lenh L,
+      // ke ca nhanh bo goc "...Q cx cy p2x p2y L lx ly", hai so cuoi la
       // diem L, khong phai tham so Q. Neu sau nay roundedElbow doi cach ve
       // (vd ket bang Q hoac C ma khong co L theo sau), phai kiem lai gia
       // dinh nay.

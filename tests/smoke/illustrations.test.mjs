@@ -45,7 +45,7 @@ test('moi SVG co role img va title tieng Viet', () => {
 // GIOI HAN DA BIET (chua sua, muc do thap): regex trich khoa bat dau bang
 // "^\s*" nen KHONG nhay qua duoc mot dong "// ghi chu" chen giua hai entry
 // cap mot. Neu ai do them comment ngay truoc "accent:" trong TONES, khoa
-// "accent" se bi roi khoi danh sach trich duoc va test se FAIL — nhung FAIL
+// "accent" se bi roi khoi danh sach trich duoc va test se FAIL, nhung FAIL
 // VOI LY DO SAI (bao thieu "accent" trong khi no van con trong code, chi la
 // bi che boi comment phia truoc). Khong sua vi hien annotate.js khong co
 // comment nao chen giua cac entry TONES (da doc truc tiep de xac nhan), va

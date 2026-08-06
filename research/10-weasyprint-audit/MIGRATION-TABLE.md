@@ -1,10 +1,15 @@
 # Bảng chuyển đổi: chỗ cần sửa khi khoá WeasyPrint làm engine PDF
 
 Sắp theo HẬU QUẢ giảm dần, không theo tên file. Chi tiết đo đạc từng dòng ở `FINDINGS.md`.
-Tổng: **2 chỗ cần hành động thật** trong `components/`, `charts/`, `design-system/`,
-`illustrations/` (đúng phạm vi được giao) + **1 chỗ ngoài phạm vi đã ĐÓNG bởi vòng khác trong
-lúc audit này đang chạy** (giữ lại để đủ sổ sách) + **1 dòng dọn dẹp không liên quan bẫy
-WeasyPrint**.
+
+Tổng số chỗ khai `box-shadow` tìm được trong 4 thư mục mục tiêu: **3** (không phải 2 - đếm đủ cả
+`illustrations/annotate.css:14`, thuộc lớp minh hoạ, dễ bị đếm sót nếu chỉ nghĩ "minh hoạ = file
+`.svg`). Trong 3 chỗ đó: **2 chỗ cần hành động thật** (M1, M2 - cả hai trong
+`components/components.css`) + **1 chỗ không cần hành động** (`illustrations/annotate.css:14`,
+xem bảng cuối file - screen-only, tự khai `display:none` khi in nên chưa từng định render trong
+PDF). Cộng thêm, NGOÀI phạm vi 3 chỗ box-shadow này: **1 chỗ ngoài phạm vi 4 thư mục đã ĐÓNG bởi
+vòng khác trong lúc audit này đang chạy** (giữ lại để đủ sổ sách) + **1 dòng dọn dẹp không liên
+quan bẫy WeasyPrint** (4 token shadow chưa từng dùng).
 
 ## Mức 1: hỏng thật, cần sửa (nhưng cả hai đều nhẹ, không có mức "nghiêm trọng" nào trong 4 thư mục mục tiêu)
 
@@ -27,12 +32,12 @@ WeasyPrint**.
 
 ## Không cần hành động, liệt kê để đủ sổ sách
 
-| Chỗ | Vì sao không cần sửa |
-|---|---|
-| `illustrations/annotate.css:14`, `#annotate-drill-card` (box-shadow CÓ blur 40px) | Chỉ hiện trên màn hình, tự khai `display:none` trong `@media print`, không bao giờ vào PDF |
-| `illustrations/examples/example-vertical-axis-ship.html:14`, `#ship-svg { height:auto }` | Dạng CSS property, đã đo render ĐÚNG trong WeasyPrint (42 drawings, hình đầy đủ), KHÁC bẫy thuộc tính HTML `height="auto"` |
-| `illustrations/examples/example-horizontal-axis-banner.html:14`, `#banner-svg { height:auto }` | Tương tự dòng trên, đã đo render ĐÚNG (25 drawings, hình đầy đủ) |
-| `components/gallery.html:19`, `<h1>` demo dùng `clamp()` | Nằm trong `.no-print`, biến mất hoàn toàn khi in bằng WeasyPrint, đã xác nhận bằng render 16 trang không tìm thấy chuỗi text của H1 này ở đâu |
-| Mọi SVG trong `charts/echarts/` (12 file) | `width`/`height` là số px cố định khớp `viewBox`, đúng mẫu an toàn |
-| Mọi SVG trong `illustrations/svg/` (11 file) | Không khai `width`/`height` gì (chỉ `viewBox`), không rơi vào bẫy vì không có giá trị "auto" nào để bỏ qua |
-| `filter: grayscale()` / mọi `filter` khác | 0 chỗ trong toàn bộ 4 thư mục, cả CSS lẫn cấu hình ECharts lẫn SVG xuất ra |
+| # | Chỗ | Vì sao không cần sửa |
+|---|---|---|
+| M0 | `illustrations/annotate.css:14`, `#annotate-drill-card` (box-shadow CÓ blur 40px) - **chỗ thứ 3 trong tổng 3 chỗ box-shadow của toàn bộ audit, thuộc lớp minh hoạ** | Chỉ hiện trên màn hình, tự khai `display:none` trong `@media print`, không bao giờ vào PDF |
+| - | `illustrations/examples/example-vertical-axis-ship.html:14`, `#ship-svg { height:auto }` | Dạng CSS property, đã đo render ĐÚNG trong WeasyPrint (42 drawings, hình đầy đủ), KHÁC bẫy thuộc tính HTML `height="auto"` |
+| - | `illustrations/examples/example-horizontal-axis-banner.html:14`, `#banner-svg { height:auto }` | Tương tự dòng trên, đã đo render ĐÚNG (25 drawings, hình đầy đủ) |
+| - | `components/gallery.html:19`, `<h1>` demo dùng `clamp()` | Nằm trong `.no-print`, biến mất hoàn toàn khi in bằng WeasyPrint, đã xác nhận bằng render 16 trang không tìm thấy chuỗi text của H1 này ở đâu |
+| - | Mọi SVG trong `charts/echarts/` (12 file) | `width`/`height` là số px cố định khớp `viewBox`, đúng mẫu an toàn |
+| - | Mọi SVG trong `illustrations/svg/` (11 file) | Không khai `width`/`height` gì (chỉ `viewBox`), không rơi vào bẫy vì không có giá trị "auto" nào để bỏ qua |
+| - | `filter: grayscale()` / mọi `filter` khác | 0 chỗ trong toàn bộ 4 thư mục, cả CSS lẫn cấu hình ECharts lẫn SVG xuất ra |

@@ -4,13 +4,48 @@
 `fitz`/PyMuPDF), không suy diễn từ đọc CSS. Toàn bộ số trong hồ sơ này có thể tái lập bằng
 script trong mục 7.
 
+**Phạm vi đã quét, đủ để trả lời câu hỏi "còn sót đuôi file nào không"**: mọi file trong 4 thư
+mục `components/`, `charts/`, `design-system/`, `illustrations/` (108 file, loại trừ nhị phân
+`.png`/`.pdf`/`.pyc` không chứa mã nguồn) - cụ thể `.css` (4 file: `components/components.css`,
+`illustrations/annotate.css`, `design-system/tokens.css`, `design-system/fonts/fonts-embedded.css`),
+`.html` (4 file: `components/gallery.html` + 3 file `illustrations/examples/*.html`),
+`.js` (2 file: `components/components.js`, `illustrations/annotate.js`), `.mjs` (15 file, toàn
+bộ `charts/echarts/`), `.py` (10 file, toàn bộ `charts/matplotlib/` + `design-system/tokens.py`
++ `design-system/fonts/build-fonts.py`), `.json` (1 file, `charts/matplotlib/spec_showcase.json`),
+`.svg` (23 file, `charts/echarts/out-*.svg` + `illustrations/svg/*.svg`, đọc thuộc tính
+gốc trực tiếp thay vì grep văn bản). `.md` (27 file catalog/grammar) chỉ grep tìm code block
+HTML/CSS nhúng, không tìm thấy đoạn nào chứa 4 bẫy. Danh sách đầy đủ 108 file dùng để đối chiếu
+nằm trong lịch sử lệnh `find components charts design-system illustrations -type f`.
+
+## Đếm `var(--shadow-*)` - đưa lên đầu vì đây là số quan trọng nhất cho người quyết định
+
+| Token | Số lần tham chiếu qua `var()` trong 4 thư mục | 
+|---|---|
+| `--shadow-1` | 1 (`components/components.css:78`) |
+| `--shadow-2` | 0 |
+| `--shadow-3` | 0 |
+| `--shadow-hairline` | 0 |
+| `--shadow-none` | 0 |
+
+**4 trên 5 token shadow khai ở `design-system/tokens.css` CHƯA TỪNG được dùng ở bất kỳ đâu.**
+Đây không phải "mất tác dụng vì WeasyPrint" - đây là code chết ngay từ khi viết, độc lập hoàn
+toàn với việc đổi engine PDF. Ý nghĩa cho người quyết định: phần lớn hệ thống shadow trong
+`tokens.css` không phải "đang chạy rồi mất", mà là "chưa từng chạy". Chỉ `--shadow-1` (dùng đúng
+1 lần) là token DUY NHẤT có liên quan đến câu hỏi WeasyPrint thật sự.
+
 ## Ba câu trả lời, đọc trước
 
 **1. Nếu chuyển sang WeasyPrint hôm nay mà không sửa gì:** phạm vi ảnh hưởng RẤT NHỎ, không như
 mức độ nghiêm trọng gợi ý bởi việc phải audit "toàn repo". Trong 22 component, 12 chart, 11 minh
-hoạ SVG: đúng **2 chỗ** (9% trong 22 component, 0% chart, 0% minh hoạ) có `box-shadow` sẽ câm
-lặng mất tác dụng khi in bằng WeasyPrint - cả hai đều KHÔNG nghiêm trọng vì cả hai đều còn
-`border` làm việc phân tách chính. `text-shadow`: 0 chỗ trong toàn bộ 4 thư mục. `filter:
+hoạ SVG: tổng cộng có **3 chỗ khai `box-shadow`** trong toàn bộ 4 thư mục (đếm đủ, không phân
+biệt nặng nhẹ trước): `.sg-card` và `.q-dot` trong `components/components.css`, cộng
+`#annotate-drill-card` trong `illustrations/annotate.css` (thuộc lớp minh hoạ, xem mục 1). Trong
+3 chỗ đó, **2 chỗ sẽ câm lặng mất tác dụng khi in bằng WeasyPrint** (2/22 component, 9% - cả hai
+đều KHÔNG nghiêm trọng vì cả hai đều còn `border` làm việc phân tách chính), và **1 chỗ (trong
+lớp minh hoạ) không hề bị WeasyPrint "làm mất" gì cả vì nó vốn chỉ dành cho màn hình, tự khai
+`display:none` khi in** - xem mục 1 để phân biệt rõ "0 chỗ minh hoạ CÓ box-shadow" (SAI, có 1)
+với "0 chỗ minh hoạ BỊ ẢNH HƯỞNG bởi bẫy WeasyPrint" (ĐÚNG, đúng 0, vì chỗ duy nhất đó chưa bao
+giờ định render trong PDF). `text-shadow`: 0 chỗ trong toàn bộ 4 thư mục. `filter:
 grayscale` hay bất kỳ `filter` nào khác: 0 chỗ. `<svg height="auto">` dạng thuộc tính HTML - đúng
 bẫy đã xác nhận ở các vòng trước: 0 chỗ trong mã đang chạy (chỉ còn nhắc tới trong comment của 1
 file `samples/`, không phải một hiện diện thật). `clamp()`/`min()`/`max()`: 0 chỗ trong cả 4 thư
@@ -55,7 +90,7 @@ thay thế** - không phải một cuộc thiết kế lại.
 |---|---|---|---|
 | 1.1 | `components/components.css:78`, selector `.sg-card` (KHỐI 01 · KPI STAT GRID), giá trị `box-shadow: var(--shadow-1)` | Trang trí thêm. `.sg-card` ĐÃ có `border: 1px solid var(--line)` và nền `var(--paper)` cùng dòng - border một mình đã phân tách đủ ranh giới thẻ khỏi nền trắng của trang (`body { background: var(--paper) }`, cùng màu nền, không có gì khác để border "chống lại"). Shadow chỉ thêm cảm giác "nổi khối" hai tông kiểu con dấu. | **KHÔNG nghiêm trọng.** 6 thẻ KPI trong `gallery.html` (và bất kỳ báo cáo nào dùng component 01) mất hẳn cảm giác "nổi" nhẹ, trông phẳng hơn một chút so với thiết kế gốc dự tính cho trình duyệt, nhưng RANH GIỚI thẻ vẫn rõ 100% nhờ border. Đo bằng byte: có/không shadow cho ảnh PDF giống hệt (mục 7.1). |
 | 1.2 | `components/components.css:238`, selector `.quad2x2 .q-dot` (KHỐI 06 · MA TRẬN 2×2 ĐỊNH VỊ), giá trị `box-shadow: 0 0 0 1px var(--ink)` | Chức năng nhẹ, không thuần trang trí. Dấu chấm dữ liệu (nền `var(--accent)` xanh) đã có `border: 1.5px solid var(--paper)` (vòng trắng) để tách khỏi các đường lưới `.q-cell`/`.q-grid` nó đè lên; box-shadow thêm một vòng ink MỎNG NGOÀI vòng trắng đó, để vòng trắng không "biến mất" khi nền ô gần như cũng màu trắng/paper. | **Nhẹ, cục bộ.** Khi dấu chấm rơi gần cạnh ô hoặc gần đường lưới `--ink`, vòng trắng một mình có thể kém nổi bật hơn (nền ô cũng gần trắng). Chấm vẫn thấy được (nền xanh accent đủ tương phản với nền trắng trong đa số vị trí), chỉ mất một lớp bảo hiểm cho các vị trí biên. Ảnh hưởng tới 4 điểm dữ liệu trong ví dụ `gallery.html`, và bất kỳ instance nào khác của component 06. |
-| 1.3 | `illustrations/annotate.css:14`, selector `#annotate-drill-card`, giá trị `box-shadow: 0 12px 40px rgba(15, 23, 42, 0.35)` (CÓ blur thật, 40px) | Chỉ hiện trên màn hình. Đây là thẻ chi tiết nổi (drill card) hiện khi tương tác với `annotate.js` trên trình duyệt - dòng 59 cùng file đã tự khai `#annotate-drill-card { display: none; }` bên trong `@media print`, và bản thân yêu cầu JS để xuất hiện nên không bao giờ có mặt trong một render tĩnh. | **0% ảnh hưởng PDF, đã xác nhận bằng thiết kế sẵn có, không cần sửa gì.** Đây là ví dụ ĐÚNG của việc dùng blur thoải mái vì phạm vi chỉ giới hạn màn hình. Liệt kê ở đây để đủ sổ sách, KHÔNG đưa vào MIGRATION-TABLE.md. |
+| 1.3 | `illustrations/annotate.css:14`, selector `#annotate-drill-card`, giá trị `box-shadow: 0 12px 40px rgba(15, 23, 42, 0.35)` (CÓ blur thật, 40px) - **thuộc lớp minh hoạ**, đây là chỗ dễ bị đếm sót nếu chỉ nghĩ "minh hoạ = file `.svg`" | Chỉ hiện trên màn hình. Đây là thẻ chi tiết nổi (drill card) hiện khi tương tác với `annotate.js` trên trình duyệt - dòng 59 cùng file đã tự khai `#annotate-drill-card { display: none; }` bên trong `@media print`, và bản thân yêu cầu JS để xuất hiện nên không bao giờ có mặt trong một render tĩnh. | **0% ảnh hưởng PDF, đã xác nhận bằng thiết kế sẵn có, không cần sửa gì.** Đây là ví dụ ĐÚNG của việc dùng blur thoải mái vì phạm vi chỉ giới hạn màn hình. Có mặt trong `MIGRATION-TABLE.md`, ở bảng "Không cần hành động" (không phải bảng "cần sửa"), vì đúng nghĩa của nó là không cần hành động chứ không phải bị bỏ sót. |
 
 ### 1.1 Đếm `var(--shadow-...)` theo đúng yêu cầu
 

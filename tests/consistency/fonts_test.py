@@ -50,7 +50,18 @@ Round 6 bo sung (H1, H2), tu re-review:
   SKIPPED), lam ca `pytest tests/` do khi chay tu shell moi khong co mang.
   Da boc rieng loi ket noi (urllib.error.URLError/TimeoutError/
   ConnectionError) va goi pytest.skip(), KHONG bat Exception chung chung
-  (se giau loi that).
+  (se giau loi that). Bo sung: HTTPError la lop con cua URLError nen phai
+  bat RIENG va cho FAILED (Google doi API/chan scrape thi phai bao, khong
+  duoc coi la "offline").
+
+Round 6 bo sung tiep (do duoc them 3 nhom ky hieu bao cao tai chinh thieu
+o 12/12 to hop): dau cong tru/so sanh/mui ten (U+00B1/2264/2265/2260/2191/
+2193) co o CA BA ho font nen da them vao DAC_TA_TIENG_VIET_DOC_LAP (dac ta
+cung). Delta hoa/tam giac/Hy Lap thuong KHONG the phu dong deu 3 ho font
+(gioi han tai san font Google, khong phai loi subset -- da do bang tay
+tren font goc truoc khi ket luan), nen kiem RIENG bang
+test_ky_hieu_hy_lap_tam_giac_dat_dung_tran_theo_ho_font, assert dung tran
+da do thay vi doi hoi 100% khong dat duoc.
 """
 import base64
 import importlib.util
@@ -280,6 +291,14 @@ def test_moi_to_hop_khong_mat_codepoint_so_voi_font_goc():
     Phase 1 doi chay sach tu shell moi, khong ai bao dam shell do co mang).
     KHONG bat Exception chung chung o day, chi bat dung loi mang, de loi
     that (vi du AssertionError ve codepoint) van hien ra la FAILED.
+
+    H2 bo sung (tu re-review tiep theo): `urllib.error.HTTPError` la lop
+    con cua `URLError`, nen neu bat chung se SKIP ca truong hop Google tra
+    ve 403/404 (doi hop dong API, chan scrape UA cu...) -- do la im lang
+    SAI CHO: loi ket noi thuan tuy (khong mang, DNS chet, timeout) thi skip
+    dung, con Google THAY DOI API thi phai FAILED de nguoi doc biet, khong
+    duoc coi la "offline". Bat rieng HTTPError TRUOC (thu tu except quan
+    trong vi no la lop con) va cho no lan ra FAILED, khong skip.
     """
     bf = _load_build_fonts_module()
     try:
@@ -287,6 +306,12 @@ def test_moi_to_hop_khong_mat_codepoint_so_voi_font_goc():
         ranges = bf._parse_unicode_ranges(modern_css)
         legacy_css = bf._fetch_css(bf.UA_LEGACY)
         sources = bf._parse_legacy_sources(legacy_css)
+    except urllib.error.HTTPError as e:
+        raise AssertionError(
+            f"Google Fonts CSS API tra ve loi HTTP {e.code} ({e.reason}). Day co the "
+            f"la Google da doi hop dong API hoac chan UA cu dang dung, KHONG PHAI loi "
+            f"mang don thuan, nen KHONG duoc skip: {e!r}"
+        ) from e
     except (urllib.error.URLError, socket.timeout, ConnectionError) as e:
         pytest.skip(f"can mang de tai font goc/CSS Google Fonts, bo qua khi offline: {e!r}")
 
@@ -304,6 +329,11 @@ def test_moi_to_hop_khong_mat_codepoint_so_voi_font_goc():
         try:
             req = urllib.request.Request(sources[key], headers={"User-Agent": bf.UA_LEGACY})
             goc_bytes = urllib.request.urlopen(req, timeout=20).read()
+        except urllib.error.HTTPError as e:
+            raise AssertionError(
+                f"{key}: tai font goc tra ve loi HTTP {e.code} ({e.reason}), KHONG "
+                f"PHAI loi mang don thuan, nen KHONG duoc skip: {e!r}"
+            ) from e
         except (urllib.error.URLError, socket.timeout, ConnectionError) as e:
             pytest.skip(f"can mang de tai font goc/CSS Google Fonts, bo qua khi offline: {e!r}")
         goc_cmap = set(TTFont(io.BytesIO(goc_bytes)).getBestCmap().keys())
@@ -346,15 +376,18 @@ TEN_DAU_KET_HOP = {
 
 
 def _sinh_67_ky_tu_thuong_nfc_tieng_viet():
-    """Sinh 67 ky tu tieng Viet thuong dang NFC to hop san bang chinh
-    Python (khong go tay tung ky tu de khoi sot/sai): nam nguyen am/phu am
-    mang duoc dau thanh truc tiep (a e i o u y) x 5 thanh, sau do sau to
-    hop nguyen-am-co-dau-bien-am (a-mu, a-trang, e-mu, o-mu, o-moc, u-moc)
-    x (chinh no + 5 thanh tren no), cong them "d" co gach ngang (khong
-    mang dau thanh). Da doi chieu bang tay voi danh sach 67 ky tu tieng
-    Viet chuan (a a-thanh, a-trang(+thanh), a-mu(+thanh), d-gach, e-thanh,
-    e-mu(+thanh), i-thanh, o-thanh, o-mu(+thanh), o-moc(+thanh), u-thanh,
-    u-moc(+thanh), y-thanh) truoc khi dua vao dac ta, khop 100%.
+    """Sinh 66 trong 67 ky tu tieng Viet thuong dang NFC to hop san bang
+    unicodedata.normalize (khong go tay tung ky tu de khoi sot/sai): nam
+    nguyen am/phu am mang duoc dau thanh truc tiep (a e i o u y) x 5 thanh,
+    sau do sau to hop nguyen-am-co-dau-bien-am (a-mu, a-trang, e-mu, o-mu,
+    o-moc, u-moc) x (chinh no + 5 thanh tren no). Rieng "d" co gach ngang
+    (dd) PHAI go tay truc tiep vi no la U+0111, mot chu cai doc lap trong
+    Unicode, KHONG tach duoc thanh chu nen cong dau ket hop nhu 66 ky tu
+    con lai (khong co "d" + dau gach nao de NFC to hop). Da doi chieu bang
+    tay voi danh sach 67 ky tu tieng Viet chuan (a a-thanh, a-trang(+thanh),
+    a-mu(+thanh), d-gach, e-thanh, e-mu(+thanh), i-thanh, o-thanh,
+    o-mu(+thanh), o-moc(+thanh), u-thanh, u-moc(+thanh), y-thanh) truoc khi
+    dua vao dac ta, khop 100%.
     """
 
     def nfc(codepoints):
@@ -383,10 +416,36 @@ def _sinh_67_ky_tu_thuong_nfc_tieng_viet():
     return ket_qua
 
 
+# Fix round 6 (tiep, tu do dac controller): sau khoi dau bien am, do them
+# sau nhom ky hieu bao cao tai chinh tieng Viet dung THAT. Ba nhom dau (tien
+# dong, ngoac kep cong, cham lung) da co san trong ASCII/quotes hien co,
+# khong can them. Ba nhom sau THIEU o 12/12 to hop (chua tung duoc yeu cau
+# subset). Trong do CHI sau ky hieu nay co o CA BA ho font (da do bang tay
+# tren font goc, xem FINANCIAL_SYMBOLS trong build-fonts.py), nen chi dua
+# dung sau ky hieu nay vao dac ta CUNG (moi to hop deu phai co): dau cong
+# tru (khoang tin cay/bien sai so), >= <= != (nguong covenant/kill-switch),
+# mui ten len/xuong (xu huong trong bang so). Delta hoa, tam giac len/xuong,
+# va Hy Lap thuong (alpha beta sigma rho, dung cho do bien dong/tuong quan)
+# la tu vung that nhung KHONG the phu dong deu 3 ho font (gioi han tai san
+# font cua Google, khong phai loi subset) nen KHONG dua vao dac ta cung o
+# day -- xem test_ky_hieu_hy_lap_tam_giac_dat_dung_tran_theo_ho_font ben
+# duoi, kiem rieng theo dung tran da do duoc.
+KY_HIEU_TAI_CHINH_PHO_QUAT = {
+    0x00B1: "cong tru, dung cho khoang tin cay va bien sai so",
+    0x2264: "nho hon hoac bang, dung cho nguong covenant/kill-switch",
+    0x2265: "lon hon hoac bang, dung cho nguong covenant/kill-switch",
+    0x2260: "khac, dung cho dieu kien loai tru",
+    0x2191: "mui ten len, xu huong tang trong bang so",
+    0x2193: "mui ten xuong, xu huong giam trong bang so",
+}
+
+
 def _sinh_dac_ta_tieng_viet_doc_lap():
     """Tra ve tap codepoint: 134 ky tu NFC tieng Viet (67 thuong + 67 hoa),
-    8 dau ket hop, va ASCII in duoc (U+0020-007E: chu, so, dau cau bao cao
-    tai chinh). Doc lap hoan toan voi build-fonts.py/Google Fonts CSS.
+    8 dau ket hop, ASCII in duoc (U+0020-007E: chu, so, dau cau bao cao
+    tai chinh), va 6 ky hieu bao cao tai chinh pho quat (xem
+    KY_HIEU_TAI_CHINH_PHO_QUAT). Doc lap hoan toan voi build-fonts.py/
+    Google Fonts CSS.
     """
     thuong = _sinh_67_ky_tu_thuong_nfc_tieng_viet()
     hoa = [c.upper() for c in thuong]
@@ -397,10 +456,22 @@ def _sinh_dac_ta_tieng_viet_doc_lap():
     cp.update(_5_THANH)
     cp.update(_3_BIEN_AM)
     cp.update(range(0x20, 0x7F))  # ASCII in duoc
+    cp.update(KY_HIEU_TAI_CHINH_PHO_QUAT)
     return cp
 
 
 DAC_TA_TIENG_VIET_DOC_LAP = _sinh_dac_ta_tieng_viet_doc_lap()
+
+
+def _ten_codepoint(c):
+    if c in TEN_DAU_KET_HOP:
+        return TEN_DAU_KET_HOP[c]
+    if c in KY_HIEU_TAI_CHINH_PHO_QUAT:
+        return KY_HIEU_TAI_CHINH_PHO_QUAT[c]
+    try:
+        return unicodedata.name(chr(c))
+    except ValueError:
+        return "khong xac dinh"
 
 
 def test_moi_to_hop_du_dac_ta_tieng_viet_doc_lap():
@@ -408,33 +479,88 @@ def test_moi_to_hop_du_dac_ta_tieng_viet_doc_lap():
     test_moi_to_hop_du_dau_ket_hop_tieng_viet ban dau (chi kiem 8 dau ket
     hop) bang mot dac ta rong hon va DOC LAP voi Google:
     DAC_TA_TIENG_VIET_DOC_LAP (134 ky tu NFC + 8 dau ket hop + ASCII co
-    ban, sinh bang Python o tren, khong hard-code danh sach tay va khong
-    di qua unicode-range Google cong bo o buoc nao). Day la phep kiem
-    KHONG THE xanh rong nhu ca lop phong ve 2 cua G1 lan
-    test_moi_to_hop_khong_mat_codepoint_so_voi_font_goc tung xanh rong khi
-    thieu 3 dau bien am, vi no khong hoi Google, no hoi "tieng Viet can gi".
-    Offline, khong can mang, khong can render PDF -- re, nen chay moi lan.
+    ban + 6 ky hieu bao cao tai chinh pho quat, sinh bang Python o tren,
+    khong hard-code danh sach tay va khong di qua unicode-range Google
+    cong bo o buoc nao). Day la phep kiem KHONG THE xanh rong nhu ca lop
+    phong ve 2 cua G1 lan test_moi_to_hop_khong_mat_codepoint_so_voi_
+    font_goc tung xanh rong khi thieu 3 dau bien am, vi no khong hoi
+    Google, no hoi "tieng Viet can gi". Offline, khong can mang, khong
+    can render PDF -- re, nen chay moi lan.
+
+    CHI dua vao day nhung gi da xac nhan co o CA BA ho font (do bang tay
+    tren font goc truoc khi chon, xem FINANCIAL_SYMBOLS trong
+    build-fonts.py). Delta hoa, tam giac, Hy Lap thuong KHONG dua vao day
+    vi khong the dat 100% bang subsetting -- xem
+    test_ky_hieu_hy_lap_tam_giac_dat_dung_tran_theo_ho_font.
     """
     loi = []
     for fam, style, weight, b64 in _BLOCKS:
         cmap = set(TTFont(io.BytesIO(base64.b64decode(b64))).getBestCmap().keys())
         thieu_cp = sorted(DAC_TA_TIENG_VIET_DOC_LAP - cmap)
         if thieu_cp:
-            thieu_ten = []
-            for c in thieu_cp[:15]:
-                if c in TEN_DAU_KET_HOP:
-                    ten = TEN_DAU_KET_HOP[c]
-                else:
-                    try:
-                        ten = unicodedata.name(chr(c))
-                    except ValueError:
-                        ten = "khong xac dinh"
-                thieu_ten.append(f"U+{c:04X} ({ten})")
+            thieu_ten = [f"U+{c:04X} ({_ten_codepoint(c)})" for c in thieu_cp[:15]]
             loi.append(((fam, style, weight), len(thieu_cp), thieu_ten))
     assert not loi, (
         f"Cac to hop sau THIEU codepoint so voi dac ta tieng Viet DOC LAP "
         f"(khong qua metadata Google, gom 134 ky tu NFC + 8 dau ket hop + "
-        f"ASCII): {loi}"
+        f"ASCII + 6 ky hieu tai chinh pho quat): {loi}"
+    )
+
+
+# Fix round 6 (tiep): Delta hoa, tam giac len/xuong, va Hy Lap thuong
+# (alpha beta sigma rho, dung cho do bien dong/tuong quan/muc thay doi) la
+# tu vung that cua bao cao tai chinh, nhung KHONG THE phu dong deu ca 3 ho
+# font vi GIOI HAN TAI SAN FONT cua Google (da do bang tay tren font goc
+# CHUA subset, khong phai loi build-fonts.py): Spectral va IBM Plex Mono
+# KHONG CO glyph Hy Lap thuong; IBM Plex Mono cung khong co Delta hoa; ca
+# ba ho deu khong co tam giac tru rieng Spectral. Mot dac ta doi hoi 100%
+# cho ca 12 to hop se KHONG BAO GIO xanh duoc bang subsetting -- fontTools
+# khong the sinh glyph tu khong. Test duoi day assert DUNG BANG TRAN da do
+# (khong hon khong kem), de bat REGRESSION neu ai do vo tinh lam MAT THEM
+# nhung gi dang co, ma khong doi hoi dieu subsetting khong lam duoc. Muon
+# phu Hy Lap thuong dong deu ca 3 ho thi phai DOI NGUON FONT, ngoai pham
+# vi mot task subsetting.
+_TEN_KY_HIEU_GIOI_HAN = {
+    0x0394: "Delta hoa, muc thay doi",
+    0x25B2: "tam giac len, xu huong tang",
+    0x25BC: "tam giac xuong, xu huong giam",
+    0x03B1: "alpha thuong",
+    0x03B2: "beta thuong",
+    0x03C3: "sigma thuong, do bien dong",
+    0x03C1: "rho thuong, he so tuong quan",
+}
+
+TRAN_KY_HIEU_THEO_HO_FONT = {
+    "Spectral": {0x0394, 0x25B2, 0x25BC},
+    "IBM Plex Mono": set(),
+    "IBM Plex Sans": {0x0394, 0x03B1, 0x03B2, 0x03C3, 0x03C1},
+}
+
+
+def test_ky_hieu_hy_lap_tam_giac_dat_dung_tran_theo_ho_font():
+    """Fix round 6 (tiep): xem giai thich day du o comment ngay tren.
+    Assert cmap cua moi to hop khop CHINH XAC voi TRAN_KY_HIEU_THEO_HO_FONT
+    (khong thieu, cung khong bao gio "thua" vi thua nghia la font goc cua
+    Google da duoc bo sung glyph, luc do phai CAP NHAT bang tran nay).
+    """
+    loi = []
+    for fam, style, weight, b64 in _BLOCKS:
+        cmap = set(TTFont(io.BytesIO(base64.b64decode(b64))).getBestCmap().keys())
+        tran = TRAN_KY_HIEU_THEO_HO_FONT.get(fam)
+        assert tran is not None, f"chua biet tran ky hieu cho ho font {fam!r}, cap nhat TRAN_KY_HIEU_THEO_HO_FONT"
+        co_that = {cp for cp in _TEN_KY_HIEU_GIOI_HAN if cp in cmap}
+        if co_that != tran:
+            thieu = sorted(tran - co_that)
+            thua = sorted(co_that - tran)
+            loi.append((
+                (fam, style, weight),
+                [f"U+{c:04X} ({_TEN_KY_HIEU_GIOI_HAN[c]})" for c in thieu],
+                [f"U+{c:04X} ({_TEN_KY_HIEU_GIOI_HAN[c]})" for c in thua],
+            ))
+    assert not loi, (
+        f"Cac to hop sau LECH so voi tran da do (cot 2 = thieu so voi tran, tuc "
+        f"REGRESSION that; cot 3 = thua so voi tran, tuc tin tot, can cap nhat "
+        f"TRAN_KY_HIEU_THEO_HO_FONT): {loi}"
     )
 
 

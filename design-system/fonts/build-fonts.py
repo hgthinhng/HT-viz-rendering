@@ -119,6 +119,44 @@ ORDER_FAM = ["Spectral", "IBM Plex Mono", "IBM Plex Sans"]
 # tiet + so lieu chi phi kich thuoc o docstring dau file.
 COMBINING_DIACRITICS = set(range(0x0300, 0x0370))
 
+# Fix round 6 (tiep): sau khi dong dau bien am, do lai va thay ba nhom ky
+# hieu bao cao tai chinh tieng Viet dung THAT lai KHONG nam trong bat ky
+# unicode-range Google cong bo, du font goc co du (kiem het 12 to hop truoc
+# khi chot): dau cong-tru (khoang tin cay, bien sai so), dau so sanh
+# (nguong covenant, dieu kien kill-switch), va mui ten xu huong trong bang
+# so. Da can nhac dai HEP (dung 13 ma) so dai RONG (ca 5 khoi Unicode
+# lien quan): dai hep ton +6.016 byte (+1,7%) tren toan bo 12 to hop, dai
+# rong ton +55.988 byte (+15,5%) vi keo theo hang tram glyph khong dung
+# toi (toan bo Mathematical Operators, Hy Lap, mui ten, hinh khoi). Chon
+# dai HEP vi day la tap ky hieu DONG (bao cao tai chinh khong dung ky hieu
+# toan hoc/Hy Lap ngoai danh sach nay), khac han truong hop dau bien am
+# (NFD co the mang bat ky dau nao trong khoi, nen dai rong co ly do).
+#
+# GIOI HAN THAT DA DO (khong phai loi subset, la gioi han tai san font cua
+# Google): U+00B1/2264/2265/2260/2191/2193 (+-, >=, <=, !=, mui ten len
+# xuong) co o CA BA ho font. U+0394 (Delta hoa) co o Spectral va IBM Plex
+# Sans, THIEU o IBM Plex Mono. U+25B2/25BC (tam giac len/xuong) CHI co o
+# Spectral. U+03B1/03B2/03C3/03C1 (alpha beta sigma rho thuong) CHI co o
+# IBM Plex Sans -- Spectral va IBM Plex Mono KHONG co glyph nay trong file
+# Google phuc vu, khong the sinh ra bang subsetting. Van ep dai nay vao
+# tap unicode truoc khi subset (khong hai gi, fontTools tu bo qua codepoint
+# font khong co), nhung ket qua se KHONG dong deu giua 3 ho font.
+FINANCIAL_SYMBOLS = {
+    0x00B1,  # +- dau cong tru, khoang tin cay / bien sai so
+    0x2264,  # <=
+    0x2265,  # >=
+    0x2260,  # != khac
+    0x2191,  # mui ten len
+    0x2193,  # mui ten xuong
+    0x25B2,  # tam giac len (chi co o Spectral, xem ghi chu tren)
+    0x25BC,  # tam giac xuong (chi co o Spectral, xem ghi chu tren)
+    0x0394,  # Delta hoa, muc thay doi (thieu o IBM Plex Mono, xem ghi chu tren)
+    0x03B1,  # alpha thuong (chi co o IBM Plex Sans, xem ghi chu tren)
+    0x03B2,  # beta thuong (chi co o IBM Plex Sans, xem ghi chu tren)
+    0x03C3,  # sigma thuong, do bien dong (chi co o IBM Plex Sans, xem ghi chu tren)
+    0x03C1,  # rho thuong, tuong quan (chi co o IBM Plex Sans, xem ghi chu tren)
+}
+
 
 def _fetch_css(ua):
     req = urllib.request.Request(GOOGLE_CSS_URL, headers={"User-Agent": ua})
@@ -157,11 +195,13 @@ def _parse_unicode_ranges(modern_css):
         ranges.setdefault(key, set()).update(parse_range(urange))
 
     # Fix round 6: ep them khoi combining diacritics du Google khong gan
-    # nhan trong unicode-range (xem COMBINING_DIACRITICS). fontTools.subset
+    # nhan trong unicode-range (xem COMBINING_DIACRITICS), va ep them cac
+    # ky hieu bao cao tai chinh (xem FINANCIAL_SYMBOLS). fontTools.subset
     # tu bo qua im lang codepoint nao font goc khong co, nen yeu cau rong
     # hon font goc ho tro khong gay loi gi.
     for key in ranges:
         ranges[key] |= COMBINING_DIACRITICS
+        ranges[key] |= FINANCIAL_SYMBOLS
     return ranges
 
 

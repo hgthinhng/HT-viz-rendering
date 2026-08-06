@@ -90,15 +90,15 @@ p.nutgraf::first-letter{
 }
 
 /* Exhibit: Hình/Bảng, đánh số liên tục toàn tài liệu */
-.exhibit{ margin:0 0 22px; }
-.ex-lab{ font-family:var(--font-mono); font-size:var(--fs-caption); letter-spacing:.08em; text-transform:uppercase; color:var(--ink-lo); margin:0 0 4px; }
-.ex-title{ font-family:var(--font-serif); font-weight:600; font-size:var(--fs-h3); line-height:1.35; margin:0 0 12px; max-width:72ch; }
-.chart-box{ border:1px solid var(--line); background:var(--paper-hi); padding:14px 16px 10px; }
-.legend-row{ display:flex; gap:18px; margin-top:6px; font-family:var(--font-mono); font-size:var(--fs-caption); color:var(--ink-lo); }
+.exhibit{ margin:0 0 14px; }
+.ex-lab{ font-family:var(--font-mono); font-size:var(--fs-caption); letter-spacing:.08em; text-transform:uppercase; color:var(--ink-lo); margin:0 0 3px; }
+.ex-title{ font-family:var(--font-serif); font-weight:600; font-size:var(--fs-h3); line-height:1.3; margin:0 0 8px; max-width:72ch; }
+.chart-box{ border:1px solid var(--line); background:var(--paper-hi); padding:10px 14px 8px; }
+.legend-row{ display:flex; gap:18px; margin-top:5px; font-family:var(--font-mono); font-size:var(--fs-caption); color:var(--ink-lo); }
 .legend-row .sw{ display:inline-flex; align-items:center; gap:6px; }
 .legend-row .ln{ width:16px; height:0; border-top:2px solid var(--accent-hi); display:inline-block; }
 .legend-row .ln.fc{ border-top-style:dashed; }
-p.caption{ font-size:var(--fs-small); color:var(--ink-md); max-width:76ch; line-height:1.6; margin:10px 0 4px; }
+p.caption{ font-size:var(--fs-small); color:var(--ink-md); max-width:76ch; line-height:1.5; margin:8px 0 3px; }
 p.src-line{ font-family:var(--font-mono); font-size:var(--fs-caption); color:var(--ink-lo); margin:2px 0 0; }
 
 /* Bảng ký hiệu và banner chốt số liệu, dùng đúng 1 nơi cố định (trang 11) */
@@ -109,22 +109,22 @@ p.src-line{ font-family:var(--font-mono); font-size:var(--fs-caption); color:var
 .symbol-grid .sym{ font-family:var(--font-mono); font-weight:700; color:var(--accent-hi); display:inline-block; width:34px; }
 
 /* Bảng mốc-tín hiệu-hành động (tóm tắt điều hành) */
-table.masa{ width:100%; border-collapse:collapse; font-size:var(--fs-small); margin:0 0 20px; }
-table.masa thead th{ text-align:left; font-family:var(--font-mono); font-size:var(--fs-caption); letter-spacing:.06em; text-transform:uppercase; color:var(--ink-lo); font-weight:600; padding:0 12px 8px 0; border-bottom:1px solid var(--ink); }
-table.masa tbody td{ padding:9px 12px 9px 0; border-bottom:1px solid var(--line-lo); vertical-align:top; }
+table.masa{ width:100%; border-collapse:collapse; font-size:var(--fs-small); margin:0 0 12px; }
+table.masa thead th{ text-align:left; font-family:var(--font-mono); font-size:var(--fs-caption); letter-spacing:.06em; text-transform:uppercase; color:var(--ink-lo); font-weight:600; padding:0 12px 6px 0; border-bottom:1px solid var(--ink); }
+table.masa tbody td{ padding:7px 12px 7px 0; border-bottom:1px solid var(--line-lo); vertical-align:top; line-height:1.4; }
 table.masa tbody tr:last-child td{ border-bottom:1px solid var(--line); }
 table.masa td.mile{ font-family:var(--font-mono); font-size:var(--fs-caption); color:var(--accent-hi); white-space:nowrap; font-weight:600; }
 table.masa td.act b{ color:var(--accent-hi); }
 
-.killbox{ background:var(--paper-hi); border:1px solid var(--line); border-left:3px solid var(--neg); padding:14px 16px; margin:0 0 20px; }
-.killbox .lab{ font-family:var(--font-mono); font-size:var(--fs-caption); letter-spacing:.07em; text-transform:uppercase; color:var(--neg); font-weight:700; margin:0 0 8px; }
-.killbox p{ margin:0; font-size:var(--fs-small); color:var(--ink-md); }
+.killbox{ background:var(--paper-hi); border:1px solid var(--line); border-left:3px solid var(--neg); padding:10px 14px; margin:0 0 12px; }
+.killbox .lab{ font-family:var(--font-mono); font-size:var(--fs-caption); letter-spacing:.07em; text-transform:uppercase; color:var(--neg); font-weight:700; margin:0 0 6px; }
+.killbox p{ margin:0; font-size:var(--fs-small); color:var(--ink-md); line-height:1.45; }
 .killbox b{ color:var(--ink); }
 
-.qa-grid{ display:flex; gap:14px; margin:0 0 4px; }
-.qa{ flex:1; border:1px solid var(--line); padding:11px 13px; }
-.qa .q{ font-family:var(--font-mono); font-size:var(--fs-caption); font-weight:600; color:var(--accent); text-transform:uppercase; margin-bottom:6px; }
-.qa .a{ font-size:var(--fs-small); color:var(--ink-md); line-height:1.55; }
+.qa-grid{ display:flex; gap:12px; margin:0 0 4px; }
+.qa{ flex:1; border:1px solid var(--line); padding:9px 11px; }
+.qa .q{ font-family:var(--font-mono); font-size:var(--fs-caption); font-weight:600; color:var(--accent); text-transform:uppercase; margin-bottom:5px; }
+.qa .a{ font-size:var(--fs-small); color:var(--ink-md); line-height:1.45; }
 
 .colophon{ position:absolute; left:18mm; right:18mm; bottom:12mm; padding-top:12px; border-top:1px solid var(--line); font-family:var(--font-mono); font-size:var(--fs-caption); color:var(--ink-lo); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; }
 
@@ -263,27 +263,26 @@ table.sens td.base{ outline:2px solid var(--accent-hi); outline-offset:-2px; fon
     <span class="flag">Số liệu minh hoạ, không dùng cho quyết định thật</span>
   </div>
 
-  <h1 style="font-family:var(--font-serif); font-weight:700; font-size:1.7rem; line-height:1.3; margin:0 0 14px; letter-spacing:-.005em;">
+  <h1 style="font-family:var(--font-serif); font-weight:700; font-size:1.55rem; line-height:1.26; margin:0 0 8px; letter-spacing:-.005em;">
     GIỮ TỶ TRỌNG toàn ngành, ưu tiên <span style="font-family:var(--font-mono); color:var(--accent-hi);">CTCP Vận tải Biển Á Châu</span>
     và <span style="font-family:var(--font-mono); color:var(--accent-hi);">CTCP Hàng hải Đông Dương</span>, tránh nhóm đòn bẩy trên
     <span style="font-family:var(--font-mono); color:var(--accent-hi);">3,5 lần</span> EBITDA đang đóng thêm tàu trước khi cước xác nhận đáy.
   </h1>
-  <p style="font-size:1.02rem; color:var(--ink-md); max-width:70ch; margin:0 0 22px;">
+  <p style="font-size:0.96rem; color:var(--ink-md); max-width:72ch; margin:0 0 14px; line-height:1.55;">
     Cước container nội Á giảm <b style="color:var(--ink);">10,6%</b> từ đỉnh
-    142 điểm quý 3/2024 xuống 127 điểm quý 4/2025, và mô hình của đơn vị
-    phát hành chưa thấy điểm đảo chiều trước cuối 2026. Cùng lúc, 23 tàu
-    feeder mới, tương đương <b style="color:var(--ink);">18%</b> năng lực
-    đội tàu hiện có, sẽ vào khai thác đúng giai đoạn cước chưa phục hồi.
-    Hai công ty đòn bẩy dưới 2,6 lần EBITDA giữ biên EBITDA trên 19%; nhóm
-    trên 3,5 lần đối mặt rủi ro kép, chi phí lãi vay tăng đúng lúc doanh
+    142 điểm quý 3/2024 xuống 127 điểm quý 4/2025, chưa thấy điểm đảo chiều
+    trước cuối 2026. 23 tàu feeder mới, tương đương <b style="color:var(--ink);">18%</b>
+    năng lực đội tàu hiện có, sẽ vào khai thác đúng giai đoạn cước chưa
+    phục hồi. Hai công ty đòn bẩy dưới 2,6 lần EBITDA giữ biên EBITDA trên
+    19%; nhóm trên 3,5 lần đối mặt rủi ro kép, lãi vay tăng đúng lúc doanh
     thu mỗi chuyến giảm.
   </p>
 
-  <p style="font-family:var(--font-mono); font-size:var(--fs-caption); letter-spacing:.09em; text-transform:uppercase; color:var(--ink-lo); margin:0 0 10px; display:flex; align-items:center; gap:8px;">
+  <p style="font-family:var(--font-mono); font-size:var(--fs-caption); letter-spacing:.09em; text-transform:uppercase; color:var(--ink-lo); margin:0 0 6px; display:flex; align-items:center; gap:8px;">
     <span style="width:14px; height:2px; background:var(--accent); display:inline-block;"></span>
     Mốc thời gian, tín hiệu theo dõi, hành động tương ứng
   </p>
-  <table class="masa">
+  <table class="masa" style="margin-bottom:12px;">
     <thead><tr><th style="width:20%">Mốc</th><th style="width:40%">Tín hiệu theo dõi</th><th style="width:40%">Hành động</th></tr></thead>
     <tbody>
       <tr>
@@ -468,7 +467,7 @@ table.sens td.base{ outline:2px solid var(--accent-hi); outline-offset:-2px; fon
     <p class="src-line">Nguồn: cơ cấu chi phí minh hoạ, đơn vị % tổng chi phí vận hành đội tàu · Số liệu nội bộ, chưa kiểm toán</p>
   </div>
 
-  <div class="exhibit" style="margin-top:24px;">
+  <div class="exhibit" style="margin-top:10px;">
     <p class="ex-lab">Hình 3</p>
     <p class="ex-title">Doanh thu theo tuyến bốn quý gần nhất, tuyến xuất khẩu trực tiếp thu hẹp liên tục trong khi Bắc Á tăng đều</p>
     <div class="sm-row">

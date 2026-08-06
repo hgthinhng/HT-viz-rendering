@@ -277,6 +277,52 @@ trong khi thực ra không phải vậy.
 
 ---
 
+## 6. Giới hạn phương pháp nghiệm thu: pymupdf get_text() xáo trật tự khối khi có float
+
+Nguồn: tự phát hiện trong vòng nghiên cứu này khi verify round-trip mẫu
+source-footnote-sidenote-endnote.html, sau đó controller xác nhận lại cùng bẫy trên
+samples/editorial-tufte-sidenote-margin.html của vòng 1 (đọc lại phần bên dưới).
+
+Vấn đề: `page.get_text()` mặc định của pymupdf nối text theo thứ tự các khối được VẼ vào content
+stream của PDF, không phải theo thứ tự trong DOM/HTML nguồn. Với phần tử `float` (kỹ thuật
+sidenote dùng float phải + margin âm, xem mục 2.1), WeasyPrint có thể vẽ khối floated vào content
+stream ở một vị trí khác hẳn vị trí đọc tự nhiên. Trong quá trình làm mục 2 của hồ sơ này, khung
+chứa sidenote đồng thời là `display: flex` từng khiến toàn bộ nội dung sidenote bị đẩy lên đầu
+file, trước cả tiêu đề trang.
+
+Xác nhận thêm trên file của vòng 1: controller chạy `get_text()` thô trên
+`samples/editorial-tufte-sidenote-margin.html` (dùng cùng kỹ thuật float, do vòng 1 tự nghĩ ra
+độc lập trước khi mục này được viết) và thấy hai lỗi cùng họ: chú thích lề bị đặt LÊN TRƯỚC thân
+bài trong chuỗi trích xuất, và tệ hơn, chữ cái đầu "V" của từ "Vòng" bị TÁCH RỜI khỏi phần còn
+lại của từ, tức bẫy không chỉ xáo trật tự KHỐI mà đôi khi xáo cả trật tự trong một TỪ khi ranh
+giới float cắt ngang một run text. Nội dung không mất một ký tự nào và vị trí THỊ GIÁC (nhìn bằng
+mắt hoặc render ảnh) vẫn đúng tuyệt đối ở cả hai file, bẫy chỉ nằm ở tầng trích xuất tuyến tính.
+
+Cách bắt đúng: sắp lại các từ theo toạ độ trước khi nối chuỗi, không dùng `get_text()` mặc định
+làm bằng chứng duy nhất:
+
+```python
+words = page.get_text("words")  # (x0, y0, x1, y1, word, block, line, word_no)
+words.sort(key=lambda w: (round(w[1], 1), w[0]))  # sắp theo hàng (y0), rồi theo cột (x0)
+text_dung_thu_tu = " ".join(w[4] for w in words)
+```
+
+Tại sao đây là giới hạn của PHƯƠNG PHÁP chứ không phải của một file cụ thể: bất kỳ kỹ thuật nào
+dùng `float` để kéo nội dung ra khỏi luồng đọc chính (không chỉ sidenote, còn có thể là hình thu
+vào cột, pull-quote thu hẹp, hay bất kỳ layout nào dùng `float` + margin âm/dương) đều có nguy cơ
+dính đúng bẫy này. Việc so `get_text()` xong rồi tuyên bố "khớp từng chữ" là CHƯA ĐỦ nếu tài liệu
+có bất kỳ phần tử `float` nào - phải sắp theo toạ độ thêm một lần nữa mới coi là nghiệm thu xong.
+Đây là hệ quả trực tiếp của nguyên tắc đã có ở đầu `RESEARCH-LEDGER.md` ("so ảnh mức byte, đừng
+so bằng mắt"): áp đúng tinh thần đó sang bài toán trích xuất text tĩnh, "so `get_text()` mặc
+định" chưa đủ nghiêm ngặt, phải so cả toạ độ.
+
+`samples/editorial-tufte-sidenote-margin.html` là file của vòng 1, KHÔNG thuộc phạm vi ghi của
+vùng này nên không tự sửa. Cờ để lại cho vòng sau: nếu ai đó cần dùng lại đúng mẫu sidenote đó
+làm nguồn tham khảo, hãy verify bằng phương pháp toạ độ ở trên trước, đừng tin kết quả
+`get_text()` thô của chính mẫu đó.
+
+---
+
 ## Kỹ thuật cân nhắc nhưng không đưa vào mẫu, ghi nhận để không ai thử lại
 
 CSS Generated Content for Paged Media (float footnote): đây là cách đúng chuẩn nhất để tạo

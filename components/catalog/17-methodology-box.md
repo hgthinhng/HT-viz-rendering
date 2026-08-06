@@ -4,7 +4,7 @@
 
 ## Mô tả / khi nào dùng
 
-Trả lời: "Con số này được tính ra như thế nào, để người đọc có thể tự kiểm tra hoặc phản biện?" Đầu vào: chuỗi bước có đánh số, mỗi bước là 1 câu ngắn + giải thích. KHÔNG dùng để che giấu một phương pháp luận yếu; nếu bước nào chủ quan, phải nói rõ là ước tính.
+Trả lời: "Con số này được tính ra như thế nào, để người đọc có thể tự kiểm tra hoặc phản biện?" Đầu vào: chuỗi bước có đánh số, mỗi bước là 1 câu ngắn + giải thích. KHÔNG dùng để che giấu một phương pháp luận yếu; nếu bước nào chủ quan, phải nói rõ là ước tính. KHÔNG dùng khi chuỗi bước dài quá 5-6 bước: `.method-box { break-inside: avoid; }` áp cho TOÀN khối chứ không phải từng `li`, nên một method-box nhiều bước sẽ bị đẩy nguyên khối sang trang sau khi in, để lại khoảng trắng lớn ở cuối trang trước; lúc đó tách thành process-step-chain (khối 16, mỗi bước ngắt trang độc lập được) sẽ an toàn hơn.
 
 ## HTML mẫu (copy trực tiếp từ gallery.html, chạy được ngay với components.css)
 

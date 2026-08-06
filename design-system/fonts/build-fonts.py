@@ -51,6 +51,30 @@ tests/consistency/fonts_test.py::test_moi_to_hop_khong_mat_codepoint_so_voi_font
 để có phép kiểm trực tiếp trên nội dung glyph (cmap) thay vì suy từ kích
 thước.
 
+Fix round 6 (thiếu dấu biến âm tiếng Việt): unicode-range Google công bố
+cho MỌI subset (kể cả subset tên "vietnamese") không liệt kê ba codepoint
+U+0302 (dấu mũ), U+0306 (dấu trăng), U+031B (dấu móc). Đây là ba dấu KẾT
+HỢP (combining mark) phân biệt "â ă ê ô ơ ư" với "a e o u", gần như chỉ
+tiếng Việt dùng. Năm dấu THANH (huyền 0300, sắc 0301, ngã 0303, hỏi 0309,
+nặng 0323) thì có, vì dùng chung với ngôn ngữ Latin khác nên nằm trong
+subset latin/latin-ext. Đã verify bằng tay: font GỐC (tải qua UA cũ, chưa
+subset) CÓ ĐỦ cả ba dấu biến âm này, lỗ hổng chỉ nằm ở METADATA
+unicode-range của Google, không phải ở font. Hậu quả: văn bản Unicode dạng
+NFD (chữ nền + dấu rời, gặp khi copy từ macOS/PDF cũ/một số API) sẽ mất
+dấu biến âm; văn bản NFC (dạng tổ hợp sẵn, phổ biến hơn) thì không sao vì
+"ê" NFC là một codepoint duy nhất U+00EA đã có trong subset.
+
+Sửa: hợp thêm CẢ KHỐI Unicode "Combining Diacritical Marks" (U+0300-036F,
+112 codepoint) vào tập unicode trước khi subset, bất kể Google có gắn nhãn
+unicode-range hay không. Đã cân nhắc giữa dải hẹp U+0300-0323 (đủ đúng 8
+dấu tiếng Việt cần) và cả khối U+0300-036F: chọn cả khối vì chi phí thêm
+rất nhỏ (đo tay trên Spectral 400 normal: hẹp +476 byte/+1,6%, cả khối
++792 byte/+2,7%, so với bản chưa thêm gì), trong khi cả khối chống được
+thêm rủi ro NFD từ CÁC ngôn ngữ Latin khác có thể lẫn trong báo cáo đa
+nguồn (dấu ngắn, dấu gạch trên, caron...), không chỉ riêng tiếng Việt.
+`fontTools.subset` tự bỏ qua im lặng codepoint nào font gốc không có, nên
+yêu cầu rộng hơn font gốc hỗ trợ không gây lỗi.
+
 Chạy lại khi cần đổi bộ trọng số (weight) hoặc thêm font:
     python3 build-fonts.py
 
@@ -84,6 +108,16 @@ FAMILY_QUERY = (
 GOOGLE_CSS_URL = f"https://fonts.googleapis.com/css2?{FAMILY_QUERY}&display=swap"
 KEEP_SUBSETS = ("latin", "vietnamese")  # bỏ latin-ext/cyrillic*/greek*
 ORDER_FAM = ["Spectral", "IBM Plex Mono", "IBM Plex Sans"]
+
+# Fix round 6: Google KHONG liet ke U+0302 (mu), U+0306 (trang), U+031B
+# (moc) trong unicode-range cua bat ky subset nao (kiem ca 5 subset cong bo
+# cho Spectral: latin, latin-ext, vietnamese, cyrillic, cyrillic-ext), du
+# font goc CO du ca ba (da verify bang fontTools). Ba dau nay phan biet
+# "a e o u" voi "a e o u co dau bien am" trong tieng Viet. Ep hop them ca
+# khoi Unicode "Combining Diacritical Marks" (U+0300-036F) truoc khi
+# subset, khong phu thuoc unicode-range Google cong bo. Xem giai thich chi
+# tiet + so lieu chi phi kich thuoc o docstring dau file.
+COMBINING_DIACRITICS = set(range(0x0300, 0x0370))
 
 
 def _fetch_css(ua):
@@ -121,6 +155,13 @@ def _parse_unicode_ranges(modern_css):
         urange = re.search(r"unicode-range:\s*([^;]+);", block).group(1).strip()
         key = (fam, style, weight)
         ranges.setdefault(key, set()).update(parse_range(urange))
+
+    # Fix round 6: ep them khoi combining diacritics du Google khong gan
+    # nhan trong unicode-range (xem COMBINING_DIACRITICS). fontTools.subset
+    # tu bo qua im lang codepoint nao font goc khong co, nen yeu cau rong
+    # hon font goc ho tro khong gay loi gi.
+    for key in ranges:
+        ranges[key] |= COMBINING_DIACRITICS
     return ranges
 
 

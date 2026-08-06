@@ -21,11 +21,22 @@ Fix round 4: ba lo them sau khi round 3 dong.
   file (chi do tay 1 to hop roi suy rong). Thay bang assert THAT: doi chieu
   cmap cua font da nhung voi cmap cua font GOC + tap unicode ky vong doc
   dong, khong con suy tu kich thuoc byte.
+
+Fix round 6: thieu dau BIEN AM tieng Viet (mu U+0302, trang U+0306, moc
+U+031B). Nam dau THANH (huyen/sac/nga/hoi/nang) thi co vi dung chung voi
+Latin khac nen nam trong subset latin/latin-ext; ba dau bien am gan nhu chi
+tieng Viet dung nen Google KHONG gan nhan trong unicode-range cua bat ky
+subset nao, du font goc co du ca ba. Anh huong: van ban Unicode dang NFD
+(chu nen + dau roi) se mat dau bien am; NFC (dang to hop san, pho bien hon)
+thi khong sao. Da sua build-fonts.py ep them ca khoi Combining Diacritical
+Marks (U+0300-036F) khi subset. Test moi o duoi: kiem cmap du 8 dau (offline,
+khong can mang) va round-trip qua chinh van ban dang NFD.
 """
 import base64
 import importlib.util
 import io
 import re
+import unicodedata
 import urllib.request
 from pathlib import Path
 
@@ -265,4 +276,80 @@ def test_moi_to_hop_khong_mat_codepoint_so_voi_font_goc():
         f"Cac to hop sau THIEU codepoint so voi font goc (da subset RON "
         f"glyph so voi chinh nguon da tai ve): "
         f"{[(k, [hex(c) for c in v[:10]]) for k, v in loi]}"
+    )
+
+
+# Fix round 6: ten tieng Viet cho 8 dau ket hop can kiem, dung trong thong
+# bao loi de nguoi doc log khong phai tra U+031B la dau gi. Nam dau dau la
+# THANH (dung chung Latin khac), ba dau sau la BIEN AM (gan nhu chi tieng
+# Viet dung, la trong tam cua round 6).
+DAU_KET_HOP = {
+    0x0300: "huyen",
+    0x0301: "sac",
+    0x0303: "nga",
+    0x0309: "hoi",
+    0x0323: "nang",
+    0x0302: "mu, dung cho a-mu, e-mu, o-mu (chu la a, e, o co dau mu)",
+    0x0306: "trang, dung cho a-trang (chu la a co dau trang)",
+    0x031B: "moc, dung cho o-moc va u-moc (chu la o, u co dau moc)",
+}
+
+
+def test_moi_to_hop_du_dau_ket_hop_tieng_viet():
+    """Fix round 6: unicode-range Google cong bo cho MOI subset (ke ca
+    subset ten "vietnamese") khong liet ke U+0302 (mu), U+0306 (trang),
+    U+031B (moc) -- ba dau BIEN AM phan biet "a e o u" voi "a e o u co dau
+    bien am" (tuc "â ă ê ô ơ ư"), gan nhu chi tieng Viet dung nen khong nam
+    trong subset nao Google cong bo, DU FONT GOC CO DU CA BA (da verify
+    bang tay qua fontTools truoc khi sua build-fonts.py). Nam dau THANH thi
+    co vi dung chung voi Latin khac. Test nay kiem TRUC TIEP tren file da
+    nhung, offline, khong can mang -- re va nen chay moi lan, khong doi hoi
+    render PDF.
+    """
+    loi = []
+    for fam, style, weight, b64 in _BLOCKS:
+        cmap = set(TTFont(io.BytesIO(base64.b64decode(b64))).getBestCmap().keys())
+        thieu = [f"U+{cp:04X} ({ten})" for cp, ten in DAU_KET_HOP.items() if cp not in cmap]
+        if thieu:
+            loi.append(((fam, style, weight), thieu))
+    assert not loi, (
+        f"Cac to hop sau THIEU dau ket hop tieng Viet trong cmap (van ban "
+        f"Unicode dang NFD, chu nen + dau roi, se mat dau khi gap to hop "
+        f"nay): {loi}"
+    )
+
+
+def test_font_nfd_khong_mat_dau_bien_am():
+    """Fix round 6: van ban Unicode dang NFD (chu nen + dau ket hop roi,
+    gap khi copy tu macOS, tu PDF cu, hoac mot so API) phai giu dung dau
+    bien am khi render qua WeasyPrint, khong chi dang NFC (to hop san) da
+    test o test_font_khong_lon_glyph_qua_weasyprint.
+
+    QUAN TRONG: hanh vi tang text voi input NFD KHONG CO DINH -- neu MOT
+    font du glyph ve ca cum (dung truong hop o day, sau round 6) thi
+    HarfBuzz co the tai to hop ve NFC khi xuat text layer; neu phai dung
+    NHIEU font thi giu nguyen NFD. Vi vay PHAI chuan hoa CA HAI ve VE CUNG
+    MOT DANG (NFC) truoc khi so, neu khong test se do gia tuy may/tuy ban
+    HarfBuzz.
+    """
+    chuoi_nfc = "Tu khoa: ăn, âu, đêm, hôm, mơ, ưu."
+    chuoi_nfd = unicodedata.normalize("NFD", chuoi_nfc)
+    assert chuoi_nfd != chuoi_nfc, "chuoi thu chua co dau bien am nao de NFD hoa, sua lai chuoi"
+
+    doc_duoc, so_trang = _render_va_doc_lai(_FONT_CSS_TEXT, "Spectral", "normal", "400", chuoi_nfd)
+
+    assert so_trang == 1, (
+        f"PDF ra {so_trang} trang, ky vong 1. Nghi TRAN TRANG, khong phai "
+        f"loi mat dau NFD."
+    )
+
+    doc_duoc_nfc = unicodedata.normalize("NFC", doc_duoc)
+    ky_vong_nfc = unicodedata.normalize("NFC", chuoi_nfc)
+    assert doc_duoc_nfc == ky_vong_nfc, (
+        f"Van ban dang NFD bi mat dau bien am khi render qua WeasyPrint "
+        f"(da chuan hoa ca hai ve NFC truoc khi so, nen day khong phai do "
+        f"khac bieu dien NFC/NFD): doc duoc {doc_duoc_nfc!r}, ky vong "
+        f"{ky_vong_nfc!r}. Kiem tra build-fonts.py co con ep COMBINING_"
+        f"DIACRITICS khi subset khong (xem "
+        f"test_moi_to_hop_du_dau_ket_hop_tieng_viet)."
     )

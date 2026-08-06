@@ -1,0 +1,223 @@
+<!--
+  MINH HOẠ: ba cấp neo số trong văn xuôi tài chính, từ không đánh dấu gì tới ký hiệu hậu tố,
+  để người đọc biết số nào tra được ở đâu mà không làm vỡ nhịp đọc của cả đoạn.
+
+  LẤY Ý TỪ (chi tiết đầy đủ: research/06-source-notes/FINDINGS.md mục 3):
+  - Quy ước ký hiệu hậu tố một chữ cái của World Bank "Global Economic Prospects" (e = ước tính,
+    f = dự báo), chuyển thành hậu tố "d" (dự báo) trong font mono.
+  - Quy ước thứ tự ký hiệu chú thích cổ điển: dấu sao, dagger, double-dagger cho tối đa ba chú
+    thích trong cùng một khối văn bản độc lập.
+  - Nguyên lý "trực tiếp, không rời câu văn" đối chiếu từ Economist chart style guide, đã có ở
+    research/01-editorial/FINDINGS.md mục 5.3 cho việc NHẤN LUẬN ĐIỂM; ở đây áp dụng cho việc
+    NEO NGUỒN, là một trục khác, độc lập với trục nhấn luận điểm.
+
+  KHI NÀO ĐỪNG DÙNG:
+  - Đừng áp cả ba cấp cho một bảng dày đặc số liệu, bảng đã có ký hiệu hậu tố theo cột là đủ.
+  - Đừng dùng cấp 3 (ký hiệu hậu tố) cho số suy ra được ngay trong đoạn, việc đó chỉ nên ở cấp 1.
+  - Đừng dùng quá ba ký hiệu dấu sao/dagger trong cùng một khối, vượt quá ba thì chuyển sang số
+    thứ tự superscript vì ký hiệu lặp (hai dấu sao, hai dagger) khó phân biệt ở cỡ chữ nhỏ.
+
+  Công ty "CTCP Vật liệu Xây dựng Sông Hồng" và mã "SHM*" là HƯ CẤU. Toàn bộ số liệu trong file
+  là số MINH HOẠ, không phải khuyến nghị đầu tư, không đại diện cho doanh nghiệp niêm yết thật.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>SHM* - Neo số trong văn xuôi</title>
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --line-lo: #EEF1F6;
+    --accent: #2251FF;
+    --pos: #008A6D;
+    --neg: #C22F4E;
+    --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem;
+    --fs-small: 0.825rem;
+    --fs-body: 1rem;
+    --fs-h3: 1.333rem;
+    --fs-h2: 1.777rem;
+    --fs-h1: 2.369rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 24px auto;
+    background: var(--paper); box-shadow: 4px 4px 0px rgba(5 28 44 / 0.18);
+    padding: 20mm; position: relative;
+  }
+  .research-tag {
+    position: absolute; top: 8px; right: 8px;
+    font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper);
+    padding: 2px 8px; letter-spacing: 0.04em; z-index: 5;
+  }
+  .kicker {
+    font-family: var(--font-mono); font-size: var(--fs-small);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 var(--space-2) 0;
+  }
+  h1.headline { font-size: var(--fs-h1); font-weight: 600; line-height: 1.18; margin: 0 0 var(--space-3) 0; max-width: 26ch; }
+  p.lede { font-size: var(--fs-small); color: var(--ink-md); max-width: 62ch; line-height: 1.6; margin: 0 0 var(--space-7) 0; }
+
+  h2.step-title {
+    font-size: var(--fs-h3); font-weight: 600; margin: 0 0 var(--space-2) 0;
+    display: flex; align-items: baseline; gap: var(--space-3);
+  }
+  .step-num {
+    font-family: var(--font-mono); font-size: var(--fs-small); color: var(--paper);
+    background: var(--ink); padding: 2px 9px; letter-spacing: 0.04em;
+  }
+  p.desc { font-size: var(--fs-small); color: var(--ink-md); margin: 0 0 var(--space-3) 0; max-width: 62ch; }
+
+  .example-box {
+    background: var(--paper-hi); border-left: 3px solid var(--accent);
+    padding: var(--space-4) var(--space-5); margin-bottom: var(--space-3);
+  }
+  p.body-text { font-size: var(--fs-body); line-height: 1.75; max-width: 66ch; margin: 0; }
+
+  /* ── CẤP 2: gạch chân chấm mờ, không dùng màu xanh kiểu hyperlink ─────── */
+  .anchor-dotted {
+    text-decoration: underline dotted;
+    text-decoration-color: var(--ink-lo);
+    text-underline-offset: 3px;
+    color: var(--ink);
+  }
+
+  /* ── CẤP 3: ký hiệu hậu tố mono, dùng cho số dự phóng/nội bộ ──────────── */
+  .fc-suffix {
+    font-family: var(--font-mono); font-size: 0.68em; color: var(--warn);
+    vertical-align: super; margin-left: 1px; font-weight: 600;
+  }
+  .note-mark {
+    font-family: var(--font-mono); font-size: 0.72em; color: var(--accent);
+    vertical-align: super; margin-left: 1px; font-weight: 600;
+  }
+
+  .footnote-block {
+    margin-top: var(--space-4); padding-top: var(--space-3);
+    border-top: 1px solid var(--line);
+  }
+  .footnote-line {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo);
+    line-height: 1.7; margin: 0 0 3px 0;
+  }
+  .footnote-line b { color: var(--ink-md); }
+
+  section.step { margin-bottom: var(--space-7); }
+
+  .verdict {
+    margin-top: var(--space-7); padding: var(--space-5);
+    background: var(--ink); color: var(--paper);
+  }
+  .verdict .v-kicker {
+    font-family: var(--font-mono); font-size: var(--fs-caption); letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent-soft, #7D9BFF); margin: 0 0 var(--space-2) 0;
+  }
+  .verdict ul { margin: 0; padding-left: 1.1em; font-size: var(--fs-small); line-height: 1.7; }
+  .verdict li { margin-bottom: 4px; }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+  }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; box-shadow: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 18mm; }
+    section.step, .verdict { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">NEO SỐ 3 CẤP TRONG VĂN XUÔI</span>
+
+  <p class="kicker">Hệ chú nguồn &middot; Neo số trong văn xuôi</p>
+  <h1 class="headline">Không phải số nào cũng cần đánh dấu như nhau</h1>
+  <p class="lede">Một đoạn phân tích tài chính thường có nhiều con số cùng lúc, nhưng chỉ một
+  phần trong đó thực sự cần người đọc tra lại nguồn. Ba cấp dưới đây xếp từ nhẹ nhất tới nặng
+  nhất, dùng đúng cấp cho đúng loại số giữ được nhịp đọc của cả đoạn.</p>
+
+  <section class="step">
+    <h2 class="step-title"><span class="step-num">CẤP 1</span> Không đánh dấu gì</h2>
+    <p class="desc">Dùng khi số suy ra được ngay từ số liệu đã nêu trong cùng đoạn, người đọc
+    tự kiểm được bằng phép tính đơn giản, không cần tra nguồn nào khác.</p>
+    <div class="example-box">
+      <p class="body-text">Doanh thu thuần quý 2/2026 của SHM* đạt 1.240 tỷ đồng, giá vốn hàng
+      bán là 1.008 tỷ đồng. Biên lợi nhuận gộp theo đó là 18,7%, một con số suy ra trực tiếp từ
+      hai số vừa nêu nên không cần neo thêm ký hiệu nào.</p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-title"><span class="step-num">CẤP 2</span> Gạch chân chấm mờ</h2>
+    <p class="desc">Dùng khi số có nguồn cụ thể bên ngoài đoạn văn, nhưng không phải số dự phóng
+    hay số cần phân biệt gấp. Gạch chân chấm là tín hiệu "tra được ở chú thích gần nhất", nhẹ hơn
+    một ký hiệu chen vào giữa câu.</p>
+    <div class="example-box">
+      <p class="body-text">Theo Tổng cục Thống kê, sản lượng xi măng tiêu thụ toàn ngành tháng
+      6/2026 đạt <span class="anchor-dotted">7,8 triệu tấn</span>, giảm so với mức
+      <span class="anchor-dotted">8,4 triệu tấn</span> của tháng 5/2026. SHM* giữ thị phần khoảng
+      <span class="anchor-dotted">4,1%</span> trong tổng sản lượng tiêu thụ đó.</p>
+      <div class="footnote-block">
+        <p class="footnote-line"><b>Nguồn:</b> Tổng cục Thống kê, báo cáo tình hình sản xuất
+        công nghiệp tháng 6/2026, công bố 29/06/2026 &middot; thị phần SHM* là ước tính của đơn
+        vị phát hành báo cáo, tính trên sản lượng tiêu thụ công bố theo vùng.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2 class="step-title"><span class="step-num">CẤP 3</span> Ký hiệu hậu tố mono</h2>
+    <p class="desc">Dùng khi số là số dự phóng hoặc số nội bộ cần phân biệt rõ với số đã công
+    bố. Ký hiệu hậu tố mạnh hơn gạch chân vì báo trực tiếp "đây không phải số đo được". Tối đa ba
+    chú thích trong cùng khối dùng thứ tự dấu sao, dagger, double-dagger; vượt quá ba thì chuyển
+    sang số thứ tự.</p>
+    <div class="example-box">
+      <p class="body-text">Doanh thu thuần cả năm 2026 của SHM* được ước tính đạt 5.360 tỷ
+      đồng<span class="fc-suffix">d</span>, tăng 11,2%<span class="fc-suffix">d</span> so với năm
+      trước, dựa trên biên lợi nhuận gộp giữ quanh 18,5%<span class="note-mark">*</span> và giả
+      định giá đầu vào clinker không biến động mạnh trong nửa cuối năm<span
+      class="note-mark">&dagger;</span>.</p>
+      <div class="footnote-block">
+        <p class="footnote-line"><b>d</b> = số dự báo, ước tính của đơn vị phát hành báo cáo,
+        không phải số đã công bố.</p>
+        <p class="footnote-line"><b>*</b> Biên lợi nhuận gộp bình quân bốn quý gần nhất theo
+        BCTC hợp nhất, không phải giả định riêng cho năm 2026.</p>
+        <p class="footnote-line"><b>&dagger;</b> Giả định phương pháp luận, xem hộp giả định đầy
+        đủ trong mẫu <i>source-khoi-gia-dinh-dinh-gia.html</i>.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="verdict">
+    <p class="v-kicker">Khi nào KHÔNG dùng bất kỳ cấp nào trong ba cấp trên</p>
+    <ul>
+      <li>Một con số chỉ cần một vế ngữ cảnh ngắn (ví dụ "cao nhất bốn quý gần nhất") thì viết
+      thẳng vào câu văn, đừng phong nó thành chú thích ở bất kỳ cấp nào.</li>
+      <li>Đừng trộn cấp 3 vào một bảng dày đặc số liệu, bảng đã có ký hiệu hậu tố theo cột riêng
+      là đủ, xem mẫu <i>source-bang-thuc-te-du-phong.html</i>.</li>
+      <li>Đừng dùng quá ba ký hiệu dấu sao/dagger trong cùng một đoạn, chuyển sang số thứ tự khi
+      vượt quá ba chú thích.</li>
+    </ul>
+  </div>
+</section>
+</body>
+</html>

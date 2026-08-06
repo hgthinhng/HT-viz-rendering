@@ -154,25 +154,28 @@ p.dek{ color:var(--ink-md); font-size:1rem; max-width:64ch; margin:0 0 30px; }
     <p class="ex-lab">Hình 1</p>
     <p class="ex-title">Cước vận tải container nội Á đảo chiều từ quý 2/2024, dự phóng tiếp tục giảm về sát vùng 120 điểm trong 2026</p>
     <div class="chart-box">
-      <svg viewBox="0 0 640 300" width="100%" height="auto" role="img" aria-labelledby="ex1-title ex1-desc">
+      <svg viewBox="0 0 640 300" width="100%" role="img" aria-labelledby="ex1-title ex1-desc"
+        font-family="'IBM Plex Mono','Noto Sans Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="9.5">
         <title id="ex1-title">Chỉ số cước vận tải container nội Á theo quý, 2023 đến 2026</title>
         <desc id="ex1-desc">Đường liền thể hiện số liệu thực tế từ quý 1/2023 đến quý 4/2025, đạt đỉnh 142 điểm ở quý 3/2024 rồi giảm về 127 điểm. Đường nét đứt từ quý 1/2026 thể hiện dự phóng, giảm dần về 120 điểm cuối năm.</desc>
-        <line class="grid-line" x1="60" y1="260" x2="600" y2="260"></line>
-        <line class="grid-line" x1="60" y1="187" x2="600" y2="187"></line>
-        <line class="grid-line" x1="60" y1="113" x2="600" y2="113"></line>
-        <line class="grid-line" x1="60" y1="40" x2="600" y2="40"></line>
-        <text class="axis-label" x="50" y="264" text-anchor="end">90</text>
-        <text class="axis-label" x="50" y="191" text-anchor="end">110</text>
-        <text class="axis-label" x="50" y="117" text-anchor="end">130</text>
-        <text class="axis-label" x="50" y="44" text-anchor="end">150</text>
+        <line x1="60" y1="260" x2="600" y2="260" stroke="#EEF1F6" stroke-width="1"></line>
+        <line x1="60" y1="187" x2="600" y2="187" stroke="#EEF1F6" stroke-width="1"></line>
+        <line x1="60" y1="113" x2="600" y2="113" stroke="#EEF1F6" stroke-width="1"></line>
+        <line x1="60" y1="40" x2="600" y2="40" stroke="#EEF1F6" stroke-width="1"></line>
+        <text x="50" y="264" text-anchor="end" fill="#8595A6">90</text>
+        <text x="50" y="191" text-anchor="end" fill="#8595A6">110</text>
+        <text x="50" y="117" text-anchor="end" fill="#8595A6">130</text>
+        <text x="50" y="44" text-anchor="end" fill="#8595A6">150</text>
 
-        <line class="cutoff-line" x1="445" y1="30" x2="445" y2="270"></line>
-        <text class="cutoff-label" x="449" y="26">Chốt: 2025 Q4</text>
+        <line x1="445" y1="30" x2="445" y2="270" stroke="#8595A6" stroke-width="1" stroke-dasharray="2 3"></line>
+        <text x="449" y="26" fill="#8595A6" font-size="9">Chốt: 2025 Q4</text>
 
-        <polyline class="line-actual" points="60,223 95,209 130,179 165,146 200,113 235,84 270,69 305,95 340,128 375,157 410,146 445,124"></polyline>
-        <polyline class="line-forecast" points="445,124 480,106 515,117 550,135 585,150"></polyline>
+        <polyline points="60,223 95,209 130,179 165,146 200,113 235,84 270,69 305,95 340,128 375,157 410,146 445,124"
+          fill="none" stroke="#1233B8" stroke-width="2.4"></polyline>
+        <polyline points="445,124 480,106 515,117 550,135 585,150"
+          fill="none" stroke="#1233B8" stroke-width="2.4" stroke-dasharray="5 4"></polyline>
 
-        <g class="dot-actual">
+        <g fill="#1233B8">
           <circle cx="60" cy="223" r="2.6"></circle><circle cx="95" cy="209" r="2.6"></circle>
           <circle cx="130" cy="179" r="2.6"></circle><circle cx="165" cy="146" r="2.6"></circle>
           <circle cx="200" cy="113" r="2.6"></circle><circle cx="235" cy="84" r="2.6"></circle>
@@ -180,15 +183,15 @@ p.dek{ color:var(--ink-md); font-size:1rem; max-width:64ch; margin:0 0 30px; }
           <circle cx="340" cy="128" r="2.6"></circle><circle cx="375" cy="157" r="2.6"></circle>
           <circle cx="410" cy="146" r="2.6"></circle><circle cx="445" cy="124" r="2.8"></circle>
         </g>
-        <g class="dot-forecast">
+        <g fill="#FFFFFF" stroke="#1233B8" stroke-width="1.8">
           <circle cx="480" cy="106" r="2.8"></circle><circle cx="515" cy="117" r="2.8"></circle>
           <circle cx="550" cy="135" r="2.8"></circle><circle cx="585" cy="150" r="2.8"></circle>
         </g>
 
-        <text class="axis-label" x="60" y="284" text-anchor="middle">2023 Q1</text>
-        <text class="axis-label" x="200" y="284" text-anchor="middle">2024 Q1</text>
-        <text class="axis-label" x="340" y="284" text-anchor="middle">2025 Q1</text>
-        <text class="axis-label" x="480" y="284" text-anchor="middle">2026 Q1</text>
+        <text x="60" y="284" text-anchor="middle" fill="#8595A6">2023 Q1</text>
+        <text x="200" y="284" text-anchor="middle" fill="#8595A6">2024 Q1</text>
+        <text x="340" y="284" text-anchor="middle" fill="#8595A6">2025 Q1</text>
+        <text x="480" y="284" text-anchor="middle" fill="#8595A6">2026 Q1</text>
       </svg>
       <div class="legend-row">
         <span class="sw"><span class="ln"></span> Thực tế</span>

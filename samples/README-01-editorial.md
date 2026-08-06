@@ -29,15 +29,21 @@ bằng lệnh `weasyprint samples/<file>.html <output>.pdf`, sau đó kiểm b�
 
 Trong lúc render thật, phát hiện ba giới hạn CSS của WeasyPrint 69.0 không liên quan gì đến nội
 dung thiết kế nhưng ảnh hưởng đến cách viết CSS cho đúng pipeline này: `box-shadow` không được
-hỗ trợ dưới bất kỳ hình thức nào (kể cả blur = 0), cú pháp media query CSS3/4 dạng
-`@media screen and (max-width: ...)` không được phân tích cú pháp (dù đúng theo ràng buộc cứng
-của repo cho trình duyệt thật), và các hàm toán học CSS (`clamp()`/`min()`/`max()`) bị bỏ qua âm
-thầm. Chi tiết đầy đủ, gồm cách tái hiện và ý nghĩa cho hệ thống component hiện tại, xem mục "0.
-Bốn phát hiện kỹ thuật" ở đầu `research/01-editorial/FINDINGS.md`.
+hỗ trợ dưới bất kỳ hình thức nào (kể cả blur = 0); WeasyPrint CÓ hỗ trợ `@media` cho danh sách
+media-type kiểu CSS2 (`screen`, `print`, `all`... đã xác nhận `@media print` áp dụng đúng thật),
+nhưng KHÔNG parse được cú pháp media-feature `(max-width: ...)` dưới bất kỳ tổ hợp nào, kể cả sau
+`screen and` - ĐÂY KHÔNG PHẢI LÝ DO ĐỂ GỠ ràng buộc cứng "media query màn hình phải viết
+`@media screen and (max-width: ...)`" của repo, ràng buộc đó vẫn cần giữ nguyên vì nó đúng và cần
+thiết cho trình duyệt thật; và các hàm toán học CSS (`clamp()`/`min()`/`max()`) bị bỏ qua âm
+thầm. Chi tiết đầy đủ, gồm ba phép đo dùng để phân định rạch ròi "không parse được" với "parse
+được nhưng đánh giá khác", xem mục "0. Bốn phát hiện kỹ thuật" ở đầu
+`research/01-editorial/FINDINGS.md` (mục 0.2 đã được controller yêu cầu sửa lại một lần vì bản
+đầu suy luận sai).
 
 Cả 5 file đều đã tuân theo đúng cách viết an toàn (không dùng hàm toán học cho font-size, box-shadow
 chỉ dùng trang trí cho bản xem màn hình và tắt hẳn ở `@media print`, media query màn hình vẫn viết
-đúng chuẩn `screen and` vì đó là hành vi ĐÚNG khi ai đó mở file bằng trình duyệt thật).
+đúng chuẩn `screen and` vì đó là hành vi ĐÚNG khi ai đó mở file bằng trình duyệt thật, và ĐỪNG bỏ
+`screen` dù WeasyPrint không parse được cú pháp đó).
 
 **Cảnh báo font nhận từ controller, đã đối chiếu và xác nhận KHÔNG dính**: `design-system/fonts/fonts-embedded.css`
 đang có bug làm lộn glyph tiếng Việt trong WeasyPrint (`nghệ` ra `nght`) do hai khối `@font-face`

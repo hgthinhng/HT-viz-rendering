@@ -19,7 +19,7 @@ thật qua WeasyPrint và đếm ảnh raster bằng `scripts/count_raster.py` �
 
 ---
 
-## 0. Bốn phát hiện kỹ thuật xác minh bằng cách render THẬT qua WeasyPrint 69.0, không phải suy đoán
+## 0. Bốn phát hiện kỹ thuật xác minh bằng cách render THẬT qua WeasyPrint 69.0, cộng một nguyên tắc bao trùm
 
 Trong lúc render 5 mẫu HTML của mục nghiên cứu này qua WeasyPrint 69.0 để tự kiểm (đúng yêu
 cầu "mỗi file phải in ra A4 được"), ba giới hạn CSS sau xuất hiện ở MỌI file, được cô lập và tái
@@ -27,7 +27,9 @@ hiện lại bằng file test tối giản riêng để loại trừ khả năng
 (0.4) là một cảnh báo nhận từ controller trong lúc làm vòng này, đã đối chiếu lại với 5 mẫu của
 chính agent này để xác nhận không dính. Đây không phải phát hiện thiết kế editorial, mà là giới
 hạn ENGINE hoặc bug cụ thể, ảnh hưởng đến toàn bộ repo chứ không riêng gì các mẫu ở đây, nên ghi
-lại rõ ràng để không ai phải tái khám phá.
+lại rõ ràng để không ai phải tái khám phá. Mục 0.2 đã được controller sửa lại sau một lần đọc
+phản biện (bản đầu kết luận sai, xem ghi chú "SỬA LẠI" ngay đầu mục 0.2); mục 0.5 đúc kết nguyên
+tắc chung rút ra từ cả bốn phát hiện.
 
 ### 0.1 `box-shadow` KHÔNG được WeasyPrint hỗ trợ, dưới bất kỳ hình thức nào, kể cả blur = 0
 

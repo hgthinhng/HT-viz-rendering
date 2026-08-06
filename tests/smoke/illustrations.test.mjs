@@ -34,15 +34,58 @@ test('moi SVG co role img va title tieng Viet', () => {
   }
 });
 
-test('annotate.js chi cho 3 gia tri tone', () => {
-  const js = readFileSync(path.join(ROOT, 'illustrations/annotate.js'), 'utf8');
-  for (const bad of ['good', 'warn', 'bad']) {
-    assert.doesNotMatch(
-      js,
-      new RegExp(`['"\`]${bad}['"\`]\\s*:`),
-      `annotate.js con tone "${bad}", chi duoc neutral/negative/accent`,
-    );
+// Trich dung ma khoa CAP MOT cua khoi "TONES = { ... }" trong annotate.js.
+// Khong dung regex danh sach den (dang bat 3 ten xau nghi truoc) vi no chi
+// chan duoc nhung ten da nghi ra, bo lot moi ten moi (vd "good", "warn").
+// Thay vao do quet can bang dau ngoac { } de tim dung khoi TONES, roi tach
+// top-level theo dau phay o do sau 0 (bo qua dau phay/ngoac ben trong tung
+// object con nhu { line, text, border, bg }), chi lay khoa CAP MOT. Nhan ca
+// khoa bareword (neutral:) lan khoa co nhay ('neutral':, "neutral":).
+function extractToneKeys(source) {
+  const start = source.match(/TONES\s*=\s*\{/);
+  if (!start) {
+    throw new Error('khong tim thay khai bao "TONES = {" trong annotate.js');
   }
+  let i = start.index + start[0].length;
+  let depth = 1;
+  const blockStart = i;
+  while (depth > 0 && i < source.length) {
+    if (source[i] === '{') depth += 1;
+    else if (source[i] === '}') depth -= 1;
+    i += 1;
+  }
+  const blockContent = source.slice(blockStart, i - 1);
+
+  const entries = [];
+  let entryStart = 0;
+  let d = 0;
+  for (let j = 0; j < blockContent.length; j += 1) {
+    const ch = blockContent[j];
+    if (ch === '{' || ch === '(' || ch === '[') d += 1;
+    else if (ch === '}' || ch === ')' || ch === ']') d -= 1;
+    else if (ch === ',' && d === 0) {
+      entries.push(blockContent.slice(entryStart, j));
+      entryStart = j + 1;
+    }
+  }
+  entries.push(blockContent.slice(entryStart));
+
+  const keys = [];
+  for (const entry of entries) {
+    const m = entry.match(/^\s*(?:['"`])?([A-Za-z_$][A-Za-z0-9_$]*)(?:['"`])?\s*:/);
+    if (m) keys.push(m[1]);
+  }
+  return keys;
+}
+
+test('TONES trong annotate.js dung bang {neutral, negative, accent}, khong thua khong thieu', () => {
+  const js = readFileSync(path.join(ROOT, 'illustrations/annotate.js'), 'utf8');
+  const keys = extractToneKeys(js);
+  assert.deepEqual(
+    [...keys].sort(),
+    ['accent', 'negative', 'neutral'],
+    `TONES co khoa ${JSON.stringify(keys)}, phai dung bang {neutral, negative, accent}, khong duoc them ten moi`,
+  );
 });
 
 test('verify-illustrations.mjs tra exit 0', () => {

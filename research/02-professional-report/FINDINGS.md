@@ -444,3 +444,77 @@ samples/report-verdict-vs-recap-teardown.html.
 - stripe.com/annual-updates: trả về 404 tại thời điểm truy cập (đường dẫn có thể đã đổi cấu
   trúc). Không đưa phát hiện riêng về thiết kế thư Stripe vào hồ sơ này vì không xác minh được
   trực tiếp, bỏ khỏi phạm vi thay vì suy diễn.
+
+---
+
+## Phụ lục kỹ thuật: hai lỗi chỉ bắt được khi verify đúng engine PDF thật
+
+Hai phát hiện này không thuộc 6 mục nghiên cứu thiết kế ở trên, ghi riêng vì thuộc lớp "đo được,
+không phải đoán", đúng kỷ luật của repo. Cả hai đều KHÔNG lộ ra khi mở file bằng Chromium hay
+Playwright, chỉ lộ khi render bằng đúng engine PDF thật của repo là WeasyPrint 69.0.
+
+### KT.1, Font unicode-range trùng subset làm lộn glyph, và copy inline không né được bug
+
+`design-system/fonts/fonts-embedded.css` từng khai mỗi (family, style, weight) thành HAI khối
+`@font-face` chỉ khác `unicode-range` (subset vietnamese/latin kiểu Google Fonts phục vụ qua
+mạng). WeasyPrint 69.0 không chọn đúng subset khi hai khối trùng tên, trùng weight, trùng style,
+nên chữ tiếng Việt ra lộn glyph ở TẦNG TEXT của PDF, không chỉ tầng hình ảnh, đọc lại bằng
+`page.get_text()` thấy sai từng chữ (ví dụ "tài liệu" ra "tài litu", "kết quả" ra "kết quo").
+
+Bẫy quan trọng nhất: COPY nguyên khối `@font-face` hai-subset vào thẻ `<style>` inline (thay vì
+`<link>` tới file gốc) KHÔNG né được bug. Bug nằm ở CẤU TRÚC hai khối trùng family/weight/style
+chỉ khác `unicode-range`, không nằm ở cách khối đó được nạp vào trang. Bốn mẫu của vòng này từng
+dính lỗi này vì đã splice một snapshot CŨ của `fonts-embedded.css` (trước khi agent phụ trách
+`design-system/` gộp hai subset thành một khối duy nhất mỗi weight, commit `f1130b4`). Vá bằng
+cách re-splice bản HIỆN TẠI của file đó (0 khối `unicode-range`, 14 khối `@font-face` cho 12 tổ
+hợp family/style/weight, đã gộp subset), không cần hạ xuống font hệ thống fallback.
+
+Cách verify ĐÚNG, không thể sai: render bằng `weasyprint.HTML(filename=...).write_pdf(...)`, mở
+lại bằng `fitz.open(...)`, gọi `page.get_text()`, so chuỗi trích ra với chuỗi gốc trong HTML từng
+ký tự một. Mở bằng Chromium hay Playwright KHÔNG bắt được lỗi này vì trình duyệt xử lý
+`unicode-range` đúng, chỉ WeasyPrint xử lý sai. Đã chạy lại đúng phép này trên cả 4 mẫu của vòng,
+kết quả sạch tuyệt đối sau khi vá, dán bằng chứng dưới đây.
+
+### KT.2, `<svg width="100%" height="auto">` render RỖNG HOÀN TOÀN trên WeasyPrint, không lỗi, không log
+
+Phát hiện mới, riêng của vòng này, ảnh hưởng mọi SVG nhúng tay cho báo cáo render qua WeasyPrint.
+Một thẻ `<svg viewBox="0 0 W H" width="100%" height="auto">` render thành khối RỖNG (cao bằng 0)
+trên WeasyPrint 69.0, dù markup giống hệt render đúng tuyệt đối trên Chromium. Không có lỗi, không
+có cảnh báo trong log, khối chỉ đơn giản không chiếm chỗ và không vẽ gì bên trong.
+
+Đã cô lập nguyên nhân bằng ba biến thể trong một file test riêng: `width="100%" height="auto"`
+rỗng; `width`/`height` bằng số px tuyệt đối đúng; `width="100%"` bỏ hẳn thuộc tính `height` cũng
+đúng (WeasyPrint tự suy chiều cao từ tỉ lệ `viewBox`). Ban đầu nghi nguyên nhân là CSS `var()`
+dùng bên trong SVG qua class ngoài (giả thuyết sai), đã loại giả thuyết đó bằng cách đổi toàn bộ
+sang thuộc tính trình bày trực tiếp (`fill="#..."`, `stroke="#..."`) mà khối vẫn rỗng, chỉ hết
+rỗng sau khi bỏ `height="auto"`.
+
+Áp dụng cho `samples/report-exhibit-institutional.html`, Hình 1 (chart actual-vs-forecast): bỏ
+`height="auto"`, chỉ giữ `width="100%"` cộng `viewBox`, verify lại đúng trên cả hai engine.
+**Khuyến nghị cho mọi SVG tay vẽ nhúng trong báo cáo của repo này**: không bao giờ khai
+`height="auto"` trên `<svg>` dù cú pháp hợp lệ theo chuẩn HTML, luôn để trống thuộc tính `height`
+(chỉ khai `width`) hoặc khai cả hai bằng số tuyệt đối khớp `viewBox`.
+
+### Bằng chứng verify cuối cùng, cả 4 mẫu, đọc tầng text từ PDF WeasyPrint thật
+
+```
+report-dense-data-table.html            @font-face=14 unicode-range=1(chỉ trong comment)
+  "PHỤ LỤC SỐ LIỆU · CTCP VẬN TẢI BIỂN Á CHÂU ... Hai trường phái trình bày số âm,
+   chọn theo thể loại tài liệu chứ không theo sở thích ..."
+
+report-exec-brief-action-first.html     @font-face=14 unicode-range=1(chỉ trong comment)
+  "TÓM TẮT ĐIỀU HÀNH · ĐỀ XUẤT HẠN MỨC TRÁI PHIẾU XANH ... NÊN tham gia tối đa
+   150 tỷ đồng vào đợt phát hành trái phiếu xanh của CTCP Vận tải Biển Á Châu ..."
+
+report-exhibit-institutional.html       @font-face=14 unicode-range=1(chỉ trong comment)
+  "PHỤ LỤC HÌNH VÀ BẢNG · NGÀNH VẬN TẢI CONTAINER NỘI Á ... Kỷ luật exhibit:
+   mỗi hình có tiêu đề khẳng định, đường nét đứt là dự phóng ..."
+
+report-verdict-vs-recap-teardown.html   @font-face=14 unicode-range=1(chỉ trong comment)
+  "MỔ XẺ TRƯỚC, ĐÚNG SAU · ĐOẠN MỞ THƯ MỜI HỌP CỔ ĐÔNG ... Cùng một dữ kiện,
+   một cách viết chôn quyết định ở đoạn ba, một cách viết đặt nó ở câu đầu ..."
+```
+
+Mọi dấu tiếng Việt đúng tuyệt đối, không một ký tự lộn glyph, đối chiếu từng chữ với chuỗi gốc
+trong HTML. `raster_objects` (đếm bằng `doc.xref_object`, đúng phương pháp của repo) bằng 0 trên
+cả 4 file, cả 2 trang mỗi file.

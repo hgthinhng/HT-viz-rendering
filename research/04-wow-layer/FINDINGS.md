@@ -248,35 +248,71 @@ vào đúng vùng AI-slop, xem ANTI-SLOP.md.
 
 ---
 
-## 8. Tạo độ nổi không dùng blur (bài toán kỹ thuật thật của repo)
+## 8. Tạo độ nổi không dùng blur, và một giới hạn còn nặng hơn: shadow không tồn tại
 
-**Nguồn:** kỹ thuật letterpress/emboss bằng `text-shadow` hai lớp ([Smashing Magazine](https://www.smashingmagazine.com/2012/07/letterpress-effect-fireworks-css/)); kỹ thuật xếp lớp box-shadow và inset shadow ([CSS-Tricks](https://css-tricks.com/getting-deep-into-shadows/)).
+**Nguồn ban đầu (đã SAI một phần, xem sửa lại ngay dưới):** kỹ thuật letterpress/emboss bằng
+`text-shadow` hai lớp ([Smashing Magazine](https://www.smashingmagazine.com/2012/07/letterpress-effect-fireworks-css/));
+kỹ thuật xếp lớp box-shadow và inset shadow ([CSS-Tricks](https://css-tricks.com/getting-deep-into-shadows/)).
 
-Ràng buộc cứng của repo (blur-radius phải bằng 0) đã được xử lý ở tầng token
-(`--shadow-1/2/3` trong `tokens.css`, hai lớp offset cứng). Nghiên cứu này bổ sung THÊM hai kỹ
-thuật blur-0 chưa thấy dùng trong repo, cả hai đều xác nhận an toàn in vì không có `blur()`:
+**ĐÍNH CHÍNH, kiểm bằng so ảnh mức byte (PNG xuất từ WeasyPrint qua cùng một trang, chỉ đổi
+đúng một khai báo CSS mỗi lần, so `bytes` Python trực tiếp, không so bằng mắt):**
+`box-shadow` và `text-shadow` **không tồn tại trong WeasyPrint 69.0 dưới bất kỳ cú pháp nào**,
+kể cả offset cứng blur=0. Bốn phép so ảnh độc lập, mỗi phép giữ nguyên mọi thứ trừ đúng một
+thuộc tính:
 
-**8.1 Chữ nổi/chìm bằng text-shadow hai lớp (letterpress/emboss).** Công thức gốc:
+| Phép so | Biến thể A | Biến thể B | Kết quả |
+|---|---|---|---|
+| 1 | không có `box-shadow` | `box-shadow: 6px 6px 0 #C22F4E` | ảnh PNG giống hệt byte-for-byte |
+| 2 | `box-shadow` màu hex | `box-shadow` màu `rgba(R,G,B,A)` dấu phẩy | giống hệt (cả hai đều = không có shadow) |
+| 3 | `box-shadow` dấu phẩy | `box-shadow` màu `rgba(R G B / A)` khoảng trắng | giống hệt |
+| 4 | `box-shadow` blur=0 | `box-shadow` blur=4px | giống hệt |
+| 5 | không `text-shadow` | `text-shadow` hai lớp (công thức letterpress bên dưới) | giống hệt |
+| 6 | `border-bottom` thường | thêm `box-shadow: inset 0 0 0 999px rgba(...)` ("veil") | giống hệt |
 
-```css
-/* Chữ nổi (raised) */
-text-shadow: 0 1px 0 rgba(5,28,44,0.8), 0 -1px 0 rgba(255,255,255,1.0);
-/* Chữ chìm/khắc (impressed/engraved) */
-text-shadow: 0 -1px 0 rgba(5,28,44,0.8), 0 1px 0 rgba(255,255,255,0.5);
-```
+Ban đầu tôi kết luận SAI rằng cú pháp `rgba(R,G,B,A)` dấu phẩy "sửa" được vấn đề trong khi cú
+pháp `rgba(R G B / A)` mới là thủ phạm, dựa trên so sánh BẰNG MẮT một ảnh chụp thu nhỏ. Team
+lead phân xử lại bằng so ảnh mức byte và chỉ ra: cả hai cú pháp đều cho ảnh giống hệt bản
+KHÔNG có shadow, tức là chính `box-shadow` (và `text-shadow`) không được WeasyPrint 69.0 vẽ ra
+bất kỳ điểm ảnh nào, không liên quan tới cú pháp màu. Tôi tái hiện lại đúng phương pháp của họ
+và xác nhận: kết luận của họ đúng, kết luận ban đầu của tôi sai. Bài học ghi vào phần "Luật
+chung" cuối hồ sơ: **so một hiệu ứng thị giác phải so ảnh ở mức byte, không so bằng mắt** - một
+viền `border` 1px và một shadow offset cứng blur=0 trông gần như nhau trên ảnh chụp thu nhỏ, mắt
+không phân biệt được, byte thì phân biệt được ngay.
 
-Canh bạc: dùng cho SỐ LIỆU HERO ở trang một-con-số, tạo cảm giác "khắc vào giấy" thay vì "dán
-lên giấy" như box-shadow thường tạo ra - khác biệt tinh tế nhưng đúng chất "con dấu mực" mà
-palette ink-navy/electric-blue của repo đang theo đuổi. Thua: trên nền màu (không phải nền trắng
-thuần `--paper`), highlight trắng phía trên có thể tạo viền sáng lộ liễu trông như lỗi render
-màn hình, phải test trên đúng nền `--paper`/`--paper-hi` thật trước khi dùng.
+Quan sát về cú pháp `rgba(R G B / A)` bị bỏ qua khi dùng cho `color`/`background` THƯỜNG (không
+liên quan `box-shadow`) thì **vẫn đúng, đã kiểm lại độc lập bằng đúng phương pháp so byte** (xem
+mục 9), chỉ là nó không phải nguyên nhân của việc thiếu shadow - đó là hai lỗi khác nhau của
+cùng một engine, tình cờ bị tôi gộp nhầm làm một trong bản nháp đầu.
 
-**8.2 "Veil" bằng inset shadow blur 0.** Theo Smashing Magazine, một box-shadow `inset` với
-blur bằng 0 phủ một lớp màu bán trong suốt lên TRÊN nền của chính element đó (khác cách dùng
-inset phổ biến là tạo lõm) - dùng để làm nổi bật một ô trong bảng số liệu dày đặc mà không cần
-đổi background-color rời rạc (tránh việc phải thêm một biến màu mới ngoài token đã chốt). Canh
-bạc: giữ đúng bảng màu hẹp trong khi vẫn có phân cấp thị giác. Thua: dùng quá nhiều ô sẽ làm
-bảng trông "vằn vện" giống Excel tô màu cảnh báo, mất chất báo cáo xuất bản.
+**8.1 Hệ quả cho toàn bộ token shadow của repo.** `--shadow-1/2/3/hairline` trong `tokens.css`,
+dù viết đúng cú pháp gì, đều KHÔNG render ra bất kỳ hiệu ứng gì trong PDF thật xuất từ
+WeasyPrint. Bất kỳ component nào trong `components/` đang dựa vào các biến này để tạo cảm giác
+"khối nổi" hiện đang render PHẲNG TUYỆT ĐỐI trên giấy, dù nhìn "có bóng" khi mở bằng Chromium.
+Đây là khoảng cách kiểm chứng kinh điển: xem đẹp trên trình duyệt không phải bằng chứng cho PDF
+thật, đúng tinh thần "verify output not just runs" đã có trong memory chung của người dùng.
+
+**8.2 Vậy tạo độ nổi bằng gì, đã kiểm chứng render ra điểm ảnh thật.** Ba kỹ thuật dưới đây đều
+đã so ảnh byte-level, xác nhận CÓ tạo ra khác biệt điểm ảnh thật so với bản không dùng:
+
+- **Khối trùng lệch vị trí (offset duplicate).** Hai phần tử thật, không phải một phần tử có
+  shadow: một khối/chữ nền tô màu nhạt (ví dụ `--line` hoặc `--paper-hi`) đặt `position: absolute`
+  lệch 4-6px bằng `transform: translate()`, một khối/chữ chính đặt đè lên trên bằng `z-index`.
+  Cả `transform` lẫn `background`/`color` đều đã xác nhận render đúng trong WeasyPrint (khác
+  `box-shadow`). Hiệu ứng thị giác cuối cùng gần giống "letterpress" định làm ở 8 cũ, nhưng dựng
+  từ hai phần tử THẬT thay vì một shadow ảo. Dùng được cho cả số liệu hero (chữ trùng lệch, màu
+  nhạt phía sau) lẫn thẻ/chip (khối trùng lệch phía sau). Canh bạc: cần đúng 2 phần tử đồng bộ
+  kích thước và font, sai lệch dù 1px cũng lộ ngay vì đây là hai lớp thật chứ không phải một hiệu
+  ứng tự động. Thua: nếu nội dung động (độ dài số liệu thay đổi), phải đảm bảo cả hai lớp cùng
+  cập nhật, dễ lệch khi sinh tự động từ template.
+- **Border đặc thay cho shadow.** `border: 1px/2px solid var(--ink)` quanh một khối là cách rẻ
+  nhất để phân định ranh giới khi không có shadow - không tạo cảm giác "nổi" thật nhưng tạo cảm
+  giác "được đóng khung có chủ đích", khác hẳn việc không viền gì. Đây chính là lý do palette
+  của repo vốn đã nghiêng về hairline border thay vì soft shadow, và giờ có thêm bằng chứng kỹ
+  thuật ủng hộ hướng đó thay vì chỉ là gu thẩm mỹ.
+- **Background-color khối thay cho "veil".** Ý tưởng "tô nổi một dòng trong bảng dày đặc mà
+  không thêm biến màu mới" (8.2 bản cũ, dùng inset shadow) giờ làm trực tiếp bằng
+  `background-color` thật (ví dụ `color-mix()` giữa `--warn` và `--paper`, hoặc một biến `-soft`
+  đã có sẵn trong token thay vì bịa alpha mới) - đơn giản hơn, và quan trọng là THẬT SỰ render.
 
 ---
 
@@ -290,28 +326,37 @@ tròn/gradient vì không dám để phẳng). Kiểm tra nhanh một thiết k�
 thông điệp mạnh HƠN, yếu tố đó là rẻ tiền; nếu xoá đi thông điệp yếu hơn, yếu tố đó xứng đáng ở
 lại.
 
+**Nguyên tắc đo lường bổ sung sau vòng này:** khi đo một hiệu ứng thị giác trong PDF xuất từ
+WeasyPrint, so ảnh ở mức byte (`pixmap.tobytes() == pixmap.tobytes()` hoặc md5), đừng so bằng
+mắt trên ảnh chụp thu nhỏ. Một viền cứng và một shadow offset cứng blur=0 trông gần như nhau ở
+kích thước nhỏ; mắt thường bị đánh lừa, phép so byte thì không.
+
 ---
 
-## 9. Bổ sung sau khi đối chiếu với vòng 01-editorial: nguyên nhân thật của "box-shadow không render"
+## 9. Cú pháp màu CSS Color 4 dạng khoảng trắng/gạch chéo bị WeasyPrint bỏ qua (đã kiểm lại, tách riêng khỏi chuyện shadow)
 
-Sổ `research/RESEARCH-LEDGER.md` (vòng 01-editorial) ghi nhận "`box-shadow` không được
-WeasyPrint hỗ trợ dưới bất kỳ hình thức nào kể cả blur=0". Trong lúc dựng `wow-do-noi-khong-blur.html`
-tôi thấy shadow của CHÍNH MÌNH lại render bình thường qua WeasyPrint, nên nghi ngờ và test đối
-chứng trực tiếp: `box-shadow` với `rgba(R,G,B,A)` cú pháp dấu phẩy cổ điển RENDER ĐÚNG; cùng
-giá trị số nhưng viết `rgba(R G B / A)` theo CSS Color Level 4 (cú pháp `tokens.css` đang dùng
-cho toàn bộ `--shadow-1/2/3/hairline`, xem comment dòng 179-183 trong file đó) thì WeasyPrint
-69.0 **bỏ qua âm thầm toàn bộ khai báo màu**, không phải riêng thuộc tính shadow. Test mở rộng
-xác nhận: cùng cú pháp `rgba(R G B / A)` dùng cho `color` hoặc `background` thường (không liên
-quan `box-shadow`) cũng bị bỏ qua y hệt, rớt về giá trị kế thừa/trong suốt.
+**Xác nhận lại bằng so ảnh mức byte, độc lập với mục 8:** `rgba(R G B / A)` (CSS Color Level 4,
+khoảng trắng và dấu gạch chéo, cú pháp `tokens.css` đang dùng cho toàn bộ `--shadow-1/2/3/hairline`)
+khi gán cho `color` hoặc `background` (KHÔNG liên quan `box-shadow`, đã tách bạch sau khi đính
+chính ở mục 8) bị WeasyPrint 69.0 bỏ qua âm thầm, property rớt về giá trị kế thừa/trong suốt. So
+ảnh PNG cho hai trang chỉ khác đúng một khai báo:
 
-Vậy phát hiện đúng không phải "`box-shadow` chết trên WeasyPrint", mà là "**WeasyPrint 69.0 không
-đọc được cú pháp màu CSS Color 4 dạng khoảng trắng/gạch chéo**, và toàn bộ token shadow của repo
-đang viết đúng bằng cú pháp đó" (chính `tokens.css` ghi rõ lý do chọn cú pháp này: tránh làm hỏng
-phép tách `val.split(",")` trong `tests/consistency/tokens_test.py`). Đây là xung đột thật giữa
-một test và một engine render, không phải giới hạn không sửa được của CSS. Repo có thể giữ được
-CẢ hiệu ứng nổi CẢ bài test nếu đổi cách test tách chuỗi (ví dụ regex tôn trọng dấu ngoặc) thay vì
-đổi cú pháp màu sang dạng WeasyPrint không đọc được - nhưng việc sửa `tokens.css`/`tokens_test.py`
-nằm ngoài quyền ghi file của agent nghiên cứu này (chỉ được ghi `research/` và `samples/`). Năm
-mẫu HTML của tôi ở `samples/wow-*.html` dùng cú pháp `rgba()` dấu phẩy cổ điển nên không dính lỗi
-này, nhưng bất kỳ ai copy nguyên `var(--shadow-1)` từ `tokens.css` vào một trang thật sẽ thấy
-shadow biến mất khi in, đúng như vòng 01-editorial đã báo, chỉ khác ở NGUYÊN NHÂN GỐC.
+- `color: rgba(5,28,44,0.9)` (dấu phẩy) → chữ ra đúng màu xanh đậm.
+- `color: rgba(5 28 44 / 0.9)` (khoảng trắng/gạch chéo) → chữ ra màu đen mặc định, coi như
+  khai báo không tồn tại.
+- `background: rgba(34,81,255,0.15)` (dấu phẩy) → nền có màu xanh nhạt rõ ràng.
+- `background: rgba(34 81 255 / 0.15)` (khoảng trắng/gạch chéo) → nền trong suốt, coi như
+  khai báo không tồn tại.
+
+Đây là một lỗi THẬT và ĐỘC LẬP với chuyện `box-shadow` ở mục 8 - hai phát hiện khác nhau của
+cùng một engine, không nên gộp làm một (lỗi tôi từng mắc ở bản nháp đầu). Vì `--shadow-1/2/3/hairline`
+trong `tokens.css` đang viết bằng đúng cú pháp khoảng trắng/gạch chéo này (cố ý, để né phép tách
+`val.split(",")` trong `tests/consistency/tokens_test.py`, xem comment trong chính file đó), nên
+dù có sửa lại cú pháp màu, token shadow VẪN sẽ không tạo ra hiệu ứng gì trong PDF (vì lý do ở
+mục 8: bản thân `box-shadow` không tồn tại trong WeasyPrint, bất kể cú pháp màu). Nhưng lỗi cú
+pháp màu này có thể ảnh hưởng tới bất kỳ chỗ nào KHÁC trong repo lỡ dùng `rgba(... / ...)` cho
+`color` hoặc `background` thường ngoài phạm vi shadow - đáng để bên phụ trách `design-system/`
+grep toàn repo tìm các chỗ dùng cú pháp này ngoài shadow.
+
+Việc sửa `tokens.css`/`tokens_test.py` nằm ngoài quyền ghi file của agent nghiên cứu này (chỉ
+được ghi `research/` và `samples/`), đã báo qua SendMessage cho main.

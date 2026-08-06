@@ -1,0 +1,253 @@
+<!--
+  MINH HOẠ: khối giả định của mô hình định giá, trình bày hai lớp để không biến trang thành mê
+  cung. Lớp 1 là hộp giả định cô đọng (giá trị + một câu lý do). Lớp 2 là bảng độ nhạy hai chiều
+  làm cơ chế "tự kiểm": người đọc tự thấy định giá đổi bao nhiêu nếu không tin đúng giả định đó,
+  không cần đọc thêm một đoạn văn giải thích dài.
+
+  LẤY Ý TỪ (chi tiết đầy đủ: research/06-source-notes/FINDINGS.md mục 5):
+  - Thực hành phổ biến trong tài liệu đào tạo định giá (Financial Edge Training, Wall Street
+    Mastermind): gộp toàn bộ giả định có thể chỉnh vào một chỗ, và dùng bảng độ nhạy WACC so với
+    tăng trưởng dài hạn làm lưới định giá tham chiếu chính.
+  - Đây là thực hành phổ biến của ngành, không phải văn bản gốc của một định chế cụ thể, nên
+    được trích như thực hành phổ biến, không trích như tiêu chuẩn chính thức của ai.
+
+  KHI NÀO ĐỪNG DÙNG:
+  - Đừng dùng bảng độ nhạy hai chiều nếu mô hình chỉ thực sự nhạy với MỘT biến, lúc đó một câu
+    "định giá dao động từ X tới Y khi biến đó đổi trong khoảng [a, b]" trong văn xuôi là đủ và
+    không tạo cảm giác giả định thứ hai quan trọng ngang giả định thứ nhất khi thực ra không phải.
+  - Đừng thêm lớp thứ ba (ví dụ giải thích từng ô trong lưới bằng văn xuôi), hai lớp là đủ, thêm
+    lớp ba là dấu hiệu đang biến trang thành mê cung thay vì kiểm chứng nhanh.
+
+  Công ty "CTCP Vật liệu Xây dựng Sông Hồng" và mã "SHM*" là HƯ CẤU, tiếp nối từ hai mẫu trước.
+  Toàn bộ số liệu định giá trong file là số MINH HOẠ dựng để trình bày bố cục, không phải kết quả
+  định giá thật và không phải khuyến nghị đầu tư.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>SHM* - Khối giả định định giá</title>
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --line-lo: #EEF1F6;
+    --accent: #2251FF;
+    --accent-hi: #1233B8;
+    --pos: #008A6D;
+    --neg: #C22F4E;
+    --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem;
+    --fs-small: 0.825rem;
+    --fs-body: 1rem;
+    --fs-h3: 1.333rem;
+    --fs-h2: 1.777rem;
+    --fs-h1: 2.369rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 24px auto;
+    background: var(--paper); box-shadow: 4px 4px 0px rgba(5 28 44 / 0.18);
+    padding: 20mm; position: relative;
+  }
+  .research-tag {
+    position: absolute; top: 8px; right: 8px;
+    font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper);
+    padding: 2px 8px; letter-spacing: 0.04em; z-index: 5;
+  }
+  .kicker {
+    font-family: var(--font-mono); font-size: var(--fs-small);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 var(--space-2) 0;
+  }
+  h1.headline { font-size: var(--fs-h1); font-weight: 600; line-height: 1.18; margin: 0 0 var(--space-3) 0; max-width: 26ch; }
+  p.lede { font-size: var(--fs-small); color: var(--ink-md); max-width: 64ch; line-height: 1.6; margin: 0 0 var(--space-6) 0; }
+
+  h2.section-title {
+    font-size: var(--fs-h3); font-weight: 600; margin: 0 0 var(--space-1) 0;
+    display: flex; align-items: baseline; gap: var(--space-3);
+  }
+  .layer-num {
+    font-family: var(--font-mono); font-size: var(--fs-small); color: var(--paper);
+    background: var(--ink); padding: 2px 9px; letter-spacing: 0.04em;
+  }
+  p.section-desc { font-size: var(--fs-small); color: var(--ink-md); margin: 0 0 var(--space-4) 0; max-width: 62ch; }
+
+  /* ── LỚP 1: hộp giả định cô đọng ───────────────────────────────────────── */
+  .assumption-box { border: 1px solid var(--line); margin-bottom: var(--space-3); }
+  .a-row {
+    display: grid; grid-template-columns: 15ch 9ch 1fr;
+    gap: var(--space-4); padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--line-lo); align-items: baseline;
+  }
+  .a-row:last-child { border-bottom: none; }
+  .a-name { font-size: var(--fs-small); font-weight: 600; color: var(--ink); }
+  .a-value { font-family: var(--font-mono); font-size: var(--fs-body); color: var(--accent); text-align: right; font-weight: 600; }
+  .a-reason { font-size: var(--fs-caption); color: var(--ink-md); line-height: 1.5; }
+
+  .sensitivity-hint {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo);
+    margin: 0 0 var(--space-7) 0; padding-top: var(--space-2);
+  }
+
+  /* ── LỚP 2: bảng độ nhạy ──────────────────────────────────────────────── */
+  table.sens { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: var(--space-3); }
+  table.sens caption { text-align: left; caption-side: top; font-family: var(--font-serif); font-size: var(--fs-small); color: var(--ink-md); margin-bottom: var(--space-3); }
+  table.sens th, table.sens td { padding: var(--space-2) var(--space-3); text-align: center; border: 1px solid var(--line-lo); font-variant-numeric: tabular-nums; }
+  table.sens thead th { background: var(--paper-hi); color: var(--ink-md); font-weight: 600; }
+  table.sens th.row-head { background: var(--paper-hi); color: var(--ink-md); font-weight: 600; text-align: center; }
+  table.sens td.base { background: var(--accent); color: var(--paper); font-weight: 700; }
+  table.sens .axis-label { font-family: var(--font-serif); font-size: var(--fs-caption); color: var(--ink-lo); font-style: italic; }
+
+  .takeaway {
+    background: var(--paper-hi); border-left: 3px solid var(--accent);
+    padding: var(--space-4) var(--space-5); font-size: var(--fs-small); color: var(--ink);
+    margin-bottom: var(--space-7); line-height: 1.6;
+  }
+  .takeaway b { color: var(--accent-hi); }
+
+  .verdict {
+    margin-top: var(--space-3); padding: var(--space-5);
+    background: var(--ink); color: var(--paper);
+  }
+  .verdict .v-kicker {
+    font-family: var(--font-mono); font-size: var(--fs-caption); letter-spacing: 0.08em;
+    text-transform: uppercase; color: #7D9BFF; margin: 0 0 var(--space-2) 0;
+  }
+  .verdict ul { margin: 0; padding-left: 1.1em; font-size: var(--fs-small); line-height: 1.7; }
+  .verdict li { margin-bottom: 4px; }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+    .a-row { grid-template-columns: 1fr; gap: 2px; }
+    table.sens { font-size: 0.72rem; }
+  }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; box-shadow: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 18mm; }
+    .assumption-box, table.sens, .verdict { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">KHỐI GIẢ ĐỊNH ĐỊNH GIÁ, HAI LỚP</span>
+
+  <p class="kicker">Hệ chú nguồn &middot; Ghi chú giả định định giá</p>
+  <h1 class="headline">Đọc lướt là đủ, muốn kiểm thì tự tra được</h1>
+  <p class="lede">Hộp giả định trả lời "giả định là gì". Bảng độ nhạy trả lời câu hỏi thật hơn
+  của người đọc định giá: nếu không tin đúng giả định này, kết quả lệch bao nhiêu. Không cần một
+  lớp thứ ba giải thích thêm.</p>
+
+  <h2 class="section-title"><span class="layer-num">LỚP 1</span> Hộp giả định</h2>
+  <p class="section-desc">Năm dòng, mỗi dòng một giả định đầu vào của mô hình chiết khấu dòng
+  tiền cho SHM*, kèm một câu lý do ngắn, không giải thích công thức.</p>
+  <div class="assumption-box">
+    <div class="a-row">
+      <span class="a-name">WACC</span>
+      <span class="a-value">11,0%</span>
+      <span class="a-reason">Chi phí vốn bình quân nhóm doanh nghiệp vật liệu xây dựng niêm yết,
+      điều chỉnh theo đòn bẩy hiện tại của SHM*.</span>
+    </div>
+    <div class="a-row">
+      <span class="a-name">Tăng trưởng dài hạn (g)</span>
+      <span class="a-value">2,5%</span>
+      <span class="a-reason">Xấp xỉ tăng trưởng GDP danh nghĩa dài hạn giả định, không vượt tốc
+      độ tăng trưởng của toàn nền kinh tế.</span>
+    </div>
+    <div class="a-row">
+      <span class="a-name">Thuế suất hiệu lực</span>
+      <span class="a-value">20,0%</span>
+      <span class="a-reason">Thuế suất thuế thu nhập doanh nghiệp phổ thông hiện hành, ưu đãi
+      thuế của SHM* đã hết hiệu lực từ 2024.</span>
+    </div>
+    <div class="a-row">
+      <span class="a-name">Biên EBITDA dài hạn</span>
+      <span class="a-value">21,0%</span>
+      <span class="a-reason">Hội tụ về trung bình 5 năm của SHM*, sau giai đoạn biên lợi nhuận
+      cải thiện nhờ giá đầu vào ổn định.</span>
+    </div>
+    <div class="a-row">
+      <span class="a-name">Tái đầu tư/doanh thu</span>
+      <span class="a-value">6,5%</span>
+      <span class="a-reason">Giữ nguyên tỷ lệ capex duy trì trung bình 3 năm gần nhất, không giả
+      định mở rộng công suất mới.</span>
+    </div>
+  </div>
+  <p class="sensitivity-hint">Hai giả định đầu (WACC, tăng trưởng dài hạn) chi phối phần lớn độ
+  bất định của định giá &middot; xem lưới ở Lớp 2 để tự kiểm mức độ nhạy.</p>
+
+  <h2 class="section-title"><span class="layer-num">LỚP 2</span> Bảng độ nhạy</h2>
+  <p class="section-desc">Giá trị mỗi cổ phần (nghìn đồng) theo WACC và tăng trưởng dài hạn.
+  Ô tô đậm là kịch bản cơ sở dùng trong hộp giả định ở trên.</p>
+  <table class="sens">
+    <caption>Định giá mỗi cổ phần SHM* theo lưới WACC &times; tăng trưởng dài hạn (nghìn đồng/cổ phần)</caption>
+    <thead>
+      <tr>
+        <th class="row-head">WACC \ g</th>
+        <th>1,5%</th>
+        <th>2,0%</th>
+        <th>2,5%</th>
+        <th>3,0%</th>
+        <th>3,5%</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th class="row-head">10,0%</th>
+        <td>30,2</td><td>31,4</td><td>32,8</td><td>34,4</td><td>36,3</td>
+      </tr>
+      <tr>
+        <th class="row-head">10,5%</th>
+        <td>28,1</td><td>29,1</td><td>30,3</td><td>31,6</td><td>33,2</td>
+      </tr>
+      <tr>
+        <th class="row-head">11,0%</th>
+        <td>26,3</td><td>27,2</td><td class="base">28,4</td><td>29,4</td><td>30,6</td>
+      </tr>
+      <tr>
+        <th class="row-head">11,5%</th>
+        <td>24,8</td><td>25,5</td><td>26,4</td><td>27,3</td><td>28,4</td>
+      </tr>
+      <tr>
+        <th class="row-head">12,0%</th>
+        <td>23,4</td><td>24,0</td><td>24,7</td><td>25,6</td><td>26,5</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="takeaway">Định giá kịch bản cơ sở là <b>28,4 nghìn đồng/cổ phần</b>, dao động từ
+  23,4 tới 36,3 nghìn đồng trong lưới giả định WACC 10,0% tới 12,0% và tăng trưởng dài hạn 1,5%
+  tới 3,5%. Ước tính của đơn vị phát hành báo cáo, chốt giả định tới hết 30/06/2026.</div>
+
+  <div class="verdict">
+    <p class="v-kicker">Khi nào KHÔNG dùng bảng độ nhạy hai chiều</p>
+    <ul>
+      <li>Mô hình chỉ thực sự nhạy với một biến (ví dụ ngành đã bão hoà nên tăng trưởng dài hạn
+      gần như cố định): dùng một dòng "định giá dao động từ X tới Y khi WACC đổi trong khoảng
+      [a, b]" trong văn xuôi, ngắn gọn hơn một lưới hai chiều.</li>
+      <li>Đừng thêm lớp thứ ba giải thích từng ô bằng văn xuôi, hai lớp ở trên là đủ để vừa tra
+      nhanh vừa tự kiểm, thêm lớp ba là dấu hiệu đang biến trang thành mê cung.</li>
+    </ul>
+  </div>
+</section>
+</body>
+</html>

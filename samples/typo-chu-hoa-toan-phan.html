@@ -1,0 +1,169 @@
+<!doctype html>
+<!--
+  MINH HOẠ: chữ hoa toàn phần (all-caps) cỡ lớn tiếng Việt — chỗ dấu dễ vỡ
+  nhất vì chữ hoa có dấu hai tầng (Ộ, Ẫ, Ấ, Ắ...) cần headroom LỚN HƠN chữ
+  thường cùng cỡ (chữ hoa vốn đã cao gần chạm đỉnh dòng, dấu chồng đẩy tiếp
+  lên trên). Trang này CHỦ ĐỘNG chọn cụm từ tài chính có nhiều dấu hai tầng
+  ("TRƯỢT GIÁ TRỊ", "ẤN TƯỢNG") để chứng minh bố cục vẫn đứng vững, và trình
+  bày kèm khối "line-height nguy hiểm" để thấy ranh giới.
+
+  ĐO ĐƯỢC (research/05-typography-vn/FINDINGS.md mục 2 và 3, đo bằng
+  pixel-scan hàng ngang trên ảnh render, KHÔNG suy diễn từ CSS box):
+  - Với khối 2 dòng chữ hoa cỡ 80px, line-height 1.0 chỉ để lại 2.5px CSS
+    khoảng trắng giữa dấu nặng cuối dòng trên và dấu mũ/sắc đầu dòng dưới —
+    một biên an toàn mỏng tới mức lệch font 1 điểm trọng lượng (400 thay vì
+    700) hoặc lệch DPI khi in có thể làm chúng CHẠM nhau. Từ line-height
+    1.15 trở lên, khoảng trắng ổn định quanh 5-14px CSS, đủ an toàn.
+  - Về tracking ngang: cụm "TRƯỢT GIÁ TRỊ" ở Spectral 700 cỡ 140px đã có một
+    điểm CHẠM tự nhiên ở tracking mặc định (kerning mặc định của font, không
+    phải lỗi) và bắt đầu CHẠM THẬT (hai glyph gộp thành một khối mực liền,
+    đếm được bằng connected-component trên ảnh) từ tracking quanh -0.03em
+    đến -0.04em, nhiều khả năng tại chỗ dấu móc của Ư/Ơ thò sang phải. Với
+    tiêu đề hoa toàn phần có nguyên âm móc, tránh tracking âm quá -0.02em.
+
+  KHI NÀO KHÔNG NÊN DÙNG:
+  - Đoạn văn dài toàn chữ hoa: all-caps tiếng Việt cỡ lớn CHỈ dùng cho tiêu
+    đề ngắn (dưới ~6 từ). Với đoạn dài, chữ hoa toàn phần vốn đã khó đọc,
+    cộng thêm dấu chồng càng nặng mắt — dùng title-case hoặc sentence-case.
+  - Cỡ chữ dưới 32px: rủi ro va chạm dấu ở cỡ nhỏ gần như không đáng kể so
+    với rủi ro chọn sai bảng màu/độ tương phản — không cần biện pháp này.
+  - Số liệu, tên gọi trong trang là MINH HỌA cho mục đích đo kiểu chữ.
+
+  RÀNG BUỘC IN: font-family list kết thúc generic keyword (không dùng font
+  nhúng base64 của repo — xem research/05-typography-vn/FONT-TRAPS.md; dùng
+  font hệ thống có fallback Noto Serif/Georgia). Shadow chỉ offset cứng,
+  blur = 0. Không gauge/radar. Không em-dash/en-dash. @media dùng từ khoá
+  screen. Đã qua round-trip WeasyPrint + PyMuPDF, tầng text khớp input.
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chữ hoa toàn phần cỡ lớn — mẫu tham khảo HT-viz-rendering</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --accent: #2251FF;
+    --neg: #C22F4E;
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper-hi); }
+  body { font-family: var(--font-serif); color: var(--ink); }
+  .sheet { width: 717px; margin: 24px auto; background: var(--paper); padding: 48px 56px 64px; }
+  .kicker {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-lo); margin: 0 0 6px;
+  }
+  h1.page-title {
+    font-size: 22px; font-weight: 600; margin: 0 0 32px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .display {
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding-top: 30px;   /* ~38% cua 80px, chua cho tang dau tren cung */
+  }
+  .display.safe {
+    font-size: 80px;
+    line-height: 1.22;   /* an toan, tu do 3-6 */
+    letter-spacing: 0.005em;
+  }
+  .block { margin-bottom: 36px; }
+  .section-title { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+  .caption { font-family: var(--font-mono); font-size: 12px; color: var(--ink-md); line-height: 1.5; margin: 10px 0 0; }
+  .caption b { color: var(--ink); font-weight: 600; }
+
+  .compare { display: flex; gap: 20px; margin-top: 8px; }
+  .compare > div { flex: 1; border: 1px solid var(--line); padding: 18px 20px; }
+  .compare .lh-tag {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+    text-transform: uppercase; margin-bottom: 10px; display: block;
+  }
+  .compare .tight .lh-tag { color: var(--neg); }
+  .compare .safe-lh .lh-tag { color: var(--accent); }
+  .compare .tight .display { font-size: 44px; line-height: 1.0; padding-top: 14px; }
+  .compare .safe-lh .display { font-size: 44px; line-height: 1.22; padding-top: 14px; }
+
+  .tracking-row { display: flex; gap: 20px; margin-top: 8px; }
+  .tracking-row > div { flex: 1; border: 1px solid var(--line); padding: 18px 20px; overflow-x: auto; }
+  .tracking-row .tag {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em;
+    text-transform: uppercase; margin-bottom: 10px; display: block;
+  }
+  .tracking-row .danger .tag { color: var(--neg); }
+  .tracking-row .ok .tag { color: var(--accent); }
+  .tracking-row .display { font-size: 34px; padding-top: 10px; line-height: 1.3; white-space: nowrap; }
+  .tracking-row .danger .display { letter-spacing: -0.035em; }
+  .tracking-row .ok .display { letter-spacing: 0.02em; }
+
+  @media screen and (max-width: 760px) {
+    .sheet { width: auto; margin: 12px; padding: 28px 20px 40px; }
+    .display.safe { font-size: 48px; }
+    .compare, .tracking-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <p class="kicker">Nghiên cứu typography · chữ hoa toàn phần cỡ lớn</p>
+  <h1 class="page-title">Chữ hoa toàn phần: nơi dấu chồng hai tầng dễ vỡ nhất</h1>
+
+  <div class="block">
+    <p class="section-title">Tiêu đề chính — đã tính headroom và line-height an toàn</p>
+    <p class="display safe">Trượt giá trị điều chỉnh</p>
+    <p class="caption">Cỡ 80px, <b>padding-top 30px</b> (~38% font-size) và
+    <b>line-height 1.22</b>. Cụm "TRƯỢT" và "TRỊ" đều có dấu nặng kéo xuống, "GIÁ"
+    có dấu sắc, nhưng vì đây chỉ một dòng nên chưa cần lo va chạm liên dòng —
+    xem khối line-height bên dưới cho trường hợp hai dòng.</p>
+  </div>
+
+  <div class="block">
+    <p class="section-title">Line-height 1.0 (nguy hiểm) so với 1.22 (an toàn) — hai dòng</p>
+    <div class="compare">
+      <div class="tight">
+        <span class="lh-tag">line-height: 1.0 — biên chỉ 2.5px CSS</span>
+        <p class="display">Tỷ suất lợi<br>nhuận ấn tượng</p>
+      </div>
+      <div class="safe-lh">
+        <span class="lh-tag">line-height: 1.22 — biên 10px+ CSS</span>
+        <p class="display">Tỷ suất lợi<br>nhuận ấn tượng</p>
+      </div>
+    </div>
+    <p class="caption">Đo bằng pixel-scan thật (không phải suy diễn): ở line-height
+    1.0, khoảng trắng giữa dấu nặng cuối dòng 1 ("LỢI" không có, nhưng khối
+    tổng ink của dòng 1 kết thúc rất sát) và dấu mũ/sắc đầu dòng 2 ("ẤN") chỉ
+    còn 2.5px CSS ở cỡ 80px Spectral 700 — quy đổi tỷ lệ tương ứng ở cỡ 44px
+    hiển thị tại đây. Xem FINDINGS.md mục 2 để lấy số đo gốc đầy đủ.</p>
+  </div>
+
+  <div class="block">
+    <p class="section-title">Tracking âm làm dấu móc chạm chữ bên cạnh</p>
+    <div class="tracking-row">
+      <div class="danger">
+        <span class="tag">letter-spacing: -0.035em — vùng chạm</span>
+        <p class="display">TRƯỢT GIÁ TRỊ</p>
+      </div>
+      <div class="ok">
+        <span class="tag">letter-spacing: +0.02em — an toàn</span>
+        <p class="display">TRƯỢT GIÁ TRỊ</p>
+      </div>
+    </div>
+    <p class="caption">Đếm connected-component trên ảnh render Spectral 700 cỡ
+    140px thật: số cụm liền mạch giảm từ 9-10 xuống còn 8 khi tracking đạt
+    -0.04em, tức có glyph đã <b>gộp mực</b> với glyph bên cạnh — nhiều khả năng ở
+    móc của Ư. Từ +0.02em trở lên, khoảng trắng tối thiểu giữa hai glyph ổn
+    định quanh 4-6.5px CSS.</p>
+  </div>
+</div>
+</body>
+</html>

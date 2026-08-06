@@ -1,0 +1,221 @@
+<!--
+  MINH HOẠ: cùng MỘT đoạn văn phân tích, trình bày bằng ba cơ chế chú thích khác nhau
+  (footnote cuối khung, sidenote lề phải, endnote cuối tài liệu) để so sánh trực tiếp chi phí
+  đọc và chi phí dàn trang của từng cơ chế, thay vì chỉ đọc mô tả bằng lời.
+
+  LẤY Ý TỪ (chi tiết đầy đủ: research/06-source-notes/FINDINGS.md mục 2):
+  - Fonts.com, "Footnotes and Endnotes": chi phí đọc của footnote (rời trang, quay lại) và
+    endnote (rời cả tài liệu) là hai mức khác nhau, không phải cùng một loại bất tiện.
+  - Gwern, "Sidenotes In Web Design" (gwern.net/sidenote): sidenote tĩnh gặp khó khi chú thích
+    dài hoặc dày đặc, và không giữ được trên khổ hẹp.
+  - Tufte, "Sidenotes or footnotes or what?": lập luận gốc cho sidenote, cùng phản biện của
+    chính người đọc trang đó rằng đọc sidenote "là một kỹ năng phải luyện".
+  - Kỹ thuật sidenote CSS (float phải + margin-right âm) kế thừa nguyên trạng từ
+    samples/editorial-tufte-sidenote-margin.html của vòng 1, đã verify round-trip PDF.
+
+  KHI NÀO ĐỪNG DÙNG (áp dụng cho cả ba khung mô phỏng bên dưới, không phải chỉ một):
+  - Đừng chọn cơ chế theo gu thẩm mỹ, chọn theo ĐỘ DÀI chú thích: chú thích ngắn và thưa dùng
+    footnote, chú thích ngắn nhưng cần đọc "liền mạch" dùng sidenote, chú thích dài dùng endnote.
+  - Đừng dùng sidenote nếu khổ trang hẹp hoặc độc giả đọc chính trên điện thoại.
+  - Đừng bắt người đọc bấm để mở rộng sidenote trong tài liệu tĩnh, việc đó triệt tiêu chính lợi
+    thế "không cần thao tác" của sidenote, lúc đó dùng endnote còn rõ ràng hơn.
+
+  Công ty "CTCP Vật liệu Xây dựng Sông Hồng" và mã "SHM*" là HƯ CẤU, tiếp nối ba mẫu trước.
+  Toàn bộ số liệu là số MINH HOẠ, không phải khuyến nghị đầu tư.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>SHM* - Footnote, sidenote, endnote so sánh trực tiếp</title>
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --line-lo: #EEF1F6;
+    --accent: #2251FF;
+    --pos: #008A6D;
+    --neg: #C22F4E;
+    --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem;
+    --fs-small: 0.825rem;
+    --fs-body: 0.98rem;
+    --fs-h3: 1.2rem;
+    --fs-h2: 1.6rem;
+    --fs-h1: 2.1rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 24px auto;
+    background: var(--paper); box-shadow: 4px 4px 0px rgba(5 28 44 / 0.18);
+    padding: 20mm; position: relative;
+  }
+  .research-tag {
+    position: absolute; top: 8px; right: 8px;
+    font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper);
+    padding: 2px 8px; letter-spacing: 0.04em; z-index: 5;
+  }
+  .kicker {
+    font-family: var(--font-mono); font-size: var(--fs-small);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 var(--space-2) 0;
+  }
+  h1.headline { font-size: var(--fs-h1); font-weight: 600; line-height: 1.2; margin: 0 0 var(--space-3) 0; max-width: 30ch; }
+  p.lede { font-size: var(--fs-small); color: var(--ink-md); max-width: 66ch; line-height: 1.6; margin: 0 0 var(--space-6) 0; }
+
+  .mock-title {
+    display: flex; align-items: baseline; gap: var(--space-3); margin-bottom: var(--space-2);
+  }
+  .mock-num {
+    font-family: var(--font-mono); font-size: var(--fs-small); color: var(--paper);
+    background: var(--ink); padding: 2px 9px; letter-spacing: 0.04em;
+  }
+  .mock-title h2 { font-size: var(--fs-h3); font-weight: 600; margin: 0; }
+  p.mock-desc { font-size: var(--fs-caption); color: var(--ink-md); margin: 0 0 var(--space-3) 0; max-width: 62ch; }
+
+  /* ── khung mô phỏng "trang" thu nhỏ, chiều cao cố định ─────────────────── */
+  .mock-page {
+    background: var(--paper-hi); border: 1px solid var(--line);
+    padding: var(--space-4) var(--space-5);
+    margin-bottom: var(--space-3);
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 108px;
+  }
+  .mock-body { font-size: var(--fs-body); line-height: 1.65; }
+  .ref-mark { font-family: var(--font-mono); font-size: 0.7em; vertical-align: super; color: var(--accent); font-weight: 600; }
+
+  /* footnote pinned to bottom of its own mini box via flex + margin-top:auto */
+  .mock-footnote {
+    margin-top: var(--space-3); padding-top: var(--space-2); border-top: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo); line-height: 1.6;
+  }
+  .mock-footnote b { color: var(--ink-md); }
+
+  /* ── khung sidenote: reserve cột lề phải rộng hơn hai khung kia ────────── */
+  .mock-page.sidenote-host { display: block; padding-right: 58mm; min-height: 148px; }
+  .sidenote {
+    float: right; clear: right; width: 38mm; margin-right: -46mm;
+    margin-top: 0.1em; margin-bottom: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--fs-caption); line-height: 1.55;
+    color: var(--ink-md); border-left: 1px solid var(--line); padding-left: var(--space-2);
+  }
+  .sidenote b { color: var(--ink); font-weight: 600; }
+
+  .endnote-flag {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo);
+    margin-top: var(--space-3); padding-top: var(--space-2); border-top: 1px dashed var(--line);
+  }
+
+  .tradeoff {
+    font-size: var(--fs-caption); color: var(--ink-md); line-height: 1.55;
+    margin: 0 0 var(--space-6) 0; padding-left: var(--space-3); border-left: 2px solid var(--line);
+  }
+  .tradeoff b { color: var(--ink); }
+
+  .endnote-appendix {
+    margin-top: var(--space-5); padding-top: var(--space-4); border-top: 2px solid var(--ink);
+  }
+  .endnote-appendix h2 { font-size: var(--fs-h3); font-weight: 600; margin: 0 0 var(--space-3) 0; }
+  .endnote-appendix p {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-md);
+    line-height: 1.7; margin: 0 0 var(--space-2) 0;
+  }
+  .endnote-appendix b { color: var(--ink); }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+    .mock-page.sidenote-host { padding-right: var(--space-5); }
+    .sidenote { float: none; width: auto; margin: var(--space-2) 0 0 0; border-left: none; border-top: 1px solid var(--line); padding-left: 0; padding-top: var(--space-2); }
+  }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; box-shadow: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 18mm; }
+    .mock-page, .endnote-appendix { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">FOOTNOTE VS SIDENOTE VS ENDNOTE, TRỰC TIẾP</span>
+
+  <p class="kicker">Hệ chú nguồn &middot; Ba cơ chế chú thích</p>
+  <h1 class="headline">Cùng một đoạn văn, ba cách đặt chú thích</h1>
+  <p class="lede">Đoạn phân tích dưới đây giữ nguyên nội dung ở cả ba khung, chỉ đổi cách đặt hai
+  chú thích. So sánh trực tiếp cho thấy rõ hơn phần mô tả bằng lời: chi phí đọc và chi phí dàn
+  trang đổi chỗ cho nhau giữa ba cơ chế, không cơ chế nào miễn phí.</p>
+
+  <div class="mock-title"><span class="mock-num">1</span><h2>Footnote cuối khung</h2></div>
+  <p class="mock-desc">Chú thích nằm ngay cuối khung chứa đoạn văn, mắt rời văn bản một khoảng
+  ngắn rồi quay lại đúng chỗ.</p>
+  <div class="mock-page">
+    <p class="mock-body">Vòng quay tồn kho của SHM* chậm lại còn 96 ngày trong quý 2/2026, cao
+    hơn bình quân nhóm so sánh là 74 ngày<span class="ref-mark">1</span>. Ban lãnh đạo cho biết
+    nguyên nhân chính là tồn trữ nguyên liệu clinker trước mùa mưa<span class="ref-mark">2</span>.</p>
+    <div class="mock-footnote">
+      <p><b>1.</b> Theo BCTC hợp nhất quý 2/2026 (minh hoạ), vòng quay tồn kho = tồn kho bình
+      quân / giá vốn hàng bán &times; 365.</p>
+      <p><b>2.</b> Theo tài liệu họp nhà đầu tư quý 2/2026 (minh hoạ).</p>
+    </div>
+  </div>
+  <p class="tradeoff"><b>Dùng khi:</b> chú thích ngắn, xuất hiện thưa, trang đã có bố cục một cột
+  cố định. <b>Đừng dùng khi:</b> mỗi trang có quá nhiều chú thích, chân khung sẽ dài hơn cả thân
+  đoạn văn.</p>
+
+  <div class="mock-title"><span class="mock-num">2</span><h2>Sidenote lề phải</h2></div>
+  <p class="mock-desc">Chú thích đặt ngay bên cạnh câu liên quan, mắt chỉ liếc ngang, không rời
+  văn bản chính.</p>
+  <div class="mock-page sidenote-host">
+    <p class="mock-body">Vòng quay tồn kho của SHM* chậm lại còn 96 ngày trong quý 2/2026, cao
+    hơn bình quân nhóm so sánh là 74 ngày<span class="ref-mark">1</span>
+    <span class="sidenote"><b>1.</b> BCTC hợp nhất quý 2/2026 (minh hoạ), vòng quay tồn kho =
+    tồn kho bình quân / giá vốn hàng bán &times; 365.</span>. Ban lãnh đạo cho biết nguyên nhân
+    chính là tồn trữ nguyên liệu clinker trước mùa mưa<span class="ref-mark">2</span>
+    <span class="sidenote"><b>2.</b> Tài liệu họp nhà đầu tư quý 2/2026 (minh hoạ).</span>.</p>
+  </div>
+  <p class="tradeoff"><b>Dùng khi:</b> một tới bốn chú thích rời rạc, khổ trang đủ rộng từ A4 trở
+  lên. <b>Đừng dùng khi:</b> khổ trang hẹp, độc giả đọc chính trên điện thoại, hoặc chú thích đủ
+  dài tới mức phải thu gọn/bấm mở, lúc đó nó thuộc về endnote.</p>
+
+  <div class="mock-title"><span class="mock-num">3</span><h2>Endnote cuối tài liệu</h2></div>
+  <p class="mock-desc">Chú thích dồn hẳn về phụ lục cuối tài liệu, mắt phải lật sang phần khác,
+  chi phí đọc cao nhất nhưng không ảnh hưởng bố cục trang đang đọc.</p>
+  <div class="mock-page">
+    <p class="mock-body">Vòng quay tồn kho của SHM* chậm lại còn 96 ngày trong quý 2/2026, cao
+    hơn bình quân nhóm so sánh là 74 ngày<span class="ref-mark">1</span>. Ban lãnh đạo cho biết
+    nguyên nhân chính là tồn trữ nguyên liệu clinker trước mùa mưa<span class="ref-mark">2</span>.</p>
+    <div class="endnote-flag">Ghi chú 1, 2: xem Phụ lục ghi chú cuối tài liệu bên dưới.</div>
+  </div>
+  <p class="tradeoff"><b>Dùng khi:</b> chú thích dài, giải thích phương pháp luận hoặc công thức
+  nhiều dòng, đặt ở chân trang sẽ đẩy hết nội dung trang xuống. <b>Đừng dùng khi:</b> chú thích
+  ngắn một dòng, bắt người đọc lật cả tài liệu cho một câu ngắn là lãng phí chi phí đọc.</p>
+
+  <div class="endnote-appendix">
+    <h2>Phụ lục ghi chú cuối tài liệu</h2>
+    <p><b>1.</b> Theo BCTC hợp nhất quý 2/2026 (minh hoạ). Vòng quay tồn kho tính bằng tồn kho
+    bình quân chia giá vốn hàng bán, nhân 365 ngày. Bình quân nhóm so sánh lấy theo 4 doanh
+    nghiệp vật liệu xây dựng niêm yết cùng ngành, không tính SHM*.</p>
+    <p><b>2.</b> Theo tài liệu họp nhà đầu tư quý 2/2026 (minh hoạ), phát biểu của ban lãnh đạo
+    về kế hoạch tồn trữ nguyên liệu trước mùa mưa, chưa có xác nhận bằng văn bản công bố chính
+    thức tại thời điểm phát hành báo cáo này.</p>
+  </div>
+</section>
+</body>
+</html>

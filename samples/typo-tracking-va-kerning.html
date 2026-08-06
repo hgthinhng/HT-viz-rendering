@@ -1,0 +1,179 @@
+<!doctype html>
+<!--
+  MINH HOẠ: quyết định tracking (letter-spacing) và kerning cho tiêu đề
+  tiếng Việt có dấu — không phải "luôn siết" hay "luôn nới", mà là bảng
+  đánh đổi theo NỘI DUNG cụ thể của tiêu đề (có nguyên âm móc Ơ/Ư hay
+  không, có phải chữ hoa toàn phần hay không).
+
+  ĐO ĐƯỢC (research/05-typography-vn/FINDINGS.md mục 2; công cụ: WeasyPrint
+  xuất PDF, PyMuPDF render lại thành ảnh, so pixel bằng numpy — không phải
+  đọc source CSS suy diễn):
+  - font-kerning: none so với normal trên cụm "TRƯỢT GIÁ TRỊ" (Spectral 700,
+    140px) làm lệch 0.497% tổng số pixel của ảnh — kerning THẬT SỰ dịch
+    chuyển glyph ở các cặp T-R, G-I, T-R lần hai, không phải hiệu ứng giả.
+    Tắt kerning không loại bỏ va chạm dấu vì va chạm nằm ở ĐỘ RỘNG neo của
+    glyph (móc Ư/Ơ thò ra ngoài hộp chữ danh nghĩa), không nằm ở bảng kerning.
+  - Tại tracking mặc định (0), cụm "TRƯỢT GIÁ TRỊ" đã có sẵn MỘT điểm gần
+    chạm (khoảng trắng còn 0.5px CSS) do kerning font tự nhiên kéo cặp T-R
+    sát nhau — đây là thiết kế của Spectral, không phải lỗi. Tracking âm chỉ
+    làm phép tính này XẤU HƠN, không phải TỪ MỘT NỀN AN TOÀN.
+  - font-variant-ligatures bật/tắt trên câu trộn tiếng Việt + từ vay mượn
+    tiếng Anh có "fi" (ví dụ "profile") gây khác biệt chỉ 0.006% pixel — vì
+    bản font Spectral đã cắt cho repo này (subset bằng fontTools) KHÔNG còn
+    giữ glyph ligature fi/fl (đã kiểm bằng cách liệt kê glyph order, không
+    thấy "f_i"/"f_l"). Tức là: bật/tắt ligature không có tác dụng thực với
+    bộ font embedded của repo — không phải vì an toàn, mà vì ligature đã bị
+    loại khỏi subset. Nếu sau này đổi cách subset (giữ ligature), phải đo
+    lại kiểm tra này.
+
+  QUY TẮC RÚT RA:
+  - Có nguyên âm móc (Ơ, Ư) trong tiêu đề hoa toàn phần cỡ lớn: KHÔNG siết
+    tracking quá -0.02em. Móc là bộ phận DUY NHẤT trong bảng chữ cái tiếng
+    Việt thò ngang ra ngoài hộp chữ, nên nó luôn là điểm chạm đầu tiên khi
+    siết tracking, bất kể font nào.
+  - Không có nguyên âm móc, toàn dấu trên/dưới (mũ, sắc, huyền, hỏi, ngã,
+    nặng): tracking âm nhẹ (-0.01 đến -0.015em) thường an toàn vì các dấu
+    này nằm trong biên dọc của glyph, không thò ngang.
+  - Chữ hoa toàn phần luôn cần tracking DƯƠNG nhẹ (+0.01 đến +0.03em) để bù
+    cảm giác "đặc" của khối chữ hoa — ngược hướng với nhu cầu siết tracking
+    để tiết kiệm chiều rộng, nên khi cả hai áp lực cùng xuất hiện (tiêu đề
+    hoa toàn phần, dài, cần vừa khổ), ưu tiên giảm cỡ chữ thay vì siết
+    tracking.
+
+  KHI NÀO KHÔNG NÊN DÙNG:
+  - Thân bài: tracking khác 0 ở cỡ chữ đọc (dưới 20px) làm giảm tốc độ đọc,
+    không có lý do tạo hình nào đủ mạnh để đánh đổi.
+  - Tiêu đề chữ thường (không hoa toàn phần) cỡ vừa (dưới 32px): rủi ro va
+    chạm móc gần như không có ở cỡ này vì biên độ pixel tuyệt đối quá nhỏ.
+  - Số liệu trong trang là MINH HỌA cho mục đích đo kiểu chữ.
+
+  RÀNG BUỘC IN: font-family list kết thúc generic keyword (không dùng font
+  nhúng base64 của repo — xem research/05-typography-vn/FONT-TRAPS.md; dùng
+  font hệ thống có fallback Noto Serif/Georgia). Shadow chỉ offset cứng,
+  blur = 0. Không gauge/radar. Không em-dash/en-dash. @media dùng từ khoá
+  screen. Đã qua round-trip WeasyPrint + PyMuPDF, tầng text khớp input.
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracking và kerning cho tiêu đề tiếng Việt — mẫu tham khảo HT-viz-rendering</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --accent: #2251FF;
+    --neg: #C22F4E;
+    --pos: #008A6D;
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper-hi); }
+  body { font-family: var(--font-serif); color: var(--ink); }
+  .sheet { width: 717px; margin: 24px auto; background: var(--paper); padding: 48px 56px 64px; }
+  .kicker { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-lo); margin: 0 0 6px; }
+  h1.page-title { font-size: 22px; font-weight: 600; margin: 0 0 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+
+  .ladder { margin-top: 8px; border: 1px solid var(--line); }
+  .ladder-row { display: grid; grid-template-columns: 110px 1fr 90px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  .ladder-row:last-child { border-bottom: none; }
+  .ladder-row .tag { font-family: var(--font-mono); font-size: 11px; color: var(--ink-md); }
+  .ladder-row .word { font-size: 30px; font-weight: 700; text-transform: uppercase; white-space: nowrap; overflow-x: auto; padding: 6px 0; }
+  .ladder-row .verdict { font-family: var(--font-mono); font-size: 10px; text-align: right; letter-spacing: 0.03em; }
+  .ladder-row.merge { background: color-mix(in srgb, var(--neg) 6%, var(--paper)); }
+  .ladder-row.merge .verdict { color: var(--neg); }
+  .ladder-row.touch .verdict { color: var(--neg); opacity: 0.75; }
+  .ladder-row.ok .verdict { color: var(--pos); }
+
+  table.rule { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+  table.rule th, table.rule td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.rule th { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-lo); font-weight: 600; }
+  table.rule td.rec { font-family: var(--font-mono); color: var(--accent); white-space: nowrap; font-size: 12px; }
+
+  .block { margin: 32px 0; }
+  .section-title { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+  .caption { font-family: var(--font-mono); font-size: 12px; color: var(--ink-md); line-height: 1.5; margin: 10px 0 0; }
+  .caption b { color: var(--ink); font-weight: 600; }
+
+  @media screen and (max-width: 760px) {
+    .sheet { width: auto; margin: 12px; padding: 28px 20px 40px; }
+    .ladder-row { grid-template-columns: 90px 1fr; }
+    .ladder-row .verdict { grid-column: 1 / -1; text-align: left; margin-top: 4px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <p class="kicker">Nghiên cứu typography · tracking và kerning tiêu đề</p>
+  <h1 class="page-title">Siết tracking đến đâu thì dấu móc bắt đầu chạm chữ</h1>
+
+  <div class="block">
+    <p class="section-title">Thang đo trên cùng một cụm từ ("TRƯỢT GIÁ TRỊ", Spectral 700 — đo gốc ở 140px, đây là 30px để vừa trang)</p>
+    <div class="ladder">
+      <div class="ladder-row merge">
+        <span class="tag">-0.04em</span>
+        <span class="word" style="letter-spacing:-0.04em">TRƯỢT GIÁ TRỊ</span>
+        <span class="verdict">GỘP MỰC</span>
+      </div>
+      <div class="ladder-row touch">
+        <span class="tag">-0.03em</span>
+        <span class="word" style="letter-spacing:-0.03em">TRƯỢT GIÁ TRỊ</span>
+        <span class="verdict">GẦN CHẠM</span>
+      </div>
+      <div class="ladder-row">
+        <span class="tag">-0.01em</span>
+        <span class="word" style="letter-spacing:-0.01em">TRƯỢT GIÁ TRỊ</span>
+        <span class="verdict">CÒN AN TOÀN</span>
+      </div>
+      <div class="ladder-row">
+        <span class="tag">0 (mặc định)</span>
+        <span class="word" style="letter-spacing:0">TRƯỢT GIÁ TRỊ</span>
+        <span class="verdict">KERNING FONT</span>
+      </div>
+      <div class="ladder-row ok">
+        <span class="tag">+0.02em</span>
+        <span class="word" style="letter-spacing:0.02em">TRƯỢT GIÁ TRỊ</span>
+        <span class="verdict">AN TOÀN</span>
+      </div>
+    </div>
+    <p class="caption">Xếp hạng "gộp mực"/"gần chạm" lấy từ đếm connected-component thật
+    trên ảnh render ở cỡ 140px (xem FONT-TRAPS.md). Ở cỡ hiển thị 30px trong trang này,
+    sự khác biệt khó thấy bằng mắt — đây là lý do phải ĐO chứ không chỉnh bằng cảm tính:
+    va chạm xảy ra trước khi mắt thường nhận ra.</p>
+  </div>
+
+  <div class="block">
+    <p class="section-title">Bảng quyết định</p>
+    <table class="rule">
+      <tr><th>Tình huống</th><th>Khuyến nghị</th><th></th></tr>
+      <tr>
+        <td>Tiêu đề hoa toàn phần, có Ơ/Ư/ơ/ư</td>
+        <td class="rec">letter-spacing ≥ -0.01em</td>
+        <td>Móc thò ngang là điểm chạm sớm nhất, bất kể font.</td>
+      </tr>
+      <tr>
+        <td>Tiêu đề hoa toàn phần, không có Ơ/Ư</td>
+        <td class="rec">letter-spacing 0 đến +0.02em</td>
+        <td>Dấu trên/dưới không thò ngang; tracking dương giúp khối hoa đỡ đặc.</td>
+      </tr>
+      <tr>
+        <td>Tiêu đề cần vừa đúng một dòng, đang tràn vài ký tự</td>
+        <td class="rec">giảm font-size, không siết tracking</td>
+        <td>Siết đủ để vừa dòng thường đã vượt ngưỡng va chạm đo được ở trên.</td>
+      </tr>
+      <tr>
+        <td>Thân bài, chú thích, nhãn nhỏ</td>
+        <td class="rec">letter-spacing 0</td>
+        <td>Không có lý do tạo hình nào bù được cho tốc độ đọc mất đi.</td>
+      </tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>

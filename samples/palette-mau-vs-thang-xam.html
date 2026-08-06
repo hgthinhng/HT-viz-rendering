@@ -1,0 +1,257 @@
+<!--
+  Ý MINH HOẠ: cùng một biểu đồ cơ cấu 8 ngành cho vay, vẽ 1 lần, hiển thị 2 lần
+  cạnh nhau. Bản phải là bản trái áp filter: grayscale(1) THẬT qua CSS (không vẽ
+  lại tay), đúng yêu cầu "chứng minh bằng thực nghiệm, không chỉ khẳng định
+  suông". Bảng 8 màu dùng ở đây là bảng đã được ĐO bằng research/07-bw-palette/
+  colormath.py: 5 màu là token gốc của tokens.css (ink, accent-hi, accent,
+  ink-lo, line), 3 màu còn lại (accent-plum #9162BD, accent-sky #82C0FF,
+  accent-cyan #64E3FF) là màu MỚI sinh bằng thuật toán tham lam trong không
+  gian CIE LCH, quét trong cung hue an toàn (loại bỏ hue của pos/neg/warn và
+  vùng lân cận theo TÊN màu cảm nhận, không chỉ theo góc chính xác), tối đa
+  hoá đồng thời khoảng cách xám nhỏ nhất VÀ khoảng cách sau mô phỏng mù màu tệ
+  nhất trong 3 dạng. Số liệu đầy đủ ở research/07-bw-palette/PALETTE-TABLE.md.
+
+  Cặp yếu nhất trong bảng 8 màu này là accent-sky/accent-cyan (ΔGrayCSS=18.7,
+  ΔE mô phỏng deuteranopia=14.4) — cả hai đều được thêm hoạ tiết (gạch chéo,
+  chấm bi) làm mã hoá kép, không chỉ dựa vào hex màu. Đây là bằng chứng cụ thể
+  cho quy tắc dẫn xuất: càng thêm màu vào cùng một cung hue hẹp, cặp liền kề
+  càng dễ trùng xám, và phải bù bằng hoạ tiết khi ΔGrayCSS xuống dưới khoảng 20.
+
+  NGUỒN: WCAG 2.x relative luminance, CSS Filter Effects Level 1 (grayscale),
+  CIE 1976 Lab, Machado/Oliveira/Fernandes 2009 (mô phỏng mù màu). Công thức tự
+  viết trong colormath.py, đã tự kiểm bằng render Chromium thật (sai số tối đa
+  0.49/255 so với công thức, xem FINDINGS.md).
+
+  KHI NÀO KHÔNG CẦN kỹ thuật này: báo cáo chỉ phát hành bản HTML/PDF màn hình,
+  không bao giờ in hay photocopy đen trắng, và không có độc giả mù màu trong
+  đối tượng đọc đã biết trước (hiếm khi khẳng định được điều này).
+
+  Dữ liệu: cơ cấu dư nợ cho vay theo 8 ngành, 2 quý, số minh hoạ, không phải số
+  liệu công bố thật của tổ chức tín dụng nào.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bảng 8 màu, bản màu và bản thang xám: còn phân biệt được không</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6;
+    --line: #DBE2EA; --accent: #2251FF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 24px; background: var(--paper); color: var(--ink);
+    font-family: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 26px; max-width: 78ch; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media screen and (max-width: 800px) { .grid2 { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid var(--line); padding: 16px 18px 18px; }
+  /* QUAN TRONG: SVG phai co width/height la SO PX CO DINH (khop viewBox),
+     KHONG duoc dat width="100%" tren chinh the <svg>. Da tu kiem bang
+     weasyprint that: width="100%" height="auto" tren <svg> lam WeasyPrint
+     69.0 BO QUA toan bo noi dung SVG (khong loi, khong canh bao, chi la
+     mot o trong khi ra PDF), du browser render dung. Responsive man hinh
+     phai lam qua CSS max-width tren THE BAO NGOAI, khong qua thuoc tinh
+     width cua <svg>. Xem research/07-bw-palette/FINDINGS.md muc "bay
+     WeasyPrint" de biet day la loi lap lai o it nhat 8 mau khac trong repo. */
+  .panel svg { display: block; max-width: 100%; height: auto; }
+  .tag {
+    display: inline-block; font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; margin-bottom: 8px; color: var(--accent); border: 1px solid var(--accent);
+  }
+  .panel h2 { font-size: 0.92rem; margin: 0 0 10px; }
+  .gray-svg { filter: grayscale(1); }
+  .mono {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  .note {
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.74rem; color: var(--ink-md); line-height: 1.65; margin: 22px 0 0; max-width: 86ch;
+  }
+  .note b { color: var(--ink); }
+  .source {
+    margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.72rem; color: var(--ink-lo);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Cơ cấu dư nợ theo 8 ngành: bảng 8 màu còn đọc được khi mất hết màu</h1>
+  <p class="dek">Bản phải là bản trái áp filter: grayscale(1) thật qua CSS, không vẽ lại tay. 8 màu: 5 token gốc của hệ (ink, accent-hi, accent, ink-lo, line) cộng 3 màu mới sinh trong cùng cung hue (accent-plum, accent-sky, accent-cyan). Số liệu minh hoạ.</p>
+
+  <div class="grid2">
+    <div class="panel">
+      <span class="tag">Bản màu, 8 ngành</span>
+      <h2>Sắp theo ΔGrayCSS tăng dần, 2 ngành nhạt nhất có hoạ tiết</h2>
+      <svg viewBox="0 0 480 320" width="480" height="320" role="img">
+        <title>Co cau du no theo 8 nganh, ban mau</title>
+        <desc>2 quy, moi cot 100% chia 8 nganh theo bang mau 8 mau da do</desc>
+        <defs>
+          <pattern id="hatch-sky" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="6" height="6" fill="#82C0FF" />
+            <line x1="0" y1="0" x2="0" y2="6" stroke="#051C2C" stroke-width="1" opacity="0.35" />
+          </pattern>
+          <pattern id="hatch-cyan" width="7" height="7" patternUnits="userSpaceOnUse">
+            <rect width="7" height="7" fill="#64E3FF" />
+            <circle cx="3.5" cy="3.5" r="1.1" fill="#051C2C" opacity="0.4" />
+          </pattern>
+        </defs>
+        <line x1="30" y1="300" x2="440" y2="300" stroke="#051C2C" stroke-width="1" />
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#8595A6">
+          <text x="26" y="303" text-anchor="end">0%</text>
+          <text x="26" y="23" text-anchor="end">100%</text>
+        </g>
+        <!-- Q1, x=40..120 -->
+        <g>
+          <rect x="40" y="20" width="80" height="61.6" fill="#051C2C" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="81.6" width="80" height="50.4" fill="#1233B8" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="132.0" width="80" height="42.0" fill="#2251FF" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="174.0" width="80" height="33.6" fill="#9162BD" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="207.6" width="80" height="30.8" fill="#8595A6" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="238.4" width="80" height="28.0" fill="url(#hatch-sky)" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="266.4" width="80" height="19.6" fill="url(#hatch-cyan)" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="286.0" width="80" height="14.0" fill="#DBE2EA" stroke="#051C2C" stroke-width="0.6"/>
+          <text x="80" y="55" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700" fill="#FFFFFF">22%</text>
+          <text x="80" y="110" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700" fill="#FFFFFF">18%</text>
+        </g>
+        <!-- Q4, x=150..230 -->
+        <g>
+          <rect x="150" y="20" width="80" height="56.0" fill="#051C2C" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="76.0" width="80" height="47.6" fill="#1233B8" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="123.6" width="80" height="47.6" fill="#2251FF" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="171.2" width="80" height="36.4" fill="#9162BD" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="207.6" width="80" height="28.0" fill="#8595A6" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="235.6" width="80" height="25.2" fill="url(#hatch-sky)" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="260.8" width="80" height="22.4" fill="url(#hatch-cyan)" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="283.2" width="80" height="16.8" fill="#DBE2EA" stroke="#051C2C" stroke-width="0.6"/>
+        </g>
+        <g font-family="Spectral, Georgia, serif" font-size="10.5" fill="#42566A" text-anchor="middle">
+          <text x="80" y="315">Quý 1</text><text x="190" y="315">Quý 4</text>
+        </g>
+        <!-- nhan truc tiep thay legend -->
+        <g font-family="IBM Plex Mono, monospace" font-size="8.6" fill="#051C2C">
+          <line x1="230" y1="48" x2="240" y2="48" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="51">Bán lẻ trong nước, 20%</text>
+          <line x1="230" y1="99.8" x2="240" y2="99.8" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="102.8">Sản xuất công nghiệp, 17%</text>
+          <line x1="230" y1="147.4" x2="240" y2="147.4" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="150.4">Bất động sản, 17%</text>
+          <line x1="230" y1="189.4" x2="240" y2="189.4" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="192.4">Xuất khẩu, 13%</text>
+          <line x1="230" y1="221.6" x2="240" y2="221.6" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="224.6">Dịch vụ tài chính, 10%</text>
+          <line x1="230" y1="248.2" x2="240" y2="248.2" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="251.2">Nông nghiệp, 9% (hoạ tiết chéo)</text>
+          <line x1="230" y1="272" x2="240" y2="272" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="275">Logistics, 8% (hoạ tiết chấm)</text>
+          <line x1="230" y1="291.6" x2="240" y2="291.6" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="294.6">Khác, 6%</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="panel">
+      <span class="tag" style="color:var(--ink-md); border-color:var(--ink-md);">Bản thang xám (filter: grayscale(1) thật)</span>
+      <h2>Vẫn đọc được thứ tự và tên từng ngành</h2>
+      <div class="gray-svg">
+      <svg viewBox="0 0 480 320" width="480" height="320" role="img">
+        <title>Co cau du no theo 8 nganh, ban da khu mau</title>
+        <desc>Cung du lieu, ap dung grayscale that qua CSS filter, khong ve lai tay</desc>
+        <defs>
+          <pattern id="hatch-sky2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="6" height="6" fill="#82C0FF" />
+            <line x1="0" y1="0" x2="0" y2="6" stroke="#051C2C" stroke-width="1" opacity="0.35" />
+          </pattern>
+          <pattern id="hatch-cyan2" width="7" height="7" patternUnits="userSpaceOnUse">
+            <rect width="7" height="7" fill="#64E3FF" />
+            <circle cx="3.5" cy="3.5" r="1.1" fill="#051C2C" opacity="0.4" />
+          </pattern>
+        </defs>
+        <line x1="30" y1="300" x2="440" y2="300" stroke="#051C2C" stroke-width="1" />
+        <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#8595A6">
+          <text x="26" y="303" text-anchor="end">0%</text>
+          <text x="26" y="23" text-anchor="end">100%</text>
+        </g>
+        <g>
+          <rect x="40" y="20" width="80" height="61.6" fill="#051C2C" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="81.6" width="80" height="50.4" fill="#1233B8" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="132.0" width="80" height="42.0" fill="#2251FF" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="174.0" width="80" height="33.6" fill="#9162BD" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="207.6" width="80" height="30.8" fill="#8595A6" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="238.4" width="80" height="28.0" fill="url(#hatch-sky2)" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="266.4" width="80" height="19.6" fill="url(#hatch-cyan2)" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="40" y="286.0" width="80" height="14.0" fill="#DBE2EA" stroke="#051C2C" stroke-width="0.6"/>
+          <text x="80" y="55" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700" fill="#FFFFFF">22%</text>
+          <text x="80" y="110" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700" fill="#FFFFFF">18%</text>
+        </g>
+        <g>
+          <rect x="150" y="20" width="80" height="56.0" fill="#051C2C" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="76.0" width="80" height="47.6" fill="#1233B8" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="123.6" width="80" height="47.6" fill="#2251FF" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="171.2" width="80" height="36.4" fill="#9162BD" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="207.6" width="80" height="28.0" fill="#8595A6" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="235.6" width="80" height="25.2" fill="url(#hatch-sky2)" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="260.8" width="80" height="22.4" fill="url(#hatch-cyan2)" stroke="#051C2C" stroke-width="0.6"/>
+          <rect x="150" y="283.2" width="80" height="16.8" fill="#DBE2EA" stroke="#051C2C" stroke-width="0.6"/>
+        </g>
+        <g font-family="Spectral, Georgia, serif" font-size="10.5" fill="#42566A" text-anchor="middle">
+          <text x="80" y="315">Quý 1</text><text x="190" y="315">Quý 4</text>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="8.6" fill="#051C2C">
+          <line x1="230" y1="48" x2="240" y2="48" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="51">Bán lẻ trong nước, 20%</text>
+          <line x1="230" y1="99.8" x2="240" y2="99.8" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="102.8">Sản xuất công nghiệp, 17%</text>
+          <line x1="230" y1="147.4" x2="240" y2="147.4" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="150.4">Bất động sản, 17%</text>
+          <line x1="230" y1="189.4" x2="240" y2="189.4" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="192.4">Xuất khẩu, 13%</text>
+          <line x1="230" y1="221.6" x2="240" y2="221.6" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="224.6">Dịch vụ tài chính, 10%</text>
+          <line x1="230" y1="248.2" x2="240" y2="248.2" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="251.2">Nông nghiệp, 9% (hoạ tiết chéo)</text>
+          <line x1="230" y1="272" x2="240" y2="272" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="275">Logistics, 8% (hoạ tiết chấm)</text>
+          <line x1="230" y1="291.6" x2="240" y2="291.6" stroke="#051C2C" stroke-width="1" />
+          <text x="244" y="294.6">Khác, 6%</text>
+        </g>
+      </svg>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">
+    <b>Bốn lớp phòng thủ độc lập:</b> (1) 8 màu sắp theo GrayCSS tăng dần
+    (ink 24.3 &rarr; accent-hi 53.6 &rarr; accent 83.6 &rarr; accent-plum 114.6
+    &rarr; ink-lo 146.8 &rarr; accent-sky 183.4 &rarr; accent-cyan 202.0 &rarr;
+    line 225.1 trên thang 0-255), khoảng cách liền kề nhỏ nhất toàn bảng là
+    18.7 (accent-sky/accent-cyan); (2) cặp yếu nhất đó có thêm hoạ tiết gạch
+    chéo và chấm bi, đọc được ngay cả khi 2 mảng xám gần giống nhau; (3) mọi
+    mảng có viền ink 0.6px, kể cả mảng nhạt gần trắng (line, accent-cyan) —
+    thiếu viền thì mảng nhạt gần như biến mất khi nằm sát cạnh nền giấy trắng;
+    (4) tên ngành và số liệu phần trăm viết trực tiếp cạnh mỗi dải, không dùng
+    legend rời.
+  </p>
+  <p class="note">
+    <b>Thứ tự gán màu:</b> ngành lớn nhất (Bán lẻ, 20-22%) nhận màu đậm nhất hệ
+    (ink), ngành nhỏ nhất (Khác, 5-6%) nhận màu nhạt nhất (line) — 2 đầu mút của
+    thang GrayCSS luôn có khoảng cách lớn nhất (200.8 giữa ink và line), nên cặp
+    quan trọng nhất khi so sánh nhanh (ngành lớn nhất so với phần còn lại) luôn
+    là cặp tương phản mạnh nhất, không cần chọn tay.
+  </p>
+
+  <p class="source">
+    Nguồn: WCAG 2.x relative luminance, CSS Filter Effects Level 1, CIE 1976 Lab,
+    Machado/Oliveira/Fernandes 2009 (mô phỏng mù màu) &middot; Số liệu minh hoạ &middot;
+    Xem research/07-bw-palette/FINDINGS.md và PALETTE-TABLE.md
+  </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!doctype html>
+<!--
+  MINH HOẠ: thẻ cảnh báo kỹ thuật cho một bẫy KHÔNG liên quan gì tới font
+  nhúng hay engine in — liên quan tới CÁCH VĂN BẢN ĐƯỢC MÃ HOÁ trước khi tới
+  công đoạn render. Cùng một câu tiếng Việt, biểu diễn Unicode NFC (tổ hợp
+  sẵn, kiểu gõ Unikey/VNI chuẩn) và NFD (phân rã thành chữ cái nền + các dấu
+  kết hợp rời) LÀ HAI CHUỖI BYTE KHÁC NHAU dù mắt người đọc thấy "giống nhau"
+  khi gõ. Vế NFD ở khối bên phải trong trang này CỐ Ý giữ nguyên dạng phân
+  rã thật (không tự sửa) để trình duyệt/WeasyPrint render đúng như khi gặp
+  văn bản NFD thật ngoài đời — đây là bằng chứng sống, không phải ảnh chụp.
+
+  ĐO ĐƯỢC (research/05-typography-vn/FONT-TRAPS.md bẫy #2; công cụ: Python
+  unicodedata.normalize, WeasyPrint 69.0, PyMuPDF đọc lại tầng text, so
+  khớp bằng code, không bằng mắt):
+  - Font Spectral/IBM Plex Mono/IBM Plex Sans nhúng trong repo phủ ĐỦ
+    134/134 ký tự tiếng Việt tổ hợp sẵn (NFC), nhưng THIẾU cả ba dấu kết hợp
+    cấu trúc (U+0302 mũ, U+0306 trăng, U+031B móc) dùng khi văn bản là NFD.
+    Font hệ thống dự phòng (Noto Serif, khớp qua fc-match cho generic
+    "serif" trên máy build) lại CÓ ĐỦ cả ba — nên khi gặp NFD, engine render
+    phải mượn glyph dấu từ MỘT FONT KHÁC cho đúng một ký tự trong từ, và dấu
+    đó nổi lệch vị trí vì bảng neo GPOS mark-to-base của hai font không
+    khớp nhau.
+  - Tầng TEXT của PDF (đọc bằng PyMuPDF) vẫn giữ ĐÚNG chuỗi NFD gốc dù hình
+    ảnh render vỡ — nghĩa là copy/tìm kiếm không mất ký tự, nhưng chuỗi đó
+    có ĐỘ DÀI và DÃY CODEPOINT khác bản NFC (53 so với 76 ký tự cho cùng một
+    câu), nên so sánh chuỗi bằng "==" giữa hai nguồn dữ liệu khác gốc chuẩn
+    hoá sẽ luôn trả về sai dù nội dung "giống nhau" với mắt người.
+
+  KHI NÀO GẶP NFD NGOÀI ĐỜI: tên file lấy từ macOS (HFS+ ép NFD cho tên
+  file), một số hàm chuẩn hoá của thư viện xử lý văn bản, dữ liệu chép tay
+  từ PDF cũ hoặc OCR, và một số API trả Unicode không cam kết dạng chuẩn hoá.
+
+  CÁCH PHÁT HIỆN TỰ ĐỘNG: python3 -c "import unicodedata as u; s=open(f,
+  encoding='utf-8').read(); assert s == u.normalize('NFC', s)" — chèn vào
+  bước kiểm dữ liệu đầu vào TRƯỚC khi đưa vào template, không sửa ở tầng
+  render.
+
+  CÁCH SỬA: chuẩn hoá NFC ngay tại điểm nạp dữ liệu (đọc file, nhận input
+  form, gọi API) bằng unicodedata.normalize('NFC', s) trong Python hoặc
+  s.normalize('NFC') trong JavaScript — không sửa ở tầng render vì lúc đó
+  đã quá muộn để biết đâu là dấu "thật" của câu.
+
+  KHI NÀO KHÔNG NÊN DÙNG (áp dụng cho MẪU trang này, không phải cho việc
+  chuẩn hoá NFC nói chung — việc đó luôn nên làm):
+  - Đừng dùng cách trình bày "before/after" này cho người đọc cuối (khách
+    hàng nhận báo cáo) — đây là trang chẩn đoán kỹ thuật cho người viết
+    template, không phải nội dung xuất bản.
+
+  RÀNG BUỘC IN: font-family list kết thúc generic keyword (không dùng font
+  nhúng base64 của repo — xem FONT-TRAPS.md). Shadow chỉ offset cứng,
+  blur = 0. Không gauge/radar. Không em-dash/en-dash. @media dùng từ khoá
+  screen. Đã qua round-trip WeasyPrint + PyMuPDF: tầng text khớp CHÍNH XÁC
+  chuỗi nguồn kể cả ở khối NFD (WeasyPrint giữ đúng dãy codepoint gốc dù
+  hình ảnh render sai — xem ghi chú ở trên).
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NFC và NFD trong render tiếng Việt — mẫu tham khảo HT-viz-rendering</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --line: #DBE2EA;
+    --accent: #2251FF;
+    --neg: #C22F4E;
+    --pos: #008A6D;
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper-hi); }
+  body { font-family: var(--font-serif); color: var(--ink); }
+  .sheet { width: 717px; margin: 24px auto; background: var(--paper); padding: 48px 56px 64px; }
+  .kicker { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-lo); margin: 0 0 6px; }
+  h1.page-title { font-size: 22px; font-weight: 600; margin: 0 0 28px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+
+  .compare { display: flex; gap: 20px; }
+  .compare > div { flex: 1; border: 1px solid var(--line); padding: 20px 22px; }
+  .compare .tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 12px; }
+  .compare .ok .tag { color: var(--pos); }
+  .compare .bad .tag { color: var(--neg); }
+  .compare .sample { font-size: 26px; line-height: 1.5; margin: 0; }
+  .compare .meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-lo); margin-top: 14px; }
+
+  .block { margin: 32px 0; }
+  .section-title { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+  .caption { font-family: var(--font-mono); font-size: 12px; color: var(--ink-md); line-height: 1.6; margin: 10px 0 0; }
+  .caption b { color: var(--ink); font-weight: 600; }
+
+  .code {
+    font-family: var(--font-mono); font-size: 12px; background: var(--paper-hi);
+    border: 1px solid var(--line); padding: 12px 14px; white-space: pre-wrap;
+    word-break: break-word; color: var(--ink); line-height: 1.6;
+  }
+
+  table.cov { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+  table.cov th, table.cov td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); }
+  table.cov th { font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-lo); }
+  table.cov td.yes { color: var(--pos); }
+  table.cov td.no { color: var(--neg); }
+
+  @media screen and (max-width: 760px) {
+    .sheet { width: auto; margin: 12px; padding: 28px 20px 40px; }
+    .compare { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <p class="kicker">Nghiên cứu typography · chuẩn hoá Unicode NFC/NFD</p>
+  <h1 class="page-title">Cùng một câu, hai cách mã hoá, một cách render vỡ</h1>
+
+  <div class="compare">
+    <div class="ok">
+      <span class="tag">NFC — tổ hợp sẵn (đúng)</span>
+      <p class="sample">Nghệ thuật ước lượng giá trị hợp lý ở ngưỡng ổn định.</p>
+      <p class="meta">53 codepoint · gõ bàn phím Unikey/VNI ra dạng này</p>
+    </div>
+    <div class="bad">
+      <span class="tag">NFD — phân rã (vỡ)</span>
+      <p class="sample">Nghệ thuật ước lượng giá trị hợp lý ở ngưỡng ổn định.</p>
+      <p class="meta">76 codepoint · cùng một câu, macOS filename / OCR / một số API trả về dạng này</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <p class="section-title">Vì sao vỡ: font thiếu glyph dấu cấu trúc cho dạng phân rã</p>
+    <table class="cov">
+      <tr><th>Codepoint</th><th>Vai trò</th><th>Spectral / Plex (nhúng)</th><th>Noto Serif (dự phòng hệ thống)</th></tr>
+      <tr><td>U+0300, U+0301, U+0303, U+0309, U+0323</td><td>5 thanh điệu (huyền/sắc/ngã/hỏi/nặng)</td><td class="yes">có</td><td class="yes">có</td></tr>
+      <tr><td>U+0302</td><td>dấu mũ (â/ê/ô)</td><td class="no">không</td><td class="yes">có</td></tr>
+      <tr><td>U+0306</td><td>dấu trăng (ă)</td><td class="no">không</td><td class="yes">có</td></tr>
+      <tr><td>U+031B</td><td>dấu móc (ơ/ư)</td><td class="no">không</td><td class="yes">có</td></tr>
+    </table>
+    <p class="caption">Ba dấu font nhúng KHÔNG có (mũ, trăng, móc) đúng là ba dấu cần
+    để dựng lại â/ă/ê/ô/ơ/ư khi văn bản đã bị phân rã — nên bất cứ chữ nào trong nhóm
+    này, khi gặp ở dạng NFD, engine phải mượn glyph từ font dự phòng, và neo GPOS của
+    hai font không khớp nhau khiến dấu nổi lệch như ảnh bên trên.</p>
+  </div>
+
+  <div class="block">
+    <p class="section-title">Kiểm tra và sửa</p>
+    <p class="code">python3 -c "import unicodedata as u; s=open('file.html',encoding='utf-8').read(); assert s==u.normalize('NFC',s), 'lech chuan hoa NFC'"
+
+# sua tai diem nap du lieu, khong sua o tang render:
+text = unicodedata.normalize('NFC', text)</p>
+    <p class="caption">Chạy kiểm tra này trong pipeline nạp dữ liệu (đọc CSV, nhận
+    input người dùng, đọc file gửi từ máy khác) — không phải trong bước render HTML,
+    vì lúc render đã quá muộn để phân biệt "dấu thật của câu" với "dấu do phân rã".</p>
+  </div>
+</div>
+</body>
+</html>

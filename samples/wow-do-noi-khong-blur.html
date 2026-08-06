@@ -230,7 +230,12 @@
   }
 
   /* ── 3. Background-color khối, thay cho "veil"/inset shadow ──
-     Không cần thêm biến màu mới: color-mix() giữa token có sẵn và --paper. */
+     CẢNH BÁO ĐÃ ĐO: color-mix() KHÔNG render trong WeasyPrint 69.0. Đo cô lập
+     cho 0 vùng tô, trong khi cùng màu viết bằng rgb(R G B / A) cho 1 vùng tô.
+     Bản đầu của mẫu này dùng color-mix() và tự dán nhãn "đã verify", sai, vì
+     tint 10% trên nền trắng thì mắt không phân biệt được với trắng nên nhìn
+     ảnh tưởng là chạy. Dùng rgb(R G B / A), nhất quán với quy ước shadow ở
+     CLAUDE.md. --warn #B07A10 = rgb(176 122 16). */
   .demo-veil table { border-collapse: collapse; width: 100%; font-size: 13px; }
   .demo-veil td, .demo-veil th {
     padding: 7px 10px;
@@ -241,7 +246,7 @@
   .demo-veil th { text-align: left; color: var(--ink-lo); font-weight: 400; }
   .demo-veil td:first-child, .demo-veil th:first-child { text-align: left; font-family: var(--font-serif); }
   .demo-veil tr.flag td {
-    background: color-mix(in srgb, var(--warn) 10%, var(--paper));
+    background: rgb(176 122 16 / 10%);
   }
 
   /* ── 4. Xếp lớp offset (3 tầng) để mô phỏng độ sâu, dùng transform ──
@@ -364,11 +369,20 @@
           </table>
         </div>
         <p class="note">
-          <code>background: color-mix(in srgb, var(--warn) 10%, var(--paper))</code>
+          <code>background: rgb(176 122 16 / 10%)</code>
           tô nổi một dòng trong bảng dày đặc mà không cần thêm biến màu mới
           ngoài token đã chốt. Quá 3-4 dòng liền kề sẽ trông vằn vện.
         </p>
-        <p class="verified">Verified: color-mix() và background render đúng trong WeasyPrint</p>
+        <p class="note">
+          ĐỪNG dùng <code>color-mix()</code> ở đây. Nó KHÔNG render trong
+          WeasyPrint 69.0: đo cô lập cho 0 vùng tô, trong khi cùng màu viết
+          bằng <code>rgb(R G B / A)</code> cho 1 vùng tô. Bản đầu của mẫu này
+          dùng color-mix và tự dán nhãn đã verify, sai. Nó lọt được vì tint
+          10% trên nền trắng thì mắt không phân biệt nổi với trắng, nên nhìn
+          ảnh tưởng là chạy. Đây đúng bài học đã ghi trong sổ nghiên cứu: so
+          ảnh ở mức byte, đừng so bằng mắt.
+        </p>
+        <p class="verified">Verified: đếm vùng tô qua WeasyPrint, rgb(R G B / A) cho 1 vùng tô, color-mix cho 0</p>
       </div>
 
       <div class="card">

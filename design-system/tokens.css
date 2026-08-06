@@ -44,7 +44,15 @@
   --accent-soft: #7D9BFF;   /* Kimi [--blue-soft] — chuỗi phụ, tertiary */
   --pos: #008A6D;           /* Kimi [--green] — DÙNG CỰC TIẾT CHẾ theo chỉ đạo operator */
   --neg: #C22F4E;           /* Kimi [--neg] */
-  --neg-soft: color-mix(in srgb, var(--neg) 45%, var(--paper)); /* dẫn xuất, Kimi không có bậc soft riêng cho neg */
+  /* --neg-soft tính tay thay color-mix(): color-mix() không render trong
+     WeasyPrint 69.0 (đo bằng số qua pymupdf get_drawings(): 0 fill cho ô
+     background dùng color-mix, 1 fill cho cùng màu viết thẳng bằng hex).
+     Giá trị #E4A1AF lấy từ Chromium getComputedStyle() cho đúng biểu thức
+     color-mix(in srgb, #C22F4E 45%, #FFFFFF) (neg 45% trộn paper 55%, bản
+     sáng). Đổi --neg hoặc --paper ở trên thì phải tính lại và ghi đè hằng
+     số này bằng tay, tokens_test.py không tự bắt được lệch vì đây không
+     còn là công thức, là số cố định. */
+  --neg-soft: #E4A1AF;
   --warn: #B07A10;          /* Kimi [--copper] = [--gold] — cảnh báo/SHOULD, tách khỏi accent chính */
 
   /* Spacing và radius: đã xoá khỏi khối này (fix round 1). Khối :root thứ
@@ -95,7 +103,7 @@
   --accent-soft: #3A5CC7;
   --pos: #35A98A;
   --neg: #E0637C;
-  --neg-soft: color-mix(in srgb, var(--neg) 45%, var(--paper));
+  --neg-soft: #6A3849; /* tinh tay thay color-mix(), xem giai thich o khoi :root sang */
   --warn: #D4A247;
 }
 @media (prefers-color-scheme: dark) {
@@ -104,7 +112,7 @@
     --ink: #EAF0F6; --ink-md: #B7C4D1; --ink-lo: #7E93A6; --ink-faint: #5A6E80;
     --line: #223449; --line-lo: #1A2A3B;
     --accent: #5B87FF; --accent-hi: #7D9BFF; --accent-soft: #3A5CC7;
-    --pos: #35A98A; --neg: #E0637C; --neg-soft: color-mix(in srgb, var(--neg) 45%, var(--paper));
+    --pos: #35A98A; --neg: #E0637C; --neg-soft: #6A3849; /* tinh tay thay color-mix(), xem giai thich o khoi :root sang */
     --warn: #D4A247;
   }
 }

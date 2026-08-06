@@ -198,7 +198,9 @@ table.sens td.base{ outline:2px solid var(--accent-hi); outline-offset:-2px; fon
 .num-stage{ flex:1; display:flex; flex-direction:column; justify-content:center; }
 .num-label{ font-family:var(--font-mono); font-size:var(--fs-dek); letter-spacing:.04em; color:var(--warn); margin:0 0 8px 4px; }
 .num-behind2, .num-front2{ font-size:200px; font-weight:600; line-height:0.9; margin:0; letter-spacing:-.015em; font-family:var(--font-serif); white-space:nowrap; }
-.num-behind2{ position:absolute; top:-5px; left:-5px; color:color-mix(in srgb, var(--warn) 16%, var(--paper)); z-index:0; }
+/* color-mix() khong render trong WeasyPrint (do bang so: 0 fill). Hex tinh
+   tay bang Chromium getComputedStyle(): --warn 16% tron --paper 84%. */
+.num-behind2{ position:absolute; top:-5px; left:-5px; color:#F2EAD9; z-index:0; }
 .num-front2{ position:relative; z-index:1; color:var(--ink); }
 .num-ctx{ max-width:480px; font-size:var(--fs-dek); font-style:normal; line-height:1.65; color:var(--ink-md); margin:26px 0 0 4px; }
 .num-ctx strong{ color:var(--ink); }

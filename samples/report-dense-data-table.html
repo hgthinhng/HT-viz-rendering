@@ -109,7 +109,9 @@ table.dense tbody td.neg-paren{ color:var(--ink); }
 table.dense tbody td.neg-minus{ color:var(--neg); }
 table.dense tbody td.zero{ color:var(--ink-faint); text-align:right; }
 table.dense tbody tr:last-child td{ border-bottom:1px solid var(--line); }
-table.dense tbody tr.median td{ background:color-mix(in srgb, var(--accent) 6%, var(--paper)); font-style:italic; color:var(--ink-md); }
+/* color-mix() khong render trong WeasyPrint (do bang so: 0 fill). Hex tinh
+   tay bang Chromium getComputedStyle(): --accent 6% tron --paper 94%. */
+table.dense tbody tr.median td{ background:#F2F5FF; font-style:italic; color:var(--ink-md); }
 table.dense tbody tr.median td:first-child{ font-style:normal; }
 
 .foot-legend{ margin-top:10px; font-family:var(--font-mono); font-size:10.5px; color:var(--ink-lo); display:flex; gap:20px; flex-wrap:wrap; }

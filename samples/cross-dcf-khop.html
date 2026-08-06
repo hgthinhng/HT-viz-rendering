@@ -1,0 +1,307 @@
+<!--
+  Ý MINH HOẠ: hai exhibit của CÙNG một mô hình DCF (football field và lưới độ
+  nhạy WACC x g) đặt cạnh nhau trong một trang, VÀ CHỦ ĐỘNG CHỨNG MINH chúng
+  khớp nhau bằng cách đọc từ một khối giả định JSON duy nhất kèm thuộc tính
+  data-* trên từng con số, để một script kiểm tự động (không phải mắt người)
+  xác nhận được việc đó. Đây là kỹ thuật "nguồn duy nhất của sự thật" áp
+  dụng cho HTML tĩnh: không có công cụ liên kết ô như Excel, nên phải TỰ
+  nhúng nguồn số vào chính hình thay vì tin người viết tính tay đúng.
+
+  BỐI CẢNH PHÁT HIỆN: research/08-synthesis/FINDINGS.md mục 3.5 (agent tổng
+  hợp vòng 3) ghi nhận CHÍNH HỌ từng viết sai dải DCF ở Hình football field
+  (19.200-24.600) độc lập với bảng độ nhạy, lệch với dải đúng suy ra từ lưới
+  (19.050-24.750), vì "không có phép nào bắt buộc hai con số phải khớp". Mẫu
+  này dựng LẠI đúng vấn đề đó bằng một mô hình mới (đơn giản hoá để dễ kiểm),
+  và giải bằng cơ chế nhúng data-*, không phải bằng cách "cẩn thận hơn".
+
+  NGUỒN CẢM HỨNG (chi tiết: research/12-cross-exhibit/FINDINGS.md mục 2):
+  - Quy ước governance mô hình sell-side: một tập định nghĩa/nguồn/công thức
+    duy nhất cho các con số lặp lại nhiều nơi, đối chiếu theo nhịp cố định
+    (khảo sát qua tổng hợp tìm kiếm, xem Onetribe Advisory/FD Capital về
+    "single source of truth" trong tài chính).
+  - IMF World Economic Outlook: MỌI bảng/hình trong một kỳ xuất bản đọc từ
+    CÙNG một cơ sở dữ liệu WEO của đúng kỳ đó (tháng 4 hoặc tháng 10), đánh
+    số hình kiểu "Figure 1.17" (chương.số hình) và tự trỏ chéo sang Phụ lục
+    Thống kê của chính kỳ đó khi cần chi tiết hơn.
+  - SEC Regulation S-K (mục cross-reference trong bản cáo bạch): mọi trình
+    bày lại số liệu ở nơi khác trong tài liệu PHẢI nhất quán với báo cáo tài
+    chính gốc, và cross-reference phải nêu rõ vị trí, không để người đọc tự
+    suy đoán hai chỗ có cùng nguồn hay không.
+
+  KHI NÀO KHÔNG CẦN CƠ CHẾ NÀY: xem khối "verdict" cuối trang.
+
+  Công ty "CTCP Cảng Container Vàm Cỏ", mã "VCC*" là HƯ CẤU (dấu * đánh dấu
+  mã không có thật, quy ước giống "SHM*" đã dùng ở
+  samples/source-khoi-gia-dinh-dinh-gia.html). Mô hình DCF rút gọn còn 1 giai
+  đoạn Gordon growth (EV = FCFF chuẩn hoá / (WACC - g)) để phép tính minh
+  bạch tuyệt đối, không phải một mô hình DCF đầy đủ nhiều giai đoạn dùng cho
+  định giá thật. Toàn bộ số liệu là số MINH HOẠ.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>VCC* - Hai exhibit cùng một mô hình DCF, đọc ra cùng một dải</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --paper-hi: #F7F9FC; --paper-hair: #EEF1F6;
+    --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6; --ink-faint: #AAB8C4;
+    --line: #DBE2EA; --line-lo: #EEF1F6;
+    --accent: #2251FF; --accent-hi: #1233B8; --accent-soft: #7D9BFF;
+    --pos: #008A6D; --neg: #C22F4E; --warn: #B07A10;
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --font-sans: "IBM Plex Sans", "Noto Sans", -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+  .page { width: 210mm; min-height: 297mm; margin: 24px auto; background: var(--paper); border: 1px solid var(--line); padding: 20mm; position: relative; }
+  .research-tag { position: absolute; top: 8px; right: 8px; font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper); padding: 2px 8px; letter-spacing: 0.04em; z-index: 5; }
+  .kicker { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px; font-weight: 700; }
+  h1 { font-size: 1.55rem; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; line-height: 1.28; max-width: 34ch; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 6px; max-width: 74ch; line-height: 1.55; }
+  .unit { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-lo); margin: 0 0 20px; }
+
+  .assum-box { border: 1px solid var(--line); margin-bottom: 26px; }
+  .assum-head { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-lo); background: var(--paper-hi); padding: 8px 14px; border-bottom: 1px solid var(--line); }
+  .a-row { display: grid; grid-template-columns: 17ch 10ch 1fr; gap: 14px; padding: 8px 14px; border-bottom: 1px solid var(--line-lo); align-items: baseline; font-size: 0.85rem; }
+  .a-row:last-child { border-bottom: none; }
+  .a-name { font-weight: 600; }
+  .a-value { font-family: var(--font-mono); color: var(--accent-hi); text-align: right; font-weight: 700; }
+  .a-note { font-size: 0.76rem; color: var(--ink-md); }
+
+  .exhibit { margin-bottom: 30px; }
+  .ex-lab { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0 0 4px; }
+  .ex-title { font-family: var(--font-serif); font-weight: 600; font-size: 1.08rem; color: var(--ink); margin: 0 0 12px; max-width: 62ch; line-height: 1.4; }
+  .chart-box { border: 1px solid var(--line); background: var(--paper); padding: 14px 12px 8px; }
+  .caption { margin-top: 10px; font-family: var(--font-sans); font-size: 0.78rem; color: var(--ink-md); max-width: 74ch; line-height: 1.55; }
+  .caption b { color: var(--ink); }
+
+  .xref { margin-top: 10px; padding: 10px 14px; background: var(--paper-hi); border-left: 3px solid var(--accent); font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-md); line-height: 1.6; }
+  .xref b { color: var(--accent-hi); }
+
+  .note { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-md); line-height: 1.65; margin: 8px 0 22px; max-width: 78ch; }
+
+  .verdict { margin-top: 6px; padding: 16px 20px; background: var(--ink); color: var(--paper); }
+  .verdict .v-kicker { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-soft); margin: 0 0 8px; }
+  .verdict ul { margin: 0; padding-left: 1.1em; font-size: 0.85rem; line-height: 1.7; }
+
+  .colophon { margin-top: 22px; padding-top: 12px; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-lo); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+    .a-row { grid-template-columns: 1fr; gap: 2px; }
+  }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; border: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 16mm 14mm; }
+    .exhibit, .assum-box, .verdict { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">HAI EXHIBIT, MỘT NGUỒN, KHỚP NHAU</span>
+
+  <p class="kicker">Đối chiếu chéo exhibit &middot; VCC* &middot; Minh hoạ kỹ thuật</p>
+  <h1>Football field và lưới độ nhạy đọc ra đúng một dải DCF</h1>
+  <p class="dek">Hai hình dưới đây không được vẽ độc lập rồi hy vọng khớp. Cả hai đọc số từ đúng
+  một khối giả định, và mỗi con số hiển thị đều mang theo nguồn của nó để một script kiểm tự
+  động, không phải mắt người, xác nhận được sự khớp đó.</p>
+  <p class="unit">Đơn vị: nghìn đồng/cổ phiếu (định giá), tỷ đồng (EV/nợ ròng). Số liệu minh hoạ
+  cho công ty niêm yết hư cấu VCC*, không phải số thật của bất kỳ mã nào.</p>
+
+  <script type="application/json" class="dcf-assumptions">
+  {
+    "mo_ta": "DCF FCFF rut gon 1 giai doan Gordon growth, dung minh hoa doi chieu, khong phai mo hinh day du",
+    "ngay_chot_du_lieu": "2026-06-30",
+    "fcff_chuan_hoa_ty": 90.0,
+    "no_rong_ty": 300.0,
+    "co_phieu_luu_hanh_trieu": 30.0,
+    "cong_thuc": "EV = FCFF / (WACC - g); Von_CSH = EV - No_rong; Gia/cp (nghin dong) = Von_CSH / So_CP_trieu",
+    "luoi_wacc_pct": [10.0, 11.0, 12.0],
+    "luoi_g_pct": [1.5, 2.0, 2.5],
+    "base_case": {"wacc_pct": 11.0, "g_pct": 2.0}
+  }
+  </script>
+
+  <div class="assum-box">
+    <div class="assum-head">Khối giả định, nguồn duy nhất cho cả Hình 1 và Hình 2 bên dưới</div>
+    <div class="a-row"><span class="a-name">FCFF chuẩn hoá</span><span class="a-value">90 tỷ</span><span class="a-note">Dòng tiền tự do cho doanh nghiệp, đã chuẩn hoá qua chu kỳ đầu tư cảng.</span></div>
+    <div class="a-row"><span class="a-name">Nợ ròng</span><span class="a-value">300 tỷ</span><span class="a-note">Chốt tại ngày định giá, dùng để quy đổi từ EV sang vốn chủ sở hữu.</span></div>
+    <div class="a-row"><span class="a-name">Cổ phiếu lưu hành</span><span class="a-value">30 triệu</span><span class="a-note">Không tính pha loãng từ trái phiếu chuyển đổi (nếu có) trong kịch bản này.</span></div>
+    <div class="a-row"><span class="a-name">Lưới WACC</span><span class="a-value">10,0-12,0%</span><span class="a-note">3 mức, bước 1,0 điểm phần trăm.</span></div>
+    <div class="a-row"><span class="a-name">Lưới g dài hạn</span><span class="a-value">1,5-2,5%</span><span class="a-note">3 mức, bước 0,5 điểm phần trăm, không vượt tăng trưởng GDP danh nghĩa dài hạn giả định.</span></div>
+  </div>
+
+  <div class="exhibit">
+    <p class="ex-lab">Hình 1</p>
+    <p class="ex-title">Năm phương pháp định giá, vùng hội tụ 20,0-27,0 nghìn đồng/cổ phiếu</p>
+    <div class="chart-box">
+      <svg viewBox="0 0 780 300" width="100%" role="img">
+        <title>Football field dinh gia VCC*</title>
+        <desc>3 dai gia tri: DCF 18,6-30,0 nghin dong, Comps EV/EBITDA 20,0-27,0, bien do 52 tuan 16,5-25,5, gia thi truong hien tai 22,5</desc>
+
+        <rect x="296.67" y="26" width="233.33" height="180" fill="#2251FF" fill-opacity="0.07" />
+        <text x="413" y="37" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="700" fill="#1233B8">Vùng hội tụ 20,0-27,0</text>
+
+        <line x1="130" y1="230" x2="730" y2="230" stroke="#051C2C" stroke-width="1.2" />
+        <g stroke="#DBE2EA" stroke-width="0.8">
+          <line x1="230" y1="26" x2="230" y2="230" />
+          <line x1="330" y1="26" x2="330" y2="230" />
+          <line x1="430" y1="26" x2="430" y2="230" />
+          <line x1="530" y1="26" x2="530" y2="230" />
+          <line x1="630" y1="26" x2="630" y2="230" />
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6" text-anchor="middle">
+          <text x="130" y="244">15</text>
+          <text x="230" y="244">18</text>
+          <text x="330" y="244">21</text>
+          <text x="430" y="244">24</text>
+          <text x="530" y="244">27</text>
+          <text x="630" y="244">30</text>
+          <text x="730" y="244">33</text>
+        </g>
+
+        <!-- Hinh 1 la nguon-doc: DCF band mang data-* de doi chieu voi Hinh 2 -->
+        <g>
+          <text x="20" y="59" font-family="Spectral, Georgia, serif" font-size="13" font-weight="600" fill="#051C2C">DCF (FCFF)</text>
+          <rect class="ff-band-dcf" data-method="grid-full-range" data-price-min="18.6" data-price-max="30.0"
+                x="250" y="46" width="380" height="26" rx="2" fill="#2251FF" />
+          <text x="243" y="63" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#051C2C">18,6</text>
+          <text x="637" y="63" text-anchor="start" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#051C2C">30,0</text>
+        </g>
+        <g>
+          <text x="20" y="103" font-family="Spectral, Georgia, serif" font-size="13" font-weight="600" fill="#051C2C">Comps EV/EBITDA</text>
+          <rect x="296.67" y="90" width="233.33" height="26" rx="2" fill="#2251FF" />
+          <text x="289.67" y="107" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#051C2C">20,0</text>
+          <text x="537" y="107" text-anchor="start" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#051C2C">27,0</text>
+        </g>
+        <g>
+          <text x="20" y="147" font-family="Spectral, Georgia, serif" font-size="13" font-weight="600" fill="#051C2C">Biên độ 52 tuần</text>
+          <rect x="180" y="134" width="300" height="26" rx="2" fill="#8595A6" />
+          <text x="173" y="151" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#42566A">16,5</text>
+          <text x="487" y="151" text-anchor="start" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#42566A">25,5</text>
+        </g>
+
+        <line x1="380" y1="18" x2="380" y2="230" stroke="#C22F4E" stroke-width="2" />
+        <rect x="310" y="4" width="140" height="16" fill="#C22F4E" />
+        <text x="380" y="15.5" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" font-weight="700" fill="#FFFFFF">GIÁ HIỆN TẠI: 22,5</text>
+
+        <text x="130" y="262" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">Đơn vị: nghìn đồng/cổ phiếu</text>
+        <text x="730" y="262" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">Nguồn dải DCF: xem Hình 2</text>
+      </svg>
+    </div>
+    <p class="caption">Dải DCF (18,6-30,0) <b>không phải một ước lượng riêng</b>: đó chính xác là
+    MIN/MAX của toàn bộ lưới 9 ô ở Hình 2. Đọc bằng nhãn, không cần bảng chú giải: 2 dải xanh
+    dương (DCF, comps) là giá trị nội tại ước tính, dải xám (biên độ 52 tuần) là giá quan sát
+    được trên thị trường.</p>
+    <div class="xref">
+      <b>Neo chéo &rarr; Hình 2.</b> Dải DCF ở Hình 1 = min/max của lưới độ nhạy WACC 10,0-12,0%
+      &times; g 1,5-2,5% ở Hình 2. Thuộc tính <code>data-method="grid-full-range"</code> trên
+      chính hình này khai rõ quy tắc đó, để script <code>check_cross_exhibit.py</code> tính lại
+      từ khối giả định JSON và xác nhận hai hình không lệch nhau.
+    </div>
+  </div>
+
+  <div class="exhibit">
+    <p class="ex-lab">Hình 2</p>
+    <p class="ex-title">Giá mỗi cổ phiếu VCC* theo WACC và tăng trưởng dài hạn, là nguồn của dải DCF ở Hình 1</p>
+    <div class="chart-box">
+      <svg viewBox="0 0 650 326" width="100%" role="img">
+        <title>Luoi do nhay 2 chieu WACC x g cho VCC*</title>
+        <desc>Ma tran 3x3 gia moi co phieu theo WACC 10 den 12 phan tram va g 1,5 den 2,5 phan tram, base case WACC 11% g 2% la 23,3 nghin dong duoc vien dam, min 18,6 max 30,0</desc>
+
+        <text x="70" y="30" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#42566A" text-anchor="middle">WACC</text>
+        <text x="360" y="20" font-family="Spectral, Georgia, serif" font-size="12" font-weight="600" fill="#051C2C" text-anchor="middle">Tăng trưởng dài hạn (g)</text>
+
+        <g font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700" fill="#051C2C" text-anchor="middle">
+          <text x="220" y="44">1,5%</text>
+          <text x="360" y="44">2,0%</text>
+          <text x="500" y="44">2,5%</text>
+        </g>
+        <line x1="150" y1="52" x2="570" y2="52" stroke="#051C2C" stroke-width="1.2" />
+
+        <g font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700" fill="#051C2C" text-anchor="middle">
+          <text x="70" y="107">10,0%</text>
+          <text x="70" y="173">11,0%</text>
+          <text x="70" y="239">12,0%</text>
+        </g>
+        <line x1="140" y1="60" x2="140" y2="270" stroke="#051C2C" stroke-width="1.2" />
+
+        <!-- 9 o: rect.grid-cell mang data-wacc/data-g/data-ev/data-price de script tinh lai va doi chieu -->
+        <g font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" text-anchor="middle">
+          <rect class="grid-cell" data-wacc="10.0" data-g="1.5" data-ev="1058.8" data-price="25.3" x="150" y="70" width="140" height="66" fill="#7D9BFF" /><text x="220" y="107" fill="#051C2C">25,3</text>
+          <rect class="grid-cell" data-wacc="10.0" data-g="2.0" data-ev="1125.0" data-price="27.5" x="290" y="70" width="140" height="66" fill="#7D9BFF" /><text x="360" y="107" fill="#051C2C">27,5</text>
+          <rect class="grid-cell" data-wacc="10.0" data-g="2.5" data-ev="1200.0" data-price="30.0" x="430" y="70" width="140" height="66" fill="#2251FF" /><text x="500" y="107" fill="#FFFFFF">30,0</text>
+
+          <rect class="grid-cell" data-wacc="11.0" data-g="1.5" data-ev="947.4" data-price="21.6" x="150" y="136" width="140" height="66" fill="#DCE5FF" /><text x="220" y="173" fill="#051C2C">21,6</text>
+          <rect class="grid-cell" data-wacc="11.0" data-g="2.0" data-ev="1000.0" data-price="23.3" x="290" y="136" width="140" height="66" fill="#B8C9FF" stroke="#051C2C" stroke-width="3" /><text x="360" y="173" fill="#051C2C" font-weight="700">23,3</text>
+          <rect class="grid-cell" data-wacc="11.0" data-g="2.5" data-ev="1058.8" data-price="25.3" x="430" y="136" width="140" height="66" fill="#7D9BFF" /><text x="500" y="173" fill="#051C2C">25,3</text>
+
+          <rect class="grid-cell" data-wacc="12.0" data-g="1.5" data-ev="857.1" data-price="18.6" x="150" y="202" width="140" height="66" fill="#F2F5FF" /><text x="220" y="239" fill="#051C2C">18,6</text>
+          <rect class="grid-cell" data-wacc="12.0" data-g="2.0" data-ev="900.0" data-price="20.0" x="290" y="202" width="140" height="66" fill="#F2F5FF" /><text x="360" y="239" fill="#051C2C">20,0</text>
+          <rect class="grid-cell" data-wacc="12.0" data-g="2.5" data-ev="947.4" data-price="21.6" x="430" y="202" width="140" height="66" fill="#DCE5FF" /><text x="500" y="239" fill="#051C2C">21,6</text>
+        </g>
+
+        <g stroke="#FFFFFF" stroke-width="1.5">
+          <line x1="290" y1="70" x2="290" y2="268" /><line x1="430" y1="70" x2="430" y2="268" />
+          <line x1="150" y1="136" x2="570" y2="136" /><line x1="150" y1="202" x2="570" y2="202" />
+        </g>
+        <rect x="150" y="70" width="420" height="198" fill="none" stroke="#051C2C" stroke-width="1.2" />
+
+        <g>
+          <text x="150" y="298" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">Thấp</text>
+          <rect x="190" y="286" width="46" height="14" fill="#F2F5FF" stroke="#DBE2EA" />
+          <rect x="236" y="286" width="46" height="14" fill="#DCE5FF" />
+          <rect x="282" y="286" width="46" height="14" fill="#B8C9FF" />
+          <rect x="328" y="286" width="46" height="14" fill="#7D9BFF" />
+          <rect x="374" y="286" width="46" height="14" fill="#2251FF" />
+          <text x="428" y="298" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">Cao</text>
+          <text x="570" y="318" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">Nguồn dải DCF: xem Hình 1</text>
+        </g>
+      </svg>
+    </div>
+    <p class="caption">Mỗi ô mang theo <b>3 con số nguồn</b> ẩn trong thuộc tính <code>data-wacc</code>,
+    <code>data-g</code>, <code>data-ev</code> cộng con số hiển thị <code>data-price</code>, tính
+    thẳng từ khối giả định ở đầu trang bằng công thức Gordon growth 1 giai đoạn. Ô viền đậm
+    (WACC 11,0%, g 2,0%) là kịch bản cơ sở, 23,3 nghìn đồng/cổ phiếu.</p>
+    <div class="xref">
+      <b>Neo chéo &rarr; Hình 1.</b> MIN của 9 ô (18,6, tại WACC 12,0%/g 1,5%) và MAX (30,0, tại
+      WACC 10,0%/g 2,5%) chính là hai đầu dải DCF vẽ ở Hình 1. Đây không phải trùng hợp: cả hai
+      hình đọc từ đúng một khối <code>dcf-assumptions</code>.
+    </div>
+  </div>
+
+  <p class="note">
+    Cơ chế ở đây KHÔNG dựa vào việc "người viết cẩn thận đối chiếu bằng tay". Nó dựa vào việc mỗi
+    con số hiển thị đều mang theo nguồn của nó dưới dạng thuộc tính máy đọc được, để một script
+    tính lại độc lập và báo FAIL ngay khi có sai lệch, kể cả sai lệch nhỏ mà mắt người đọc lướt
+    qua hai trang liền kề sẽ bỏ sót. Xem quy trình đầy đủ và script chạy được tại
+    research/12-cross-exhibit/CONSISTENCY-CHECK.md.
+  </p>
+
+  <div class="verdict">
+    <p class="v-kicker">Khi nào KHÔNG cần cơ chế đối chiếu chéo bằng data-*/script</p>
+    <ul>
+      <li>Báo cáo chỉ có 1 exhibit cho mỗi mô hình định giá (không có exhibit thứ hai nào để tự
+      mâu thuẫn với nó) - cơ chế này chỉ có giá trị khi CÙNG một mô hình xuất hiện từ 2 lần trở
+      lên dưới hai hình thức khác nhau.</li>
+      <li>Hai exhibit CỐ Ý dùng hai bộ giả định khác nhau (kịch bản khác, ngày chốt số liệu khác,
+      phương pháp khác) - lúc đó việc chúng không khớp là ĐÚNG, ép chúng khớp bằng cơ chế này sẽ
+      che giấu một khác biệt có thật. Xem samples/cross-dcf-khac-biet-co-chu-y.html.</li>
+      <li>Tài liệu chỉ có một bản nháp không định xuất bản lại nhiều lần - chi phí dựng khối JSON
+      và thuộc tính data-* chỉ đáng bỏ ra khi hình còn được sửa/tái sử dụng nhiều lần sau đó.</li>
+    </ul>
+  </div>
+
+  <div class="colophon">
+    <span>Số liệu chốt tới hết 2026-06-30 &middot; Biên soạn 2026-08-07</span>
+    <span>Số liệu minh hoạ &middot; VCC* là mã hư cấu &middot; research/12-cross-exhibit/FINDINGS.md</span>
+  </div>
+</section>
+</body>
+</html>

@@ -86,7 +86,9 @@
   .ladder-row .tag { font-family: var(--font-mono); font-size: 11px; color: var(--ink-md); }
   .ladder-row .word { font-size: 30px; font-weight: 700; text-transform: uppercase; white-space: nowrap; overflow-x: auto; padding: 6px 0; }
   .ladder-row .verdict { font-family: var(--font-mono); font-size: 10px; text-align: right; letter-spacing: 0.03em; }
-  .ladder-row.merge { background: color-mix(in srgb, var(--neg) 6%, var(--paper)); }
+  /* color-mix() khong render trong WeasyPrint (do bang so: 0 fill). Hex tinh
+     tay bang Chromium getComputedStyle(): --neg 6% tron --paper 94%. */
+  .ladder-row.merge { background: #FBF3F4; }
   .ladder-row.merge .verdict { color: var(--neg); }
   .ladder-row.touch .verdict { color: var(--neg); opacity: 0.75; }
   .ladder-row.ok .verdict { color: var(--pos); }

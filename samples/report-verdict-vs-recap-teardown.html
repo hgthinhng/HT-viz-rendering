@@ -95,8 +95,10 @@ table.score td.good{ color:var(--pos); }
 .panel{ margin-bottom:8px; }
 .panel-head{ display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:11px; letter-spacing:.07em;
   text-transform:uppercase; font-weight:700; padding:9px 14px; margin-bottom:0; }
-.panel-head.bad{ background:color-mix(in srgb, var(--neg) 10%, var(--paper)); color:var(--neg); }
-.panel-head.good{ background:color-mix(in srgb, var(--pos) 10%, var(--paper)); color:var(--pos); }
+/* color-mix() khong render trong WeasyPrint (do bang so: 0 fill). Doi sang
+   hex tinh tay bang Chromium getComputedStyle(): neg/pos 10% tron paper 90%. */
+.panel-head.bad{ background:#F9EAED; color:var(--neg); }
+.panel-head.good{ background:#E6F3F0; color:var(--pos); }
 .panel-body{ border:1px solid var(--line); border-top:none; padding:18px 20px 8px; margin-bottom:34px; }
 .row{ display:grid; grid-template-columns:1.5fr 1fr; gap:18px; align-items:start; margin-bottom:16px; padding-bottom:16px; border-bottom:1px dashed var(--line-lo); }
 .row:last-child{ border-bottom:none; }

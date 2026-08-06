@@ -103,8 +103,10 @@
     padding: 3px 9px;
     margin-bottom: 14px;
   }
-  .block-label.bad { color: var(--neg); background: color-mix(in srgb, var(--neg) 10%, var(--paper)); }
-  .block-label.good { color: var(--pos); background: color-mix(in srgb, var(--pos) 10%, var(--paper)); }
+  /* color-mix() khong render trong WeasyPrint (do bang so: 0 fill). Hex tinh
+     tay bang Chromium getComputedStyle(): neg/pos 10% tron paper 90%. */
+  .block-label.bad { color: var(--neg); background: #F9EAED; }
+  .block-label.good { color: var(--pos); background: #E6F3F0; }
 
   /* SAI: khung cắt cứng để lộ chỗ dấu bị hụt, giống lỗi thật khi container
      có overflow:hidden hoặc padding-top không tính tới dấu chồng. */

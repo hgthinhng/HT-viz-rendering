@@ -114,11 +114,13 @@
        đổi nội dung sang cụm nhiều từ. Xem FINDINGS.md mục 8. */
     white-space: nowrap;
   }
+  /* color-mix() khong render trong WeasyPrint (do bang so: 0 fill). Hex tinh
+     tay bang Chromium getComputedStyle(): --pos 18% tron --paper 82%. */
   .num-hero-behind {
     position: absolute;
     top: -5px;
     left: -5px;
-    color: color-mix(in srgb, var(--pos) 18%, var(--paper));
+    color: #D1EAE5;
     z-index: 0;
   }
   .num-hero {

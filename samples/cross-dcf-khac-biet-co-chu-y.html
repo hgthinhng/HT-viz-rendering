@@ -1,0 +1,310 @@
+<!--
+  Ý MINH HOẠ: khác với 2 mẫu cùng thư mục (cross-dcf-khop.html: hai exhibit
+  KHỚP NHAU; cross-dcf-mau-thuan.html: hai exhibit MÂU THUẪN vì lỗi), mẫu này
+  dựng trường hợp thứ ba dễ nhầm với lỗi nhất: hai exhibit của CÙNG một mô
+  hình đọc ra HAI DẢI SỐ KHÁC NHAU một cách CÓ CHỦ ĐÍCH, và khác biệt đó là
+  ĐÚNG chứ không phải cần sửa. Hình 1 (tóm tắt điều hành) chỉ dao động WACC
+  +-50 điểm cơ bản quanh kịch bản cơ sở, giữ g cố định - một "house view" hẹp
+  dùng để RA QUYẾT ĐỊNH. Hình 2 (phụ lục) là lưới stress-test đầy đủ, dùng để
+  ĐO RỦI RO. Dải hẹp là TẬP CON hợp lệ của dải rộng, không phải một ước lượng
+  độc lập tình cờ khác đi.
+
+  RANH GIỚI QUAN TRỌNG NHẤT CỦA MẪU NÀY: một khác biệt chỉ HỢP LỆ nếu (a) có
+  NHÃN rõ ràng nói khác biệt đó tồn tại và VÌ SAO, và (b) dải hẹp thật sự là
+  tập con của dải rộng khi TÍNH LẠI bằng số, không chỉ "nghe có lý". Cả hai
+  điều kiện đều được kiểm bằng script bên dưới, không chỉ khẳng định bằng
+  lời. Nếu thiếu (a): người đọc sẽ tưởng đây là lỗi giống hệt
+  cross-dcf-mau-thuan.html. Nếu thiếu (b): đây thật ra LÀ lỗi, chỉ đang được
+  nguỵ trang bằng ngôn ngữ "khác biệt có chủ đích".
+
+  NGUỒN CẢM HỨNG: quy ước "management case" (hẹp, dùng để guide/quyết định)
+  so với "sensitivity/stress case" (rộng, dùng để đo rủi ro đuôi) phổ biến
+  trong tài liệu đào tạo định giá và bản trình bày IC (investment committee);
+  IMF WEO cũng phân tách "baseline projection" (dải hẹp, dùng cho quyết định
+  chính sách) khỏi "alternative scenarios/stress tests" (dải rộng hơn nhiều,
+  dùng riêng cho đánh giá rủi ro) trong cùng một kỳ xuất bản - hai con số
+  không mâu thuẫn vì phục vụ hai câu hỏi khác nhau, và WEO luôn ghi rõ đang
+  nói tới scenario nào ở đầu mỗi bảng/hình.
+
+  Công ty "CTCP Cảng Container Vàm Cỏ", mã "VCC*" là HƯ CẤU, tiếp nối từ
+  samples/cross-dcf-khop.html. Toàn bộ số liệu là số MINH HOẠ.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>VCC* - Dải khuyến nghị hẹp hơn dải stress-test, và đó là đúng</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --paper-hi: #F7F9FC; --paper-hair: #EEF1F6;
+    --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6; --ink-faint: #AAB8C4;
+    --line: #DBE2EA; --line-lo: #EEF1F6;
+    --accent: #2251FF; --accent-hi: #1233B8; --accent-soft: #7D9BFF;
+    --pos: #008A6D; --neg: #C22F4E; --warn: #B07A10;
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --font-sans: "IBM Plex Sans", "Noto Sans", -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+  .page { width: 210mm; min-height: 297mm; margin: 24px auto; background: var(--paper); border: 1px solid var(--line); padding: 20mm; position: relative; }
+  .research-tag { position: absolute; top: 8px; right: 8px; font-family: var(--font-mono); font-size: 10px; background: var(--pos); color: var(--paper); padding: 2px 8px; letter-spacing: 0.04em; z-index: 5; }
+  .kicker { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px; font-weight: 700; }
+  h1 { font-size: 1.45rem; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; line-height: 1.3; max-width: 42ch; }
+  .dek { color: var(--ink-md); font-size: 0.95rem; font-style: italic; margin: 0 0 6px; max-width: 76ch; line-height: 1.55; }
+  .unit { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-lo); margin: 0 0 20px; }
+
+  .assum-box { border: 1px solid var(--line); margin-bottom: 26px; }
+  .assum-head { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-lo); background: var(--paper-hi); padding: 8px 14px; border-bottom: 1px solid var(--line); }
+  .a-row { display: grid; grid-template-columns: 17ch 12ch 1fr; gap: 14px; padding: 8px 14px; border-bottom: 1px solid var(--line-lo); align-items: baseline; font-size: 0.85rem; }
+  .a-row:last-child { border-bottom: none; }
+  .a-name { font-weight: 600; }
+  .a-value { font-family: var(--font-mono); color: var(--accent-hi); text-align: right; font-weight: 700; }
+  .a-note { font-size: 0.76rem; color: var(--ink-md); }
+
+  .exhibit { margin-bottom: 30px; }
+  .ex-lab { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0 0 4px; }
+  .ex-scope { display: inline-block; margin-left: 8px; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.04em; text-transform: none; color: var(--ink-lo); font-weight: 400; }
+  .ex-title { font-family: var(--font-serif); font-weight: 600; font-size: 1.08rem; color: var(--ink); margin: 0 0 12px; max-width: 66ch; line-height: 1.4; }
+  .chart-box { border: 1px solid var(--line); background: var(--paper); padding: 14px 12px 8px; }
+  .caption { margin-top: 10px; font-family: var(--font-sans); font-size: 0.78rem; color: var(--ink-md); max-width: 76ch; line-height: 1.55; }
+  .caption b { color: var(--ink); }
+
+  .xref { margin-top: 10px; padding: 10px 14px; background: var(--paper-hi); border-left: 3px solid var(--accent); font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-md); line-height: 1.6; }
+  .xref b { color: var(--accent-hi); }
+
+  .legit { border: 1px solid var(--pos); margin: 24px 0 22px; }
+  .legit-head { background: var(--pos); color: var(--paper); font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 14px; font-weight: 700; }
+  .legit-body { padding: 14px 16px; font-size: 0.88rem; line-height: 1.65; }
+  .legit-body p { margin: 0 0 10px; }
+  .legit-body b { color: var(--pos); }
+  .legit ul { margin: 0 0 10px; padding-left: 1.2em; }
+  .legit li { margin-bottom: 6px; }
+
+  .term { background: var(--ink); color: #C9D6E3; font-family: var(--font-mono); font-size: 0.7rem; line-height: 1.6; padding: 14px 16px; margin: 10px 0 14px; white-space: pre-wrap; word-break: break-word; }
+  .term .ok { color: #7FE0C0; font-weight: 700; }
+
+  .note { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-md); line-height: 1.65; margin: 8px 0 22px; max-width: 78ch; }
+  .colophon { margin-top: 22px; padding-top: 12px; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-lo); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+    .a-row { grid-template-columns: 1fr; gap: 2px; }
+  }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; border: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 16mm 14mm; }
+    .exhibit, .assum-box, .legit { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">KHÁC BIỆT CÓ CHỦ ĐÍCH, ĐÃ KIỂM LÀ TẬP CON HỢP LỆ</span>
+
+  <p class="kicker">Đối chiếu chéo exhibit &middot; VCC* &middot; Khác biệt có chủ đích, không phải lỗi</p>
+  <h1>Dải khuyến nghị hẹp hơn dải stress-test, và đó là điều nên xảy ra</h1>
+  <p class="dek">Hình 1 (tóm tắt điều hành) và Hình 2 (phụ lục) đọc ra HAI DẢI SỐ KHÁC NHAU cho
+  cùng một mô hình DCF. Khác với cross-dcf-mau-thuan.html, đây không phải lỗi: dải hẹp là một
+  TẬP CON có chủ đích của dải rộng, và điều đó được kiểm bằng số, không chỉ khẳng định bằng lời.</p>
+  <p class="unit">Đơn vị: nghìn đồng/cổ phiếu (định giá), tỷ đồng (EV/nợ ròng). Số liệu minh hoạ
+  cho công ty niêm yết hư cấu VCC*, không phải số thật của bất kỳ mã nào.</p>
+
+  <script type="application/json" class="dcf-assumptions">
+  {
+    "mo_ta": "DCF FCFF rut gon 1 giai doan Gordon growth, dung minh hoa doi chieu, khong phai mo hinh day du",
+    "ngay_chot_du_lieu": "2026-06-30",
+    "fcff_chuan_hoa_ty": 90.0,
+    "no_rong_ty": 300.0,
+    "co_phieu_luu_hanh_trieu": 30.0,
+    "cong_thuc": "EV = FCFF / (WACC - g); Von_CSH = EV - No_rong; Gia/cp (nghin dong) = Von_CSH / So_CP_trieu",
+    "luoi_wacc_pct_day_du": [10.0, 10.5, 11.0, 11.5, 12.0],
+    "luoi_g_pct_day_du": [1.5, 2.0, 2.5],
+    "base_case": {"wacc_pct": 11.0, "g_pct": 2.0},
+    "house_view_subset": {"wacc_min_pct": 10.5, "wacc_max_pct": 11.5, "g_fixed_pct": 2.0, "ly_do": "Chi dao dong WACC +-50 diem co ban quanh kich ban co so, giu g co dinh, dung cho quyet dinh dau tu. Khong phai uoc luong doc lap."}
+  }
+  </script>
+
+  <div class="assum-box">
+    <div class="assum-head">Khối giả định, nguồn duy nhất cho cả Hình 1 và Hình 2 (Hình 2 dùng lưới đầy đủ, Hình 1 chỉ dùng 2 điểm trong đó)</div>
+    <div class="a-row"><span class="a-name">FCFF chuẩn hoá</span><span class="a-value">90 tỷ</span><span class="a-note">Dòng tiền tự do cho doanh nghiệp, đã chuẩn hoá qua chu kỳ đầu tư cảng.</span></div>
+    <div class="a-row"><span class="a-name">Nợ ròng</span><span class="a-value">300 tỷ</span><span class="a-note">Chốt tại ngày định giá, dùng để quy đổi từ EV sang vốn chủ sở hữu.</span></div>
+    <div class="a-row"><span class="a-name">Cổ phiếu lưu hành</span><span class="a-value">30 triệu</span><span class="a-note">Không tính pha loãng từ trái phiếu chuyển đổi (nếu có) trong kịch bản này.</span></div>
+    <div class="a-row"><span class="a-name">Lưới WACC (Hình 2)</span><span class="a-value">10,0-12,0%</span><span class="a-note">5 mức, bước 0,5 điểm phần trăm - đủ dày để dùng làm stress-test.</span></div>
+    <div class="a-row"><span class="a-name">g dài hạn (Hình 2)</span><span class="a-value">1,5-2,5%</span><span class="a-note">3 mức, bước 0,5 điểm phần trăm.</span></div>
+    <div class="a-row"><span class="a-name">Dải Hình 1 (house view)</span><span class="a-value">WACC 10,5-11,5%</span><span class="a-note">g CỐ ĐỊNH ở 2,0% (kịch bản cơ sở) - chỉ 2 trong 15 ô của Hình 2, không phải toàn bộ lưới.</span></div>
+  </div>
+
+  <div class="exhibit">
+    <p class="ex-lab">Hình 1<span class="ex-scope">TÓM TẮT ĐIỀU HÀNH &middot; DẢI KHUYẾN NGHỊ (HOUSE VIEW)</span></p>
+    <p class="ex-title">Dải khuyến nghị DCF: 21,6-25,3 nghìn đồng/cổ phiếu, quanh kịch bản cơ sở 23,3</p>
+    <div class="chart-box">
+      <svg viewBox="0 0 780 170" width="100%" role="img">
+        <title>Dai khuyen nghi DCF, house view, VCC*</title>
+        <desc>Dai hep 21,6-25,3 nghin dong tu WACC 10,5% den 11,5% voi g co dinh 2,0%, nam trong pham vi day du 18,6-30,0 cua luoi stress-test o Hinh 2</desc>
+
+        <line x1="130" y1="130" x2="730" y2="130" stroke="#051C2C" stroke-width="1.2" />
+        <g stroke="#DBE2EA" stroke-width="0.8">
+          <line x1="230" y1="30" x2="230" y2="130" /><line x1="330" y1="30" x2="330" y2="130" />
+          <line x1="430" y1="30" x2="430" y2="130" /><line x1="530" y1="30" x2="530" y2="130" />
+          <line x1="630" y1="30" x2="630" y2="130" />
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6" text-anchor="middle">
+          <text x="130" y="144">15</text><text x="230" y="144">18</text><text x="330" y="144">21</text>
+          <text x="430" y="144">24</text><text x="530" y="144">27</text><text x="630" y="144">30</text><text x="730" y="144">33</text>
+        </g>
+
+        <!-- Pham vi day du (stress-test) lam nen mo, chi de doi chieu bang mat, KHONG mang data-* -->
+        <rect x="250" y="52" width="380" height="30" rx="2" fill="none" stroke="#AAB8C4" stroke-width="1.4" stroke-dasharray="4 3" />
+        <text x="440" y="46" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#8595A6">Phạm vi đầy đủ (stress-test) 18,6-30,0, xem Phụ lục Hình 2</text>
+
+        <!-- Dai khuyen nghi that: house-view-subset, mang data-* de doi chieu -->
+        <rect class="ff-band-dcf" data-method="house-view-subset" data-price-min="21.6" data-price-max="25.3"
+              data-wacc-min="10.5" data-wacc-max="11.5" data-g-fixed="2.0"
+              x="350" y="52" width="123.33" height="30" rx="2" fill="#2251FF" />
+        <text x="343" y="71" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#051C2C">21,6</text>
+        <text x="480.33" y="71" text-anchor="start" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#051C2C">25,3</text>
+
+        <!-- kich ban co so: mot vach nho giua dai -->
+        <line x1="406.67" y1="46" x2="406.67" y2="88" stroke="#FFFFFF" stroke-width="2" />
+        <text x="406.67" y="100" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#42566A">23,3 (cơ sở)</text>
+
+        <text x="130" y="160" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">Đơn vị: nghìn đồng/cổ phiếu</text>
+        <text x="730" y="160" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">Chỉ 2 điểm WACC, g cố định</text>
+      </svg>
+    </div>
+    <p class="caption">Dải nét đứt xám là phạm vi đầy đủ của lưới stress-test ở Hình 2, vẽ để đối
+    chiếu bằng mắt, KHÔNG phải một exhibit độc lập. Dải xanh dương đặc mới là con số khuyến nghị
+    thật: chỉ dao động WACC trong khoảng hẹp quanh kịch bản cơ sở, giữ g cố định.</p>
+    <div class="xref">
+      <b>Neo chéo &rarr; Hình 2.</b> 21,6 = giá tại WACC 11,5%/g 2,0%; 25,3 = giá tại WACC 10,5%/g
+      2,0%, cả hai đều là Ô THẬT trong lưới ở Hình 2 (đánh dấu viền đứt xanh đậm), không phải số
+      ước lượng riêng. Thuộc tính <code>data-method="house-view-subset"</code> khai rõ đây KHÔNG
+      phải toàn bộ lưới, để script không nhầm với lỗi kiểu <code>grid-full-range</code>.
+    </div>
+  </div>
+
+  <div class="exhibit">
+    <p class="ex-lab">Hình 2<span class="ex-scope">PHỤ LỤC &middot; LƯỚI STRESS-TEST ĐẦY ĐỦ</span></p>
+    <p class="ex-title">Giá mỗi cổ phiếu VCC* theo WACC (5 mức) và tăng trưởng dài hạn (3 mức)</p>
+    <div class="chart-box">
+      <svg viewBox="0 0 700 380" width="100%" role="img">
+        <title>Luoi stress-test day du 5x3 cho VCC*</title>
+        <desc>Ma tran 5x3 gia moi co phieu theo WACC tu 10,0 den 12,0 phan tram buoc 0,5 va g 1,5 den 2,5 phan tram, base case WACC 11% g 2% la 23,3 vien dam, 2 o WACC 10,5% va 11,5% tai g 2,0% vien dut la nguon cua dai khuyen nghi o Hinh 1, min toan luoi 18,6 max 30,0</desc>
+
+        <text x="70" y="30" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#42566A" text-anchor="middle">WACC</text>
+        <text x="360" y="20" font-family="Spectral, Georgia, serif" font-size="12" font-weight="600" fill="#051C2C" text-anchor="middle">Tăng trưởng dài hạn (g)</text>
+        <g font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700" fill="#051C2C" text-anchor="middle">
+          <text x="220" y="44">1,5%</text><text x="360" y="44">2,0%</text><text x="500" y="44">2,5%</text>
+        </g>
+        <line x1="150" y1="52" x2="570" y2="52" stroke="#051C2C" stroke-width="1.2" />
+        <g font-family="IBM Plex Mono, monospace" font-size="11.5" font-weight="700" fill="#051C2C" text-anchor="middle">
+          <text x="70" y="87">10,0%</text>
+          <text x="70" y="133">10,5%</text>
+          <text x="70" y="179">11,0%</text>
+          <text x="70" y="225">11,5%</text>
+          <text x="70" y="271">12,0%</text>
+        </g>
+        <line x1="140" y1="60" x2="140" y2="290" stroke="#051C2C" stroke-width="1.2" />
+
+        <g font-family="IBM Plex Mono, monospace" font-size="12.5" font-weight="600" text-anchor="middle">
+          <rect class="grid-cell" data-wacc="10.0" data-g="1.5" data-ev="1058.8" data-price="25.3" x="150" y="60" width="140" height="46" fill="#7D9BFF" /><text x="220" y="87" fill="#051C2C">25,3</text>
+          <rect class="grid-cell" data-wacc="10.0" data-g="2.0" data-ev="1125.0" data-price="27.5" x="290" y="60" width="140" height="46" fill="#7D9BFF" /><text x="360" y="87" fill="#051C2C">27,5</text>
+          <rect class="grid-cell" data-wacc="10.0" data-g="2.5" data-ev="1200.0" data-price="30.0" x="430" y="60" width="140" height="46" fill="#2251FF" /><text x="500" y="87" fill="#FFFFFF">30,0</text>
+
+          <rect class="grid-cell" data-wacc="10.5" data-g="1.5" data-ev="1000.0" data-price="23.3" x="150" y="106" width="140" height="46" fill="#B8C9FF" /><text x="220" y="133" fill="#051C2C">23,3</text>
+          <rect class="grid-cell" data-wacc="10.5" data-g="2.0" data-ev="1058.8" data-price="25.3" x="290" y="106" width="140" height="46" fill="#7D9BFF" stroke="#1233B8" stroke-width="3" stroke-dasharray="5 3" /><text x="360" y="133" fill="#051C2C" font-weight="700">25,3</text>
+          <rect class="grid-cell" data-wacc="10.5" data-g="2.5" data-ev="1125.0" data-price="27.5" x="430" y="106" width="140" height="46" fill="#7D9BFF" /><text x="500" y="133" fill="#051C2C">27,5</text>
+
+          <rect class="grid-cell" data-wacc="11.0" data-g="1.5" data-ev="947.4" data-price="21.6" x="150" y="152" width="140" height="46" fill="#DCE5FF" /><text x="220" y="179" fill="#051C2C">21,6</text>
+          <rect class="grid-cell" data-wacc="11.0" data-g="2.0" data-ev="1000.0" data-price="23.3" x="290" y="152" width="140" height="46" fill="#B8C9FF" stroke="#051C2C" stroke-width="3" /><text x="360" y="179" fill="#051C2C" font-weight="700">23,3</text>
+          <rect class="grid-cell" data-wacc="11.0" data-g="2.5" data-ev="1058.8" data-price="25.3" x="430" y="152" width="140" height="46" fill="#7D9BFF" /><text x="500" y="179" fill="#051C2C">25,3</text>
+
+          <rect class="grid-cell" data-wacc="11.5" data-g="1.5" data-ev="900.0" data-price="20.0" x="150" y="198" width="140" height="46" fill="#F2F5FF" /><text x="220" y="225" fill="#051C2C">20,0</text>
+          <rect class="grid-cell" data-wacc="11.5" data-g="2.0" data-ev="947.4" data-price="21.6" x="290" y="198" width="140" height="46" fill="#DCE5FF" stroke="#1233B8" stroke-width="3" stroke-dasharray="5 3" /><text x="360" y="225" fill="#051C2C" font-weight="700">21,6</text>
+          <rect class="grid-cell" data-wacc="11.5" data-g="2.5" data-ev="1000.0" data-price="23.3" x="430" y="198" width="140" height="46" fill="#B8C9FF" /><text x="500" y="225" fill="#051C2C">23,3</text>
+
+          <rect class="grid-cell" data-wacc="12.0" data-g="1.5" data-ev="857.1" data-price="18.6" x="150" y="244" width="140" height="46" fill="#F2F5FF" /><text x="220" y="271" fill="#051C2C">18,6</text>
+          <rect class="grid-cell" data-wacc="12.0" data-g="2.0" data-ev="900.0" data-price="20.0" x="290" y="244" width="140" height="46" fill="#F2F5FF" /><text x="360" y="271" fill="#051C2C">20,0</text>
+          <rect class="grid-cell" data-wacc="12.0" data-g="2.5" data-ev="947.4" data-price="21.6" x="430" y="244" width="140" height="46" fill="#DCE5FF" /><text x="500" y="271" fill="#051C2C">21,6</text>
+        </g>
+
+        <g stroke="#FFFFFF" stroke-width="1.5">
+          <line x1="290" y1="60" x2="290" y2="290" /><line x1="430" y1="60" x2="430" y2="290" />
+          <line x1="150" y1="106" x2="570" y2="106" /><line x1="150" y1="152" x2="570" y2="152" />
+          <line x1="150" y1="198" x2="570" y2="198" /><line x1="150" y1="244" x2="570" y2="244" />
+        </g>
+        <rect x="150" y="60" width="420" height="230" fill="none" stroke="#051C2C" stroke-width="1.2" />
+
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#8595A6">
+          <text x="150" y="316">Thấp</text>
+          <rect x="190" y="304" width="46" height="14" fill="#F2F5FF" stroke="#DBE2EA" />
+          <rect x="236" y="304" width="46" height="14" fill="#DCE5FF" />
+          <rect x="282" y="304" width="46" height="14" fill="#B8C9FF" />
+          <rect x="328" y="304" width="46" height="14" fill="#7D9BFF" />
+          <rect x="374" y="304" width="46" height="14" fill="#2251FF" />
+          <text x="428" y="316">Cao</text>
+          <rect x="150" y="336" width="26" height="18" fill="none" stroke="#051C2C" stroke-width="3" />
+          <text x="184" y="349">Kịch bản cơ sở</text>
+          <rect x="330" y="336" width="26" height="18" fill="none" stroke="#1233B8" stroke-width="3" stroke-dasharray="5 3" />
+          <text x="364" y="349">2 điểm dùng cho dải khuyến nghị Hình 1</text>
+        </g>
+      </svg>
+    </div>
+    <p class="caption">15 ô, đủ dày để dùng làm stress-test. Ô viền đậm liền là kịch bản cơ sở, 2
+    ô viền đứt xanh đậm (WACC 10,5% và 11,5%, cùng g 2,0%) là hai điểm được Hình 1 trích ra làm
+    dải khuyến nghị. MIN toàn lưới là 18,6, MAX là 30,0.</p>
+    <div class="xref">
+      <b>Neo chéo &rarr; Hình 1.</b> Dải khuyến nghị ở Hình 1 (21,6-25,3) nằm HOÀN TOÀN trong
+      phạm vi 18,6-30,0 của lưới này. Đây là quan hệ TẬP CON, được script xác nhận, không phải
+      một khẳng định suông.
+    </div>
+  </div>
+
+  <div class="legit">
+    <div class="legit-head">Vì sao đây là khác biệt có chủ đích, không phải lỗi kiểu cross-dcf-mau-thuan.html</div>
+    <div class="legit-body">
+      <p><b>Hai điều kiện bắt buộc để một khác biệt được coi là hợp lệ</b>, không chỉ dựa vào lời
+      giải thích nghe hợp lý:</p>
+      <ul>
+        <li><b>Có nhãn rõ ràng</b>: Hình 1 ghi trực tiếp trên hình "TÓM TẮT ĐIỀU HÀNH &middot; DẢI
+        KHUYẾN NGHỊ (HOUSE VIEW)" và "Chỉ 2 điểm WACC, g cố định"; Hình 2 ghi "PHỤ LỤC &middot;
+        LƯỚI STRESS-TEST ĐẦY ĐỦ". Người đọc không cần suy đoán tại sao hai số khác nhau.</li>
+        <li><b>Quan hệ tập con được TÍNH LẠI, không chỉ khẳng định</b>: thuộc tính
+        <code>data-method="house-view-subset"</code> cộng <code>data-wacc-min/max</code>,
+        <code>data-g-fixed</code> trên Hình 1 cho script tính đúng 2 điểm đó từ khối giả định, rồi
+        kiểm cả hai điều: (1) hai điểm tính lại có khớp đúng 21,6/25,3 không, và (2) cả hai có nằm
+        trong phạm vi MIN/MAX thật của lưới ở Hình 2 hay không.</li>
+      </ul>
+      <p>Nếu chỉ ghi nhãn (a) mà không kiểm (b), một lỗi tính sai vẫn có thể trốn sau lớp vỏ
+      "khác biệt có chủ đích". Nếu chỉ kiểm (b) mà không có nhãn (a), người đọc bình thường sẽ
+      tưởng đây là mâu thuẫn giống cross-dcf-mau-thuan.html vì không có cách nào phân biệt hai
+      tình huống chỉ bằng cách nhìn số.</p>
+      <p>Output thật từ <code>check_cross_exhibit.py</code> nhắm vào chính file này:</p>
+      <div class="term">$ python3 research/12-cross-exhibit/check_cross_exhibit.py samples/cross-dcf-khac-biet-co-chu-y.html
+<span class="ok">[PASS]</span> samples/cross-dcf-khac-biet-co-chu-y.html</div>
+      <p>PASS ở đây có nghĩa cụ thể hơn "không tìm thấy lỗi": nó xác nhận 21,6 và 25,3 đúng là giá
+      trị thật tại 2 ô WACC 11,5%/10,5% (g cố định 2,0%) VÀ cả hai nằm trong khoảng 18,6-30,0 của
+      lưới đầy đủ. Nếu ai đó sau này sửa lưới ở Hình 2 mà quên cập nhật dải ở Hình 1, hoặc dải
+      Hình 1 vô tình vượt ra ngoài lưới Hình 2, script sẽ chuyển sang FAIL ngay.</p>
+    </div>
+  </div>
+
+  <p class="note">
+    So sánh 3 mẫu trong cùng thư mục: cross-dcf-khop.html (2 exhibit phải khớp tuyệt đối, dùng
+    <code>data-method="grid-full-range"</code>), cross-dcf-mau-thuan.html (trông giống hệt nhưng
+    một trong hai SAI, script bắt được), và file này (2 exhibit CỐ Ý khác dải, script xác nhận là
+    tập con hợp lệ chứ không phải mâu thuẫn). Ba cách đọc số khác nhau, một cơ chế kiểm duy nhất.
+    Xem quy trình đầy đủ tại research/12-cross-exhibit/CONSISTENCY-CHECK.md.
+  </p>
+
+  <div class="colophon">
+    <span>Số liệu chốt tới hết 2026-06-30 &middot; Biên soạn 2026-08-07</span>
+    <span>Số liệu minh hoạ &middot; VCC* là mã hư cấu &middot; research/12-cross-exhibit/FINDINGS.md</span>
+  </div>
+</section>
+</body>
+</html>

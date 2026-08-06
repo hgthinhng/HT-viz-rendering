@@ -2,6 +2,20 @@
    file nay KHONG duoc tu khai bao lai bien mau. */
 @import url("../design-system/tokens.css");
 
+/* ── GHI CHÚ CHUNG: color-mix() KHÔNG RENDER TRONG WEASYPRINT ───────────
+   Đo bằng số trên WeasyPrint 69.0 (get_drawings() qua pymupdf): một <div>
+   background:color-mix(in srgb, #C22F4E 45%, #FFFFFF) cho 0 fill, trong khi
+   cùng màu viết thẳng bằng hex cho đúng 1 fill. Toàn bộ chỗ dùng color-mix()
+   trong file này (9 chỗ) đã đổi sang giá trị RGB tính tay, lấy CHÍNH XÁC
+   bằng cách hỏi Chromium getComputedStyle() cho từng biểu thức color-mix()
+   gốc (Chromium hỗ trợ color-mix(), dùng làm máy tính màu, không dùng để
+   render bản giao). Mỗi rule bên dưới có comment nói rõ token nguồn và tỷ
+   lệ. Khi mix với "transparent", kết quả luôn là rgb(kênh của token / tỷ lệ
+   mix%) — không cần suy diễn lại, chỉ cần thay token khác nếu token đổi.
+   Vì giá trị giờ là hằng số, nó KHÔNG còn tự đổi theo [data-theme="dark"]
+   như color-mix(var(...)) cũ — bản tối tương ứng được khai riêng ở khối
+   "DARK MODE: thay color-mix()" gần cuối file, mục 27b. */
+
 /* ── 2. RESET & NỀN TẢNG ──────────────────────────────────────────────── */
 * { box-sizing: border-box; }
 * , *::before, *::after { min-width: 0; } /* chống tràn grid/flex con, xem css-patterns.md */
@@ -129,7 +143,7 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
 .wc-eras { display: flex; border-top: 1.4px solid var(--ink); border-bottom: .7px solid var(--ink); position: relative; }
 .wc-era { flex: none; padding: 8px 0 6px; text-align: center; font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; color: var(--ink-lo); border-right: 1px dashed var(--line); }
 .wc-era:last-child { border-right: 0; }
-.wc-era.now { color: var(--accent); font-weight: 700; background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.wc-era.now { color: var(--accent); font-weight: 700; background: rgb(34 81 255 / 8%); } /* --accent 8% tren nen trong suot, xem ghi chu dau file */
 .wc-ticks { display: flex; position: relative; height: 18px; }
 .wc-tick { flex: none; font-family: var(--font-mono); font-size: 9px; color: var(--ink-lo); text-align: center; border-right: 1px solid var(--line-lo); padding-top: 2px; }
 .wc-lanes { position: relative; display: flex; flex-direction: column-reverse; gap: 6px; padding: 10px 0 4px; }
@@ -180,7 +194,7 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
 .sl-colhead {
   padding: 10px 14px 12px; border-left: 1px solid var(--line); background: var(--paper-hi);
 }
-.sl-colhead.now { background: color-mix(in srgb, var(--accent) 9%, var(--paper-hi)); border-left-color: var(--accent); }
+.sl-colhead.now { background: #E4EAFC; border-left-color: var(--accent); } /* --accent 9% tron --paper-hi (2 mau dac, hoi Chromium getComputedStyle de tinh), xem ghi chu dau file */
 .sl-phase { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .1em; color: var(--accent-hi); }
 .sl-phase-name { font-family: var(--font-serif); font-weight: 700; font-size: 16px; margin-top: 3px; }
 .sl-phase-kpi { font-size: 10.5px; color: var(--ink-lo); margin-top: 5px; line-height: 1.4; }
@@ -221,9 +235,19 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
 .heatmatrix th { font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-md); text-align: left; padding: 7px 10px 7px 0; border-bottom: 1.5px solid var(--ink); white-space: nowrap; }
 .heatmatrix td { font-family: var(--font-sans); padding: 9px 10px 9px 0; border-bottom: 1px solid var(--line-lo); vertical-align: top; line-height: 1.5; }
 .heatmatrix tr:hover td { background: var(--paper-hi); }
-.heatmatrix .c-open { background: color-mix(in srgb, var(--pos) 16%, transparent); }
-.heatmatrix .c-cond { background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--warn) 22%, transparent) 0 3px, transparent 3px 7px); }
-.heatmatrix .c-closed { background: color-mix(in srgb, var(--ink) 5%, transparent); color: var(--ink-lo); }
+.heatmatrix .c-open { background: rgb(0 138 109 / 16%); } /* --pos 16%, xem ghi chu dau file */
+/* .c-cond: hai bay chong nhau, ca hai da do bang so rieng.
+   (1) color-mix() ben trong stop mau, sua nhu moi cho khac trong file nay.
+   (2) repeating-linear-gradient() dung cu phap RUT GON "mau vi-tri1 vi-tri2"
+   (CSS Images Level 4, kieu "warn22% 0 3px") tu no KHONG render trong
+   WeasyPrint 69.0, doc lap voi color-mix — da do: doi ca color-mix lan giu
+   nguyen cu phap rut gon van ra 0 fill. Phai doi sang cu phap CO DIEN 4-stop
+   "mau vi-tri1, mau vi-tri2, mau2 vi-tri2, mau2 vi-tri3" thi moi ve duoc soc
+   (da do: 2 mau phan biet xuat hien tren pixel quet, khac trang tuyet doi).
+   Da chon giu nguyen NGON NGU MA HOA (nen soc cheo) vi no van ve duoc bang
+   cu phap co dien, khong can doi sang nen dac khac do sang hay ky hieu chu. */
+.heatmatrix .c-cond { background: repeating-linear-gradient(45deg, rgb(176 122 16 / 22%) 0px, rgb(176 122 16 / 22%) 3px, transparent 3px, transparent 7px); }
+.heatmatrix .c-closed { background: rgb(5 28 44 / 5%); color: var(--ink-lo); } /* --ink 5%, xem ghi chu dau file */
 .heatmatrix .cell-tag { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .04em; display: block; margin-bottom: 2px; }
 
 /* ── 9. KHỐI 06 · MA TRẬN 2×2 ĐỊNH VỊ ─────────────────────────────────── */
@@ -236,7 +260,7 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
 .quad2x2 .q-plot { position: absolute; inset: 0; pointer-events: none; }
 .quad2x2 .q-dot-wrap { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
 .quad2x2 .q-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 1.5px solid var(--paper); box-shadow: 0 0 0 1px var(--ink); }
-.quad2x2 .q-dot-label { margin-top: 3px; font-family: var(--font-mono); font-size: 9px; white-space: nowrap; color: var(--ink); background: color-mix(in srgb, var(--paper) 82%, transparent); padding: 0 2px; }
+.quad2x2 .q-dot-label { margin-top: 3px; font-family: var(--font-mono); font-size: 9px; white-space: nowrap; color: var(--ink); background: rgb(255 255 255 / 82%); padding: 0 2px; } /* --paper 82%, xem ghi chu dau file */
 
 /* ── 10. KHỐI 07 · PULL-QUOTE ─────────────────────────────────────────── */
 .pull-quote { margin: 40px 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line); padding: 20px 2px 18px; break-inside: avoid; }
@@ -298,16 +322,16 @@ table.dt th { font-family: var(--font-mono); font-size: 10px; letter-spacing: .0
 table.dt td { font-family: var(--font-sans); padding: 8px 14px 8px 0; border-bottom: 1px solid var(--line-lo); vertical-align: top; }
 table.dt td.num { font-family: var(--font-mono); font-size: 13px; white-space: nowrap; }
 table.dt tr:hover td { background: var(--paper-hi); }
-table.dt tr.hl td { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+table.dt tr.hl td { background: rgb(34 81 255 / 7%); } /* --accent 7%, xem ghi chu dau file */
 table.dt tr { break-inside: avoid; }
 
 /* ── 16. KHỐI 13 · BẢNG SO SÁNH PHƯƠNG ÁN ─────────────────────────────── */
 table.opt-compare { border-collapse: collapse; width: 100%; font-size: 12.5px; }
 table.opt-compare thead { display: table-header-group; }
 table.opt-compare th { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; padding: 9px 12px; border-bottom: 1.5px solid var(--ink); text-align: left; }
-table.opt-compare th.rec { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+table.opt-compare th.rec { background: rgb(34 81 255 / 10%); } /* --accent 10%, xem ghi chu dau file */
 table.opt-compare td { font-family: var(--font-sans); padding: 9px 12px; border-bottom: 1px solid var(--line-lo); }
-table.opt-compare td.rec { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+table.opt-compare td.rec { background: rgb(34 81 255 / 5%); } /* --accent 5%, xem ghi chu dau file */
 table.opt-compare .mark-yes { color: var(--pos); font-weight: 700; }
 table.opt-compare .mark-no { color: var(--neg); }
 table.opt-compare .mark-partial { color: var(--warn); }
@@ -449,6 +473,40 @@ table.opt-compare tr { break-inside: avoid; }
 .key-point .kp-label { font-family: var(--font-mono); font-weight: 700; font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--warn); }
 .key-point .kp-text { font-family: var(--font-serif); font-style: italic; font-size: 19px; line-height: 1.6; color: var(--ink-md); margin-top: 10px; }
 .key-point .kp-text b { font-style: normal; color: var(--ink); font-weight: 600; }
+
+/* ── 25c. DARK MODE: thay color-mix() ─────────────────────────────────────
+   9 rule ở trên từng dùng color-mix(var(--token) P%, ...) nên tự đổi màu
+   theo theme qua cascade của biến. Đổi sang hằng số RGB (ghi chú dau file,
+   mục "GHI CHÚ CHUNG") làm mất khả năng tự đổi đó, vì hằng số không đọc
+   biến khi vẽ. Khối dưới đây bù lại: giá trị bản tối, tính CÙNG PHƯƠNG PHÁP
+   (hỏi Chromium getComputedStyle() cho color-mix() với --accent/--pos/
+   --warn/--ink/--paper bản tối trong tokens.css). Không ảnh hưởng bản PDF:
+   WeasyPrint vứt cả khối @media (prefers-color-scheme) vì lỗi cú pháp
+   media-feature (xem docs/superpowers/.../progress.md, mục CĂNG THẲNG KIẾN
+   TRÚC số 3), nên PDF luôn theo bản sáng dù có khối này hay không. Khối này
+   chỉ có tác dụng khi người dùng mở thẳng file HTML bằng trình duyệt đặt
+   theme tối, và khi có script đặt data-theme="dark" (hiện chưa nơi nào
+   trong repo tự đặt thuộc tính này). */
+[data-theme="dark"] .wc-era.now { background: rgb(91 135 255 / 8%); }
+[data-theme="dark"] .sl-colhead.now { background: #172741; }
+[data-theme="dark"] .heatmatrix .c-open { background: rgb(53 169 138 / 16%); }
+[data-theme="dark"] .heatmatrix .c-cond { background: repeating-linear-gradient(45deg, rgb(212 162 71 / 22%) 0px, rgb(212 162 71 / 22%) 3px, transparent 3px, transparent 7px); }
+[data-theme="dark"] .heatmatrix .c-closed { background: rgb(234 240 246 / 5%); }
+[data-theme="dark"] .quad2x2 .q-dot-label { background: rgb(10 20 32 / 82%); }
+[data-theme="dark"] table.dt tr.hl td { background: rgb(91 135 255 / 7%); }
+[data-theme="dark"] table.opt-compare th.rec { background: rgb(91 135 255 / 10%); }
+[data-theme="dark"] table.opt-compare td.rec { background: rgb(91 135 255 / 5%); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .wc-era.now { background: rgb(91 135 255 / 8%); }
+  :root:not([data-theme="light"]) .sl-colhead.now { background: #172741; }
+  :root:not([data-theme="light"]) .heatmatrix .c-open { background: rgb(53 169 138 / 16%); }
+  :root:not([data-theme="light"]) .heatmatrix .c-cond { background: repeating-linear-gradient(45deg, rgb(212 162 71 / 22%) 0px, rgb(212 162 71 / 22%) 3px, transparent 3px, transparent 7px); }
+  :root:not([data-theme="light"]) .heatmatrix .c-closed { background: rgb(234 240 246 / 5%); }
+  :root:not([data-theme="light"]) .quad2x2 .q-dot-label { background: rgb(10 20 32 / 82%); }
+  :root:not([data-theme="light"]) table.dt tr.hl td { background: rgb(91 135 255 / 7%); }
+  :root:not([data-theme="light"]) table.opt-compare th.rec { background: rgb(91 135 255 / 10%); }
+  :root:not([data-theme="light"]) table.opt-compare td.rec { background: rgb(91 135 255 / 5%); }
+}
 
 /* ── 26. ACCESSIBILITY: focus visible chung ───────────────────────────── */
 a:focus-visible, button:focus-visible, [tabindex]:focus-visible, .drillable:focus-visible {

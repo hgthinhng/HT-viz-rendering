@@ -27,7 +27,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import (
-    PAPER, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
+    PAPER, PAPER_HI, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
     setup_fonts, palette, tone_color, fmt_value, despine, eir_fig,
     draw_masthead, draw_source, save, _badge,
 )
@@ -38,11 +38,17 @@ from matplotlib.patches import FancyBboxPatch, Rectangle, Circle
 setup_fonts()
 SANS, SERIF, MONO = S.SANS, S.SERIF, S.MONO   # bound AFTER setup so they are resolved
 
-# tint grounds (flat, pale) used as quadrant/card backgrounds
-TINT = "#F3ECDD"          # warm pale ground (matches executive_summary / dupont)
-TINT2 = "#F0EBDE"         # very light card ground
-CARD_BG = "#FBF8F0"       # near-paper card body
-CARD_EDGE = "#DED6C4"     # hairline border for grounds
+# tint grounds (flat, pale) used as quadrant/card backgrounds. Day chinh la cho
+# gay ra nen KEM AM cua executive_summary/dupont (F6): 4 hang nay tung tu khai
+# mot bang mau rieng ngoai tam voi cua _eir_style.py, khong nap tu
+# design-system/tokens.py. Gio dan xuat tu token that: TINT/TINT2 la nen "the"
+# ben ngoai (giong PAPER_HI, nen phu, hoi tach khoi trang chinh), CARD_BG la
+# than the/card lop trong (giong PAPER, trang thuan de noi bat hon TINT bao
+# quanh), CARD_EDGE la vien hairline (giong GRID).
+TINT = PAPER_HI
+TINT2 = PAPER_HI
+CARD_BG = PAPER
+CARD_EDGE = GRID
 
 
 # --------------------------------------------------------------------- meta

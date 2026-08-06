@@ -24,7 +24,7 @@ import _eir_style as S
 from _eir_style import (
     PAPER, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
     setup_fonts, palette, tone_color, fmt_value, despine, eir_fig,
-    draw_masthead, draw_source, save, _badge,
+    draw_masthead, draw_source, save, _badge, tint,
 )
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
@@ -181,7 +181,7 @@ def c_bump(p, accent):
     hl = set(p.get("highlight") or []); x = np.arange(len(periods)); cols = palette(accent)
     for i, (name, ranks) in enumerate(ent.items()):
         on = (not hl) or (name in hl)
-        col = cols[i % len(cols)] if on else "#CFC9BD"
+        col = cols[i % len(cols)] if on else FAINT
         lw = 2.6 if (on and hl) else 2.0
         ax.plot(x, ranks, "o-", color=col, lw=lw, markersize=7, markerfacecolor=PAPER,
                 markeredgecolor=col, markeredgewidth=1.8, zorder=3 if on else 1)
@@ -334,7 +334,9 @@ def c_bullet(p, accent):
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.4, max(2.6, 0.85 * n + 1.8)),
                       rect=(0.28, 0.18, 0.66, 0.58))
     despine(ax, keep=("bottom",), grid_axis="x")
-    band_shades = ["#EDE8DC", "#DCD3BF", "#C9BC9E"]; maxend = 0
+    # 3 bac nen bullet chart (kem/te/tot), dan xuat tu INK qua tint() thay vi
+    # 3 hex kem/nau am rieng - giu trung tinh, lanh, dung sac cua token that.
+    band_shades = [tint(INK, 0.06), tint(INK, 0.13), tint(INK, 0.22)]; maxend = 0
     for i, r in enumerate(rows):
         yc = n - 1 - i
         limits = r.get("bands") or [r["target"] * 0.8, r["target"], r["target"] * 1.25]
@@ -458,7 +460,10 @@ def c_marimekko(p, accent):
 
 
 def _cmap_warm():
-    return LinearSegmentedColormap.from_list("eir_seq", ["#FBF7EC", "#E7D9B0", GOLD, TEAL])
+    # 4-stop tu nhat den day: hai diem dau la tint(GOLD) o hai muc do dam khac
+    # nhau (khong phai hex kem/nau am rieng), roi toi GOLD nguyen ban, roi TEAL.
+    return LinearSegmentedColormap.from_list(
+        "eir_seq", [tint(GOLD, 0.06), tint(GOLD, 0.35), GOLD, TEAL])
 
 
 def c_sensitivity_grid(p, accent):
@@ -468,7 +473,7 @@ def c_sensitivity_grid(p, accent):
     ax.set_facecolor(PAPER); diverge = p.get("diverging", False)
     if diverge:
         norm = Normalize(vals.min(), vals.max())
-        cmap = LinearSegmentedColormap.from_list("eir_div", [BRICK, "#F3ECDD", TEAL])
+        cmap = LinearSegmentedColormap.from_list("eir_div", [BRICK, PAPER, TEAL])
     else:
         norm = Normalize(vals.min(), vals.max()); cmap = _cmap_warm()
     ax.imshow(vals, cmap=cmap, norm=norm, aspect="auto")

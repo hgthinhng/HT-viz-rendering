@@ -32,7 +32,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import (
-    PAPER, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
+    PAPER, PAPER_HI, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
     setup_fonts, palette, tone_color, fmt_value, despine, eir_fig,
     draw_masthead, draw_source, save, _badge,
 )
@@ -43,7 +43,10 @@ from matplotlib.patches import Rectangle, FancyBboxPatch
 setup_fonts()
 SANS, SERIF, MONO = S.SANS, S.SERIF, S.MONO   # bound AFTER setup so they are resolved
 
-STEEL = "#3E5C76"   # 4th narrative tone: neutral/"trung tính" (distinct from GOLD annotation)
+# 4th narrative tone: neutral/"trung tinh" (distinct from GOLD annotation). Dan
+# xuat truc tiep = MUTED (COLORS["ink_md"]): gia tri cu la mot mau xam-xanh gan
+# nhu trung voi MUTED va cung mang y nghia "lam ban dong dieu" giong nhau.
+STEEL = MUTED
 
 
 # --------------------------------------------------------------------- helpers
@@ -141,7 +144,7 @@ def c_kpi_card_with_sparkline(p, accent):
         cell = fig.add_subplot(gs[r, c]); cell.axis("off")
         cell.set_xlim(0, 1); cell.set_ylim(0, 1)
         # flat cell ground + hairline frame + GOLD accent spine on the left
-        cell.add_patch(Rectangle((0.012, 0.03), 0.976, 0.94, facecolor="#FCFAF1",
+        cell.add_patch(Rectangle((0.012, 0.03), 0.976, 0.94, facecolor=PAPER_HI,
                                  edgecolor=GRID, linewidth=1.0, zorder=1))
         cell.add_patch(Rectangle((0.012, 0.03), 0.012, 0.94, facecolor=GOLD,
                                  edgecolor="none", zorder=2))

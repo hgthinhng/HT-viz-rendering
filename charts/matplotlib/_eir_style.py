@@ -71,6 +71,7 @@ COLORS = _tok_mod.COLORS
 #         palette() cho da-series) ve pos/neg/warn/accent_hi theo dung nhom mau
 #         (xanh la/do/vang/xanh duong), giu nguyen kha nang phan biet chuoi mau.
 PAPER = COLORS["paper"]
+PAPER_HI = COLORS["paper_hi"]  # nen the/card phan biet nhe voi nen trang chinh
 NAVY = COLORS["ink"]
 INK = COLORS["ink"]
 MUTED = COLORS["ink_md"]
@@ -82,6 +83,40 @@ GOLD = COLORS["warn"]
 INDIGO = COLORS["accent_hi"]
 TONE = {"up": TEAL, "down": BRICK, "flat": MUTED, "neutral": GOLD,
         "pos": TEAL, "neg": BRICK, None: MUTED}
+
+
+def _mix(hex_a, hex_b, t):
+    """Tron tuyen tinh hai mau hex trong khong gian RGB. t=0 tra ve hex_a, t=1
+    tra ve hex_b. Dung de DAN XUAT sac do trung gian (nen nhat, ban dam, tint)
+    tu TOKEN THAT, thay vi che them hex moi tuy tien (F6 - repo cam mot bang
+    mau am rieng khong nap tu design-system/tokens.py).
+
+    Luu y: mot fill mau X voi alpha=A tren nen PAPER tuong duong ve mat thi
+    giac voi _mix(PAPER, X, A) duoi dang mot mau DAC (khong trong suot). Dung
+    cong thuc nay khi can mot swatch chu thich dai dien cho mot fill_between
+    da alpha-blend, de swatch va fill khop nhau co can cu.
+    """
+    a = tuple(int(hex_a[i:i + 2], 16) for i in (1, 3, 5))
+    b = tuple(int(hex_b[i:i + 2], 16) for i in (1, 3, 5))
+    m = tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3))
+    return "#{:02X}{:02X}{:02X}".format(*m)
+
+
+def tint(hexcolor, amount=0.14):
+    """Ban NHAT (pale) cua mot mau, tron voi PAPER. Dung lam nen mo cho
+    box/badge duoc vien bang chinh mau do (vd nut tone-coded trong flowchart/
+    network_graph: nen la tint(TEAL) trong khi vien la TEAL nguyen ban), giu
+    dung sac (hue) cua token thay vi mot hex kem/nau am khong lien quan.
+    amount = ty le mau goc con lai trong ket qua (0..1, cang nho cang nhat)."""
+    return _mix(PAPER, hexcolor, amount)
+
+
+def shade(hexcolor, amount=0.35):
+    """Ban DAM hon mot mau, tron voi INK. Dung khi can mot bien the manh/
+    nghiem trong hon cua chinh mau do (vd CVaR dam hon BRICK vi la thuoc do
+    duoi rui ro cuc doan hon VaR). amount = ty le INK tron vao (0..1)."""
+    return _mix(hexcolor, INK, amount)
+
 
 _FONTS_READY = False
 

@@ -27,9 +27,9 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import (
-    PAPER, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
+    PAPER, PAPER_HI, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
     setup_fonts, palette, tone_color, fmt_value, despine, eir_fig,
-    draw_masthead, draw_source, save, _badge,
+    draw_masthead, draw_source, save, _badge, tint, shade,
 )
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
@@ -138,10 +138,12 @@ def c_correlation_matrix(p, accent):
     for sp in ax.spines.values():
         sp.set_visible(False)
     ax.tick_params(length=0)
-    cmap = LinearSegmentedColormap.from_list("eir_corr", [BRICK, "#F1D9D3", "#EFECE3",
-                                                          "#D3E1DB", TEAL])
+    # 5-stop diverging: am(BRICK) -> tint(BRICK) -> trung tam trung tinh(PAPER)
+    # -> tint(TEAL) -> duong(TEAL). Ca 5 diem deu dan xuat tu token that.
+    cmap = LinearSegmentedColormap.from_list(
+        "eir_corr", [BRICK, tint(BRICK, 0.32), PAPER, tint(TEAL, 0.28), TEAL])
     norm = Normalize(-1, 1)
-    diag_fc = "#E4E6EC"  # cool grey for the self-correlation cells
+    diag_fc = GRID  # xam lanh trung tinh cho o tu tuong quan tren duong cheo
 
     for i in range(n):
         for j in range(n):
@@ -177,7 +179,7 @@ def c_correlation_matrix(p, accent):
                         family=MONO)
     cax.tick_params(length=0)
     for sp in cax.spines.values():
-        sp.set_color("#CFCABF"); sp.set_linewidth(0.6)
+        sp.set_color(GRID); sp.set_linewidth(0.6)
     fig.text(0.235, 0.163, "Tương quan âm", fontsize=7.8, color=BRICK, style="italic",
              family=SANS, ha="left")
     fig.text(0.535, 0.163, "Tương quan dương", fontsize=7.8, color=TEAL, style="italic",
@@ -229,7 +231,7 @@ def c_distribution(p, accent):
     ax.set_yticks([])
 
     # full pdf faint fill
-    ax.fill_between(xs, pdf, color="#EDEAE1", alpha=0.9, lw=0, zorder=1)
+    ax.fill_between(xs, pdf, color=GRID, alpha=0.9, lw=0, zorder=1)
     # left VaR tail (light brick), CVaR sub-tail (darker brick)
     ax.fill_between(xs, pdf, where=(xs <= var_x), color=BRICK, alpha=0.14, lw=0, zorder=2)
     ax.fill_between(xs, pdf, where=(xs <= cvar_x), color=BRICK, alpha=0.30, lw=0, zorder=2)
@@ -244,8 +246,11 @@ def c_distribution(p, accent):
                 fontweight="bold", xytext=(5, 0), textcoords="offset points")
     # VaR & CVaR threshold lines
     a = f"{100*(1-var_pct):.0f}%"
+    # CVaR = duoi rui ro cuc doan hon VaR nen dung ban DAM hon cua BRICK (shade),
+    # khong phai mot hex mau-do-tham rieng khong lien quan toi token.
+    cvar_col = shade(BRICK, 0.45)
     for xv, lab, val, col, ylab, side, dx in [
-            (cvar_x, f"CVaR {a}", cvar_x, "#7E241B", ymax * 1.02, "right", -5),
+            (cvar_x, f"CVaR {a}", cvar_x, cvar_col, ymax * 1.02, "right", -5),
             (var_x, f"VaR {a}", var_x, BRICK, ymax * 0.80, "left", 5)]:
         ax.axvline(xv, color=col, ls=(0, (5, 2)), lw=1.6, zorder=3)
         ax.plot([xv], [0], marker="o", ms=6, color=col, zorder=5)
@@ -257,9 +262,10 @@ def c_distribution(p, accent):
 
     _legend_row(fig, [
         ("line", NAVY, "Mật độ lợi suất"),
-        ("sq", "#D8A9A2", "Vùng đuôi tổn thất"),
+        # swatch dai dien dung boi mau: khop voi alpha=0.30 cua fill CVaR ben tren.
+        ("sq", tint(BRICK, 0.30), "Vùng đuôi tổn thất"),
         ("dash", BRICK, f"VaR {100*(1-var_pct):.0f}% (ngưỡng)"),
-        ("dash", "#7E241B", f"CVaR {100*(1-var_pct):.0f}% (đuôi)")], y=0.075)
+        ("dash", cvar_col, f"CVaR {100*(1-var_pct):.0f}% (đuôi)")], y=0.075)
     return fig
 
 
@@ -361,7 +367,7 @@ def c_spc_control_chart(p, accent):
                       rect=(0.085, 0.185, 0.80, 0.52))
     despine(ax, keep=("left", "bottom"), grid_axis="y")
     # faint in-control band
-    ax.axhspan(lcl, ucl, color="#EEEBE2", alpha=0.7, zorder=0)
+    ax.axhspan(lcl, ucl, color=GRID, alpha=0.7, zorder=0)
     # centerline + control limits
     ax.axhline(center, color=line_col, lw=1.6, zorder=2)
     ax.axhline(ucl, color=GOLD, ls=(0, (5, 3)), lw=1.6, zorder=2)
@@ -458,8 +464,11 @@ def c_seasonality(p, accent):
         ax.annotate(p["unit_label"], (0.0, 1.025), xycoords="axes fraction", fontsize=8.8,
                     color=MUTED, family=SANS, ha="left", va="bottom")
 
+    # swatch dai dien cho dai GOLD/INDIGO alpha-blend ben tren (xem fill_between
+    # o tren: GOLD alpha=0.16 nua tren, INDIGO alpha=0.10 nua duoi) - lay tint
+    # cua GOLD lam dai dien vi no chiem phan lon an tuong thi giac cua dai.
     _legend_row(fig, [("line", line_col, p.get("mean_name", "Giá trị trung bình theo kỳ")),
-                      ("sq", "#DCC9A0", "Khoảng dao động (thấp nhất tới cao nhất)"),
+                      ("sq", tint(GOLD, 0.18), "Khoảng dao động (thấp nhất tới cao nhất)"),
                       ("sq", TEAL, p.get("peak_label", "Đỉnh mùa")),
                       ("sq", BRICK, p.get("trough_label", "Đáy mùa"))], y=0.075)
     return fig

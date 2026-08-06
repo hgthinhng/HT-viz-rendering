@@ -28,9 +28,9 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import (
-    PAPER, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
+    PAPER, PAPER_HI, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
     setup_fonts, palette, tone_color, fmt_value, despine, eir_fig,
-    draw_masthead, draw_source, save, _badge,
+    draw_masthead, draw_source, save, _badge, tint,
 )
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
@@ -304,19 +304,19 @@ def c_flowchart(p, accent):
         if kind == "decision":
             w, h = nd.get("w", 34), nd.get("h", 26)
             dia = Polygon([(x, y + h / 2), (x + w / 2, y), (x, y - h / 2), (x - w / 2, y)],
-                          closed=True, facecolor="#F1EEE6", edgecolor=NAVY, lw=1.4, zorder=3)
+                          closed=True, facecolor=tint(NAVY), edgecolor=NAVY, lw=1.4, zorder=3)
             ax.add_patch(dia)
             _text(ax, x, y, label, size=9.4, color=INK)
         elif kind == "terminal":
             tone = nd.get("tone")
             ec = TEAL if tone == "up" else BRICK if tone == "down" else NAVY
-            fc = "#EAF0EE" if tone == "up" else "#F6EAE8" if tone == "down" else "#F1EEE6"
+            fc = tint(TEAL) if tone == "up" else tint(BRICK) if tone == "down" else tint(NAVY)
             w, h = nd.get("w", 30), nd.get("h", 15)
             _box(ax, x, y, w, h, fc=fc, ec=ec, lw=1.5, pad=0.03, z=3)
             _text(ax, x, y, label, size=9.4, color=NAVY, weight="bold")
         else:  # process / start
             w, h = nd.get("w", 30), nd.get("h", 15)
-            fc = "#EDEAE1" if kind == "start" else "#F1EEE6"
+            fc = PAPER_HI if kind == "start" else tint(NAVY)
             _box(ax, x, y, w, h, fc=fc, ec=NAVY, lw=1.4, pad=0.03, z=3)
             _text(ax, x, y, label, size=9.4, color=INK,
                   weight="bold" if kind == "start" else "normal")
@@ -377,8 +377,8 @@ def c_network_graph(p, accent):
         for nd, xx in zip(layer, xs):
             tone = nd.get("tone")
             ec = TEAL if tone == "up" else BRICK if tone == "down" else GOLD if tone == "hi" else NAVY
-            fc = "#EAF0EE" if tone == "up" else "#F6EAE8" if tone == "down" else \
-                 "#FBF3E2" if tone == "hi" else "#F1EEE6"
+            fc = tint(TEAL) if tone == "up" else tint(BRICK) if tone == "down" else \
+                 tint(GOLD) if tone == "hi" else tint(NAVY)
             _box(ax, xx, yy, nd.get("w", boxw), boxh, fc=fc, ec=ec, lw=1.4, pad=0.028)
             _text(ax, xx, yy, nd["label"], size=9.3, color=NAVY,
                   weight="bold" if tone else "normal")
@@ -430,7 +430,7 @@ def c_mechanism_flow(p, accent):
         col = tone_map.get(st.get("tone", "neutral"), INDIGO)
         # body box (pale) with header on top
         body_top = top - head_h
-        _box(ax, cx, (body_top + bottom) / 2, bw, body_top - bottom, fc="#FBFAF5",
+        _box(ax, cx, (body_top + bottom) / 2, bw, body_top - bottom, fc=PAPER_HI,
              ec=GRID, lw=1.1, pad=0.012, z=2)
         # colored header (rounded top look via full box, squared feel)
         hb = FancyBboxPatch((cx - bw / 2, body_top), bw, head_h,
@@ -512,9 +512,9 @@ def c_flow_bridge(p, accent):
             ax.plot([box_x0 + 0.6, box_x1 - 0.6], [yc + box_h / 2 - 0.8,
                     yc + box_h / 2 - 0.8], color=GOLD, lw=2.6, zorder=5,
                     solid_capstyle="round")
-            head_col, sub_col = PAPER, "#D8DEEC"
+            head_col, sub_col = PAPER, GRID
         else:
-            _box(ax, box_cx, yc, box_w, box_h, fc="#EFEDE6", ec=GRID, lw=1.0, pad=0.01, z=2)
+            _box(ax, box_cx, yc, box_w, box_h, fc=PAPER_HI, ec=GRID, lw=1.0, pad=0.01, z=2)
             # left accent bar
             ax.add_patch(Rectangle((box_x0, yc - box_h / 2), 0.9, box_h,
                          facecolor=col, edgecolor="none", zorder=4))

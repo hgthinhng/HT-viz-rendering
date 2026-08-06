@@ -40,10 +40,16 @@ dùng fontTools.subset để tạo một subset duy nhất từ font gốc:
   3. Dùng fontTools.subset.Subsetter với tập unicode = HỢP của hai
      unicode-range đọc được ở bước 1, chạy trên font gốc ở bước 2, xuất
      woff2. Giữ layout_features=["*"] để không mất kerning/GSUB.
-Kết quả: dung lượng gần như không đổi so với bản cũ (đã đo tay: combo
-Spectral 400 normal ra 29724 byte, bản cũ 2 file cộng lại ~29373 byte,
-chênh dưới 2%), vì tổng số glyph giữ lại vẫn là hợp latin+vietnamese như cũ,
-chỉ khác là NẰM TRONG MỘT FILE thay vì hai.
+Kết quả: tổng số glyph giữ lại vẫn là hợp latin+vietnamese như cũ, chỉ khác
+là NẰM TRONG MỘT FILE thay vì hai. Dung lượng từng tổ hợp dao động khác
+nhau tuỳ font (không đồng nhất): đo tay tại round 3 cho một tổ hợp duy nhất
+(Spectral 400 normal, chênh dưới 2%) rồi suy rộng "gần như y hệt" cho cả
+file là SAI, IBM Plex Sans lệch tới -40% (subset vietnamese cũ của riêng
+IBM Plex Sans vốn nặng bất thường trong dữ liệu Google, không phải lỗi ở
+đây). Đừng suy luận đúng/sai bằng cách so kích thước byte; xem
+tests/consistency/fonts_test.py::test_moi_to_hop_khong_mat_codepoint_so_voi_font_goc
+để có phép kiểm trực tiếp trên nội dung glyph (cmap) thay vì suy từ kích
+thước.
 
 Chạy lại khi cần đổi bộ trọng số (weight) hoặc thêm font:
     python3 build-fonts.py
@@ -121,15 +127,37 @@ def _parse_unicode_ranges(modern_css):
 def _parse_legacy_sources(legacy_css):
     """Doc URL font GOC (khong tach subset) cho moi to hop tu CSS UA cu.
     Tra ve dict {(fam, style, weight): url}.
+
+    Fix round 4 (G1): ban truoc gan `sources[key] = url` truc tiep trong
+    vong lap, nen neu Google doi hanh vi va tra ve NHIEU HON MOT khoi cho
+    cung mot to hop o nhanh UA cu, dict se AM THAM ghi de va chi giu URL
+    cuoi cung, mot fallback im lang dung nghia CLAUDE.md cam, chi o dang
+    an. Hau qua neu xay ra: script lay nham mot font goc THIEU (chi latin
+    hoac chi vietnamese), fontTools.subset lai IM LANG bo qua nhung
+    codepoint font goc khong co, tai sinh dung loi lon glyph ban dau ma
+    khong co gi bao dong. Sua bang cach DEM so khoi cho moi to hop va assert
+    dung bang 1 truoc khi tra ve.
     """
     blocks = re.findall(r"@font-face\s*\{([^}]+)\}", legacy_css)
+    counts = {}
     sources = {}
     for block in blocks:
         fam = re.search(r"font-family:\s*'([^']+)'", block).group(1)
         weight = re.search(r"font-weight:\s*(\d+)", block).group(1)
         style = re.search(r"font-style:\s*(\w+)", block).group(1)
         url = re.search(r"url\(([^)]+)\)\s*format", block).group(1)
-        sources[(fam, style, weight)] = url
+        key = (fam, style, weight)
+        counts[key] = counts.get(key, 0) + 1
+        sources[key] = url
+    trung = {k: v for k, v in counts.items() if v != 1}
+    assert not trung, (
+        f"UA cu (khong hieu unicode-range) tra ve KHAC 1 khoi @font-face cho "
+        f"cac to hop sau: {trung}. Neu Google da doi hanh vi nhanh UA cu "
+        f"(vi du quay lai tach subset ngay ca voi UA co), lay dai URL cuoi "
+        f"cung mot cach am tham se tai sinh dung bug lon glyph ma round 3 "
+        f"vua sua. Kiem tra lai noi dung CSS UA cu that (bien legacy_css) "
+        f"truoc khi tiep tuc."
+    )
     return sources
 
 
@@ -188,6 +216,24 @@ def main():
             subsetter.populate(unicodes=sorted(ranges[key]))
             subsetter.subset(font)
             font.save(woff2_path)
+
+        # Fix round 4 (G1, lop phong ve thu hai): fontTools.subset IM LANG
+        # bo qua codepoint font goc khong co, khong bao gio bao loi. Tu kiem
+        # lai: cmap cua ket qua phai phu het phan giao giua tap unicode ky
+        # vong va cmap CUA CHINH font goc (khong doi hoi nhung gi font goc
+        # von khong co, chi bat truong hop subsetting lam RON THEM du lieu
+        # font goc da co). Chay cho ca nhanh vua sinh lan nhanh dung cache.
+        goc_cmap = set(TTFont(legacy_path).getBestCmap().keys())
+        ket_qua_cmap = set(TTFont(woff2_path).getBestCmap().keys())
+        ky_vong_that = ranges[key] & goc_cmap
+        thieu = sorted(ky_vong_that - ket_qua_cmap)
+        assert not thieu, (
+            f"To hop {key}: font sau khi subset THIEU {len(thieu)} codepoint "
+            f"ma CA tap ky vong (latin+vietnamese doc dong tu CSS hien dai) "
+            f"LAN font goc da tai ve deu co, vi du "
+            f"{[hex(c) for c in thieu[:10]]}. Xoa {woff2_path} roi chay lai "
+            f"de subset lai tu dau."
+        )
 
         data = open(woff2_path, "rb").read()
         b64 = base64.b64encode(data).decode("ascii")

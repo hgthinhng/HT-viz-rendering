@@ -4,7 +4,7 @@
 
 ## Mô tả / khi nào dùng
 
-Đây là component NỀN TẢNG mà mọi khối có số liệu khác (statgrid, bảng, note-box…) đều gọi lại; mỗi số liệu phải khai báo được {value, source, date, tier}. Bốn tier theo màu, phỏng theo quy tắc "4 nguồn" của bản Kimi tham chiếu nhưng đổi tên tiếng Việt: CÔNG BỐ (BCTC, văn bản pháp luật), ƯỚC TÍNH (bên thứ ba như Clarksons/VIMC), DỰ BÁO (mô hình nội bộ), NỘI BỘ (báo cáo vận hành chưa kiểm toán). KHÔNG dùng tier "công bố" cho số liệu chưa có văn bản/BCTC xác nhận.
+Đây là component NỀN TẢNG mà mọi khối có số liệu khác (statgrid, bảng, note-box…) đều gọi lại; mỗi số liệu phải khai báo được {value, source, date, tier}. Bốn tier theo màu, phỏng theo quy tắc "4 nguồn" của bản Kimi tham chiếu nhưng đổi tên tiếng Việt: CÔNG BỐ (BCTC, văn bản pháp luật), ƯỚC TÍNH (bên thứ ba như Clarksons/VIMC), DỰ BÁO (mô hình nội bộ), NỘI BỘ (báo cáo vận hành chưa kiểm toán). KHÔNG dùng tier "công bố" cho số liệu chưa có văn bản/BCTC xác nhận. Cũng KHÔNG tự đặt tier ngoài đúng 4 giá trị `data-tier` mà `.src-badge` định nghĩa màu (cong-bo, uoc-tinh, du-bao, noi-bo): thêm hoặc gõ sai một giá trị khác sẽ khiến badge rơi về không màu, không có cảnh báo gì.
 
 ## HTML mẫu (copy trực tiếp từ gallery.html, chạy được ngay với components.css)
 

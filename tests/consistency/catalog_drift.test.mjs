@@ -8,6 +8,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const CATALOG = path.join(ROOT, 'components/catalog');
 const CSS = readFileSync(path.join(ROOT, 'components/components.css'), 'utf8');
 const JS = readFileSync(path.join(ROOT, 'components/components.js'), 'utf8');
+const TOKENS_CSS = readFileSync(path.join(ROOT, 'design-system/tokens.css'), 'utf8');
 
 // Sieet: bo comment /* ... */ truoc khi quet, va chi nhan class o vi tri
 // selector (doan van ban ngay truoc moi dau "{", tru phan sau dau ";" cuoi
@@ -44,6 +45,69 @@ for (const m of JS.matchAll(/className\s*=\s*["'`]([^"'`]+)["'`]/g)) {
 
 const catalogFiles = readdirSync(CATALOG).filter((f) => f.endsWith('.md'));
 
+// Nguon that thu ba: slug cua chinh 24 file catalog (vi du "09-note-box.md"
+// -> "note-box"), dung de kiem cross-ref "dung X thay the" co tro toi mot
+// component THAT hay khong, thay vi chi dem so lan chu "dung" xuat hien.
+const catalogSlugs = catalogFiles.map((f) => f.replace(/^\d+-/, '').replace(/\.md$/, ''));
+
+// Nguon that thu tu: bien CSS THAT duoc DINH NGHIA (khong phai chi nhac
+// ten) trong components.css hoac design-system/tokens.css, dung de kiem
+// noi dung trong backtick co phai bia hay khong. Loai cac tien to qua
+// chung chung (--space-, --fs-, --lh-, --radius-): day la thang do kich
+// thuoc/khoang cach dung o GAN NHU MOI rule trong he thong, nhac ten mot
+// bien nhom nay khong noi len dieu gi rieng cho component dang xet (vi du
+// "--space-2" la that 100% nhung khong lien quan gi den ly do KHONG dung
+// mot component cu the). Giu lai nhom mau sac/font/shadow vi chung mang
+// nghia rieng (vi du "--warn" giai thich TAI SAO doi mau, "--ink-md" giai
+// thich TAI SAO chu nhat hon).
+const TOKENS_NO_COMMENTS = TOKENS_CSS.replace(/\/\*[\s\S]*?\*\//g, '');
+const GENERIC_PROP_PREFIXES = ['--space-', '--fs-', '--lh-', '--radius-'];
+const realCustomProps = new Set();
+for (const src of [CSS_NO_COMMENTS, TOKENS_NO_COMMENTS]) {
+  for (const m of src.matchAll(/(--[a-zA-Z][\w-]*)\s*:/g)) {
+    if (!GENERIC_PROP_PREFIXES.some((p) => m[1].startsWith(p))) realCustomProps.add(m[1]);
+  }
+}
+
+// Con so nguong that: mot chu so PHAI di kem mot dau hieu nghuong/don vi
+// trong ban kinh 20 ky tu quanh no, khong chi la "co chu so nao do trong
+// doan". Chan duoc kieu "...nam 2026..." (nam la mot chu so tran, khong co
+// dau hieu nguong nao ben canh).
+const COMPARISON_UNIT =
+  /[<>≤≥±×]|\b(?:dưới|trên|quá|hơn|ít hơn|nhiều hơn|từ|chỉ|mỗi)\b|px|%|\b(?:cột|dòng|hàng|mục|trang|section|bước|mốc|điểm|câu|cặp|chỉ tiêu|biến|trạng thái|ràng buộc|giai đoạn|hạng mục|số)\b/i;
+
+function hasRealThreshold(tail) {
+  const WINDOW = 20;
+  for (const m of tail.matchAll(/\d+/g)) {
+    const start = Math.max(0, m.index - WINDOW);
+    const end = Math.min(tail.length, m.index + m[0].length + WINDOW);
+    if (COMPARISON_UNIT.test(tail.slice(start, end))) return true;
+  }
+  return false;
+}
+
+// Tham chieu component thay the PHAI trung slug that cua mot file catalog
+// KHAC (khong tinh chinh no), khong chi dem so lan chu "dung" xuat hien.
+function hasRealCrossRef(tail, ownSlug) {
+  const low = tail.toLowerCase();
+  return catalogSlugs.some((slug) => slug !== ownSlug && low.includes(slug.toLowerCase()));
+}
+
+// Noi dung trong backtick PHAI la mot class hoac custom property THAT SU
+// TON TAI (doi chieu voi definedClasses/realCustomProps da dung nguyen o
+// tren cho chinh test class-drift), khong chi can co dau backtick.
+function hasRealCssAnchor(tail) {
+  for (const span of [...tail.matchAll(/`([^`]+)`/g)].map((m) => m[1])) {
+    for (const cm of span.matchAll(/\.([a-zA-Z][\w-]*)/g)) {
+      if (definedClasses.has(cm[1])) return true;
+    }
+    for (const cm of span.matchAll(/(--[a-zA-Z][\w-]*)/g)) {
+      if (realCustomProps.has(cm[1])) return true;
+    }
+  }
+  return false;
+}
+
 test('co du 24 file catalog', () => {
   assert.equal(catalogFiles.length, 24, `co ${catalogFiles.length} file, mong doi 24`);
 });
@@ -76,25 +140,44 @@ for (const file of catalogFiles) {
 // mot cau rong nghia kieu "KHONG dung khi khong phu hop" van PASS. Sua lai:
 // lay tu vi tri cum tu KHONG-dung dau tien den HET DOAN VAN chua no (doan
 // "## Mo ta / khi nao dung" luon ket bang chinh cau KHONG-dung, xem 24 file
-// that), roi doi hoi CA HAI dieu kien:
-// 1. Do dai toi thieu (huong 1 cua reviewer, 40 ky tu) - loai cau qua ngan
-//    kieu "khong phu hop".
-// 2. Co it nhat MOT neo cu the (huong 2 cua reviewer, mo rong): mot con so
-//    nguong (vi du "<5 moc", "1-2 so"), MOT tham chieu chuoi thay the that
-//    (dang "khi do dung X", tuc chu "dung" xuat hien LAN THU HAI tro len
-//    trong doan, vi ca cum trigger da chua san 1 lan), MOT class/property
-//    CSS that trong dau backtick, hoac MOT vi du trich dan cu the trong dau
-//    ngoac kep. Da chay dieu kien nay tren CA 24 file truoc khi chon: ban
-//    dau huong 2 THUAN (chi nhan class/property, dung "\.[\w-]+|--[\w-]+")
-//    la QUA CHAT, danh trot 19/24 file vi da so file tham chieu component
-//    khac bang ten (vi du "dung note-box", "dung swimlane") hoac bang con
-//    so nguong (vi du "<5 moc", ">8 diem") chu khong phai cu phap CSS
-//    literal, ep vao se phai sua sai 19 file dang dung de vua test, dung
-//    dieu bi cam. Bo sung them 2 neo (cross-ref "dung X" va vi du trich
-//    dan) de khong danh oan noi dung tot; ket qua ca 24 file deu qua sau
-//    khi 17-methodology-box.md duoc bo sung mot neo CSS that (`break-inside:
-//    avoid` ap ca khoi, xem file do) vi cau cu chi canh bao dao duc ("dung
-//    de che giau phuong phap yeu") ma khong neo vao dieu gi kiem duoc.
+// that), roi doi hoi CA HAI dieu kien: (1) do dai toi thieu 40 ky tu, (2)
+// it nhat MOT neo cu the.
+//
+// Fix round 2 (F1 reviewer, re-review NOT ADDRESSED): ba neo cua round 1
+// (con so bat ky, chu "dung" xuat hien lan 2, co backtick bat ky) deu qua
+// de thoa bang noi dung rong nghia. Reviewer tu viet duoc 3 cau rong nghia
+// lot qua ca 3 neo do va CHUNG MINH bang so:
+//   1. "...nen dung cach khac thay the cho tinh huong nay" -> qua vi chu
+//      "dung" xuat hien 2 lan nhung KHONG neu ten component nao ca.
+//   2. "...nhieu lan trong nam 2026..." -> qua vi hasThreshold cu chi doi
+//      MOT chu so bat ky, "2026" la mot NAM chu khong phai mot NGUONG.
+//   3. "...xem them `--space-2` de biet chi tiet." -> qua vi hasCssAnchor cu
+//      chi doi CO backtick, khong kiem noi dung trong do co that hay khong.
+// Siet lai ca 3 neo (bo han neo "vi du trich dan" vi no de thoa nhat bang
+// noi dung rong, kieu "khong phu hop voi \"ngu canh nay\"" cung se lot qua
+// neu chi doi co dau ngoac kep):
+//   - Neo con so: PHAI co dau hieu nguong/don vi (<,>,quá,hơn,dưới,trên,
+//     px,%,hang,cot,muc,trang,section,buoc,diem,... ) trong ban kinh 20 ky
+//     tu quanh chu so, khong chi "co chu so nao do". Ham hasRealThreshold.
+//   - Neo tham chieu: PHAI trung slug THAT cua mot trong 24 file catalog
+//     (bien catalogSlugs, tu chinh danh sach catalogFiles dang co san),
+//     khong chi dem so lan chu "dung". Ham hasRealCrossRef.
+//   - Neo CSS: noi dung TRONG backtick phai la mot class hoac custom
+//     property THAT SU duoc DINH NGHIA trong components.css/tokens.css
+//     (tai dung definedClasses + tap realCustomProps moi), khong chi can
+//     co dau backtick. Loai rieng cac tien to qua chung chung (--space-,
+//     --fs-, --lh-, --radius-) vi mot bien that nhung chung chung (vi du
+//     "--space-2" co that 100%) khong noi len ly do KHONG dung component
+//     nay. Ham hasRealCssAnchor.
+// Da chay dieu kien moi tren CA 24 file TRUOC khi chot (xem
+// task-7-report.md muc Fix round 2 de co bang day du): 4 file FAIL that su
+// (07-pull-quote, 13-options-comparison-table, 18-toc-with-milestones,
+// 20-source-badge-k-anchor) vi cau goc chi la loi nhac nho chung chung,
+// khong neo vao con so/slug/CSS nao. Ca 4 duoc bo sung mot su that CSS that
+// (vi du 18: `.toc-mark` chi to mau cho dung 3 gia tri data-status; 20:
+// `.src-badge` chi dinh nghia mau cho dung 4 gia tri data-tier) thay vi noi
+// long dieu kien, dung tinh than "sua file that su thieu, dung sua-cho-vua-
+// test" da lam o round 1 voi 17-methodology-box.md. Sau do ca 24 file qua.
 test('moi catalog deu noi ro khi nao KHONG nen dung, co neo cu the chu khong rong nghia', () => {
   const TRIGGER = /KHÔNG dùng|không nên dùng|Khong dung/i;
   const MIN_TAIL_LEN = 40;
@@ -107,25 +190,23 @@ test('moi catalog deu noi ro khi nao KHONG nen dung, co neo cu the chu khong ron
     let paraEnd = md.indexOf('\n\n', idx);
     if (paraEnd === -1) paraEnd = md.length;
     const tail = md.slice(idx, paraEnd).trim();
+    const ownSlug = file.replace(/^\d+-/, '').replace(/\.md$/, '');
 
+    const lenOk = tail.length >= MIN_TAIL_LEN;
+    const hasThreshold = hasRealThreshold(tail);
+    const hasCrossRef = hasRealCrossRef(tail, ownSlug);
+    const hasCssAnchor = hasRealCssAnchor(tail);
+    const anchorOk = hasThreshold || hasCrossRef || hasCssAnchor;
+
+    // Mot assert DUY NHAT, bao ca hai dieu kien cung luc: nguoi sua khong
+    // the chi doc "thieu do dai" roi viet dai ra ma van rong nghia, vi
+    // thong bao luon noi ro CA trang thai neo (Fix round 2, re-reviewer).
     assert.ok(
-      tail.length >= MIN_TAIL_LEN,
-      `${file}: phan "KHONG dung" chi dai ${tail.length} ky tu (can >= ${MIN_TAIL_LEN}), ` +
-        `qua ngan de mang noi dung that: "${tail}"`,
-    );
-
-    const hasThreshold = /\d/.test(tail);
-    const dungCount = (tail.match(/dùng/gi) || []).length;
-    const hasCrossRef = dungCount >= 2; // 1 lan la chinh trigger, >=2 la co tham chieu thay the
-    const hasCssAnchor = /`[^`]+`/.test(tail);
-    const hasQuotedExample = /"[^"]{2,40}"/.test(tail);
-    const hasAnchor = hasThreshold || hasCrossRef || hasCssAnchor || hasQuotedExample;
-
-    assert.ok(
-      hasAnchor,
-      `${file}: cau "KHONG dung" khong neo vao dieu gi kiem chung duoc ` +
-        `(khong con so nguong, khong ten component thay the, khong class/property CSS trong backtick, ` +
-        `khong vi du trich dan). Day la dang cau rong nghia kieu "khong phu hop" ma test nay sinh ra de chan: "${tail}"`,
+      lenOk && anchorOk,
+      `${file}: do dai=${tail.length} ky tu (can >= ${MIN_TAIL_LEN}, ${lenOk ? 'OK' : 'THIEU'}); ` +
+        `neo=[nguong:${hasThreshold ? 'co' : 'khong'}, tham-chieu-component-that:${hasCrossRef ? 'co' : 'khong'}, ` +
+        `css-anchor-that:${hasCssAnchor ? 'co' : 'khong'}] (can it nhat 1 "co", hien ${anchorOk ? 'OK' : 'THIEU CA BA'}). ` +
+        `Day la dang cau rong nghia ma test nay sinh ra de chan. Noi dung dang xet: "${tail}"`,
     );
   }
 });

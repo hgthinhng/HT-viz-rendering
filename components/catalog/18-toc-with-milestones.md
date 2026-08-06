@@ -4,7 +4,7 @@
 
 ## Mô tả / khi nào dùng
 
-Trả lời: "Báo cáo có bao nhiêu phần, phần nào đã xong/đang mở/còn chờ dữ liệu?" Khác mục lục thường ở cột trạng thái bên phải. KHÔNG dùng nhãn trạng thái mơ hồ ("đang xử lý"); phải là trạng thái có thể kiểm chứng.
+Trả lời: "Báo cáo có bao nhiêu phần, phần nào đã xong/đang mở/còn chờ dữ liệu?" Khác mục lục thường ở cột trạng thái bên phải. KHÔNG dùng nhãn trạng thái mơ hồ ("đang xử lý"); phải là trạng thái có thể kiểm chứng. Cụ thể, `.toc-mark` chỉ có màu cho đúng 3 giá trị `data-status` thật (done, live, cho); gõ một nhãn tự do như "đang xử lý" không khớp selector nào trong CSS, `.toc-mark` sẽ mất màu trạng thái mà không có cảnh báo gì.
 
 ## HTML mẫu (copy trực tiếp từ gallery.html, chạy được ngay với components.css)
 

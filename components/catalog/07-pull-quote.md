@@ -4,7 +4,7 @@
 
 ## Mô tả / khi nào dùng
 
-Trả lời: "Một câu nói có sức nặng nhất trong hồ sơ là gì?" Đầu vào: câu trích, người nói, chức danh, bối cảnh 1 câu. KHÔNG dùng để trang trí khi không có trích dẫn thật; nếu chưa có, để trống và hỏi lại, không bịa (xem nguyên tắc chống "quote slop").
+Trả lời: "Một câu nói có sức nặng nhất trong hồ sơ là gì?" Đầu vào: câu trích, người nói, chức danh, bối cảnh 1 câu. KHÔNG dùng để trang trí khi không có trích dẫn thật; nếu chưa có, để trống và hỏi lại, không bịa (xem nguyên tắc chống "quote slop"). KHÔNG dùng cho một câu diễn giải hay paraphrase của người viết báo cáo: `.pull-quote::before` in cứng nhãn "TỪ HỒ SƠ" cho mọi lần dùng, nên nếu nội dung không phải trích nguyên văn từ tài liệu thật thì nhãn này khẳng định sai nguồn.
 
 ## HTML mẫu (copy trực tiếp từ gallery.html, chạy được ngay với components.css)
 

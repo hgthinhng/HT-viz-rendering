@@ -4,7 +4,7 @@
 
 ## Mô tả / khi nào dùng
 
-Trả lời: "Trong N phương án loại trừ lẫn nhau, phương án nào thắng theo tiêu chí nào?" Cột khuyến nghị được tô nền nhẹ (không dùng viền trái màu để tránh dấu hiệu "AI slop"). KHÔNG dùng khi các phương án không loại trừ nhau (có thể làm song song); khi đó dùng swimlane.
+Trả lời: "Trong N phương án loại trừ lẫn nhau, phương án nào thắng theo tiêu chí nào?" Cột khuyến nghị được tô nền nhẹ (không dùng viền trái màu để tránh dấu hiệu "AI slop"). KHÔNG dùng khi các phương án không loại trừ nhau (có thể làm song song); khi đó dùng swimlane. KHÔNG dùng khi bảng có hơn 8-10 hàng tiêu chí: khác `table.dt` (khối 12, có `tr { break-inside: avoid; }`), `table.opt-compare` không khai báo break-inside cho hàng, nên một hàng dài có thể bị cắt ngang giữa hai trang khi in.
 
 ## HTML mẫu (copy trực tiếp từ gallery.html, chạy được ngay với components.css)
 

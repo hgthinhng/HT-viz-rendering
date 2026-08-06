@@ -95,6 +95,12 @@
     line-height: 1.15;
     margin: 14px 0 0;
     letter-spacing: -0.01em;
+    /* BẮT BUỘC: nội dung "Rủi ro" có khoảng trắng. .hero-behind là
+       position:absolute không width, nếu thiếu nowrap WeasyPrint có thể
+       tự ngắt dòng RIÊNG lớp phía sau và đè lên .dek bên dưới - lỗi có
+       thật, phát hiện bởi mũi tổng hợp khi dùng đúng kỹ thuật này với cụm
+       "Dư cung". Xem FINDINGS.md mục 8 và wow-do-noi-khong-blur.html mục 2. */
+    white-space: nowrap;
   }
   .hero-behind {
     position: absolute;

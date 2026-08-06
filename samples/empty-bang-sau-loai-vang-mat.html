@@ -1,0 +1,344 @@
+<!--
+  MINH HOẠ: bảng phân biệt SÁU nghĩa khác nhau của một ô trống trong báo cáo tài chính, cộng một
+  khối đối chứng cho câu hỏi "khi nào bảng thiếu quá nhiều thì đừng vẽ bảng nữa".
+
+  Vòng 4, vùng "Trạng thái rỗng và trạng thái thiếu dữ liệu". Đọc research/RESEARCH-LEDGER.md
+  mục mindset trước: đây là Ý THAM KHẢO, không phải khuôn ép. Xem bảng đầy đủ và lý giải từng
+  ký hiệu tại research/11-empty-states/ABSENCE-TABLE.md, không lặp lại toàn văn ở đây.
+
+  LẤY Ý TỪ (chi tiết + URL: research/11-empty-states/FINDINGS.md):
+  - BIS Quarterly Review, "Conventions": "." = không áp dụng, "..." = không có dữ liệu.
+    https://www.bis.org/publ/qtrpdf/conventions.htm - mượn đúng quy ước 1-chấm cho "không áp
+    dụng", TỰ GIỚI HẠN ở 2 chấm (không dùng 3) cho "không công bố" vì đếm chấm chỉ còn đáng tin
+    tới 2 mức khi in nhỏ/photocopy, mức thứ ba phải đổi hẳn sang ký tự khác.
+  - World Bank WDI: ".." = not available.
+    https://datahelpdesk.worldbank.org/knowledgebase/topics/19285-data-not-available
+  - OECD Economic Outlook 1973, statistical annex: "0" cho nil/negligible thay vì gạch ngang.
+    https://www.oecd.org/content/dam/oecd/en/publications/reports/1973/07/oecd-economic-outlook-volume-1973-issue-1_g1g2369e/eco_outlook-v1973-1-en.pdf
+  - UN Statistical Yearbook: phân biệt "đúng bằng không" với "khác không nhưng dưới ngưỡng làm
+    tròn" bằng một ký hiệu phụ, không gộp chung một dấu.
+    http://data.un.org/_Docs/2015_Symbols,%20abbreviations%20and%20conversion%20factors.pdf
+  - Thông tư 96/2020/TT-BTC, Điều 14 (hướng dẫn công bố thông tin TTCK Việt Nam, xác nhận qua
+    WebFetch bản toàn văn): BCTC quý công ty đại chúng quy mô lớn phải công bố trong 20 ngày kể
+    từ ngày kết thúc quý (30 ngày nếu là công ty mẹ/có đơn vị kế toán trực thuộc) - đây là mốc
+    dùng để phân biệt "chưa tới kỳ" với "đã quá hạn công bố" trong bảng dưới.
+  - FactSet Earnings Insight (ví dụ 31/07/2026): công bố bảng ngay khi mới 61% doanh nghiệp báo
+    cáo, kèm MỘT dòng tỷ lệ phủ, không đợi đủ 100% mới in bảng - mẫu cho "ghi chú độ phủ" dưới
+    bảng chính thay vì im lặng bỏ qua phần chưa đủ.
+    https://insight.factset.com/sp-500-earnings-season-update-july-31-2026
+
+  RÀNG BUỘC ĐÃ TÔN TRỌNG: không em/en dash (kể cả trong ký hiệu "không có dữ liệu" - đây là lý
+  do KHÔNG dùng gạch ngang kiểu UN/BCTC phương Tây cho số 0, xem mục 0 trong FINDINGS.md); không
+  box-shadow/text-shadow có blur; media query có "screen"; font-family kết bằng generic keyword;
+  không gauge/radar; đếm raster bằng xref_object khi nghiệm thu.
+
+  Toàn bộ tên doanh nghiệp, ngành, và số liệu trong trang này là MINH HOẠ, không phải dữ liệu
+  thật và không phải khuyến nghị đầu tư.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Sáu nghĩa của một ô trống</title>
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --paper-hi: #F7F9FC;
+    --paper-hair: #EEF1F6;
+    --ink: #051C2C;
+    --ink-md: #42566A;
+    --ink-lo: #8595A6;
+    --ink-faint: #AAB8C4;
+    --line: #DBE2EA;
+    --line-lo: #EEF1F6;
+    --accent: #2251FF;
+    --accent-hi: #1233B8;
+    --pos: #008A6D;
+    --neg: #C22F4E;
+    --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem;
+    --fs-small: 0.825rem;
+    --fs-body: 1rem;
+    --fs-h3: 1.333rem;
+    --fs-h2: 1.777rem;
+    --fs-h1: 2.369rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 24px auto;
+    background: var(--paper); border: 1px solid var(--line);
+    padding: 18mm; position: relative;
+  }
+  .research-tag {
+    position: absolute; top: 8px; right: 8px;
+    font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper);
+    padding: 2px 8px; letter-spacing: 0.04em; z-index: 5;
+  }
+  .kicker {
+    font-family: var(--font-mono); font-size: var(--fs-small);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 var(--space-2) 0;
+  }
+  h1.headline { font-size: 2.05rem; font-weight: 600; line-height: 1.2; margin: 0 0 var(--space-3) 0; max-width: 30ch; }
+  p.lede { font-size: var(--fs-small); color: var(--ink-md); max-width: 68ch; line-height: 1.6; margin: 0 0 var(--space-6) 0; }
+  h2.section-title { font-size: var(--fs-h3); font-weight: 600; margin: var(--space-7) 0 var(--space-3) 0; }
+  p.disclaimer {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo);
+    border-left: 2px solid var(--line); padding-left: var(--space-3); margin: 0 0 var(--space-6) 0;
+  }
+
+  /* ── bảng chính ─────────────────────────────────────────────────────── */
+  table.dt {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--font-serif); font-size: 0.86rem; margin-bottom: var(--space-2);
+  }
+  table.dt caption { text-align: left; caption-side: top; margin-bottom: var(--space-3); font-size: var(--fs-small); color: var(--ink-md); }
+  table.dt th, table.dt td { padding: 7px var(--space-3); text-align: right; border-bottom: 1px solid var(--line-lo); vertical-align: middle; }
+  table.dt th:first-child, table.dt td:first-child { text-align: left; }
+  table.dt thead th {
+    font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.03em; color: var(--ink-lo); font-weight: 600;
+    border-bottom: 1px solid var(--ink); vertical-align: bottom;
+  }
+  table.dt td.num, table.dt td.absent { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  table.dt tbody tr:last-child td { border-bottom: 1px solid var(--ink); }
+
+  /* ── sáu ký hiệu vắng mặt ───────────────────────────────────────────── */
+  .v-zero { color: var(--ink); }
+  .v-round { color: var(--ink); }
+  .v-round .tag { color: var(--ink-lo); }
+  .v-na { color: var(--ink-faint); letter-spacing: 0.1em; }
+  .v-undisc { color: var(--ink-faint); letter-spacing: 0.03em; }
+  .v-gap { color: var(--ink-lo); border: 1px solid var(--ink-lo); border-radius: 2px; padding: 2px 6px; display: inline-block; }
+
+  .dotchip { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+  .dot-hollow {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    border: 1.5px solid var(--ink-faint); background: var(--paper);
+  }
+  .dot-hollow.due { border-color: var(--warn); }
+  .status-cell.due { border: 1px solid var(--warn); border-radius: 2px; padding: 3px 6px; }
+  .status-label { font-family: var(--font-mono); font-size: 0.68rem; }
+  .status-label.wait { color: var(--ink-lo); }
+  .status-label.due { color: var(--warn); font-weight: 600; }
+
+  .legend {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-md);
+    line-height: 2; padding: var(--space-3) 0 0 0; border-top: 1px solid var(--line);
+  }
+  .legend .g { color: var(--ink); font-weight: 600; }
+
+  .coverage-line {
+    font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo);
+    margin: var(--space-3) 0 var(--space-7) 0;
+  }
+
+  /* ── khối ngưỡng "đừng vẽ bảng nữa" ─────────────────────────────────── */
+  .threshold-grid { display: flex; gap: var(--space-5); align-items: flex-start; }
+  .threshold-col { flex: 1; min-width: 0; }
+  .threshold-col h3 {
+    font-family: var(--font-mono); font-size: var(--fs-caption); text-transform: uppercase;
+    letter-spacing: 0.06em; margin: 0 0 var(--space-2) 0;
+  }
+  .threshold-col.bad h3 { color: var(--neg); }
+  .threshold-col.good h3 { color: var(--pos); }
+  table.stub { width: 100%; border-collapse: collapse; font-size: 0.72rem; font-family: var(--font-mono); }
+  table.stub th, table.stub td { border: 1px solid var(--line); padding: 4px 6px; text-align: center; }
+  table.stub td.empty { color: var(--ink-faint); }
+  .fill-rate { font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo); margin-top: 6px; }
+  .prose-alt {
+    background: var(--paper-hi); border: 1px solid var(--line); padding: var(--space-4);
+    font-size: var(--fs-small); line-height: 1.65;
+  }
+  .prose-alt .k { font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px; }
+
+  .verdict {
+    margin-top: var(--space-7); padding: var(--space-5);
+    background: var(--ink); color: var(--paper);
+  }
+  .verdict .v-kicker {
+    font-family: var(--font-mono); font-size: var(--fs-caption); letter-spacing: 0.08em;
+    text-transform: uppercase; color: #7D9BFF; margin: 0 0 var(--space-2) 0;
+  }
+  .verdict ul { margin: 0; padding-left: 1.1em; font-size: var(--fs-small); line-height: 1.7; }
+  .verdict li { margin-bottom: 4px; }
+
+  @media screen and (max-width: 900px) {
+    .page { width: 100%; padding: 16px; }
+    table.dt { font-size: 0.74rem; }
+    .threshold-grid { flex-direction: column; }
+  }
+
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; border: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 16mm; }
+    table.dt, .threshold-grid, .verdict { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">SÁU LOẠI VẮNG MẶT</span>
+
+  <p class="kicker">Trạng thái rỗng và thiếu dữ liệu &middot; Bảng ký hiệu</p>
+  <h1 class="headline">Một ô trống không phải một sự thật, nó là sáu sự thật khác nhau</h1>
+  <p class="lede">Gộp "doanh nghiệp giấu số", "chỉ tiêu không áp dụng", "bằng không thật",
+  "quá nhỏ nên làm tròn", "chưa tới kỳ", và "chúng tôi chưa lấy được" vào một dấu gạch ngang là
+  xoá đúng thông tin người đọc cần để tự đánh giá rủi ro. Bảng dưới đây dùng bảy doanh nghiệp
+  MINH HOẠ hỗn hợp ngành để cả sáu trường hợp cùng xuất hiện thật, không phải liệt kê lý thuyết.</p>
+
+  <table class="dt">
+    <caption>Một số chỉ tiêu quý 2/2026 theo doanh nghiệp (đơn vị: tỷ đồng trừ khi ghi khác, MINH HOẠ)</caption>
+    <thead>
+      <tr>
+        <th>Doanh nghiệp (ngành)</th>
+        <th>Công bố quý này</th>
+        <th>Doanh thu thuần</th>
+        <th>Cổ tức tạm ứng<br>tiền mặt</th>
+        <th>Biên LN gộp<br>mảng cốt lõi (%)</th>
+        <th>Tỷ lệ nợ xấu<br>NPL (%)</th>
+        <th>Dư nợ trái phiếu<br>tồn đọng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Ngân hàng Phú An (ngân hàng)</td>
+        <td><span class="status-label wait">đúng hạn</span></td>
+        <td class="num">2.140</td>
+        <td class="num v-zero">0</td>
+        <td class="num v-undisc">..</td>
+        <td class="num">1,8</td>
+        <td class="num v-na">.</td>
+      </tr>
+      <tr>
+        <td>Thép Sông Lam (công nghiệp)</td>
+        <td><span class="status-label wait">đúng hạn</span></td>
+        <td class="num">1.860</td>
+        <td class="num v-zero">0</td>
+        <td class="num">14,2</td>
+        <td class="num v-na">.</td>
+        <td class="num v-round">0~<span class="tag">(&lt;500tr)</span></td>
+      </tr>
+      <tr>
+        <td>Bán lẻ Hải Đăng (bán lẻ)</td>
+        <td><span class="status-label wait">đúng hạn</span></td>
+        <td class="num">980</td>
+        <td class="num">62</td>
+        <td class="num">28,4</td>
+        <td class="num v-na">.</td>
+        <td class="num v-zero">0</td>
+      </tr>
+      <tr>
+        <td>Dệt may Tân Kỳ (mới niêm yết Q2/2026)</td>
+        <td><span class="dotchip"><span class="dot-hollow"></span><span class="status-label wait">chưa tới kỳ</span></span></td>
+        <td class="num v-na">.</td>
+        <td class="num v-na">.</td>
+        <td class="num v-na">.</td>
+        <td class="num v-na">.</td>
+        <td class="num v-na">.</td>
+      </tr>
+      <tr>
+        <td>Bất động sản Kim Long (bất động sản)</td>
+        <td><span class="status-cell due"><span class="dotchip"><span class="dot-hollow due"></span><span class="status-label due">quá hạn</span></span></span></td>
+        <td class="num v-undisc">..</td>
+        <td class="num v-undisc">..</td>
+        <td class="num v-undisc">..</td>
+        <td class="num v-na">.</td>
+        <td class="num v-undisc">..</td>
+      </tr>
+      <tr>
+        <td>Dược Bắc Hà (dược phẩm)</td>
+        <td><span class="status-label wait">đúng hạn</span></td>
+        <td class="num">640</td>
+        <td class="num">18</td>
+        <td class="num">41,6</td>
+        <td class="num v-na">.</td>
+        <td class="num v-zero">0</td>
+      </tr>
+      <tr>
+        <td>Vận tải biển Đông Phương (vận tải)</td>
+        <td><span class="status-label wait">đúng hạn</span></td>
+        <td class="num">1.120</td>
+        <td class="num v-zero">0</td>
+        <td class="num v-undisc">..</td>
+        <td class="num v-na">.</td>
+        <td class="num v-gap">†</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="legend">
+    <span class="g">0</span> đúng bằng không &middot;
+    <span class="g">0~</span> khác không nhưng dưới ngưỡng làm tròn của cột &middot;
+    <span class="g">.</span> không áp dụng cho loại hình này &middot;
+    <span class="g">..</span> doanh nghiệp không công bố chỉ tiêu này &middot;
+    <span class="g">○ chưa tới kỳ</span> kỳ báo cáo chưa kết thúc hoặc còn trong hạn 20 ngày (30 ngày nếu là công ty mẹ) &middot;
+    <span class="g">○ quá hạn</span> đã qua hạn công bố theo Thông tư 96/2020/TT-BTC mà chưa có số &middot;
+    <span class="g">†</span> nhóm biên soạn chưa thu thập được, không phải doanh nghiệp không công bố
+  </p>
+  <p class="coverage-line">Độ phủ: 7/7 doanh nghiệp cho cột doanh thu và cổ tức &middot; cột "Biên LN gộp mảng cốt lõi" chỉ 3/7 doanh nghiệp công bố (43%, không tính 1 doanh nghiệp chưa tới kỳ) &middot; cột "Tỷ lệ nợ xấu NPL" áp dụng đúng 1/7 doanh nghiệp (chỉ nhóm ngân hàng) &middot; số liệu chốt tới hết 31/07/2026.</p>
+
+  <h2 class="section-title">Ngưỡng: khi nào bảng thiếu quá nhiều thì đừng vẽ bảng nữa</h2>
+  <p class="lede" style="margin-bottom: var(--space-4);">Quy tắc dùng ở đây: một cột mất khả năng so sánh khi trạng thái PHỔ BIẾN NHẤT của nó là
+  "không có dữ liệu" thay vì "có số" - tức tỷ lệ trống vượt 50% (không tính "chưa tới kỳ" vì đó
+  là tạm thời, sẽ tự lấp). Khi phần lớn cột trong một bảng đều vượt ngưỡng đó, bảng không còn
+  đúng vai trò một lưới so sánh hai chiều nữa.</p>
+
+  <div class="threshold-grid">
+    <div class="threshold-col bad">
+      <h3>Đừng làm vậy: ép đủ 6 cột thành bảng</h3>
+      <table class="stub">
+        <thead><tr><th>DN</th><th>NPL</th><th>ROE NH</th><th>CASA</th><th>LDR</th><th>Doanh thu</th><th>Biên gộp</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td class="empty">.</td><td class="empty">.</td><td class="empty">.</td><td class="empty">.</td><td>1.860</td><td>14,2</td></tr>
+          <tr><td>B</td><td class="empty">.</td><td class="empty">.</td><td class="empty">.</td><td class="empty">.</td><td>980</td><td>28,4</td></tr>
+          <tr><td>C</td><td class="empty">.</td><td class="empty">.</td><td class="empty">.</td><td class="empty">.</td><td>640</td><td>41,6</td></tr>
+          <tr><td>D</td><td class="empty">.</td><td class="empty">.</td><td class="empty">.</td><td class="empty">.</td><td>1.120</td><td class="empty">..</td></tr>
+          <tr><td>E</td><td>1,8</td><td>16,2</td><td>34</td><td>82</td><td>2.140</td><td class="empty">..</td></tr>
+        </tbody>
+      </table>
+      <p class="fill-rate">5 cột chỉ tiêu ngân hàng &times; 4 doanh nghiệp phi ngân hàng = 20/25 ô chỉ tiêu ngân hàng trống (80%). Lấp đầy toàn bảng: 15/35 &asymp; 43%, dưới ngưỡng 50%.</p>
+    </div>
+    <div class="threshold-col good">
+      <h3>Thay bằng: tách bảng theo nhóm áp dụng được, còn lại dồn một câu</h3>
+      <div class="prose-alt">
+        <span class="k">Chỉ tiêu riêng ngành ngân hàng</span>
+        Chỉ 1/5 doanh nghiệp trong mẫu này là ngân hàng (Ngân hàng Phú An), nên bốn chỉ tiêu
+        NPL, ROE ngân hàng, CASA, LDR không đưa vào bảng so sánh chung. Số của Phú An: NPL 1,8%,
+        ROE 16,2%, CASA 34%, LDR 82%, xem riêng ở phần phân tích ngân hàng.
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <p class="v-kicker">Khi nào KHÔNG dùng bộ ký hiệu này</p>
+    <ul>
+      <li>Đừng dùng ký hiệu "..." ba chấm để cố thêm một mức thứ bảy, khoảng cách 2 chấm so với
+      3 chấm không còn phân biệt được ổn định khi in nhỏ hoặc photocopy nhiều lần.</li>
+      <li>Đừng đánh dấu "0~" (làm tròn về 0) chỉ vì một cột tiền tỷ đồng có giá trị vài trăm
+      triệu, ở quy mô đó gần như mọi ô sẽ bị đánh dấu; đổi đơn vị cột (sang triệu đồng) thay vì
+      gắn ký hiệu tràn lan.</li>
+      <li>Đừng dùng ô viền vàng đồng (quá hạn) khi mới quá hạn một, hai ngày do lệch múi giờ nộp
+      hồ sơ; chỉ dùng khi đã vượt mốc 20/30/45 ngày theo Thông tư 96/2020/TT-BTC một khoảng đủ
+      rõ để loại trừ sai số hành chính.</li>
+      <li>Đừng dùng dấu chấm than "!" hay màu đỏ (--neg) cho ô quá hạn, quá hạn công bố là một
+      tín hiệu QUY TRÌNH cần chú ý, chưa phải một kết luận xấu đã xác nhận về kết quả kinh doanh
+      - dùng --warn (vàng đồng) để giữ khoảng cách đó.</li>
+    </ul>
+  </div>
+</section>
+</body>
+</html>

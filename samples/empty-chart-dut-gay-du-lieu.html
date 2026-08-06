@@ -1,0 +1,201 @@
+<!--
+  MINH HOẠ: ba cách vẽ một chart đường có KHOẢNG ĐỨT dữ liệu thật (không phải dự báo), xếp cạnh
+  nhau để thấy cách nào trung thực và cách nào nói dối bằng hình.
+
+  Vòng 4, vùng "Trạng thái rỗng và trạng thái thiếu dữ liệu". Xem research/11-empty-states/
+  FINDINGS.md mục 3 để có toàn bộ lý giải, file này chỉ dựng ba biến thể render thật.
+
+  ĐIỂM MẤU CHỐT, PHẢI TÁCH BẠCH VỚI QUY ƯỚC ĐÃ CÓ CỦA VÒNG 2: nét đứt trong repo này đã có
+  nghĩa cố định là "số dự phóng" (xem research/06-source-notes/FINDINGS.md mục 4 và mẫu
+  samples/source-bang-thuc-te-du-phong.html). MỘT KHOẢNG ĐỨT DỮ LIỆU (ta không biết số thật vì
+  không đo được/không thu thập được) là một ý nghĩa KHÁC HẲN dự báo (ta CÓ ước tính, chỉ là chưa
+  thành sự thật) - dùng lại nét đứt cho khoảng đứt sẽ đánh lừa đúng quy ước report vừa dựng.
+  Vì vậy biến thể trung thực dưới đây dùng NGẮT ĐƯỜNG THẬT (không nối hai đầu) + tô nhạt vùng +
+  nhãn chữ, không dùng nét đứt.
+
+  LẤY Ý TỪ:
+  - Datawrapper Academy, "How to deal with missing data in line charts": khuyến nghị GIỮ khoảng
+    trống thật (nhập NA để ngắt đường) khi "không thể giả định dữ liệu phát triển liền mạch giữa
+    hai điểm", và cảnh báo nối liền khoảng trống lớn "có thể chứa ngoại lệ mạnh, gây sai lệch".
+    https://www.datawrapper.de/academy/patchy-data
+  - Liberty Street Economics (Ngân hàng Dự trữ Liên bang New York), "Seeing Through the
+    Shutdown's Missing Inflation Data": dùng NÉT LIỀN cho số liệu thật, NÉT ĐỨT cho dự báo, và
+    RIÊNG một dải xám dọc để đánh dấu giai đoạn hoàn toàn không có số liệu CPI/PCE do chính phủ
+    đóng cửa - ba tín hiệu thị giác cho ba ý nghĩa khác nhau, không gộp chung nét đứt.
+    https://libertystreeteconomics.newyorkfed.org/2026/02/seeing-through-the-shutdowns-missing-inflation-data/
+
+  RÀNG BUỘC ĐÃ TÔN TRỌNG: SVG width="100%" cộng viewBox, KHÔNG khai height (bẫy WeasyPrint đã
+  biết từ vòng 1/vòng 07); không filter/gradient trong SVG; không em/en dash; media query có
+  "screen"; không box-shadow/text-shadow có blur.
+
+  Số liệu lạm phát và mọi con số trong trang này là MINH HOẠ, không phải dữ liệu thật.
+-->
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Ba cách vẽ một khoảng đứt dữ liệu</title>
+<style>
+  :root {
+    --paper: #FFFFFF; --paper-hi: #F7F9FC; --paper-hair: #EEF1F6;
+    --ink: #051C2C; --ink-md: #42566A; --ink-lo: #8595A6; --ink-faint: #AAB8C4;
+    --line: #DBE2EA; --line-lo: #EEF1F6;
+    --accent: #2251FF; --pos: #008A6D; --neg: #C22F4E; --warn: #B07A10;
+
+    --font-serif: "Spectral", "Noto Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --fs-caption: 0.735rem; --fs-small: 0.825rem; --fs-body: 1rem;
+    --fs-h3: 1.333rem; --fs-h2: 1.777rem;
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+    --space-5: 20px; --space-6: 28px; --space-7: 40px; --space-8: 56px;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ink-lo); }
+  body { margin: 0; font-family: var(--font-serif); color: var(--ink); background: var(--ink-lo); }
+  .page { width: 210mm; min-height: 297mm; margin: 24px auto; background: var(--paper); border: 1px solid var(--line); padding: 18mm; position: relative; }
+  .research-tag { position: absolute; top: 8px; right: 8px; font-family: var(--font-mono); font-size: 10px; background: var(--accent); color: var(--paper); padding: 2px 8px; letter-spacing: 0.04em; z-index: 5; }
+  .kicker { font-family: var(--font-mono); font-size: var(--fs-small); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin: 0 0 var(--space-2) 0; }
+  h1.headline { font-size: 2.05rem; font-weight: 600; line-height: 1.2; margin: 0 0 var(--space-3) 0; max-width: 30ch; }
+  p.lede { font-size: var(--fs-small); color: var(--ink-md); max-width: 68ch; line-height: 1.6; margin: 0 0 var(--space-6) 0; }
+  h2.panel-title { font-family: var(--font-mono); font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 6px 0; }
+  .panel-title.bad { color: var(--neg); }
+  .panel-title.mid { color: var(--warn); }
+  .panel-title.good { color: var(--pos); }
+  .panel { margin-bottom: var(--space-6); }
+  .chart-box { background: var(--paper-hi); border: 1px solid var(--line); padding: var(--space-4) var(--space-5); }
+  .chart-box svg { display: block; width: 100%; }
+  .panel-note { font-size: var(--fs-small); color: var(--ink-md); line-height: 1.6; margin: var(--space-2) 0 0 0; max-width: 70ch; }
+  .source-line { font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--ink-lo); margin: var(--space-6) 0 0 0; }
+
+  .verdict { margin-top: var(--space-6); padding: var(--space-5); background: var(--ink); color: var(--paper); }
+  .verdict .v-kicker { font-family: var(--font-mono); font-size: var(--fs-caption); letter-spacing: 0.08em; text-transform: uppercase; color: #7D9BFF; margin: 0 0 var(--space-2) 0; }
+  .verdict ul { margin: 0; padding-left: 1.1em; font-size: var(--fs-small); line-height: 1.7; }
+  .verdict li { margin-bottom: 4px; }
+
+  @media screen and (max-width: 900px) { .page { width: 100%; padding: 16px; } }
+  @media print {
+    html, body { background: var(--paper); }
+    .page { width: auto; min-height: auto; margin: 0; border: none; padding: 0; }
+    .research-tag { display: none; }
+    @page { size: A4; margin: 16mm; }
+    .panel, .verdict { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<section class="page">
+  <span class="research-tag">KHOẢNG ĐỨT DỮ LIỆU</span>
+
+  <p class="kicker">Trạng thái rỗng và thiếu dữ liệu &middot; Chart</p>
+  <h1 class="headline">Nối liền qua khoảng trống là nói dối bằng hình</h1>
+  <p class="lede">Chỉ số giá tiêu dùng của một ngành hàng MINH HOẠ có 6 tháng liền không thu thập
+  được (đứt mạch khảo sát giá, không phải không có lạm phát). Ba cách vẽ dưới đây dùng đúng một
+  bộ số, chỉ khác cách xử lý khoảng trống.</p>
+
+  <div class="panel">
+    <h2 class="panel-title bad">Đừng làm vậy: nối liền qua khoảng trống</h2>
+    <div class="chart-box">
+      <svg viewBox="0 0 520 190" width="100%" xmlns="http://www.w3.org/2000/svg" role="img"
+        aria-label="Chỉ số giá nối liền qua khoảng trống tháng 3 tới tháng 8, ngụ ý sai một đường tăng đều">
+        <line x1="40" y1="150" x2="500" y2="150" stroke="#DBE2EA" stroke-width="1"/>
+        <polyline points="50,120 110,112 170,104 230,60 290,55 350,50 410,44 470,30"
+          fill="none" stroke="#051C2C" stroke-width="2.5"/>
+        <circle cx="50" cy="120" r="4" fill="#051C2C"/>
+        <circle cx="110" cy="112" r="4" fill="#051C2C"/>
+        <circle cx="170" cy="104" r="4" fill="#051C2C"/>
+        <circle cx="230" cy="60" r="4" fill="#051C2C"/>
+        <circle cx="470" cy="30" r="4" fill="#051C2C"/>
+        <text x="50" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T1</text>
+        <text x="170" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T3</text>
+        <text x="290" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T6</text>
+        <text x="410" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T9</text>
+        <text x="470" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T10</text>
+      </svg>
+    </div>
+    <p class="panel-note">Đoạn từ tháng 3 tới tháng 8 do WeasyPrint/trình duyệt tự nội suy thẳng
+    tắp giữa hai điểm đo thật, đọc thành "giá tăng đều mọi tháng" trong khi thực ra sáu tháng đó
+    không hề có phép đo nào, biến động thật có thể lên xuống mạnh ở giữa mà biểu đồ không hề
+    biết, tự bịa ra một đường không dựa trên số nào.</p>
+  </div>
+
+  <div class="panel">
+    <h2 class="panel-title mid">Dễ nhầm với dự phóng: dùng nét đứt cho khoảng trống</h2>
+    <div class="chart-box">
+      <svg viewBox="0 0 520 190" width="100%" xmlns="http://www.w3.org/2000/svg" role="img"
+        aria-label="Chỉ số giá dùng nét đứt cho khoảng trống, dễ đọc nhầm thành số dự báo vì repo đã dùng nét đứt cho dự báo ở nơi khác">
+        <line x1="40" y1="150" x2="500" y2="150" stroke="#DBE2EA" stroke-width="1"/>
+        <polyline points="50,120 110,112 170,104" fill="none" stroke="#051C2C" stroke-width="2.5"/>
+        <polyline points="170,104 230,60 290,55 350,50 410,44" fill="none" stroke="#42566A" stroke-width="2.5" stroke-dasharray="6 5"/>
+        <polyline points="410,44 470,30" fill="none" stroke="#051C2C" stroke-width="2.5"/>
+        <circle cx="50" cy="120" r="4" fill="#051C2C"/>
+        <circle cx="110" cy="112" r="4" fill="#051C2C"/>
+        <circle cx="170" cy="104" r="4" fill="#051C2C"/>
+        <circle cx="410" cy="44" r="4" fill="#051C2C"/>
+        <circle cx="470" cy="30" r="4" fill="#051C2C"/>
+        <text x="50" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T1</text>
+        <text x="170" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T3</text>
+        <text x="290" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T6</text>
+        <text x="410" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T9</text>
+        <text x="470" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T10</text>
+      </svg>
+    </div>
+    <p class="panel-note">Về mặt hình học đúng hơn cách trên vì ít nhất có tín hiệu "đoạn này
+    khác", nhưng SAI QUY ƯỚC: người đọc đã quen nét đứt trong chính bộ báo cáo này nghĩa là "số
+    dự báo của đơn vị phát hành" (xem samples/source-bang-thuc-te-du-phong.html). Đoạn nét đứt ở
+    đây không phải dự báo, là một khoảng KHÔNG BIẾT GÌ CẢ, hai ý nghĩa khác nhau không nên dùng
+    chung một tín hiệu hình dạng.</p>
+  </div>
+
+  <div class="panel">
+    <h2 class="panel-title good">Trung thực nhất: ngắt đường thật, tô nhạt vùng, ghi nhãn</h2>
+    <div class="chart-box">
+      <svg viewBox="0 0 520 190" width="100%" xmlns="http://www.w3.org/2000/svg" role="img"
+        aria-label="Chỉ số giá ngắt đường thật từ tháng 3 tới tháng 9, vùng tô nhạt kèm nhãn không có dữ liệu, không nội suy, không dùng nét đứt">
+        <rect x="170" y="14" width="240" height="136" fill="#EEF1F6"/>
+        <line x1="40" y1="150" x2="500" y2="150" stroke="#DBE2EA" stroke-width="1"/>
+        <polyline points="50,120 110,112 170,104" fill="none" stroke="#051C2C" stroke-width="2.5"/>
+        <polyline points="410,44 470,30" fill="none" stroke="#051C2C" stroke-width="2.5"/>
+        <circle cx="50" cy="120" r="4" fill="#051C2C"/>
+        <circle cx="110" cy="112" r="4" fill="#051C2C"/>
+        <circle cx="170" cy="104" r="4" fill="#051C2C"/>
+        <circle cx="410" cy="44" r="4" fill="#051C2C"/>
+        <circle cx="470" cy="30" r="4" fill="#051C2C"/>
+        <text x="290" y="70" font-family="IBM Plex Mono, monospace" font-size="11" fill="#8595A6" text-anchor="middle">KHÔNG CÓ</text>
+        <text x="290" y="84" font-family="IBM Plex Mono, monospace" font-size="11" fill="#8595A6" text-anchor="middle">DỮ LIỆU</text>
+        <text x="290" y="98" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#AAB8C4" text-anchor="middle">đứt mạch khảo sát giá T3 - T9</text>
+        <text x="50" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T1</text>
+        <text x="170" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T3</text>
+        <text x="410" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T9</text>
+        <text x="470" y="168" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="#8595A6" text-anchor="middle">T10</text>
+      </svg>
+    </div>
+    <p class="panel-note">Đường bị NGẮT THẬT, không có nét nào bắc qua vùng tô nhạt, và nhãn nói
+    thẳng lý do (đứt mạch khảo sát, không phải "giá đứng yên" hay "giá bằng không"). Ba lớp tín
+    hiệu độc lập, giữ đúng khi in đen trắng: (1) đường dừng hẳn, (2) nền vùng khác màu nền chart,
+    (3) chữ giải thích ngắn - mất một lớp (ví dụ ảnh mờ không thấy nền xám) vẫn còn hai lớp kia.</p>
+  </div>
+
+  <p class="source-line">Nguồn ý tưởng: Datawrapper Academy "How to deal with missing data in
+  line charts" (giữ khoảng trống thật thay vì nối liền) &middot; Liberty Street Economics, Ngân
+  hàng Dự trữ Liên bang New York, "Seeing Through the Shutdown's Missing Inflation Data" (dải
+  xám riêng cho giai đoạn không có số liệu, tách khỏi nét đứt của dự báo). Số liệu chỉ số giá
+  trong ba biểu đồ trên là MINH HOẠ.</p>
+
+  <div class="verdict">
+    <p class="v-kicker">Khi nào KHÔNG dùng cách "ngắt đường + tô nhạt + nhãn"</p>
+    <ul>
+      <li>Đừng dùng cho khoảng trống chỉ một điểm dữ liệu (ví dụ thiếu đúng một tháng), lúc đó
+      tô cả một vùng rộng gây ấn tượng "mất rất nhiều dữ liệu" trong khi thực ra chỉ thiếu một
+      mốc, nên đánh dấu bằng ký hiệu điểm rỗng tại đúng vị trí đó thay vì tô vùng.</li>
+      <li>Đừng dùng vùng tô nhạt giống hệt màu nền một khối chú thích khác trong cùng trang
+      (assumption box, callout), người đọc sẽ lẫn "đây là vùng thiếu dữ liệu" với "đây là một
+      ghi chú".</li>
+      <li>Đừng ghi nhãn quá dài trong vùng tô nhạt nếu biểu đồ nhỏ (small multiples), lúc đó chỉ
+      giữ vùng tô nhạt và dời câu giải thích ra chú thích chung dưới nhóm biểu đồ.</li>
+    </ul>
+  </div>
+</section>
+</body>
+</html>

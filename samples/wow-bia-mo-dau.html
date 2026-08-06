@@ -116,6 +116,12 @@
     line-height: 0.92;
     letter-spacing: -0.02em;
     margin: 0;
+    /* BẮT BUỘC dù nội dung hiện là "150" (không khoảng trắng): mũi tổng
+       hợp phát hiện .hero-number-behind (position:absolute, không width)
+       có thể tự ngắt dòng khác với lớp trước khi nội dung CÓ khoảng trắng,
+       đè lên phần dưới trang. Giữ nowrap để không tái sinh lỗi nếu sau này
+       đổi nội dung sang cụm nhiều từ. Xem FINDINGS.md mục 8. */
+    white-space: nowrap;
   }
   .hero-number-behind {
     position: absolute;

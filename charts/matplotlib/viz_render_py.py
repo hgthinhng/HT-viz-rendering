@@ -399,7 +399,7 @@ def main():
             continue
         fn = COMPONENTS.get(comp)
         if fn is None:
-            sys.stderr.write(f"WARN: unknown component '{comp}' (id={fid}) — skipped. "
+            sys.stderr.write(f"WARN: unknown component '{comp}' (id={fid}), skipped. "
                              f"Available: {sorted(COMPONENTS)}\n")
             fail += 1
             continue

@@ -606,7 +606,7 @@ _SHOWCASE = {
         "kicker": "Quản lý danh mục · Kiểm soát rủi ro chủ động",
         "title": "Theo dõi sai số (tracking error) so với giới hạn kiểm soát",
         "subtitle": "Sai số theo dõi hằng tháng của một quỹ cổ phiếu chủ động được giám sát "
-                    "bằng biểu đồ kiểm soát thống kê: đường tâm 3,00%, dải kiểm soát 1,50%–4,50%.",
+                    "bằng biểu đồ kiểm soát thống kê: đường tâm 3,00%, dải kiểm soát 1,50%-4,50%.",
         "source": "báo cáo quỹ, tính toán của tác giả", "asof": "T12/2025",
         "y_format": "pct", "center": 3.0, "ucl": 4.5, "lcl": 1.5,
         "x_label": "Kỳ quan sát (16 tháng gần nhất)",
@@ -621,8 +621,8 @@ _SHOWCASE = {
         "kicker": "Hàng hóa",
         "title": "Tính mùa vụ của giá khí thiên nhiên Henry Hub",
         "subtitle": "Giá khí thiên nhiên có xu hướng đạt đỉnh vào mùa đông khi nhu cầu sưởi "
-                    "ấm tăng cao và chạm đáy vào cuối xuân. Vùng tô thể hiện khoảng thấp nhất–cao nhất.",
-        "source": "EIA, tính toán của tác giả", "asof": "2015–2025",
+                    "ấm tăng cao và chạm đáy vào cuối xuân. Vùng tô thể hiện khoảng từ thấp nhất tới cao nhất.",
+        "source": "EIA, tính toán của tác giả", "asof": "2015-2025",
         "y_format": "num", "dp": 2, "unit_label": "USD/MMBtu",
         "periods": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"],
         "mean": [3.85, 3.60, 3.18, 2.74, 2.58, 2.71, 2.93, 3.02, 2.88, 3.05, 3.42, 3.78],

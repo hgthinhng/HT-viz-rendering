@@ -40,7 +40,7 @@
 
     {"id": "fan", "component": "fan",
      "params": {"kicker": "Dự báo lạm phát", "title": "Vùng bất định của lạm phát mở rộng theo thời gian",
-       "subtitle": "CPI so cùng kỳ, % — thực tế và dự báo quạt", "source": "minh họa của tác giả",
+       "subtitle": "CPI so cùng kỳ, %: thực tế và dự báo quạt", "source": "minh họa của tác giả",
        "hist_x": [2021, 2022, 2023, 2024, 2025], "hist_y": [1.8, 3.2, 4.1, 3.4, 3.0],
        "fcast_x": [2025, 2026, 2027, 2028],
        "median": [3.0, 2.8, 2.6, 2.5],

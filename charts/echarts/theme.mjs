@@ -111,21 +111,16 @@ export const TYPOGRAPHY = {
 /** Base option áp cho MỌI chart, spread rồi override phần series/axis riêng. */
 export function baseOption({ title, subtitle, width = 700, height = 400 } = {}) {
   return {
-    // TAT ANIMATION, day khong phai chuyen tham my ma la chuyen DUNG SAI.
-    //
-    // ECharts SSR xuat CSS @keyframes cho moi marker, keyframe cuoi la
-    // `transform: scale(7,7)`. CSS transform THANG thuoc tinh XML, va keyframe do
-    // KHONG mang phan translate, nen sau khi animation chay xong marker bi keo ve
-    // GOC TOA DO va phong to. Da nhin tan mat tren out-04-dumbbell.svg: moi cham
-    // before/after bien mat khoi vi tri dung, con mot cham lac o goc tren trai.
-    //
-    // Chi anh huong ban HTML mo bang trinh duyet. Ban PDF khong dinh vi WeasyPrint
-    // khong chay CSS animation, va do cung la ly do bug nay song sot: moi phep
-    // nghiem thu cua repo deu di qua PDF hoac di qua gate dem phan tu, khong phep
-    // nao mo SVG bang trinh duyet that roi nhin.
-    //
-    // SVG tinh nhung vao bao cao thi khong can animation, nen tat han la dung nhat.
-    animation: false,
+    // KHONG khai animation o day. Day khong con la mot chon lua tham my/dung-sai co
+    // dinh cho MOI lan xuat: tu luc preset ECharts tach option() khoi duong xuat
+    // (xem render-static.mjs va mount-live.mjs), animation la thuoc tinh cua LAN
+    // XUAT BAN, khong phai cua DU LIEU chart. Lan pdf-so (SSR tinh, qua
+    // renderStatic()) BAT BUOC animation:false vi ECharts SSR xuat CSS @keyframes ma
+    // keyframe cuoi khong mang phan translate, keo marker ve goc toa do khi mo bang
+    // trinh duyet that (chi tiet dat gate: render-static.mjs). Lan html-song (mount
+    // song trong DOM qua mountLive()) duoc phep giu animation mac dinh cua ECharts vi
+    // no khong di qua duong SSR do. renderStatic() tu ap animation:false LUC RENDER,
+    // option() va baseOption() o day khong con quyen quyet dinh chuyen nay nua.
     backgroundColor: PALETTE.paper,
     textStyle: { fontFamily: FONT_STACK },
     title: {

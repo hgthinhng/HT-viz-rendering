@@ -194,7 +194,12 @@ export function runSelfTest() {
   return { pass, total: cases.length, results };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// `typeof process !== 'undefined'` dung TRUOC de tranh ReferenceError khi file nay bi
+// import trong trinh duyet: MOI preset ECharts import ham dinh dang tu day, nen neu
+// nhanh nay tham chieu `process` khong dieu kien thi ca 18 preset deu khong mount song
+// duoc trong DOM qua mount-live.mjs (lan html-song), du ban than tung preset da tach
+// dung option()/render.
+if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
   const { pass, total, results } = runSelfTest();
   results.forEach(r => {
     console.log(`${r.ok ? 'PASS' : 'FAIL'} #${r.i}: expected="${r.expected}" actual="${r.actual}"`);

@@ -7,32 +7,34 @@
 // Bẫy thường gặp: (1) tổng value ra không khớp tổng value vào tại 1 node ->
 // sai bảo toàn, phải kiểm tổng trước khi vẽ; (2) quá nhiều node (>10-12) làm
 // rối; (3) dùng màu ngẫu nhiên cho từng luồng thay vì tô theo node nguồn.
-import * as echarts from 'echarts';
-import fs from 'node:fs';
 import { baseOption, TYPOGRAPHY, PALETTE } from './theme.mjs';
+import { renderStatic } from './render-static.mjs';
 
-const nodes = [
-  { name: 'Doanh thu thuần' },
-  { name: 'Giá vốn hàng bán' },
-  { name: 'Lợi nhuận gộp' },
-  { name: 'Chi phí bán hàng & QLDN' },
-  { name: 'EBIT' },
-  { name: 'Chi phí lãi vay & thuế' },
-  { name: 'Lợi nhuận sau thuế' },
-  { name: 'Cổ tức chi trả' },
-  { name: 'Lợi nhuận giữ lại' },
-];
-// kiểm tổng bảo toàn tại từng node trước khi vẽ (không lặng lẽ chấp nhận sai lệch)
-const links = [
-  { source: 'Doanh thu thuần', target: 'Giá vốn hàng bán', value: 78 },
-  { source: 'Doanh thu thuần', target: 'Lợi nhuận gộp', value: 42 },
-  { source: 'Lợi nhuận gộp', target: 'Chi phí bán hàng & QLDN', value: 18 },
-  { source: 'Lợi nhuận gộp', target: 'EBIT', value: 24 },
-  { source: 'EBIT', target: 'Chi phí lãi vay & thuế', value: 9 },
-  { source: 'EBIT', target: 'Lợi nhuận sau thuế', value: 15 },
-  { source: 'Lợi nhuận sau thuế', target: 'Cổ tức chi trả', value: 6 },
-  { source: 'Lợi nhuận sau thuế', target: 'Lợi nhuận giữ lại', value: 9 },
-];
+export const MAC_DINH = {
+  nodes: [
+    { name: 'Doanh thu thuần' },
+    { name: 'Giá vốn hàng bán' },
+    { name: 'Lợi nhuận gộp' },
+    { name: 'Chi phí bán hàng & QLDN' },
+    { name: 'EBIT' },
+    { name: 'Chi phí lãi vay & thuế' },
+    { name: 'Lợi nhuận sau thuế' },
+    { name: 'Cổ tức chi trả' },
+    { name: 'Lợi nhuận giữ lại' },
+  ],
+  links: [
+    { source: 'Doanh thu thuần', target: 'Giá vốn hàng bán', value: 78 },
+    { source: 'Doanh thu thuần', target: 'Lợi nhuận gộp', value: 42 },
+    { source: 'Lợi nhuận gộp', target: 'Chi phí bán hàng & QLDN', value: 18 },
+    { source: 'Lợi nhuận gộp', target: 'EBIT', value: 24 },
+    { source: 'EBIT', target: 'Chi phí lãi vay & thuế', value: 9 },
+    { source: 'EBIT', target: 'Lợi nhuận sau thuế', value: 15 },
+    { source: 'Lợi nhuận sau thuế', target: 'Cổ tức chi trả', value: 6 },
+    { source: 'Lợi nhuận sau thuế', target: 'Lợi nhuận giữ lại', value: 9 },
+  ],
+  title: 'Dòng phân bổ doanh thu qua các tầng chi phí',
+  subtitle: 'Đơn vị: tỷ đồng, FY2026',
+};
 
 function checkConservation(nodes, links) {
   const inflow = {}, outflow = {};
@@ -50,35 +52,49 @@ function checkConservation(nodes, links) {
   });
   return problems;
 }
-const problems = checkConservation(nodes, links);
-if (problems.length) {
-  console.error('CANH BAO bao toan sankey:', problems);
-  process.exit(1);
+
+/** Tra ve OBJECT OPTION thuan. FAIL ngay (throw) neu du lieu vi pham bao toan --
+ * kiem TRONG option() de fail-fast luc goi voi du lieu that, khong chi voi MAC_DINH. */
+export function option(params) {
+  const { nodes, links, title, subtitle } = params;
+  const problems = checkConservation(nodes, links);
+  if (problems.length) {
+    throw new Error(`02-sankey: canh bao bao toan sankey: ${problems.join('; ')}`);
+  }
+
+  return {
+    ...baseOption({ title, subtitle }),
+    tooltip: { trigger: 'item', textStyle: { fontSize: 12 } },
+    series: [
+      {
+        type: 'sankey',
+        left: 16, right: 140, top: 60, bottom: 40,
+        nodeWidth: 14,
+        nodeGap: 14,
+        layoutIterations: 32,
+        data: nodes.map((n) => ({ ...n, itemStyle: { color: PALETTE.ink } })),
+        links,
+        lineStyle: { color: 'source', opacity: 0.35, curveness: 0.5 },
+        label: { ...TYPOGRAPHY.dataLabel, position: 'right', formatter: (p) => p.name },
+        emphasis: { focus: 'adjacency' },
+      },
+    ],
+  };
 }
 
-const chart = echarts.init(null, null, { renderer: 'svg', ssr: true, width: 760, height: 440 });
-chart.setOption({
-  ...baseOption({ title: 'Dòng phân bổ doanh thu qua các tầng chi phí', subtitle: 'Đơn vị: tỷ đồng, FY2026' }),
-  tooltip: { trigger: 'item', textStyle: { fontSize: 12 } },
-  series: [
-    {
-      type: 'sankey',
-      left: 16, right: 140, top: 60, bottom: 40,
-      nodeWidth: 14,
-      nodeGap: 14,
-      layoutIterations: 32,
-      data: nodes.map((n) => ({ ...n, itemStyle: { color: PALETTE.ink } })),
-      links,
-      lineStyle: { color: 'source', opacity: 0.35, curveness: 0.5 },
-      label: { ...TYPOGRAPHY.dataLabel, position: 'right', formatter: (p) => p.name },
-      emphasis: { focus: 'adjacency' },
-    },
-  ],
-});
-
-const svg = chart.renderToSVGString();
-fs.writeFileSync(new URL('./out-02-sankey.svg', import.meta.url), svg);
-console.log('02-sankey: OK,', svg.length, 'bytes, <image>?', svg.includes('<image'));
-
-chart.dispose();
-process.exit(0);
+// Giu nguyen duong CLI de verify-charts.mjs va catalog khong vo. `typeof process !==
+// 'undefined'` dung TRUOC de tranh ReferenceError khi file nay bi import trong trinh
+// duyet (lan html-song qua mount-live.mjs); `node:fs` chuyen sang import DONG cung ly do
+// (chi tiet: 01-waterfall.mjs).
+if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  try {
+    const { writeFileSync } = await import('node:fs');
+    const svg = renderStatic(option, MAC_DINH, { width: 760, height: 440 });
+    writeFileSync(new URL('./out-02-sankey.svg', import.meta.url), svg);
+    console.log('02-sankey: OK,', svg.length, 'bytes, <image>?', svg.includes('<image'));
+    process.exit(0);
+  } catch (e) {
+    console.error('CANH BAO', e.message);
+    process.exit(1);
+  }
+}

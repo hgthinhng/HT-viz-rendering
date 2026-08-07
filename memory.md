@@ -200,8 +200,20 @@ cd ~/HT-viz-rendering
 npm install
 npm run setup:browser      # BUOC RIENG, playwright-core khong tu tai browser
 pip install --break-system-packages -r requirements.txt
-npm test && npm run verify && python3 -m pytest tests/ -v
+npm run verify && npm test && python3 -m pytest tests/ -v   # THU TU NAY QUAN TRONG
 ```
+
+**`verify` phải chạy TRƯỚC `test`, không đảo được.** Thứ tự cũ ghi ngược và trên máy sạch thì
+luôn đỏ. Nguyên nhân: `.gitignore:10` bỏ qua `charts/echarts/out-*.svg`, `git ls-files` cho 0
+file, nhưng `catalog_khop_nguon.test.mjs` lại đòi mọi đường dẫn xem trước trong mục lục phải trỏ
+tới file có thật. Chính `verify-charts.mjs` mới là thứ sinh ra các file đó, như một hiệu ứng phụ.
+Hai agent độc lập cùng vấp lỗi này trong worktree sạch ngày 07-08, cả hai đều phải tự `git stash`
+để chứng minh nó có sẵn ở HEAD chứ không phải do mình gây ra.
+
+Đây đúng họ với những bẫy khác của repo: chạy trơn tru trên máy đã có sẵn artifact, chỉ hỏng ở
+máy sạch, và không phép nghiệm thu nào của repo chạy từ máy sạch nên không ai thấy. Cách chữa
+đúng hơn là cho test tự sinh artifact nó cần hoặc SKIP kèm lý do rõ, thay vì phụ thuộc thứ tự
+lệnh trong tài liệu. Chưa làm.
 
 Không cần cài font hệ thống: bản HTML nhúng base64 trong `design-system/fonts/fonts-embedded.css`,
 chart matplotlib đọc `design-system/fonts/ttf/` (6 face, 404KB, đã commit). Sinh lại bằng

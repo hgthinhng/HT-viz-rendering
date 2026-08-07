@@ -48,6 +48,23 @@ Ba điều phải nhớ trước khi viết dòng đầu tiên:
   `examples/mau-phase2/so-nguon.json`, nếu không thì build dừng ngay.
 - Bản gửi khách xuất bằng `--che-do=gui-di`, và nó KHÔNG mang sổ nguồn.
 
+## Thư viện có gì: đọc mục lục TRƯỚC khi chọn hình
+
+**`catalog/CATALOG.md`** liệt kê cả 108 tài sản của thư viện dưới một dạng duy nhất, mỗi
+dòng ghi mã, hình đó trả lời câu hỏi gì, và khi nào đừng dùng nó. Đọc file này là biết
+thư viện có gì, không phải mở bốn thư mục và đọc bốn khuôn mô tả khác nhau.
+
+| File | Dùng khi |
+|---|---|
+| `catalog/CATALOG.md` | chọn hình cho một section. Đây là file nên đọc đầu tiên |
+| `catalog/INDEX.json` | cần tra bằng máy: lọc theo nhóm, theo định dạng giao |
+| `catalog/contact-sheet.pdf` | muốn NHÌN cả kho một lượt, 50 bản xem trước |
+
+Mục lục sinh tự động từ chính mã nguồn. Sửa mô tả thì sửa ở nguồn (comment đầu file
+preset, docstring component, mục `Mô tả / khi nào dùng` của catalog, hoặc `<desc>` của
+SVG) rồi chạy `python3 scripts/sinh_catalog.py`. Có test ép mục lục khớp mã nguồn, nên
+sửa một bên mà quên bên kia thì `npm test` đỏ.
+
 ## Theo thành phần
 
 | Cần | Ở đâu |

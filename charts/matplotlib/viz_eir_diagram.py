@@ -145,6 +145,16 @@ def _layer_headers(ax, xs, labels, y, *, color=MUTED):
 def c_decision_tree(p, accent):
     """Left->right decision-analysis tree: decision node (square) -> chance nodes
     (small squares) with branch probabilities -> outcome leaves with EV/value labels;
+
+    Trả lời: "Quyết định này rẽ nhánh ra sao, mỗi nhánh xác suất bao nhiêu và dẫn tới
+    kết cục nào?"
+
+    Dữ liệu cần: tree dạng cây lồng nhau với nút quyết định, nút cơ hội kèm xác suất,
+    và giá trị ở lá. Tuỳ chọn layer_labels đặt tên từng tầng.
+
+    KHÔNG dùng quá ba tầng, vì cây rộng theo hàm mũ và tầng thứ tư đã vượt khổ giấy.
+    Và đừng dùng khi xác suất chỉ là con số cho có, vì cây quyết định trình bày chúng
+    như đầu vào đã được cân nhắc kỹ.
     optimal path highlighted in GOLD."""
     fig, ax = eir_fig(_meta(p, accent), figsize=(9.2, 5.9),
                       rect=(0.03, 0.06, 0.94, 0.72))
@@ -274,6 +284,13 @@ def c_decision_tree(p, accent):
 # ================================================================= 2. FLOWCHART
 def c_flowchart(p, accent):
     """Top->down flowchart: rounded process rectangles + a diamond decision with
+
+    Trả lời: "Quy trình này đi qua những bước nào, và rẽ nhánh ở đâu?"
+
+    Dữ liệu cần: nodes và edges, nút hình thoi là điểm rẽ nhánh.
+
+    KHÔNG dùng để vẽ một quy trình tuyến tính không có nhánh nào, vì khi đó danh sách
+    đánh số đọc nhanh hơn và không tốn nửa trang.
     Yes/No branches to two outcome boxes."""
     fig, ax = eir_fig(_meta(p, accent), figsize=(8.4, 6.6),
                       rect=(0.03, 0.05, 0.94, 0.74))
@@ -360,6 +377,14 @@ def c_flowchart(p, accent):
 # ============================================================= 3. NETWORK GRAPH
 def c_network_graph(p, accent):
     """Layered node-link structure (e.g. securitisation: pool -> SPV -> tranches):
+
+    Trả lời: "Các bên trong cấu trúc này nối với nhau thế nào, và dòng chảy đi theo
+    tầng nào?" Hợp cho cấu trúc chứng khoán hoá, sở hữu chéo, chuỗi cung ứng.
+
+    Dữ liệu cần: layers là các tầng nút, edges là liên kết giữa chúng.
+
+    KHÔNG dùng khi các nút không xếp được thành tầng, vì hình sẽ thành búi dây và mọi
+    liên kết trông như nhau.
     boxes on N layers connected by thin edges with optional edge labels."""
     fig, ax = eir_fig(_meta(p, accent), figsize=(9.0, 5.9),
                       rect=(0.03, 0.05, 0.94, 0.74))
@@ -412,6 +437,14 @@ def c_network_graph(p, accent):
 # ============================================================ 4. MECHANISM FLOW
 def c_mechanism_flow(p, accent):
     """3 horizontal stage boxes (input -> process -> output): a colored header +
+
+    Trả lời: "Cơ chế này biến đầu vào thành đầu ra qua bước nào?" Ba khối ngang cố
+    định: vào, xử lý, ra.
+
+    Dữ liệu cần: stages gồm đúng ba khối, mỗi khối có tiêu đề và các gạch đầu dòng.
+
+    KHÔNG dùng khi cơ chế có vòng phản hồi, vì ba khối một chiều khẳng định một chuỗi
+    nhân quả thẳng mà thực tế không thẳng.
     bullet sub-points each, joined by GOLD chevron arrows."""
     fig, ax = eir_fig(_meta(p, accent), figsize=(9.6, 5.7),
                       rect=(0.03, 0.06, 0.94, 0.72))
@@ -486,6 +519,15 @@ def _wrap_to(s, width):
 # =============================================================== 5. FLOW BRIDGE
 def c_flow_bridge(p, accent):
     """Vertical causal chain: stacked step boxes each with a +/-/result direction node
+
+    Trả lời: "Từ điểm đầu tới điểm cuối, cái gì cộng vào và cái gì trừ đi?" Bản dọc
+    của cầu nối, hợp khi mỗi bước cần một dòng giải thích dài.
+
+    Dữ liệu cần: steps dạng {label, value, direction} với direction là cộng, trừ hoặc
+    kết quả.
+
+    KHÔNG dùng khi các bước không cộng dồn được về cùng một tổng, vì cầu nối khẳng
+    định đúng điều đó.
     and a down-arrow to the next; final emphasized result box."""
     steps = p["steps"]; n = len(steps)
     fig, ax = eir_fig(_meta(p, accent), figsize=(8.2, max(5.6, 1.2 * n + 2.8)),
@@ -552,6 +594,14 @@ def c_flow_bridge(p, accent):
 # ==================================================================== 6. SANKEY
 def c_sankey(p, accent):
     """Flows from sources (left) to uses (right); tapered bands whose width is
+
+    Trả lời: "Nguồn nào chảy vào đâu, và dòng nào lớn nhất?" Bề rộng dải là độ lớn
+    dòng chảy.
+
+    Dữ liệu cần: sources, targets, flows dạng {src, dst, value} cùng một đơn vị.
+
+    KHÔNG dùng khi các dòng không bảo toàn, tức tổng vào khác tổng ra mà không có
+    khoản hao hụt được khai rõ, vì người đọc sẽ tự cân bằng bằng mắt và kết luận sai.
     proportional to value. Simple bipartite."""
     fig, ax = eir_fig(_meta(p, accent), figsize=(9.8, 6.7),
                       rect=(0.03, 0.135, 0.94, 0.66))
@@ -634,6 +684,14 @@ def c_sankey(p, accent):
 # ================================================================== 7. TIMELINE
 def c_timeline(p, accent):
     """Horizontal milestone timeline: a spine, dated markers alternating above/below
+
+    Trả lời: "Chuỗi sự kiện dẫn tới hiện tại gồm những mốc nào?"
+
+    Dữ liệu cần: milestones dạng {date, label}, nhãn tự so le trên dưới để không đè
+    nhau.
+
+    KHÔNG dùng khi khoảng cách thời gian giữa các mốc là thông điệp, vì trục ở đây
+    chia đều theo số mốc chứ không theo tỷ lệ ngày tháng.
     with title + date; done (filled) vs pending (hollow)."""
     ms = p["milestones"]; n = len(ms)
     fig, ax = eir_fig(_meta(p, accent), figsize=(9.6, 5.4),
@@ -704,6 +762,14 @@ def c_timeline(p, accent):
 # =================================================================== 8. LATTICE
 def c_lattice(p, accent):
     """Labeled binomial (recombining) lattice: nodes on a triangular grid, node values,
+
+    Trả lời: "Giá trị đi lên hoặc xuống qua từng bước thì tới đâu, và xác suất mỗi
+    nhánh là bao nhiêu?" Dùng cho định giá quyền chọn kiểu nhị thức.
+
+    Dữ liệu cần: levels là số bước, up_factor, down_factor, up_prob, cộng nhãn trục.
+
+    KHÔNG dùng quá năm bước trên một khổ giấy, vì lưới nhị thức phình nhanh và các
+    nút nhập vào nhau.
     up/down edges, optional up-prob label; terminal payoffs highlighted."""
     levels = p["levels"]; nL = len(levels)
     fig, ax = eir_fig(_meta(p, accent), figsize=(9.6, 6.3),

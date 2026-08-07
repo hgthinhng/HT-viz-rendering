@@ -60,6 +60,18 @@ def _axis_fmt(ax, p, which):
 
 # ========================================================= comparison / ranking
 def c_dumbbell(p, accent):
+    """Dumbbell, độ dịch chuyển của nhiều hạng mục giữa hai mốc.
+
+    Trả lời: "Từng hạng mục dịch chuyển bao nhiêu giữa hai mốc, và hạng mục nào dịch
+    mạnh nhất?" Nhấn vào ĐỘ CHÊNH giữa hai đầu chứ không vào giá trị tuyệt đối, nên
+    đọc nhanh hơn hai cột cạnh nhau.
+
+    Dữ liệu cần: categories, before, after cùng một đơn vị. Tuỳ chọn left_name,
+    right_name, sort ("after" hoặc "delta").
+
+    KHÔNG dùng khi có hơn hai mốc thời gian (dùng index100 hoặc bump), hoặc khi thứ
+    hạng quan trọng hơn độ chênh (dùng lollipop).
+    """
     cats = list(p["categories"]); a = list(map(float, p["before"])); b = list(map(float, p["after"]))
     order = list(range(len(cats)))
     if p.get("sort") == "after":
@@ -94,6 +106,17 @@ def c_dumbbell(p, accent):
 
 
 def c_lollipop(p, accent):
+    """Lollipop, xếp hạng một chỉ tiêu theo hạng mục.
+
+    Trả lời: "Hạng mục nào đóng góp nhiều nhất, và khoảng cách giữa chúng bao xa?"
+    Chấm cuối cây kẹo đặt mắt đúng vào giá trị, nhẹ hơn cột đặc khi có nhiều hạng mục.
+
+    Dữ liệu cần: categories, values cùng đơn vị. Tuỳ chọn highlight để nhấn một hạng
+    mục, sort để xếp theo giá trị.
+
+    KHÔNG dùng khi giá trị có cả âm lẫn dương và dấu là thông điệp chính (dùng
+    diverging_bar), hoặc khi dưới bốn hạng mục vì câu văn xuôi gọn hơn.
+    """
     cats = list(p["categories"]); vals = list(map(float, p["values"]))
     idx = list(range(len(cats))); s = p.get("sort", True)
     if s:
@@ -121,6 +144,17 @@ def c_lollipop(p, accent):
 
 
 def c_diverging_bar(p, accent):
+    """Thanh phân kỳ hai chiều quanh mốc không.
+
+    Trả lời: "Hạng mục nào vượt chuẩn, hạng mục nào thua chuẩn, và chênh bao nhiêu?"
+    Mốc không là trục đối xứng nên dấu đọc được ngay mà không phải tra nhãn.
+
+    Dữ liệu cần: categories, values có cả âm lẫn dương, cùng đơn vị. Tuỳ chọn sort,
+    use_accent_up để chọn màu nào mang nghĩa dương.
+
+    KHÔNG dùng khi mọi giá trị cùng dấu, vì khi đó trục không mất vai trò và hình
+    suy biến thành lollipop nhưng tốn gấp đôi bề ngang.
+    """
     cats = list(p["categories"]); vals = list(map(float, p["values"]))
     idx = list(range(len(cats)))
     if p.get("sort", True):
@@ -148,6 +182,17 @@ def c_diverging_bar(p, accent):
 
 
 def c_range_dot(p, accent):
+    """Chấm trong khoảng, giá trị điểm đặt trong dải thấp tới cao.
+
+    Trả lời: "Đồng thuận nằm ở đâu trong dải ước tính, và dải đó rộng hẹp ra sao?"
+    Đường tham chiếu cắt ngang cho biết giá hiện tại nằm trong hay ngoài dải.
+
+    Dữ liệu cần: rows dạng {label, low, high, point}. Tuỳ chọn ref và ref_label cho
+    đường tham chiếu, show_values để in số ở hai đầu.
+
+    KHÔNG dùng khi dải chỉ có hai đầu mà không có điểm giữa có nghĩa (dùng dumbbell),
+    hoặc khi các dòng khác đơn vị nhau.
+    """
     rows = p["rows"]; n = len(rows)
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.4, max(3.0, 0.5 * n + 2.0)),
                       rect=(0.30, 0.16, 0.63, 0.60))
@@ -175,6 +220,18 @@ def c_range_dot(p, accent):
 
 
 def c_bump(p, accent):
+    """Bump chart, đổi thứ hạng qua nhiều kỳ.
+
+    Trả lời: "Thứ hạng đổi chỗ thế nào qua các kỳ, ai lên ai xuống?" Trục dọc là HẠNG
+    chứ không phải giá trị, nên hai thực thể cách nhau một bậc trông như nhau dù giá
+    trị chênh rất xa.
+
+    Dữ liệu cần: periods, entities dạng {name, ranks} với ranks là số nguyên. Tuỳ
+    chọn highlight để nhấn một đường.
+
+    KHÔNG dùng khi độ lớn của khoảng cách mới là thông điệp, vì bump cố ý vứt bỏ nó.
+    Quá tám thực thể thì đường rối thành búi, tách bảng hoặc chọn nhấn vài đường.
+    """
     periods = p["periods"]; ent = p["entities"]
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.6, 4.8), rect=(0.10, 0.16, 0.80, 0.60))
     despine(ax, keep=(), grid_axis="")
@@ -200,6 +257,18 @@ def c_bump(p, accent):
 
 # ================================================================= time / trend
 def c_fan(p, accent):
+    """Biểu đồ quạt, dải bất định của dự báo mở rộng theo thời gian.
+
+    Trả lời: "Dự báo trung tâm là bao nhiêu, và vùng bất định quanh nó rộng ra thế
+    nào theo thời gian?" Dải tô nhạt dần ra ngoài đọc thẳng thành mức tin cậy.
+
+    Dữ liệu cần: hist_x, hist_y cho phần thực tế; fcast_x, median và bands dạng danh
+    sách {lo, hi} cho phần dự báo. Tuỳ chọn split_label đặt tên vạch chia.
+
+    KHÔNG dùng khi các dải không đến từ một phân phối thật mà chỉ là ba kịch bản rời
+    rạc, vì hình quạt khẳng định một liên tục xác suất không có thật (dùng
+    scenario_cards).
+    """
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.6, 4.6), rect=(0.10, 0.16, 0.83, 0.60))
     despine(ax, keep=("left", "bottom"), grid_axis="y")
     hx, hy = p.get("hist_x", []), p.get("hist_y", [])
@@ -223,6 +292,18 @@ def c_fan(p, accent):
 
 
 def c_spread(p, accent):
+    """Hai chuỗi và chênh lệch giữa chúng.
+
+    Trả lời: "Hai lãi suất hay hai giá đang giãn ra hay thu lại, và chênh lệch hiện
+    ở đâu so với lịch sử?" Khung dưới vẽ riêng phần chênh nên không phải trừ bằng mắt.
+
+    Dữ liệu cần: x, series_a, series_b cùng đơn vị, diff là chuỗi chênh lệch đã tính.
+    Cờ zero_is_signal bật khi việc chênh lệch chạm không có nghĩa kinh tế, ví dụ đảo
+    ngược đường cong lợi suất.
+
+    KHÔNG dùng khi hai chuỗi khác đơn vị, vì phép trừ khi đó vô nghĩa dù chart vẫn vẽ
+    ra được.
+    """
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.6, 4.6), rect=(0.10, 0.16, 0.83, 0.60))
     despine(ax, keep=("left", "bottom"), grid_axis="y")
     x = p["x"]
@@ -262,6 +343,18 @@ def c_spread(p, accent):
 
 
 def c_index100(p, accent):
+    """Chỉ số hoá về gốc 100, so hiệu suất tương đối trên MỘT trục.
+
+    Trả lời: "Từ cùng một điểm xuất phát, chuỗi nào chạy nhanh hơn?" Đây là cách repo
+    thay cho trục kép: mọi chuỗi quy về 100 tại kỳ gốc nên so được trực tiếp.
+
+    Dữ liệu cần: x, series dạng {name, values}. Tuỳ chọn base là chỉ số kỳ gốc,
+    rebase để tự quy đổi.
+
+    KHÔNG dùng khi mức tuyệt đối là thông điệp (một quỹ 100 tỷ và một quỹ 1 tỷ cùng
+    tăng 20% sẽ trông y hệt nhau), hoặc khi kỳ gốc rơi vào một điểm dị thường vì mọi
+    đường sau đó đều bị méo theo.
+    """
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.6, 4.6), rect=(0.10, 0.16, 0.83, 0.60))
     despine(ax, keep=("left", "bottom"), grid_axis="y")
     x = p["x"]; numeric = all(isinstance(v, (int, float)) for v in x)
@@ -284,6 +377,17 @@ def c_index100(p, accent):
 
 
 def c_connected_scatter(p, accent):
+    """Scatter nối theo thời gian, quỹ đạo của hai biến qua các kỳ.
+
+    Trả lời: "Quan hệ giữa hai biến di chuyển thế nào qua thời gian, có quay vòng hay
+    đổi chế độ không?" Đường nối biến scatter tĩnh thành một quỹ đạo đọc được.
+
+    Dữ liệu cần: points dạng {label, x, y} xếp theo thứ tự thời gian, cộng x_label và
+    y_label.
+
+    KHÔNG dùng khi các điểm không có thứ tự thời gian tự nhiên, vì khi đó đường nối
+    là một khẳng định về trình tự mà dữ liệu không có (dùng comps_scatter).
+    """
     pts = p["points"]
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.0, 5.0), rect=(0.13, 0.16, 0.80, 0.60))
     despine(ax, keep=("left", "bottom"), grid_axis="both")
@@ -303,6 +407,16 @@ def c_connected_scatter(p, accent):
 
 # ================================================================= distribution
 def c_boxplot(p, accent):
+    """Hộp phân phối, so hình dạng phân phối giữa các nhóm.
+
+    Trả lời: "Nhóm nào phân tán rộng hơn, và đuôi nằm ở đâu?" Hộp cho trung vị và tứ
+    phân vị, râu cho vùng ngoài, nên đọc được cả tâm lẫn độ rộng.
+
+    Dữ liệu cần: groups và boxes, mỗi box là một danh sách quan sát thật.
+
+    KHÔNG dùng khi mỗi nhóm dưới khoảng mười quan sát, vì tứ phân vị của mẫu quá nhỏ
+    là con số gợi ý độ chính xác không có thật (dùng dot strip hiện từng điểm).
+    """
     groups = p["groups"]; n = len(groups)
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.2, 4.6), rect=(0.12, 0.16, 0.81, 0.60))
     despine(ax, keep=("left", "bottom"), grid_axis="y")
@@ -322,6 +436,17 @@ def c_boxplot(p, accent):
 
 
 def c_lorenz(p, accent):
+    """Đường Lorenz, mức độ tập trung của một tổng.
+
+    Trả lời: "Bao nhiêu phần trăm cấu phần chiếm bao nhiêu phần trăm tổng?" Khoảng
+    cách từ đường chéo bình đẳng đọc thẳng thành mức tập trung.
+
+    Dữ liệu cần: values là tỷ trọng hoặc giá trị của từng cấu phần, cộng x_label,
+    y_label.
+
+    KHÔNG dùng khi dưới khoảng mười cấu phần, vì đường gãy khúc thô và bảng tỷ trọng
+    nói rõ hơn.
+    """
     v = np.sort(np.array(p["values"], float)); cum = np.cumsum(v) / v.sum()
     cum = np.insert(cum, 0, 0); xs = np.linspace(0, 1, len(cum))
     gini = 1 - np.sum((cum[1:] + cum[:-1]) * np.diff(xs))
@@ -340,6 +465,17 @@ def c_lorenz(p, accent):
 
 # =============================================================== KPI vs target
 def c_bullet(p, accent):
+    """Thanh bullet, thực tế so với mục tiêu trên nền dải định tính.
+
+    Trả lời: "Chỉ tiêu này đã đạt ngưỡng chưa, và đang nằm ở vùng nào?" Thay cho gauge
+    vốn bị repo cấm, và xếp được nhiều dòng thành một cột gọn.
+
+    Dữ liệu cần: rows dạng {label, value, target, bands}. Dải nền dùng ba sắc độ xám
+    của cùng một thang, không tô đỏ vàng xanh.
+
+    KHÔNG dùng khi không có mục tiêu hoặc ngưỡng thật để so, vì khi đó vạch mục tiêu
+    là một con số bịa nằm giữa hình.
+    """
     rows = p["rows"]; n = len(rows)
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.4, max(2.6, 0.85 * n + 1.8)),
                       rect=(0.28, 0.18, 0.66, 0.58))
@@ -372,6 +508,17 @@ def c_bullet(p, accent):
 
 # ============================================================ sell-side archetypes
 def c_football_field(p, accent):
+    """Football field, dải định giá theo từng phương pháp.
+
+    Trả lời: "Các phương pháp định giá cho khoảng nào, chúng có hội tụ không, và giá
+    hiện tại nằm ở đâu so với vùng hội tụ?"
+
+    Dữ liệu cần: methods dạng {name, low, high}, current là giá hiện tại, target là
+    vùng hoặc điểm mục tiêu.
+
+    KHÔNG dùng khi chỉ có một phương pháp, vì cả giá trị của hình nằm ở chỗ so nhiều
+    dải với nhau.
+    """
     methods = p["methods"]; n = len(methods)
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.6, max(3.0, 0.6 * n + 2.0)),
                       rect=(0.30, 0.17, 0.63, 0.58))
@@ -403,6 +550,15 @@ def c_football_field(p, accent):
 
 
 def c_maturity_ladder(p, accent):
+    """Thang đáo hạn, nghĩa vụ nợ dồn vào năm nào.
+
+    Trả lời: "Áp lực tái tài trợ rơi vào năm nào, và có bức tường đáo hạn không?"
+
+    Dữ liệu cần: years và series dạng {name, values} theo từng loại nợ.
+
+    KHÔNG dùng khi kỳ hạn chưa chốt hoặc phần lớn nợ là hạn mức quay vòng, vì cột
+    theo năm khẳng định một lịch trả nợ cứng mà thực tế không có.
+    """
     years = p["years"]; series = p["series"]
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.6, 4.6), rect=(0.11, 0.17, 0.82, 0.58))
     despine(ax, keep=("left", "bottom"), grid_axis="y")
@@ -422,6 +578,18 @@ def c_maturity_ladder(p, accent):
 
 
 def c_comps_scatter(p, accent):
+    """Scatter so sánh cùng ngành, bội số theo một biến giải thích.
+
+    Trả lời: "Bội số của doanh nghiệp này cao hay thấp so với mức mà tăng trưởng của
+    nó giải thích được?" Đường hồi quy biến câu hỏi đắt hay rẻ thành khoảng cách tới
+    đường.
+
+    Dữ liệu cần: points dạng {label, x, y}, x_label, y_label. Tuỳ chọn fit để vẽ
+    đường xu hướng.
+
+    KHÔNG dùng khi dưới sáu điểm, vì đường hồi quy qua vài điểm là một khẳng định
+    thống kê không đứng được.
+    """
     pts = p["points"]
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.0, 5.0), rect=(0.13, 0.16, 0.80, 0.60))
     despine(ax, keep=("left", "bottom"), grid_axis="both")
@@ -446,6 +614,17 @@ def c_comps_scatter(p, accent):
 
 # ============================================================= part-to-whole
 def c_marimekko(p, accent):
+    """Marimekko, cơ cấu hai chiều với chiều rộng mang nghĩa.
+
+    Trả lời: "Mỗi mảng lớn cỡ nào, và bên trong nó cơ cấu ra sao?" Chiều rộng cột là
+    quy mô, chiều cao là tỷ trọng, nên đọc được cả hai chiều trong một hình.
+
+    Dữ liệu cần: columns là các mảng lớn kèm quy mô, segments là các phân khúc, data
+    là ma trận tỷ trọng.
+
+    KHÔNG dùng quá sáu cột hoặc quá năm phân khúc, vì ô nhỏ mất nhãn và người đọc
+    quay sang so diện tích, thứ mắt người ước lượng rất tệ.
+    """
     cols = p["columns"]; segs = p["segments"]; data = np.array(p["data"], float)
     widths = np.array([c["size"] for c in cols], float); widths = widths / widths.sum() * 100.0
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.8, 5.0), rect=(0.09, 0.17, 0.84, 0.58))
@@ -477,6 +656,17 @@ def _cmap_warm():
 
 
 def c_sensitivity_grid(p, accent):
+    """Lưới độ nhạy hai biến, giá trị đầu ra theo hai giả định.
+
+    Trả lời: "Kết quả đổi bao nhiêu khi hai giả định then chốt cùng đổi, và vùng nào
+    đưa kết quả qua ngưỡng?"
+
+    Dữ liệu cần: rows, cols là hai trục giả định, values là ma trận kết quả, base là
+    ô kịch bản cơ sở. Tuỳ chọn diverging khi thang màu cần hai chiều quanh một mốc.
+
+    KHÔNG dùng khi hai biến không độc lập với nhau, vì lưới ngầm khẳng định mọi tổ
+    hợp đều xảy ra được, kể cả tổ hợp mâu thuẫn về kinh tế.
+    """
     rows = p["rows"]; cols = p["cols"]; vals = np.array(p["values"], float)
     fig, ax = eir_fig(_meta(p, accent), figsize=(7.6, max(3.0, 0.5 * len(rows) + 2.4)),
                       rect=(0.14, 0.13, 0.80, 0.60))
@@ -486,7 +676,18 @@ def c_sensitivity_grid(p, accent):
         cmap = LinearSegmentedColormap.from_list("eir_div", [BRICK, PAPER, TEAL])
     else:
         norm = Normalize(vals.min(), vals.max()); cmap = _cmap_warm()
-    ax.imshow(vals, cmap=cmap, norm=norm, aspect="auto")
+    # Ve tung o bang Rectangle chu KHONG dung imshow. `imshow` xuat ra mot anh BITMAP
+    # nhung trong SVG, va do la thu luat cung cua repo cam: ban in phai la vector, gate
+    # RASTER dem `/Subtype /Image` phai bang 0. Da do bang so: ban imshow cho ra mot anh
+    # 1216x511 trong PDF, ban Rectangle cho ra 0.
+    for _i in range(vals.shape[0]):
+        for _j in range(vals.shape[1]):
+            ax.add_patch(Rectangle(
+                (_j - 0.5, _i - 0.5), 1, 1,
+                facecolor=cmap(norm(vals[_i, _j])), edgecolor="none", zorder=0,
+            ))
+    ax.set_xlim(-0.5, vals.shape[1] - 0.5)
+    ax.set_ylim(vals.shape[0] - 0.5, -0.5)   # dao truc y de hang dau nam tren, nhu imshow
     ax.set_xticks(range(len(cols))); ax.set_xticklabels(cols, fontsize=8.6, color=INK)
     ax.set_yticks(range(len(rows))); ax.set_yticklabels(rows, fontsize=8.6, color=INK)
     ax.set_xlabel(p.get("col_label", ""), fontsize=9.5, color=NAVY, fontweight="bold")
@@ -510,6 +711,17 @@ def c_sensitivity_grid(p, accent):
 
 
 def c_cond_table(p, accent):
+    """Bảng tô màu theo cột, so nhiều doanh nghiệp trên nhiều chỉ tiêu.
+
+    Trả lời: "Trên toàn bảng, doanh nghiệp nào nổi bật ở chỉ tiêu nào?" Màu tô theo
+    TỪNG CỘT nên so sánh luôn nằm trong cùng một đơn vị.
+
+    Dữ liệu cần: columns, rows, higher_better cho biết cột nào cao là tốt, fmt_cols
+    cho định dạng từng cột.
+
+    KHÔNG dùng khi các dòng không so sánh được với nhau (khác ngành, khác quy mô kế
+    toán), vì bảng tô màu biến một danh sách rời rạc thành một bảng xếp hạng giả.
+    """
     columns = p["columns"]; rows = p["rows"]; ncol = len(columns); nnum = ncol - 1
     hb = p.get("higher_better", [True] * nnum); fmts = p.get("fmt_cols", ["num"] * nnum)
     fig = plt.figure(figsize=(min(9.0, 1.35 * ncol + 1.6), 0.5 * len(rows) + 2.2), facecolor=PAPER)
@@ -545,6 +757,16 @@ def _delta_arrow(tone):
 
 
 def c_kpi_strip(p, accent):
+    """Dải KPI một dòng, ảnh chụp nhanh vài chỉ số.
+
+    Trả lời: "Trong một dòng, tình hình đang thế nào?" Dùng mở đầu một trang hoặc
+    đóng một mục, không dùng thay cho phân tích.
+
+    Dữ liệu cần: items dạng {label, value, delta}.
+
+    KHÔNG dùng quá sáu chỉ số, và không dùng khi các chỉ số cần so trực tiếp với nhau
+    theo hàng (dùng cond_table).
+    """
     items = p["items"]; n = len(items)
     fig = plt.figure(figsize=(min(9.5, 2.0 * n + 1.0), 2.7), facecolor=PAPER)
     m = _meta(p, accent)
@@ -571,6 +793,16 @@ def c_kpi_strip(p, accent):
 
 
 def c_hero_stat(p, accent):
+    """Một con số lớn, đặt giữa trang.
+
+    Trả lời: "Nếu người đọc chỉ nhớ một con số của mục này thì đó là số nào?" Cỡ chữ
+    lớn là cách nói rằng số này quan trọng hơn mọi số khác quanh nó.
+
+    Dữ liệu cần: label, value, cộng tuỳ chọn delta, context, tone.
+
+    KHÔNG dùng quá một lần mỗi mục, vì hai con số cùng cỡ lớn thì không con nào lớn
+    nữa.
+    """
     fig = plt.figure(figsize=(7.4, 3.0), facecolor=PAPER)
     m = _meta(p, accent); draw_masthead(fig, m, top=0.94); draw_source(fig, m); setup_fonts()
     fig.text(0.045, 0.46, str(p["value"]), fontsize=52, color=accent, family=MONO,
@@ -587,6 +819,16 @@ def c_hero_stat(p, accent):
 
 
 def c_exec_dashboard(p, accent):
+    """Bảng điều hành một trang, gộp KPI, xu hướng và xếp hạng.
+
+    Trả lời: "Toàn cảnh của hồ sơ này trong một trang là gì?" Dùng làm trang mở của
+    báo cáo dài, để người đọc vội vẫn nắm được khung.
+
+    Dữ liệu cần: kpis, trend, rank.
+
+    KHÔNG dùng cho báo cáo dưới sáu trang, vì khi đó nó lặp lại đúng thứ mà chính báo
+    cáo sắp nói, và không dùng làm nơi chứa mọi số không biết đặt đâu.
+    """
     from matplotlib.gridspec import GridSpec
     fig = plt.figure(figsize=(11.0, 7.2), facecolor=PAPER)
     m = _meta(p, accent); m.setdefault("firm", "CFA STUDY NOTE")

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="534.816pt" height="363.24pt" viewBox="0 0 534.816 363.24" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-08-07T19:38:50.869729</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.9, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 363.24 
+L 534.816 363.24 
+L 534.816 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 157.968 299.16 
+L 502.704 299.16 
+L 502.704 104.76 
+L 157.968 104.76 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 204.802481 299.16 
+L 204.802481 104.76 
+" clip-path="url(#p6b94896659)" style="fill: none; stroke: #dbe2ea; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2"/>
+     <g id="text_1">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #42566a" x="204.802481" y="309.32" transform="rotate(-0 204.802481 309.32)">35</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 258.266501 299.16 
+L 258.266501 104.76 
+" clip-path="url(#p6b94896659)" style="fill: none; stroke: #dbe2ea; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4"/>
+     <g id="text_2">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #42566a" x="258.266501" y="309.32" transform="rotate(-0 258.266501 309.32)">40</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 311.730521 299.16 
+L 311.730521 104.76 
+" clip-path="url(#p6b94896659)" style="fill: none; stroke: #dbe2ea; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6"/>
+     <g id="text_3">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #42566a" x="311.730521" y="309.32" transform="rotate(-0 311.730521 309.32)">45</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 365.194541 299.16 
+L 365.194541 104.76 
+" clip-path="url(#p6b94896659)" style="fill: none; stroke: #dbe2ea; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8"/>
+     <g id="text_4">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #42566a" x="365.194541" y="309.32" transform="rotate(-0 365.194541 309.32)">50</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_9">
+      <path d="M 418.658561 299.16 
+L 418.658561 104.76 
+" clip-path="url(#p6b94896659)" style="fill: none; stroke: #dbe2ea; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10"/>
+     <g id="text_5">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #42566a" x="418.658561" y="309.32" transform="rotate(-0 418.658561 309.32)">55</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_11">
+      <path d="M 472.122581 299.16 
+L 472.122581 104.76 
+" clip-path="url(#p6b94896659)" style="fill: none; stroke: #dbe2ea; stroke-width: 0.6; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_12"/>
+     <g id="text_6">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #42566a" x="472.122581" y="309.32" transform="rotate(-0 472.122581 309.32)">60</text>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_13"/>
+     <g id="text_7">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #051c2c" x="154.468" y="270.09" transform="rotate(-0 154.468 270.09)">DCF</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_14"/>
+     <g id="text_8">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #051c2c" x="154.468" y="238.23" transform="rotate(-0 154.468 238.23)">Giao dịch tiền lệ</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_15"/>
+     <g id="text_9">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #051c2c" x="154.468" y="205.29" transform="rotate(-0 154.468 205.29)">EV/EBITDA so sánh</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_16"/>
+     <g id="text_10">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #051c2c" x="154.468" y="172.89" transform="rotate(-0 154.468 172.89)">P/E so sánh</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_17"/>
+     <g id="text_11">
+      <text style="font-size: 9px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #051c2c" x="154.468" y="141.169219" transform="rotate(-0 154.468 141.169219)">Khoảng giá 52 tuần</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 311.730521 275.184 
+L 386.580149 275.184 
+L 386.580149 258.336 
+L 311.730521 258.336 
+z
+" clip-path="url(#p6b94896659)" style="fill: #2251ff; opacity: 0.55; stroke: #2251ff; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 322.423325 242.784 
+L 472.122581 242.784 
+L 472.122581 225.936 
+L 322.423325 225.936 
+z
+" clip-path="url(#p6b94896659)" style="fill: #2251ff; opacity: 0.55; stroke: #2251ff; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 301.037717 210.384 
+L 429.351365 210.384 
+L 429.351365 193.536 
+L 301.037717 193.536 
+z
+" clip-path="url(#p6b94896659)" style="fill: #2251ff; opacity: 0.55; stroke: #2251ff; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 279.652109 177.984 
+L 407.965757 177.984 
+L 407.965757 161.136 
+L 279.652109 161.136 
+z
+" clip-path="url(#p6b94896659)" style="fill: #2251ff; opacity: 0.55; stroke: #2251ff; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 194.109677 145.584 
+L 450.736973 145.584 
+L 450.736973 128.736 
+L 194.109677 128.736 
+z
+" clip-path="url(#p6b94896659)" style="fill: #2251ff; opacity: 0.55; stroke: #2251ff; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 157.968 299.16 
+L 502.704 299.16 
+" style="fill: none; stroke: #bbbbbb; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 7.8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #42566a" x="308.730521" y="268.866" transform="rotate(-0 308.730521 268.866)">45</text>
+   </g>
+   <g id="text_13">
+    <text style="font-size: 7.8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #42566a" x="389.580149" y="268.866" transform="rotate(-0 389.580149 268.866)">52</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 7.8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #42566a" x="319.423325" y="236.466" transform="rotate(-0 319.423325 236.466)">46</text>
+   </g>
+   <g id="text_15">
+    <text style="font-size: 7.8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #42566a" x="475.122581" y="236.466" transform="rotate(-0 475.122581 236.466)">60</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 7.8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #42566a" x="298.037717" y="204.066" transform="rotate(-0 298.037717 204.066)">44</text>
+   </g>
+   <g id="text_17">
+    <text style="font-size: 7.8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #42566a" x="432.351365" y="204.066" transform="rotate(-0 432.351365 204.066)">56</text>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 7.8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #42566a" x="276.652109" y="171.666" transform="rotate(-0 276.652109 171.666)">42</text>
+   </g>
+   <g id="text_19">
+    <text style="font-size: 7.8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #42566a" x="410.965757" y="171.666" transform="rotate(-0 410.965757 171.666)">54</text>
+   </g>
+   <g id="text_20">
+    <text style="font-size: 7.8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #42566a" x="191.109677" y="139.266" transform="rotate(-0 191.109677 139.266)">34</text>
+   </g>
+   <g id="text_21">
+    <text style="font-size: 7.8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #42566a" x="453.736973" y="139.266" transform="rotate(-0 453.736973 139.266)">58</text>
+   </g>
+   <g id="text_22">
+    <text style="font-weight: 700; font-size: 8.4px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #051c2c" x="290.344913" y="119.28" transform="rotate(-0 290.344913 119.28)">Giá hiện tại 43</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 8.4px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #b07a10" x="365.194541" y="289.512" transform="rotate(-0 365.194541 289.512)">Mục tiêu 50</text>
+   </g>
+   <g id="line2d_18">
+    <path d="M 290.344913 299.16 
+L 290.344913 104.76 
+" clip-path="url(#p6b94896659)" style="fill: none; stroke: #051c2c; stroke-width: 1.8; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_19">
+    <path d="M 365.194541 299.16 
+L 365.194541 104.76 
+" clip-path="url(#p6b94896659)" style="fill: none; stroke-dasharray: 7.2,5.4; stroke-dashoffset: 0; stroke: #b07a10; stroke-width: 1.8"/>
+   </g>
+  </g>
+  <g id="line2d_20">
+   <path d="M 12.96 12.96 
+L 521.856 12.96 
+" style="fill: none; stroke: #051c2c; stroke-width: 2.6; stroke-linecap: square"/>
+  </g>
+  <g id="line2d_21">
+   <path d="M 12.96 92.16 
+L 521.856 92.16 
+" style="fill: none; stroke: #dbe2ea; stroke-linecap: square"/>
+  </g>
+  <g id="line2d_22">
+   <path d="M 12.96 331.56 
+L 521.856 331.56 
+" style="fill: none; stroke: #dbe2ea; stroke-width: 0.9; stroke-linecap: square"/>
+  </g>
+  <g id="text_24">
+   <text style="font-weight: 700; font-size: 8px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #2251ff" x="12.96" y="40.465" transform="rotate(-0 12.96 40.465)">TAM GIÁC ĐỊNH GIÁ</text>
+  </g>
+  <g id="text_25">
+   <text style="font-weight: 700; font-size: 15.5px; font-family: 'Spectral', 'DejaVu Serif', 'Bitstream Vera Serif', 'Computer Modern Roman', 'New Century Schoolbook', 'Century Schoolbook L', 'Utopia', 'ITC Bookman', 'Bookman', 'Nimbus Roman No9 L', 'Times New Roman', 'Times', 'Palatino', 'Charter', serif; text-anchor: start; fill: #051c2c" x="12.96" y="63.105" transform="rotate(-0 12.96 63.105)">Các phương pháp định giá hội tụ quanh 45-52</text>
+  </g>
+  <g id="text_26">
+   <text style="font-style: italic; font-size: 10px; font-family: 'IBM Plex Sans', 'Liberation Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #42566a" x="12.96" y="85.589375" transform="rotate(-0 12.96 85.589375)">Giá trị hợp lý mỗi cổ phiếu, nghìn đồng</text>
+  </g>
+  <g id="text_27">
+   <text style="font-size: 7.6px; font-family: 'IBM Plex Mono', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Computer Modern Typewriter', 'Andale Mono', 'Nimbus Mono L', 'Courier New', 'Courier', 'Fixed', 'Terminal', monospace; text-anchor: start; fill: #42566a" x="12.96" y="348.76" transform="rotate(-0 12.96 348.76)">Số liệu tại 2026</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p6b94896659">
+   <rect x="157.968" y="104.76" width="344.736" height="194.4"/>
+  </clipPath>
+ </defs>
+</svg>

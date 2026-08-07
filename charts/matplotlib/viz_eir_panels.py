@@ -167,6 +167,15 @@ def _legend(ax, entries, y, x0=0.035, swatch=0.014, gap_after_text=0.028):
 def c_executive_summary(p, accent):
     """2x2 text-quadrant brief. Each quadrant = small colored heading + short serif
     sub-headline + 2-3 body lines; hairline cross-dividers inside one pale ground.
+
+    Trả lời: "Bốn ý phải nhớ của hồ sơ này là gì?" Bốn ô văn bản, không có số liệu
+    nào chen vào.
+
+    Dữ liệu cần: quadrants gồm bốn ô, mỗi ô có tiêu đề và vài dòng. Tuỳ chọn
+    emphasize để nhấn một ô.
+
+    KHÔNG dùng khi bốn ý chưa thật sự chốt, vì bố cục bốn ô cân đối khẳng định rằng
+    chúng ngang tầm nhau và đã được cân nhắc xong.
     params: quadrants=[{title, tone, body, headline?}] (len 4); emphasize? (0-3)."""
     quads = p["quadrants"][:4]
     while len(quads) < 4:
@@ -237,6 +246,15 @@ def c_executive_summary(p, accent):
 def c_scenario_cards(p, accent):
     """3 side-by-side scenario columns (bear / base / bull). Each: colored header bar,
     probability % (top), large outcome value, 2-4 bullets. Base column emphasized.
+
+    Trả lời: "Ba kịch bản cho ra giá trị nào, và xác suất mỗi kịch bản bao nhiêu?"
+    Ba cột: bi quan, cơ sở, lạc quan.
+
+    Dữ liệu cần: cards dạng {name, value, prob, bullets}, cộng value_label và định
+    dạng số.
+
+    KHÔNG dùng khi xác suất chưa có cơ sở, vì ba con số phần trăm cộng lại tròn 100
+    trông rất giống một mô hình đã hiệu chỉnh.
     params: cards=[{name, prob, value, tone, bullets[], emphasize?, badge?}]."""
     cards = p["cards"]
     n = len(cards)
@@ -310,6 +328,13 @@ def c_scenario_cards(p, accent):
 def c_swot(p, accent):
     """2x2 SWOT. Điểm mạnh (TEAL) / Điểm yếu (BRICK) / Cơ hội (GOLD) / Thách thức (NAVY).
     Each quadrant: filled colored header + bullet list; flat card grounds + hairline borders.
+
+    Trả lời: "Điểm mạnh, điểm yếu, cơ hội và thách thức của đối tượng này là gì?"
+
+    Dữ liệu cần: strengths, weaknesses, opportunities, threats, mỗi mục vài dòng.
+
+    KHÔNG dùng cho báo cáo phân tích định lượng, vì bốn ô SWOT nhận mọi nội dung mà
+    không ép ai chứng minh gì, nên nó dễ thành chỗ chứa ý chưa chín.
     params: strengths[], weaknesses[], opportunities[], threats[] (each 3-4 items)."""
     S_ = p.get("strengths", []); W = p.get("weaknesses", [])
     O = p.get("opportunities", []); T = p.get("threats", [])
@@ -388,6 +413,15 @@ def c_swot(p, accent):
 def c_comparison(p, accent):
     """2-column structured comparison (A vs B). A header bar per column, aligned rows of
     attribute text (main line + optional italic sub), a center hairline + 'vs' badge.
+
+    Trả lời: "Hai phương án khác nhau ở những điểm nào?" Hai cột, các dòng thẳng
+    hàng nhau nên so được từng cặp.
+
+    Dữ liệu cần: left và right cùng số dòng và cùng thứ tự tiêu chí, cộng tông màu
+    mỗi bên.
+
+    KHÔNG dùng khi hai bên không có cùng bộ tiêu chí, vì hàng thẳng nhau khẳng định
+    rằng hai ô cùng hàng nói về cùng một thứ.
     params: left={title, items[{text, sub?}]}, right={title, items[...]}."""
     L = p["left"]; R = p["right"]
     lcol = _tone(p.get("left_tone"), accent) if p.get("left_tone") else INDIGO
@@ -451,6 +485,15 @@ def c_comparison(p, accent):
 def c_dupont(p, accent):
     """Equation-of-cards decomposition: Result = A x B x C. Navy result card, flat pale
     factor cards each with a colored top rule; joined by = and x operators.
+
+    Trả lời: "Chỉ số tổng hợp này được tạo bởi những cấu phần nhân với nhau nào, và
+    cấu phần nào kéo nó đi?" Dạng phương trình bằng thẻ.
+
+    Dữ liệu cần: result là kết quả, factors là các nhân tử, tích của chúng phải ra
+    đúng result.
+
+    KHÔNG dùng khi tích các nhân tử không khớp kết quả, dù chỉ lệch do làm tròn, vì
+    cả sức thuyết phục của hình nằm ở chỗ phương trình đúng.
     params: result={label, value}, factors=[{label, value, sub, fmt?, dp?}]."""
     res = p["result"]; facs = p["factors"]
     fig = plt.figure(figsize=(11.2, 5.6), facecolor=PAPER)
@@ -522,6 +565,16 @@ def c_dupont(p, accent):
 def c_before_after(p, accent):
     """2-state hero transition: big number (left) -> arrow with delta -> big number (right),
     centered metric title, caption line. params: left={value,label}, right={value,label},
+
+    Trả lời: "Con số này đi từ đâu tới đâu, và chênh bao nhiêu?" Hai con số lớn với
+    một mũi tên ở giữa.
+
+    Dữ liệu cần: left, right cùng đơn vị, metric là tên chỉ tiêu, cộng delta hoặc
+    pct_change.
+
+    KHÔNG dùng cho hơn một chỉ tiêu trong cùng một hình, và không dùng khi hai mốc
+    không so sánh được về phạm vi, ví dụ một mốc gồm công ty con mới hợp nhất còn mốc
+    kia thì không.
     delta, tone, caption, metric?, pct_change?, unit?."""
     L = p["left"]; R = p["right"]
     tone = _tone(p.get("tone", "good"), accent)
@@ -593,6 +646,15 @@ def c_status_strip(p, accent):
     """Compliance/covenant table: rows of {metric, value, threshold, status}. Status = a
     colored badge Đạt (TEAL) / Cảnh báo (GOLD) / Vi phạm (BRICK). Aligned columns,
     hairline row rules, colored left-edge tabs. params: rows=[{metric, value, threshold,
+
+    Trả lời: "Từng giao ước hoặc ngưỡng tuân thủ đang đạt hay vi phạm?" Bảng trạng
+    thái, mỗi dòng một ngưỡng.
+
+    Dữ liệu cần: rows dạng {metric, value, threshold, status}, cộng nhãn và màu cho
+    từng trạng thái.
+
+    KHÔNG dùng khi ngưỡng chỉ là mục tiêu nội bộ chứ không phải cam kết thật, vì bảng
+    trạng thái đọc ra như một báo cáo tuân thủ có ràng buộc pháp lý.
     status, value_fmt?}]."""
     rows = p["rows"]
     n = len(rows)

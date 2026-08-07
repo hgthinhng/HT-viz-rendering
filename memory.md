@@ -11,7 +11,7 @@ Nghiệm thu gần nhất, chạy thật chứ không chép lại:
 
 | Lệnh | Kết quả |
 |---|---|
-| `npm test` | 103 pass, 0 fail |
+| `npm test` | 109 pass, 0 fail |
 | `npm run verify` | exit 0, mọi gate PASS và 2 SKIP có ghi rõ lý do |
 | `python3 -m pytest tests/ -q` | 48 passed |
 | `npm run mau` | 6 trang, 169 nét vẽ, 0 ảnh raster, 10 gate PASS ở bản nội bộ và 9 PASS 1 SKIP ở bản gửi đi |
@@ -228,6 +228,30 @@ mọi lỗi phát sinh trong file tên kiểu `annotate-demo.js`. Schema chart c
 một bẫy nhỏ: `strip("|")` của Python bỏ NHIỀU pipe liên tiếp, nên hàng kết thúc bằng ô gộp
 bị mất một cột mà bảng vẫn hiện ra bình thường.
 
+## Mục lục thư viện, để phiên sau không phải dò lại
+
+`catalog/CATALOG.md` liệt kê cả 108 tài sản dưới một dạng, mỗi dòng ghi mã, trả lời câu
+hỏi gì, và khi nào đừng dùng. `catalog/INDEX.json` là bản máy đọc. `catalog/contact-sheet.pdf`
+là 50 bản xem trước để nhìn cả kho một lượt. Cả ba sinh tự động bằng
+`scripts/sinh_catalog.py`, `scripts/sinh_xem_truoc.py` và `scripts/sinh_contact_sheet.py`,
+có test ép khớp mã nguồn nên không trôi được.
+
+Dựng chúng đòi lấp một lỗ hổng thật: **50 trên 50 component matplotlib không có mô tả nào
+dùng được**, 28 cái không có lấy một dòng docstring. Nay cả 50 đều ghi rõ trả lời câu hỏi
+gì, cần dữ liệu gì, và khi nào KHÔNG nên dùng.
+
+Hai lỗi bắt được nhờ chính contact sheet, cả hai đều nằm sẵn trong thư viện từ trước:
+
+- **`c_sensitivity_grid` và `c_correlation_matrix` dùng `imshow`**, tức nhúng một ảnh
+  BITMAP vào SVG. Báo cáo nào dùng hai component đó đều sẽ vi phạm luật vector và bị gate
+  RASTER chặn. Đo được: bản cũ cho một ảnh 1216x511 trong PDF. Đã thay bằng `Rectangle` và
+  `axvspan`, nay 0 ảnh.
+- **CSS Grid phân trang rất tệ trong WeasyPrint**: mỗi hàng grid bị đẩy sang một trang
+  mới, 29 ô ra 9 trang với hai phần ba mỗi trang bỏ trống. `inline-block` phân trang bình
+  thường. Kèm hai chi tiết nhỏ: ba ô `32,4% + 1,4%` cộng lại vượt 100% nên mỗi hàng chỉ
+  chứa hai ô, và SVG không khai `width`/`height` thì không co theo ô mà giữ nguyên cỡ px
+  của viewBox.
+
 ## Sổ nợ, chưa chặn ai
 
 - Em-dash trong `_harvest/` giữ nguyên, đó là bản gốc để còn đối chiếu. Repo chính đã sạch
@@ -241,6 +265,11 @@ bị mất một cột mà bảng vẫn hiện ra bình thường.
   thật. Báo cáo hiện chép preset vào `hinh/` của mình rồi thay số, và cách đó đúng tinh thần
   "preset là ý tham khảo" nhưng chưa tiện. Cân nhắc ở Phase 3.
 - Bảng markdown chưa hỗ trợ ô gộp HÀNG (`rowspan`), mới chỉ gộp cột. Chưa gặp bài cần tới.
+- 29 trên 50 component matplotlib chưa có bản xem trước, vì chúng không có bộ tham số ví
+  dụ trong `spec_showcase.json`. Contact sheet liệt kê tên chúng kèm lý do thay vì để ô
+  trống. Thêm ví dụ cho chúng là việc còn lại.
+- `c_sensitivity_grid` dùng bảng màu ấm `_cmap_warm()` trong khi repo đã chốt bảng màu
+  lạnh. Chưa đụng vì nó nằm ngoài phạm vi đợt này.
 
 ## Các phase sau
 

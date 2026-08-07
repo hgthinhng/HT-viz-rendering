@@ -119,6 +119,19 @@ def _smooth(x, y, k=14):
 
 # ================================================================ 1. correlation
 def c_correlation_matrix(p, accent):
+    """Ma trận tương quan, quan hệ từng cặp trong một rổ.
+
+    Trả lời: "Cặp nào đi cùng nhau, cặp nào ngược nhau, và rổ này thật sự phân tán
+    hay chỉ phân tán trên danh nghĩa?"
+
+    Dữ liệu cần: labels, values là ma trận vuông đối xứng. Tuỳ chọn short_labels cho
+    nhãn trục khi tên dài.
+
+    KHÔNG dùng khi cửa sổ tính tương quan ngắn hơn khoảng ba mươi quan sát, vì hệ số
+    khi đó dao động mạnh tới mức bảng đổi màu chỉ vì đổi kỳ tính. Và nhớ rằng tương
+    quan trong giai đoạn bình thường không nói gì về tương quan lúc thị trường vỡ, là
+    đúng lúc người đọc cần nó nhất.
+    """
     labels = list(p["labels"]); n = len(labels)
     raw = np.array(p["values"], float)
     # accept full matrix or lower-tri (fill symmetric); force diagonal = 1.0
@@ -172,8 +185,13 @@ def c_correlation_matrix(p, accent):
 
     # small diverging legend strip under the matrix
     cax = fig.add_axes([0.235, 0.135, 0.30, 0.018])
-    grad = np.linspace(-1, 1, 200).reshape(1, -1)
-    cax.imshow(grad, aspect="auto", cmap=cmap, norm=norm, extent=[-1, 1, 0, 1])
+    # Thanh chu giai ve bang 200 dai mong chu KHONG dung imshow: imshow nhung mot anh
+    # bitmap vao SVG, va gate RASTER cua repo doi 0 anh trong ban PDF giao di.
+    _canh = np.linspace(-1, 1, 201)
+    for _k in range(len(_canh) - 1):
+        cax.axvspan(_canh[_k], _canh[_k + 1],
+                    color=cmap(norm((_canh[_k] + _canh[_k + 1]) / 2)), linewidth=0)
+    cax.set_xlim(-1, 1); cax.set_ylim(0, 1)
     cax.set_yticks([]); cax.set_xticks([-1, 0, 1])
     cax.set_xticklabels([_cfmt(-1.0), _cfmt(0.0), _cfmt(1.0)], fontsize=7.6, color=MUTED,
                         family=MONO)
@@ -199,6 +217,18 @@ def _cfmt(v):
 
 # ================================================================ 2. distribution
 def c_distribution(p, accent):
+    """Phân phối một chuỗi, kèm trung bình, độ lệch chuẩn và ngưỡng đuôi.
+
+    Trả lời: "Chuỗi này phân bố ra sao, đuôi trái dày cỡ nào, và ngưỡng tổn thất nằm
+    ở đâu?"
+
+    Dữ liệu cần: data là chuỗi quan sát thật, cộng x_label. Tuỳ chọn mean, sd,
+    var_pct để vẽ vạch ngưỡng.
+
+    KHÔNG dùng khi mẫu quá ngắn để hình dạng có nghĩa, và đừng vẽ vạch độ lệch chuẩn
+    lên một phân phối lệch rõ, vì độ lệch chuẩn khi đó mô tả sai chính cái đuôi mà
+    người đọc đang quan tâm.
+    """
     mean = float(p.get("mean", 0.0)); sd = float(p.get("sd", 1.0))
     var_pct = float(p.get("var_pct", 0.05))
     yf = p.get("y_format", "pct")
@@ -304,6 +334,18 @@ def _pf(v, yf, p):
 
 # ==================================================================== 3. tornado
 def c_tornado(p, accent):
+    """Tornado, biến nào lay chuyển kết quả mạnh nhất.
+
+    Trả lời: "Trong các giả định, biến nào đáng tranh luận nhất?" Xếp theo biên độ
+    giảm dần nên biến quan trọng nhất luôn nằm trên cùng.
+
+    Dữ liệu cần: rows dạng {variable, low, high}, base là kết quả kịch bản cơ sở,
+    cộng base_label, low_name, high_name, x_label.
+
+    KHÔNG dùng khi khoảng thay đổi của mỗi biến không được chọn nhất quán, vì khi đó
+    thứ tự thanh chỉ phản ánh việc ai nới khoảng rộng hơn chứ không phản ánh độ nhạy
+    thật.
+    """
     base = float(p["base"]); rows = p["rows"]
     # sort by |high - low| descending → biggest swing on top
     rows = sorted(rows, key=lambda r: abs(float(r["high"]) - float(r["low"])),
@@ -353,6 +395,16 @@ def c_tornado(p, accent):
 
 # =========================================================== 4. spc_control_chart
 def c_spc_control_chart(p, accent):
+    """Biểu đồ kiểm soát, chuỗi so với dải kiểm soát.
+
+    Trả lời: "Biến động này nằm trong dao động thường lệ hay đã vượt ngưỡng?" Ba
+    đường tâm, trên và dưới biến câu hỏi cảm tính thành một phép so ngưỡng.
+
+    Dữ liệu cần: x, values, center, ucl, lcl cộng các nhãn tương ứng.
+
+    KHÔNG dùng khi ngưỡng được đặt sau khi đã nhìn dữ liệu, vì khi đó mọi điểm vượt
+    ngưỡng đều là điều hiển nhiên chứ không phải phát hiện.
+    """
     x = p["x"]; vals = np.array(p["values"], float)
     numeric = all(isinstance(v, (int, float)) for v in x)
     xs = np.array(x, float) if numeric else np.arange(len(x))
@@ -420,6 +472,17 @@ def c_spc_control_chart(p, accent):
 
 # ================================================================= 5. seasonality
 def c_seasonality(p, accent):
+    """Hình mùa vụ, dải cao thấp theo kỳ trong năm.
+
+    Trả lời: "Kỳ nào trong năm thường mạnh, kỳ nào thường yếu, và biên độ mùa vụ rộng
+    cỡ nào?"
+
+    Dữ liệu cần: periods, mean, hi, lo cùng đơn vị, cộng unit_label. Tuỳ chọn
+    peak_label, trough_label để đặt tên đỉnh đáy.
+
+    KHÔNG dùng khi lịch sử dưới ba chu kỳ đầy đủ, vì ba năm không đủ tách mùa vụ khỏi
+    xu hướng, và hình sẽ khẳng định một quy luật lặp lại chưa hề được chứng minh.
+    """
     periods = list(p["periods"]); n = len(periods)
     mean = np.array(p["mean"], float); lo = np.array(p["lo"], float)
     hi = np.array(p["hi"], float)
@@ -476,6 +539,17 @@ def c_seasonality(p, accent):
 
 # ================================================================= 6. candlestick
 def c_candlestick(p, accent):
+    """Nến giá, mở cao thấp đóng theo từng kỳ.
+
+    Trả lời: "Trong từng kỳ, giá đi tới đâu và đóng ở đâu so với mở?" Bóng nến giữ
+    lại biên độ trong kỳ mà đường giá đóng cửa vứt mất.
+
+    Dữ liệu cần: rows dạng {label, open, high, low, close}, cộng y_label và tên hai
+    chiều tăng giảm.
+
+    KHÔNG dùng quá khoảng sáu mươi kỳ trên một khổ giấy, vì thân nến mỏng dưới một
+    điểm ảnh thì bóng và thân nhập làm một.
+    """
     rows = p["rows"]; n = len(rows)
     x = np.arange(n)
     o = np.array([float(r["o"]) for r in rows]); h = np.array([float(r["h"]) for r in rows])
@@ -513,6 +587,18 @@ def c_candlestick(p, accent):
 
 # =============================================================== 7. spread_ladder
 def c_spread_ladder(p, accent):
+    """Thang chênh lệch tín dụng theo hạng.
+
+    Trả lời: "Chênh lệch tín dụng giãn ra bao nhiêu khi tụt một bậc xếp hạng, và bậc
+    nào là bậc gãy?"
+
+    Dữ liệu cần: ratings, spreads_bps, cộng x_label. Tuỳ chọn ref là mốc tham chiếu,
+    highlight để nhấn một bậc.
+
+    KHÔNG dùng khi các bậc lấy từ những thị trường hoặc kỳ hạn khác nhau, vì thang
+    khi đó trộn hai đường cong vào một và bậc gãy hiện ra chỉ là dấu vết của việc
+    trộn.
+    """
     ratings = list(p["ratings"]); spreads = list(map(float, p["spreads_bps"]))
     ref = p.get("ref"); n = len(ratings)
     hl = p.get("highlight")  # e.g. "BBB" investment/speculative boundary

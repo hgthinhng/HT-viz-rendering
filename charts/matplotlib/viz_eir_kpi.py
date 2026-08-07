@@ -122,6 +122,14 @@ def _sparkline_legend(fig, y=0.10, accent=None,
 def c_kpi_card_with_sparkline(p, accent):
     """Grid of KPI cards; each = label + big MONO value + delta (▲▼) + sparkline beneath
     + a small italic caption. Flat cream cells with a GOLD left accent bar and hairline
+
+    Trả lời: "Mỗi chỉ số đang ở mức nào, đổi bao nhiêu, và đường đi vừa qua ra sao?"
+    Sparkline cho hướng, con số cho mức.
+
+    Dữ liệu cần: cards dạng {label, value, delta, spark}, ncols để chia lưới.
+
+    KHÔNG dùng khi sparkline dưới khoảng tám điểm, vì đường quá ngắn không cho biết
+    xu hướng mà chỉ trang trí cho con số.
     frame (no shadow / no rounding)."""
     from matplotlib.gridspec import GridSpec
     cards = p["cards"]
@@ -180,6 +188,14 @@ def c_kpi_card_with_sparkline(p, accent):
 def c_sparkline_row(p, accent):
     """Compact table: one row per metric = label | inline sparkline | value (MONO) |
     status word (tăng/giảm/đi ngang, tone-coloured) + delta arrow. Hairline dividers
+
+    Trả lời: "Nhiều chỉ số cùng lúc thì cái nào đang đi lên, cái nào đi xuống?" Bảng
+    gọn, mỗi dòng một chỉ số.
+
+    Dữ liệu cần: rows dạng {label, spark, value, delta}.
+
+    KHÔNG dùng khi các chỉ số cần so trực tiếp về ĐỘ LỚN với nhau, vì mỗi sparkline
+    tự co giãn theo thang riêng của nó.
     between rows; merges the sparkline_row + inline_sparkline_text ideas into one row."""
     rows = p["rows"]
     n = len(rows)
@@ -248,6 +264,14 @@ def c_annotated_narrative(p, accent):
     emphasised inline (bold + tone colour, teal up, brick down, indigo emphasis, steel
     neutral). Runs are laid out line-by-line with a running x cursor (advance by an
     estimated width), wrapping at the right margin; a gold left-bar frames the block and
+
+    Trả lời: "Đoạn bình luận này, con số nào là con số đáng nhớ?" Đoạn văn có vài
+    cụm số được nhấn ngay trong dòng chữ.
+
+    Dữ liệu cần: runs là danh sách đoạn chữ, đoạn nào là số thì đánh dấu để nhấn.
+
+    KHÔNG dùng để nhấn quá ba cụm trong một đoạn, vì nhấn hết thì không cụm nào được
+    nhấn.
     a 4-item legend sits beneath."""
     runs = p["runs"]                      # list of [text, tone|None, bold]
     fig = plt.figure(figsize=(9.8, float(p.get("height", 5.4))), facecolor=PAPER)
@@ -335,6 +359,16 @@ def c_anomaly_callout(p, accent):
     head + wrapped body) with a short connector pointing at an anomaly point that is marked
     with a hollow ring + solid core (BRICK for a negative event, GOLD otherwise) and a
     dotted drop-line to the axis. Body text is wrapped to a fixed char budget so the box
+
+    Trả lời: "Chuỗi này có một điểm bất thường, nó nằm ở đâu và vì sao?" Đúng MỘT
+    chú thích, gắn vào đúng một điểm.
+
+    Dữ liệu cần: x, values, anomaly_index là chỉ số điểm bất thường, note là lời giải
+    thích.
+
+    KHÔNG dùng khi có nhiều hơn một điểm đáng chú thích, vì hình cố ý chỉ mang một
+    chú thích; nhiều điểm thì dùng line có chú thích của bên ECharts hoặc tách bảng
+    dòng thời gian.
     stays a tidy vertical card (never a page-wide flat strip)."""
     import textwrap
     x = p["x"]
@@ -413,6 +447,13 @@ def c_anomaly_callout(p, accent):
 def c_stat_dashboard(p, accent):
     """KPI dashboard header: 3-4 big-stat cells (label + big MONO value + delta + italic
     caption) separated by vertical hairlines, EACH carrying a tiny spark or bar strip.
+
+    Trả lời: "Ba tới bốn con số mở đầu của mục này là gì?" Dải đầu trang, cỡ chữ lớn.
+
+    Dữ liệu cần: stats dạng {label, value, delta, note}, per_row để chia cột.
+
+    KHÔNG dùng quá bốn ô một hàng, vì con số thứ năm trở đi không còn đủ chỗ để giữ
+    cỡ chữ lớn, và mất cỡ chữ lớn thì mất luôn lý do dùng khối này.
     Richer sibling of kpi_strip; supports a 2-row option via `rows`."""
     stats = p["stats"]
     n = len(stats)

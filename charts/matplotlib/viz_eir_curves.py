@@ -238,6 +238,16 @@ def c_yield_curve(p, accent):
     giam thi to doan do BRICK + gan badge bps. Neu p["inversions"] duoc cung cap them, moi
     muc la mot NHAN THU CONG bo sung (vi du 2s10s kinh dien khi 2 dau khong lien ke nhau
     tren truc do co ky han khac chen giua) - khong thay the phat hien tu dong.
+
+    Trả lời: "Đường cong lợi suất đang dốc lên hay đảo ngược, và nó đã dịch thế nào
+    so với kỳ trước?" Tối đa ba lớp chồng nhau cho ba thời điểm.
+
+    Dữ liệu cần: tenors, snapshots dạng {name, points}, mỗi điểm mang value và
+    do_tin_cay ở cấp điểm.
+
+    KHÔNG dùng quá ba lớp, vì lớp thứ tư trở đi làm mất hẳn khả năng đọc chiều dịch
+    chuyển. Và mọi báo cáo dùng hình này phải ghép thêm bảng số liệu, vì đọc chênh
+    lệch vài điểm cơ bản trên trục không phải là phép đọc chart làm được.
     """
     unit = p.get("unit", "phan_tram")
     dp = p.get("dp", 2)
@@ -431,6 +441,15 @@ def c_futures_curve(p, accent):
     "liquid" (mac dinh True) la loi tat cho "tier": liquid=False tuong duong tier=
     "uoc-tinh" (marker rong, doan net dut), dung CHINH quy tac tin cay cua c_yield_curve
     (muc 4.1: "ap dung quy tac ky han thua o muc 5"), khong tao mot quy uoc rieng.
+
+    Trả lời: "Đường cong kỳ hạn đang contango hay backwardation, và chi phí quay vòng
+    hợp đồng là bao nhiêu?"
+
+    Dữ liệu cần: contracts dạng {month, price, do_tin_cay}, spot là giá giao ngay,
+    unit lấy từ từ vựng schema.
+
+    KHÔNG dùng cho hàng hoá mà kỳ hạn xa gần như không có giao dịch, vì đường nối
+    những mức giá không ai giao dịch tạo ra một hình dạng thị trường không tồn tại.
     """
     contracts = list(p["contracts"])
     if not contracts:

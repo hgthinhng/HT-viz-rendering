@@ -22,7 +22,7 @@
   <g class="scene">
     <path class="coastline"
       d="M292.66,108.189L268.713,118.379L258.341,133.596L237.903,131.233L231.039,163.459L208.313,179.281L193.06,222.964L204.347,243.7L230.124,268.557L229.361,278.602L259.104,315.119L294.948,340.141L328.503,382.118L348.942,448.782L347.569,473.902L355.043,503.485L345.434,501.45L344.519,541.331L335.52,558.146L262.46,598.664L228.751,602.926L242.326,610.773L225.091,634.885L187.874,654.711L171.554,674.661L156.911,676L160.114,632.721L170.639,620.034L142.421,598.066L160.267,592.755L167.588,577.56L198.704,573.14L215.939,581.529L202.974,559.946L209.228,539.904L226.463,542.533L226.616,531.712L268.103,518.172L274.967,506.047L277.102,467.023L265.358,436.957L273.441,411.668L279.085,387.532L259.409,361.881L268.256,352.855L240.343,334.774L230.276,312.582L154.623,230.271L119.847,206.223L125.643,191.164L147.455,194.053L163.622,175.681L148.98,147.286L126.559,133.911L108.866,145.006L86.292,136.195L75.615,119.168L79.733,100.278L69.056,101.149L44.957,68.381L57.617,52.134L82.173,65.04L94.681,50.699L120.61,61.139L157.979,43.995L178.265,24L202.364,43.436L242.021,50.06L231.802,67.666L237.14,86.729L266.273,103.602Z"
-      fill="#e2e8f0" stroke="#0f172a" stroke-width="1.6"/>
+      fill="var(--ilus-8, #e2e8f0)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.6"/>
 
     <path class="mekong-delta-highlight" clip-path="url(#vn-south-clip)"
       d="M292.66,108.189L268.713,118.379L258.341,133.596L237.903,131.233L231.039,163.459L208.313,179.281L193.06,222.964L204.347,243.7L230.124,268.557L229.361,278.602L259.104,315.119L294.948,340.141L328.503,382.118L348.942,448.782L347.569,473.902L355.043,503.485L345.434,501.45L344.519,541.331L335.52,558.146L262.46,598.664L228.751,602.926L242.326,610.773L225.091,634.885L187.874,654.711L171.554,674.661L156.911,676L160.114,632.721L170.639,620.034L142.421,598.066L160.267,592.755L167.588,577.56L198.704,573.14L215.939,581.529L202.974,559.946L209.228,539.904L226.463,542.533L226.616,531.712L268.103,518.172L274.967,506.047L277.102,467.023L265.358,436.957L273.441,411.668L279.085,387.532L259.409,361.881L268.256,352.855L240.343,334.774L230.276,312.582L154.623,230.271L119.847,206.223L125.643,191.164L147.455,194.053L163.622,175.681L148.98,147.286L126.559,133.911L108.866,145.006L86.292,136.195L75.615,119.168L79.733,100.278L69.056,101.149L44.957,68.381L57.617,52.134L82.173,65.04L94.681,50.699L120.61,61.139L157.979,43.995L178.265,24L202.364,43.436L242.021,50.06L231.802,67.666L237.14,86.729L266.273,103.602Z"
@@ -37,23 +37,23 @@
          nhúng vào nền tối phải đổi màu stroke tương ứng. -->
     <g class="cities" font-family="'Be Vietnam Pro',sans-serif" font-size="14" font-weight="600">
       <g class="city">
-        <circle cx="202.0" cy="130.0" r="6" fill="var(--accent)" stroke="#0f172a" stroke-width="1.2"/>
-        <text x="214" y="134" fill="#0f172a" stroke="#ffffff" stroke-width="4" paint-order="stroke" stroke-linejoin="round">Hà Nội</text>
+        <circle cx="202.0" cy="130.0" r="6" fill="var(--accent)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
+        <text x="214" y="134" fill="var(--ilus-1, #0f172a)" stroke="#ffffff" stroke-width="4" paint-order="stroke" stroke-linejoin="round">Hà Nội</text>
       </g>
       <g class="city">
-        <circle cx="303.1" cy="352.4" r="6" fill="var(--accent)" stroke="#0f172a" stroke-width="1.2"/>
-        <text x="315" y="356" fill="#0f172a" stroke="#ffffff" stroke-width="4" paint-order="stroke" stroke-linejoin="round">Đà Nẵng</text>
+        <circle cx="303.1" cy="352.4" r="6" fill="var(--accent)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
+        <text x="315" y="356" fill="var(--ilus-1, #0f172a)" stroke="#ffffff" stroke-width="4" paint-order="stroke" stroke-linejoin="round">Đà Nẵng</text>
       </g>
       <g class="city">
-        <circle cx="235.7" cy="580.3" r="6" fill="var(--accent)" stroke="#0f172a" stroke-width="1.2"/>
-        <text x="247" y="584" fill="#0f172a" stroke="#ffffff" stroke-width="4" paint-order="stroke" stroke-linejoin="round">TP.HCM</text>
+        <circle cx="235.7" cy="580.3" r="6" fill="var(--accent)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
+        <text x="247" y="584" fill="var(--ilus-1, #0f172a)" stroke="#ffffff" stroke-width="4" paint-order="stroke" stroke-linejoin="round">TP.HCM</text>
       </g>
     </g>
 
     <g class="compass" transform="translate(345,60)" opacity="0.6">
-      <line x1="0" y1="14" x2="0" y2="-14" stroke="#0f172a" stroke-width="1.4"/>
-      <path d="M0,-14 L5,-4 L0,-7 L-5,-4 Z" fill="#0f172a"/>
-      <text x="0" y="28" font-family="'IBM Plex Mono',monospace" font-size="10" fill="#475569" text-anchor="middle">B</text>
+      <line x1="0" y1="14" x2="0" y2="-14" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4"/>
+      <path d="M0,-14 L5,-4 L0,-7 L-5,-4 Z" fill="var(--ilus-1, #0f172a)"/>
+      <text x="0" y="28" font-family="'IBM Plex Mono',monospace" font-size="10" fill="var(--ilus-4, #475569)" text-anchor="middle">B</text>
     </g>
   </g>
 </svg>

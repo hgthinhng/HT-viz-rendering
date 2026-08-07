@@ -3,11 +3,11 @@
   <desc>Cột điện lưới cao thế dạng giàn thép ở bên trái, nối bằng đường dây tới turbine điện gió 3 cánh ở bên phải. Dùng minh hoạ ngành điện và năng lượng tái tạo. Cột điện là nút thắt cổ chai vật lý thật của việc giải toả công suất gió.</desc>
   <g class="scene">
     <g class="ground">
-      <rect x="0" y="550" width="500" height="90" fill="#cbd5e1"/>
-      <rect x="0" y="550" width="500" height="5" fill="#94a3b8"/>
+      <rect x="0" y="550" width="500" height="90" fill="var(--ilus-7, #cbd5e1)"/>
+      <rect x="0" y="550" width="500" height="5" fill="var(--ilus-6, #94a3b8)"/>
     </g>
 
-    <g class="pylon" fill="none" stroke="#0f172a" stroke-width="2">
+    <g class="pylon" fill="none" stroke="var(--ilus-1, #0f172a)" stroke-width="2">
       <path d="M70,550 L92,300 L75,150 L100,120 L125,150 L108,300 L130,550 Z"/>
       <line x1="80" y1="470" x2="120" y2="470" stroke-width="1.6"/>
       <line x1="70" y1="550" x2="120" y2="470" stroke-width="1.6"/>
@@ -16,15 +16,15 @@
       <line x1="92" y1="300" x2="116" y2="390" stroke-width="1.2"/>
       <line x1="108" y1="300" x2="84" y2="390" stroke-width="1.2"/>
       <line x1="82" y1="230" x2="118" y2="230" stroke-width="1.2"/>
-      <rect x="50" y="150" width="100" height="8" fill="#334155" stroke="#0f172a" stroke-width="1"/>
-      <rect x="60" y="172" width="80" height="7" fill="#334155" stroke="#0f172a" stroke-width="1"/>
+      <rect x="50" y="150" width="100" height="8" fill="var(--ilus-3, #334155)" stroke="var(--ilus-1, #0f172a)" stroke-width="1"/>
+      <rect x="60" y="172" width="80" height="7" fill="var(--ilus-3, #334155)" stroke="var(--ilus-1, #0f172a)" stroke-width="1"/>
       <g stroke-width="1.4">
         <line x1="58" y1="158" x2="58" y2="176"/>
         <line x1="142" y1="158" x2="142" y2="176"/>
         <line x1="68" y1="179" x2="68" y2="195"/>
         <line x1="132" y1="179" x2="132" y2="195"/>
       </g>
-      <g fill="#94a3b8" stroke-width="1">
+      <g fill="var(--ilus-6, #94a3b8)" stroke-width="1">
         <ellipse cx="58" cy="179" rx="4" ry="3"/>
         <ellipse cx="142" cy="179" rx="4" ry="3"/>
         <ellipse cx="68" cy="198" rx="4" ry="3"/>
@@ -32,24 +32,24 @@
       </g>
     </g>
 
-    <g class="power-lines" fill="none" stroke="#334155" stroke-width="1.2" opacity="0.75">
+    <g class="power-lines" fill="none" stroke="var(--ilus-3, #334155)" stroke-width="1.2" opacity="0.75">
       <path d="M58,179 Q210,230 313,220"/>
       <path d="M68,198 Q210,246 313,235"/>
       <path d="M142,179 Q230,205 313,205"/>
     </g>
 
     <g class="turbine">
-      <path d="M304,550 L313,190 L320,190 L320,550 Z" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.6"/>
-      <path d="M320,550 L320,190 L327,190 L336,550 Z" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.6"/>
-      <rect x="278" y="524" width="84" height="26" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
-      <rect x="295" y="178" width="50" height="20" rx="4" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.6"/>
+      <path d="M304,550 L313,190 L320,190 L320,550 Z" fill="var(--ilus-8, #e2e8f0)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.6"/>
+      <path d="M320,550 L320,190 L327,190 L336,550 Z" fill="var(--ilus-7, #cbd5e1)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.6"/>
+      <rect x="278" y="524" width="84" height="26" fill="var(--ilus-6, #94a3b8)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4"/>
+      <rect x="295" y="178" width="50" height="20" rx="4" fill="var(--ilus-8, #e2e8f0)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.6"/>
       <circle cx="299" cy="188" r="3" fill="var(--accent)"/>
-      <g class="blades" fill="#f8fafc" stroke="#0f172a" stroke-width="1.4">
+      <g class="blades" fill="var(--ilus-9, #f8fafc)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4">
         <path d="M316,190 L320,40 L324,190 Z"/>
         <path d="M318,186.5 L190,265 L322,193.5 Z"/>
         <path d="M318,193.5 L450,265 L322,186.5 Z"/>
       </g>
-      <circle cx="320" cy="190" r="9" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.6"/>
+      <circle cx="320" cy="190" r="9" fill="var(--ilus-7, #cbd5e1)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.6"/>
     </g>
   </g>
 </svg>

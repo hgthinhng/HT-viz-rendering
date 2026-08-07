@@ -68,7 +68,16 @@ export function option(params) {
     series: [
       {
         type: 'sankey',
-        left: 16, right: 140, top: 60, bottom: 40,
+        // Le phai 140 CHUA DU: nhan dai nhat "Chi phi ban hang & QLDN" tran ra
+        // ngoai viewBox 17px va bi cat cut thanh "... & Ql" khi SVG nhung vao
+        // HTML hoac render sang PDF. Do bang getBoundingClientRect tren trinh
+        // duyet that ngay 08-08.
+        //
+        // Cai lam bug nay song lau: KHONG gate nao bat duoc. Gate 5 CHART-SONG
+        // kiem chu cua SVG co mat trong tang text cua PDF, ma chu CO mat, no chi
+        // nam ngoai khung nhin. Dem net ve dung, XML hop le, gate xanh, nhan van
+        // cut. Xem gate moi `chu-khong-tran-viewbox`.
+        left: 16, right: 162, top: 60, bottom: 40,
         nodeWidth: 14,
         nodeGap: 14,
         layoutIterations: 32,

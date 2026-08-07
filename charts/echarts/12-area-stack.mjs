@@ -30,7 +30,10 @@ export function option(params) {
   return {
     ...baseOption({ title: 'Doanh thu theo mảng, cộng dồn', subtitle: 'Đơn vị: tỷ đồng, tối đa 4 dải để dải giữa vẫn đọc được' }),
     tooltip: { ...tooltipDefault, valueFormatter: (v) => fmtCompact(v, { baseUnit: 'ty', decimals: 0 }) },
-    grid: { left: 60, right: 90, top: 60, bottom: 60 },
+    // Le phai 90 CHUA DU: nhan chuoi dai nhat "Bat dong san KCN" tran ra ngoai
+    // viewBox 680px mat 24px va bi cat. Cung benh voi 02-sankey, do bang gate
+    // `chu_khong_tran_viewbox.test.mjs` ngay 08-08.
+    grid: { left: 60, right: 118, top: 60, bottom: 60 },
     xAxis: { type: 'category', data: periods, boundaryGap: false, axisLine: { lineStyle: { color: PALETTE.inkMd } }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
     yAxis: { type: 'value', min: 0, axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => fmtCompact(v, { baseUnit: 'ty', decimals: 0 }) }, splitLine: { lineStyle: { color: PALETTE.line } } },
     // Override mang color mac dinh cua baseOption() ([accent, negative, inkLo, ink]):

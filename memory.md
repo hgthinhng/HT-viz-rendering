@@ -60,15 +60,58 @@ node NAVY, nên xếp vào `ON_INK`; không xếp thì chúng biến mất trên
 `c_drawdown`, `c_calendar_heatmap`, `c_ecdf`. Kho lên **111 tài sản** (53 matplotlib). Cả ba là
 vector thuần, 0 raster, đã nghiệm thu bằng cách render PDF thật rồi đếm bằng `doc.xref_object`.
 
+**Bước 4 XONG, PHASE 3 ĐÓNG.** Đã di trú **300 vị trí** trên 11 SVG cộng `annotate.css` sang
+`var(--ilus-N, #hex-cũ)`. Tầng minh hoạ lần đầu tiên đi qua cửa `design-system/tokens`.
+
+Dải kết cấu mở từ 4 lên **9 bậc**. Khối `ilus` ban đầu trích từ `illustrations/grammar.md` mục 4
+khai bốn bậc, nhưng đếm thật trên 11 file thì chúng dùng CHÍN bậc: **grammar.md và tài sản đã
+trôi khỏi nhau từ trước**. Đánh số theo VỊ TRÍ (`--ilus-1` đậm nhất tới `--ilus-9` nhạt nhất) vì
+chín bậc thì không còn tên nào gọi cho đúng mà không phải bịa.
+
+Ánh xạ **một đối một, không gộp bậc**. Gộp chín về bốn sẽ đổi diện mạo 11 minh hoạ đang dùng
+được, và đó là quyết định thiết kế chứ không phải việc dọn dẹp. **49 mã ngữ nghĩa giữ nguyên
+hex**: chúng là accent ngành, thuộc trục khác với trục chủ đề.
+
+Mọi `var()` có giá trị dự phòng bằng đúng hex cũ, vì các file `.svg` còn được mở ĐỘC LẬP ngoài
+trang HTML. Thiếu dự phòng là hình mất sạch màu, và chỉ lộ ra ở đường mở độc lập.
+
 ### Việc tiếp theo
 
-4. Migrate **345 hex viết cứng trong 11 file `illustrations/svg/`** sang `var()`. Không tự động
-   hoá được vì cùng một hex đóng nhiều vai trong cùng một hình. Trả HAI nợ một lần, xem mục
-   "Hai hệ màu song song" bên dưới. Đây là khoản đắt nhất còn lại.
-6. Tách `option()` khỏi `render` trong ECharts để một nguồn preset phục vụ cả hai làn. Xem mục
-   "Các phase sau".
+- Tách `option()` khỏi `render` trong ECharts để một nguồn preset phục vụ cả hai làn. Xem mục
+  "Các phase sau". Bẫy kiến trúc SSR nướng hex vào SVG tĩnh vẫn CHƯA CHỐT cách xử lý.
+- Bộ gate làn A, chín gate. Đặc tả ở memory toàn cục.
+- `grammar.md` mục 4 vẫn đang mô tả dải bốn bậc trong khi thực tế là chín. Sửa cho khớp.
+- Định nghĩa giá trị cho một chủ đề TỐI. Lúc đó mới đụng giới hạn đã biết: một mã hex trong minh
+  hoạ có thể đóng NHIỀU vai (vừa là nền trời vừa là thân kim loại), và ánh xạ một đối một không
+  tách hai vai đó ra được. Phải tách ở TỪNG HÌNH chứ không tách ở token.
 
-### Hai hệ màu song song, nợ có từ TRƯỚC cú bẻ lái
+### Bẫy XML: `var()` bọc vào một hex nằm trong COMMENT làm hỏng CẢ FILE
+
+Phép thay thế bằng regex đã bọc một mã hex nằm trong khối `<!-- -->` của
+`geography-vietnam-map.svg`. Cú pháp custom property bắt đầu bằng hai dấu gạch ngang, mà **XML
+cấm chuỗi con đó bên trong comment**, nên một dòng chú thích thuần tài liệu, không ảnh hưởng
+render, biến thành lỗi làm hỏng cả file. Hỏng theo đúng kiểu nguy hiểm nhất của repo: WeasyPrint
+bỏ qua CẢ FILE không báo lỗi, PDF ra 0 nét vẽ.
+
+Bắt được vì quy trình bắt buộc chạy `kiemTraXml()` sau mỗi lần sửa. Nhìn mắt không thấy gì. Đã
+trả lại hex thô tại đúng vị trí đó, và đó là ngoại lệ DUY NHẤT trong 11 file.
+
+### Nghiệm thu di trú: điều kiện CẦN không phải điều kiện ĐỦ
+
+Ba agent đều chứng minh ảnh KHÔNG ĐỔI khi mở độc lập, SHA256 khớp tuyệt đối 11/11. Đúng, nhưng
+chưa đủ: **nếu bọc nhầm TÊN BIẾN thì ảnh độc lập vẫn y hệt**, vì dự phòng vẫn là hex cũ, và không
+phép đo nào của họ bắt được.
+
+Phép đo điều kiện ĐỦ: nhúng từng hình vào một trang CÓ khai `--ilus-*`, đảo ngược cả chín bậc
+sang một dải màu khác hẳn, rồi xác nhận hình ĐỔI THEO. Kết quả 11/11. Cộng soi mắt một hình xác
+nhận tách trục đúng: thân tàu, cabin, ống khói, vạch mớn nước theo dải mới, còn container và mặt
+nước giữ nguyên vì chúng là màu ngữ nghĩa.
+
+Bài học chung: khi một phép di trú có **giá trị dự phòng bằng đúng giá trị cũ**, mọi phép đo
+"không có gì đổi" đều xanh kể cả khi việc di trú sai hoàn toàn. Phải có một phép đo ép hệ thống
+THỂ HIỆN cái năng lực mới.
+
+### Hai hệ màu song song, nợ có từ TRƯỚC cú bẻ lái, ĐÃ TRẢ 07-08
 
 11 minh hoạ SVG dùng **345 hex viết cứng, và không một mã nào là `#051C2C` hay `#2251FF`**.
 Chúng là bảng Tailwind (`#0f172a`, `#e2e8f0`, `#64748b`, `#2563eb`, `#f59e0b`, `#0d9488`). Tầng

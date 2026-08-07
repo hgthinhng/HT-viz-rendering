@@ -3,37 +3,37 @@
   <desc>Nhà máy có mái răng cưa (nhà xưởng), ống khói cao, hai silo chứa nguyên liệu nối với xưởng bằng băng chuyền nghiêng. Dùng minh hoạ ngành sản xuất/thép/công nghiệp nặng.</desc>
   <g class="scene">
     <g class="ground">
-      <rect x="0" y="430" width="800" height="70" fill="#cbd5e1"/>
-      <rect x="0" y="430" width="800" height="5" fill="#94a3b8"/>
+      <rect x="0" y="430" width="800" height="70" fill="var(--ilus-7, #cbd5e1)"/>
+      <rect x="0" y="430" width="800" height="5" fill="var(--ilus-6, #94a3b8)"/>
     </g>
 
     <g class="silos">
       <g class="silo-1">
-        <rect x="30" y="320" width="22" height="110" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
-        <rect x="52" y="320" width="23" height="110" fill="#64748b" stroke="#0f172a" stroke-width="1.4"/>
-        <path d="M30,320 A37.5,22 0 0 1 75,320 Z" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+        <rect x="30" y="320" width="22" height="110" fill="var(--ilus-6, #94a3b8)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4"/>
+        <rect x="52" y="320" width="23" height="110" fill="var(--ilus-5, #64748b)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4"/>
+        <path d="M30,320 A37.5,22 0 0 1 75,320 Z" fill="var(--ilus-6, #94a3b8)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4"/>
       </g>
       <g class="silo-2">
-        <rect x="88" y="340" width="22" height="90" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
-        <rect x="110" y="340" width="23" height="90" fill="#64748b" stroke="#0f172a" stroke-width="1.4"/>
-        <path d="M88,340 A37.5,20 0 0 1 133,340 Z" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+        <rect x="88" y="340" width="22" height="90" fill="var(--ilus-6, #94a3b8)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4"/>
+        <rect x="110" y="340" width="23" height="90" fill="var(--ilus-5, #64748b)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4"/>
+        <path d="M88,340 A37.5,20 0 0 1 133,340 Z" fill="var(--ilus-6, #94a3b8)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4"/>
       </g>
     </g>
 
     <g class="conveyor">
-      <path d="M58,300 L152,353 L152,363 L58,310 Z" fill="#475569" stroke="#0f172a" stroke-width="1.2"/>
-      <circle cx="58" cy="305" r="6" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
-      <circle cx="152" cy="358" r="8" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
-      <line x1="82" y1="329" x2="82" y2="430" stroke="#94a3b8" stroke-width="3"/>
-      <line x1="108" y1="339" x2="108" y2="430" stroke="#94a3b8" stroke-width="3"/>
-      <line x1="132" y1="349" x2="132" y2="430" stroke="#94a3b8" stroke-width="3"/>
+      <path d="M58,300 L152,353 L152,363 L58,310 Z" fill="var(--ilus-4, #475569)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
+      <circle cx="58" cy="305" r="6" fill="var(--ilus-2, #1e293b)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
+      <circle cx="152" cy="358" r="8" fill="var(--ilus-2, #1e293b)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
+      <line x1="82" y1="329" x2="82" y2="430" stroke="var(--ilus-6, #94a3b8)" stroke-width="3"/>
+      <line x1="108" y1="339" x2="108" y2="430" stroke="var(--ilus-6, #94a3b8)" stroke-width="3"/>
+      <line x1="132" y1="349" x2="132" y2="430" stroke="var(--ilus-6, #94a3b8)" stroke-width="3"/>
     </g>
 
     <g class="factory-building">
       <path d="M140,430 L140,290 L175,264 L210,290 L245,264 L280,290 L315,264 L350,290 L385,264 L420,290 L420,430 Z"
-            fill="#334155" stroke="#0f172a" stroke-width="1.5"/>
-      <rect x="140" y="290" width="280" height="40" fill="#64748b"/>
-      <g class="windows" fill="#1e293b">
+            fill="var(--ilus-3, #334155)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.5"/>
+      <rect x="140" y="290" width="280" height="40" fill="var(--ilus-5, #64748b)"/>
+      <g class="windows" fill="var(--ilus-2, #1e293b)">
         <rect x="160" y="345" width="18" height="18"/>
         <rect x="210" y="345" width="18" height="18"/>
         <rect x="260" y="345" width="18" height="18"/>
@@ -41,20 +41,20 @@
         <rect x="360" y="345" width="18" height="18"/>
       </g>
       <g class="loading-dock">
-        <rect x="175" y="390" width="70" height="40" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
-        <line x1="175" y1="400" x2="245" y2="400" stroke="#475569" stroke-width="1.4"/>
-        <line x1="175" y1="410" x2="245" y2="410" stroke="#475569" stroke-width="1.4"/>
-        <line x1="175" y1="420" x2="245" y2="420" stroke="#475569" stroke-width="1.4"/>
+        <rect x="175" y="390" width="70" height="40" fill="var(--ilus-2, #1e293b)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
+        <line x1="175" y1="400" x2="245" y2="400" stroke="var(--ilus-4, #475569)" stroke-width="1.4"/>
+        <line x1="175" y1="410" x2="245" y2="410" stroke="var(--ilus-4, #475569)" stroke-width="1.4"/>
+        <line x1="175" y1="420" x2="245" y2="420" stroke="var(--ilus-4, #475569)" stroke-width="1.4"/>
       </g>
     </g>
 
     <g class="smokestack">
-      <path d="M475,90 Q463,112 475,130 T455,162" fill="none" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
-      <rect x="470" y="140" width="15" height="290" fill="#94a3b8" stroke="#0f172a" stroke-width="1.3"/>
-      <rect x="485" y="140" width="15" height="290" fill="#64748b" stroke="#0f172a" stroke-width="1.3"/>
+      <path d="M475,90 Q463,112 475,130 T455,162" fill="none" stroke="var(--ilus-6, #94a3b8)" stroke-width="6" stroke-linecap="round" opacity="0.5"/>
+      <rect x="470" y="140" width="15" height="290" fill="var(--ilus-6, #94a3b8)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.3"/>
+      <rect x="485" y="140" width="15" height="290" fill="var(--ilus-5, #64748b)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.3"/>
       <rect x="470" y="140" width="30" height="18" fill="var(--accent)"/>
-      <line x1="470" y1="230" x2="500" y2="230" stroke="#0f172a" stroke-width="2"/>
-      <line x1="470" y1="320" x2="500" y2="320" stroke="#0f172a" stroke-width="2"/>
+      <line x1="470" y1="230" x2="500" y2="230" stroke="var(--ilus-1, #0f172a)" stroke-width="2"/>
+      <line x1="470" y1="320" x2="500" y2="320" stroke="var(--ilus-1, #0f172a)" stroke-width="2"/>
     </g>
   </g>
 </svg>

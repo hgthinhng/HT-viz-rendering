@@ -28,7 +28,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import (
-    PAPER, PAPER_HI, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
+    PAPER, PAPER_HI, ON_INK, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
     setup_fonts, palette, tone_color, fmt_value, despine, eir_fig,
     draw_masthead, draw_source, save, _badge, tint,
 )
@@ -471,9 +471,9 @@ def c_mechanism_flow(p, accent):
                             linewidth=0, facecolor=col, zorder=3)
         ax.add_patch(hb)
         if st.get("kicker"):
-            _text(ax, cx, top - 3.6, st["kicker"].upper(), size=8.0, color=PAPER,
+            _text(ax, cx, top - 3.6, st["kicker"].upper(), size=8.0, color=ON_INK,
                   weight="bold", family=SANS, va="center")
-        _text(ax, cx, body_top + head_h * 0.36, st["title"], size=11.0, color=PAPER,
+        _text(ax, cx, body_top + head_h * 0.36, st["title"], size=11.0, color=ON_INK,
               weight="bold", family=SERIF, va="center")
         # bullets
         bullets = st.get("bullets", [])
@@ -554,7 +554,7 @@ def c_flow_bridge(p, accent):
             ax.plot([box_x0 + 0.6, box_x1 - 0.6], [yc + box_h / 2 - 0.8,
                     yc + box_h / 2 - 0.8], color=GOLD, lw=2.6, zorder=5,
                     solid_capstyle="round")
-            head_col, sub_col = PAPER, GRID
+            head_col, sub_col = ON_INK, GRID
         else:
             _box(ax, box_cx, yc, box_w, box_h, fc=PAPER_HI, ec=GRID, lw=1.0, pad=0.01, z=2)
             # left accent bar
@@ -564,9 +564,9 @@ def c_flow_bridge(p, accent):
         # direction node on the left: scatter marker stays round in display space
         ax.scatter([node_x], [yc], s=340, color=col, zorder=5)
         if is_res:
-            ax.scatter([node_x], [yc], s=190, marker="*", color=PAPER, zorder=6)
+            ax.scatter([node_x], [yc], s=190, marker="*", color=ON_INK, zorder=6)
         else:
-            _text(ax, node_x, yc, tone_sym.get(tone, "+"), size=14, color=PAPER,
+            _text(ax, node_x, yc, tone_sym.get(tone, "+"), size=14, color=ON_INK,
                   weight="bold", family=SANS)
         # texts
         head = _wrap_to(st["text"], 46)

@@ -22,7 +22,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import (
-    PAPER, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
+    PAPER, ON_INK, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
     setup_fonts, palette, tone_color, fmt_value, despine, eir_fig,
     draw_masthead, draw_source, save, _badge, tint,
 )
@@ -458,7 +458,7 @@ def c_lorenz(p, accent):
     ax.set_xlim(0, 1); ax.set_ylim(0, 1)
     ax.set_xlabel(p.get("x_label", "Tỷ lệ tích lũy của mẫu"), fontsize=9.5, color=INK)
     ax.set_ylabel(p.get("y_label", "Tỷ lệ tích lũy của giá trị"), fontsize=9.5, color=INK)
-    b = _badge(fig, 0.0, 0.0, f"Gini = {gini:.2f}", ax=ax, bg=NAVY, fg=PAPER)
+    b = _badge(fig, 0.0, 0.0, f"Gini = {gini:.2f}", ax=ax, bg=NAVY, fg=ON_INK)
     b.set_position((0.06, 0.90))
     return fig
 
@@ -636,7 +636,7 @@ def c_marimekko(p, accent):
                    edgecolor=PAPER, linewidth=1.2, zorder=2)
             if h >= 8 and w >= 7:
                 ax.text(x_left + w / 2, bottom + h / 2, f"{h:.0f}%", ha="center", va="center",
-                        fontsize=7.6, color=PAPER, fontweight="bold")
+                        fontsize=7.6, color=ON_INK, fontweight="bold")
             bottom += h
         ax.text(x_left + w / 2, 101.5, c["name"], ha="center", va="bottom", fontsize=8.4, color=INK)
         ax.text(x_left + w / 2, -3, f"{w:.0f}%", ha="center", va="top", fontsize=7.6, color=MUTED)
@@ -701,7 +701,7 @@ def c_sensitivity_grid(p, accent):
         for j in range(len(cols)):
             v = vals[i, j]
             ax.text(j, i, _fmt(p, v), ha="center", va="center", fontsize=8,
-                    color=PAPER if (not diverge and v > mid) else INK)
+                    color=ON_INK if (not diverge and v > mid) else INK)
     base = p.get("base")
     if base:
         ri, ci = base
@@ -743,7 +743,7 @@ def c_cond_table(p, accent):
     for (r, c), cell in tbl.get_celld().items():
         cell.set_edgecolor(PAPER); cell.set_linewidth(1.2)
         if r == 0:
-            cell.set_facecolor(NAVY); cell.get_text().set_color(PAPER); cell.get_text().set_fontweight("bold")
+            cell.set_facecolor(NAVY); cell.get_text().set_color(ON_INK); cell.get_text().set_fontweight("bold")
         elif c == 0:
             cell.get_text().set_ha("left"); cell.get_text().set_color(INK); cell.set_facecolor(PAPER)
         else:

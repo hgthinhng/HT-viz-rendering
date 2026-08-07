@@ -27,7 +27,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import (
-    PAPER, PAPER_HI, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
+    PAPER, PAPER_HI, ON_INK, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
     setup_fonts, palette, tone_color, fmt_value, despine, eir_fig,
     draw_masthead, draw_source, save, _badge,
 )
@@ -146,7 +146,7 @@ def _status_badge(ax, x, y, text, col):
                  boxstyle="round,pad=0,rounding_size=0.026",
                  linewidth=0, facecolor=col, zorder=5))
     ax.add_patch(Circle((x + 0.024, y), 0.007, facecolor=PAPER, ec="none", zorder=6))
-    ax.text(x + 0.044, y, text, color=PAPER, family=SANS, fontsize=10.5, fontweight="bold",
+    ax.text(x + 0.044, y, text, color=ON_INK, family=SANS, fontsize=10.5, fontweight="bold",
             va="center", ha="left", zorder=6)
 
 
@@ -286,11 +286,11 @@ def c_scenario_cards(p, accent):
                          boxstyle="round,pad=0,rounding_size=0.014",
                          linewidth=1.9, edgecolor=GOLD, facecolor="none", zorder=6))
         _header_bar(ax, x, top, w, hb, col)
-        ax.text(x + w / 2, top - hb / 2, cd.get("name", ""), color=PAPER, family=SERIF,
+        ax.text(x + w / 2, top - hb / 2, cd.get("name", ""), color=ON_INK, family=SERIF,
                 fontsize=15, fontweight="bold", ha="center", va="center", zorder=5)
         if emph and cd.get("badge"):
             _badge(fig, x + w - 0.010, top - hb / 2, cd["badge"], ha="right", bg=GOLD,
-                   fg=PAPER, ax=ax)
+                   fg=ON_INK, ax=ax)
 
         ix = x + 0.020
         y = top - hb - 0.052
@@ -380,9 +380,9 @@ def c_swot(p, accent):
     for (x, yb), (title, col, items, side) in zip(positions, quads):
         _ground(ax, x, yb, w, h, fc=CARD_BG, ec=CARD_EDGE, lw=1.1, z=2)
         _header_bar(ax, x, yb + h, w, hb, col)
-        ax.text(x + 0.020, yb + h - hb / 2, title, color=PAPER, family=SERIF, fontsize=15,
+        ax.text(x + 0.020, yb + h - hb / 2, title, color=ON_INK, family=SERIF, fontsize=15,
                 fontweight="bold", ha="left", va="center", zorder=5)
-        ax.text(x + w - 0.018, yb + h - hb / 2, side, color=PAPER, family=SANS, fontsize=8.5,
+        ax.text(x + w - 0.018, yb + h - hb / 2, side, color=ON_INK, family=SANS, fontsize=8.5,
                 fontweight="bold", ha="right", va="center", zorder=5, alpha=0.92)
         ix = x + 0.022
         y = yb + h - hb - top_head
@@ -452,7 +452,7 @@ def c_comparison(p, accent):
     for x, side, col in [(gx0, L, lcol), (mx + gutter / 2.0, R, rcol)]:
         _ground(ax, x, bot, w, top - bot, fc=CARD_BG, ec=CARD_EDGE, lw=1.1, z=2)
         _header_bar(ax, x, top, w, hb, col)
-        ax.text(x + w / 2, top - hb / 2, side.get("title", ""), color=PAPER, family=SERIF,
+        ax.text(x + w / 2, top - hb / 2, side.get("title", ""), color=ON_INK, family=SERIF,
                 fontsize=15, fontweight="bold", ha="center", va="center", zorder=5)
         ix = x + 0.024
         y = top - hb - 0.050
@@ -519,11 +519,11 @@ def c_dupont(p, accent):
     _ground(ax, x, cy, res_w, ch, fc=NAVY, ec=NAVY, lw=1.0, z=2)
     ax.add_line(mlines.Line2D([x + 0.012, x + res_w - 0.012], [cy + ch - 0.010,
                 cy + ch - 0.010], color=GOLD, lw=3.2, zorder=4, solid_capstyle="butt"))
-    ax.text(x + res_w / 2, cy + ch - 0.052, res.get("label", "").upper(), color=PAPER,
+    ax.text(x + res_w / 2, cy + ch - 0.052, res.get("label", "").upper(), color=ON_INK,
             family=SANS, fontsize=10.5, fontweight="bold", ha="center", va="top", zorder=5)
     vn = p.get("vn_decimal", True)
     ax.text(x + res_w / 2, cy + ch / 2 - 0.020, _fv(res.get("value"),
-            p.get("result_format", "pct"), vn=vn), color=PAPER, family=SERIF, fontsize=30,
+            p.get("result_format", "pct"), vn=vn), color=ON_INK, family=SERIF, fontsize=30,
             fontweight="bold", ha="center", va="center", zorder=5)
     x += res_w
 
@@ -623,7 +623,7 @@ def c_before_after(p, accent):
                 arrowprops=dict(arrowstyle="-|>", color=tone, lw=2.6, mutation_scale=22),
                 zorder=4)
     _badge(fig, midx, arrow_y + 0.075, str(p.get("delta", "")), ha="center", bg=tone,
-           fg=PAPER, ax=ax)
+           fg=ON_INK, ax=ax)
     if p.get("pct_change"):
         ax.text(midx, arrow_y - 0.050, p["pct_change"], color=tone, family=MONO,
                 fontsize=12, fontweight="bold", ha="center", va="center", zorder=5)

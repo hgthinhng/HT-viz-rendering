@@ -72,6 +72,22 @@ COLORS = _tok_mod.COLORS
 #         (xanh la/do/vang/xanh duong), giu nguyen kha nang phan biet chuoi mau.
 PAPER = COLORS["paper"]
 PAPER_HI = COLORS["paper_hi"]  # nen the/card phan biet nhe voi nen trang chinh
+
+# ON_INK: mau CHU (hoac ky hieu dong vai tro chu) dat TREN mot khoi nen dam
+# (badge, chip, header mau, node toi, vd bg=NAVY hoac mot tone bao hoa trong
+# palette()). Nghia la "mau tuong phan voi nen cua khoi dang dung", KHAC HAN
+# PAPER nghia la "mau nen cua ca trang".
+#
+# Hom nay hai hang so BANG NHAU: trang chi co bang mau sang, nen trang la PAPER
+# va chu tren khoi dam can sang thi cung la PAPER, trung GIA TRI nhung khac Y
+# NGHIA. Khi bang mau nen toi duoc bat, PAPER se phai doi thanh mot mau toi (nen
+# trang toi), trong khi ON_INK van phai o lai mau sang vi chu van phai sang tren
+# khoi dam, bat ke nen trang toi hay sang. Gop chung mot hang so se lam chu bien
+# thanh mau toi tren nen toi, dung lop loi ma ".bia h1" da mac (xem memory.md).
+# Tach rieng ON_INK, giu nguyen PAPER, la buoc phai lam TRUOC khi bat bat ky
+# bang mau nen toi nao cho cac component nay.
+ON_INK = PAPER
+
 NAVY = COLORS["ink"]
 INK = COLORS["ink"]
 MUTED = COLORS["ink_md"]
@@ -318,7 +334,7 @@ def draw_masthead(fig, meta, top=0.965):
                  color=MUTED, style="italic", family=SANS, ha="left", va="top")
         y -= 0.062
     if meta.get("rating"):
-        _badge(fig, x1, top - 0.060, meta["rating"], ha="right", bg=NAVY, fg=PAPER)
+        _badge(fig, x1, top - 0.060, meta["rating"], ha="right", bg=NAVY, fg=ON_INK)
     rule_y = max(y + 0.015, top - 0.22)
     fig.add_artist(mlines.Line2D([x0, x1], [rule_y, rule_y], color=GRID, lw=1.0,
                                  transform=fig.transFigure))
@@ -344,7 +360,7 @@ def draw_source(fig, meta, bottom=0.028):
                  fontweight="bold")
 
 
-def _badge(fig, x, y, text, ha="left", bg=NAVY, fg=PAPER, ax=None):
+def _badge(fig, x, y, text, ha="left", bg=NAVY, fg=ON_INK, ax=None):
     target = ax if ax is not None else fig
     t = target.text(x, y, f" {text} ", ha=ha, va="center", fontsize=8.5, color=fg,
                     family=SANS, fontweight="bold",

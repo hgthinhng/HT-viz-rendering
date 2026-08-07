@@ -42,7 +42,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import (
-    PAPER, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
+    PAPER, ON_INK, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
     setup_fonts, palette, tone_color, fmt_value, despine, eir_fig,
     draw_masthead, draw_source, save, _badge, tint,
 )
@@ -152,7 +152,7 @@ def _draw_curve_line(ax, xs, values, uncertain, color, lw, base_dash, marker_siz
     return pts
 
 
-def _badge_at_data(ax, fig, xd, yd, text, ha="center", bg=NAVY, fg=PAPER, dy=0.045):
+def _badge_at_data(ax, fig, xd, yd, text, ha="center", bg=NAVY, fg=ON_INK, dy=0.045):
     """`_badge()` lam viec theo toa do AXES-FRACTION khi truyen ax= (xem c_lorenz trong
     viz_eir.py), nhung badge dao nguoc/contango o day phai neo vao 1 VI TRI TREN DUONG
     CONG (toa do du lieu), khong phai 1 goc co dinh cua khung hinh. Doi toa do bang chinh

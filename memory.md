@@ -11,47 +11,53 @@ Nghiệm thu gần nhất, chạy thật chứ không chép lại:
 
 | Lệnh | Kết quả |
 |---|---|
-| `npm test` | 54 pass, 0 fail |
-| `npm run verify` | exit 0, 23 gate PASS và 2 SKIP có ghi rõ lý do |
-| `python3 -m pytest tests/ -v` | 38 passed |
+| `npm test` | 65 pass, 0 fail |
+| `npm run verify` | exit 0, 29 gate PASS và 2 SKIP có ghi rõ lý do |
+| `python3 -m pytest tests/ -v` | 48 passed |
 
 Hai SKIP là cố ý, không phải gate hỏng: `gallery.html` là trang nội bộ nên không khai
 `data-theme="light"`, và `vietnam-simplification-comparison.html` không dùng lớp annotation.
 
-Trong repo: 50 mẫu ở `samples/`, 12 hồ sơ ở `research/`, 24 catalog spec, 11 minh hoạ SVG,
-14 script chart ECharts, 48 component matplotlib EIR.
+Trong repo: 50 mẫu ở `samples/`, 14 hồ sơ ở `research/`, 29 catalog spec, 11 minh hoạ SVG,
+18 preset chart ECharts, 50 component matplotlib EIR.
+
+**Đợt mở rộng thư viện đã xong**, làm một lần cho lâu dài. Bốn thứ mới:
+
+1. **Lớp schema dùng chung hai engine**: `charts/schema.vocab.json` (từ vựng, cả hai ngôn ngữ
+   cùng đọc), `charts/echarts/schema.mjs`, `charts/matplotlib/schema.py`, và 28 ca hợp đồng ở
+   `charts/fixtures/schema-cases.json` chạy ở CẢ HAI phía. Mọi preset mới phải đi qua lớp này.
+   Quy ước đầy đủ trong `CLAUDE.md`.
+2. **Sáu preset ECharts mới** 13 tới 18: line có chú thích, bar ngang xếp hạng kèm biến thể
+   Cleveland dot, scatter chia phần tư, dot strip phân phối, football field, lưới độ nhạy.
+3. **Năm component nhóm B** khối 25 tới 29: tóm tắt điều hành bốn ô, thẻ kịch bản, dải thắng
+   thua, ngã ba chính sách, dải tự sự.
+4. **Họ đường cong** cho matplotlib: `viz_eir_curves.py` với `c_yield_curve` và
+   `c_futures_curve`, cộng cờ `zero_is_signal` thêm vào `c_spread`.
 
 ## Việc tiếp theo, làm ngay
 
-Có HAI hướng đang mở, chọn một rồi làm dứt điểm, đừng đan xen.
+**Phase 2: pipeline HTML sang PDF và bộ gate nghiệm thu.** Đây là việc duy nhất còn mở ở tầng
+kiến trúc, và giờ nó là ưu tiên rõ ràng chứ không còn là một trong hai lựa chọn.
 
-**Hướng 1, mở rộng thư viện. Đã có đặc tả đủ để code thẳng, chỉ thiếu người thi công.** Thứ tự
-dưới đây là kết quả phản biện của bốn mô hình ngoài, cả bốn đều bác thứ tự trực giác ban đầu
-(chi tiết ở `research/14-chart-expansion-plan/PHAN-BIEN-4-LLM.md`):
+Lý do nó thành ưu tiên: đợt vừa rồi tìm ra bug 12 chart xuất SVG không hợp lệ XML làm bản PDF
+mất sạch chart suốt cả một phase mà không ai biết. Bug đó sống được vì **không có pipeline nào
+chạy chart qua WeasyPrint rồi kiểm kết quả**. Thư viện nay đã có 18 preset ECharts, 50 component
+matplotlib và 29 component HTML; thêm càng nhiều mà không có pipeline gác cổng thì càng nhiều
+thứ hỏng im lặng.
 
-1. `charts/schema.mjs`, schema dữ liệu dùng chung hai engine. Làm TRƯỚC mọi preset, vì mỗi
-   preset tự định nghĩa đơn vị và ngưỡng là thêm một chỗ để bản HTML lệch bản PDF.
-2. Hộp tóm tắt điều hành, khối 25. Thứ 10 trên 10 loại báo cáo đều cần, rẻ nhất, thuần HTML.
-3. Bốn chart xương sống: line có chú thích, bar ngang xếp hạng, scatter phần tư, dot phân phối.
-4. Cleveland dot plot thay radar, cộng ngữ pháp so sánh đa tiêu chí.
-5. Họ đường cong lãi suất và giá kỳ hạn, cả hai engine.
-
-Đặc tả tương ứng: `docs/specs/2026-08-07-echarts-preset-expansion.md` (6 preset, 956 dòng, có
-schema chung), `2026-08-07-component-b-expansion.md` (5 component nhóm B), và
-`2026-08-07-yield-forward-curve-design.md` (họ đường cong).
-
-**Hướng 2, Phase 2 như kế hoạch cũ**: pipeline HTML sang PDF và bộ gate nghiệm thu. Nguyên liệu
-đã có sẵn trong `_harvest/`: pipeline hoàn chỉnh ở `harvest-extras/pipeline-stocklpt/`, 6 gate
-và evidence ledger ở `lab-gate/` với `lab-evidence/`. Scope chi tiết nằm ở cuối
+Nguyên liệu có sẵn trong `_harvest/`: pipeline hoàn chỉnh ở `harvest-extras/pipeline-stocklpt/`,
+6 gate và evidence ledger ở `lab-gate/` với `lab-evidence/`. Scope chi tiết ở cuối
 `docs/superpowers/plans/2026-08-06-ht-viz-rendering-phase1.md`.
 
-Gợi ý chọn: hướng 2 trước thì hợp lý hơn, vì bug SVG hợp lệ XML vừa cho thấy đường ra PDF là
-chỗ dễ hỏng im lặng nhất, và pipeline có gate sẽ bắt sớm những lỗi kiểu đó cho mọi chart thêm
-sau này.
+Ba việc nhỏ còn nợ, làm kèm lúc nào cũng được:
 
-Khối `.quad2x2` vỡ bố cục trong WeasyPrint: **đã sửa xong**, xem mục dưới. Nghi can ban đầu
-(`position: absolute` cộng `transform: translate(-50%, -50%)`) hoá ra vô can, cả hai chạy đúng
-trong WeasyPrint.
+- `charts/matplotlib/schema.py` chưa có trường độ tin cậy theo TỪNG ĐIỂM. Họ đường cong cần nó
+  (một đường cong thật trộn cả điểm quan sát được lẫn điểm ước tính dealer) nên đang tái dùng
+  từ vựng `source_tier` ở cấp điểm. Nếu thấy cách đó rối thì thêm trường riêng vào từ vựng.
+- `schema.vocab.json` thiếu đơn vị cho dầu và kim loại quý (USD/thùng, USD/oz), nên
+  `c_futures_curve` phải bỏ riêng phép kiểm đơn vị cấp series cho hai loại đó.
+- Bảng số liệu đi kèm đường cong là ràng buộc cứng của đặc tả nhưng thuộc tầng HTML, chart PNG
+  không tự lo được. Mọi báo cáo dùng `c_yield_curve` phải ghép thêm `12-hairline-data-table`.
 
 ## Chạy được từ máy sạch
 

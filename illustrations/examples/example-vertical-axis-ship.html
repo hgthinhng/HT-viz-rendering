@@ -4,15 +4,17 @@
 <meta charset="utf-8">
 <title>Test lớp chú thích - 7 callout trên tàu container</title>
 <style>
-  @font-face { font-family:'Be Vietnam Pro'; src:url('file:///home/hgthinhng/.fonts/BeVietnamPro-Regular.ttf'); font-weight:400; }
-  @font-face { font-family:'Be Vietnam Pro'; src:url('file:///home/hgthinhng/.fonts/BeVietnamPro-SemiBold.ttf'); font-weight:600; }
-  @font-face { font-family:'Be Vietnam Pro'; src:url('file:///home/hgthinhng/.fonts/BeVietnamPro-Bold.ttf'); font-weight:700; }
+  /* Font nap tu design-system/fonts/fonts-embedded.css (base64 nhung san,
+     xem thẻ link ben duoi). Ban truoc tro toi file:///home/hgthinhng/.fonts/
+     nen tren bat ky may nao khac font im lang rot ve mac dinh trinh duyet,
+     dung kieu hong ma khong ai thay. */
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { width:1000px; background:#f8fafc; padding:32px; font-family:'Be Vietnam Pro',sans-serif; }
+  body { width:1000px; background:#f8fafc; padding:32px; font-family:"IBM Plex Sans","Noto Sans",-apple-system,"Segoe UI",sans-serif; }
   h2 { font-size:19px; font-weight:700; color:#0f172a; margin-bottom:6px; }
   p.hint { font-size:12px; color:#64748b; margin-bottom:18px; }
   #ship-svg { width:100%; height:auto; display:block; background:#ffffff; border:1px solid #e2e8f0; }
 </style>
+<link rel="stylesheet" href="../../design-system/fonts/fonts-embedded.css">
 <link rel="stylesheet" href="../annotate.css">
 </head>
 <body>

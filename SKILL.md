@@ -26,6 +26,8 @@ chọn chart, viết chữ, vẽ minh hoạ, quyết định khó) sẽ tới �
 - `font-family` phải là list kết thúc generic keyword, không dùng một tên trần
 - `design-system/tokens.css` có hai khối `:root`, không khai một biến ở cả hai khối
 - Shadow viết `rgba(R G B / A)`, không dùng dấu phẩy trong ngoặc màu
+- File giao khách khai `<html lang="vi" data-theme="light">` để không đổi màu theo máy khách
+- Font nhúng thẳng vào file, không trỏ đường dẫn tuyệt đối trên máy đang làm
 
 ## Theo thành phần
 

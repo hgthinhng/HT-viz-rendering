@@ -259,7 +259,20 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
 .quad2x2 .q-cell-title { font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-lo); margin-bottom: 6px; }
 .quad2x2 .q-plot { position: absolute; inset: 0; pointer-events: none; }
 .quad2x2 .q-dot-wrap { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; pointer-events: auto; }
-.quad2x2 .q-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 1.5px solid var(--paper); box-shadow: 0 0 0 1px var(--ink); }
+/* Hai bản vá rơi vào cùng một rule, cả hai đều đo bằng WeasyPrint 69.0 rồi
+   soi ảnh 600-700dpi, không suy luận:
+   (1) `display: inline-block`. Thiếu nó, một <span> inline làm flex item của
+       .q-dot-wrap (flex column) render ra HÌNH CHỮ D, cạnh trái phẳng và
+       khuyết, chứ không tròn khép. Đã dựng lại đủ 5 biến thể và nhìn tận mắt:
+       biến thể duy nhất khác nhau ở đúng dòng display này.
+   (2) Bỏ `box-shadow: 0 0 0 1px var(--ink)`. WeasyPrint không render box-shadow
+       bằng bất kỳ cú pháp nào, nên vòng ink ngoài cùng chưa bao giờ tồn tại
+       trong bản PDF, chỉ có trên trình duyệt. Thay bằng ::before vẽ một vòng
+       tròn thật, chạy ở CẢ hai engine.
+   Đã thử và LOẠI `outline: 1px solid var(--ink)`: WeasyPrint vẽ outline không
+   bo theo border-radius, ra một khung VUÔNG quanh chấm tròn. */
+.quad2x2 .q-dot { display: inline-block; position: relative; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 1.5px solid var(--paper); }
+.quad2x2 .q-dot::before { content: ""; position: absolute; left: -2.5px; top: -2.5px; width: 13px; height: 13px; border-radius: 50%; border: 1px solid var(--ink); }
 .quad2x2 .q-dot-label { margin-top: 3px; font-family: var(--font-mono); font-size: 9px; white-space: nowrap; color: var(--ink); background: rgb(255 255 255 / 82%); padding: 0 2px; } /* --paper 82%, xem ghi chu dau file */
 
 /* ── 10. KHỐI 07 · PULL-QUOTE ─────────────────────────────────────────── */

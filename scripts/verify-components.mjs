@@ -11,7 +11,8 @@
  *   --html=<path>        file HTML cần nghiệm thu (mặc định: components/gallery.html tính từ gốc repo)
  *   --out=<dir>           thư mục ghi PDF/screenshot/log (mặc định: cùng thư mục html)
  *   --max-raster=<n>      số ảnh raster tối đa cho phép trong PDF (mặc định 0)
- *   --chromium=<path>     đường dẫn binary Chromium (mặc định: dò trong ~/.cache/ms-playwright)
+ *   --chromium=<path>     đường dẫn binary Chromium (mặc định: bản playwright-core tự trỏ tới,
+ *                         xem scripts/lib/chromium.mjs)
  *   --python=<bin>        binary python3 dùng để đếm raster (mặc định "python3")
  *   --skip-pdf            bỏ qua export PDF + đếm raster
  *   --skip-offline        bỏ qua kiểm tra chặn network (offline thật)
@@ -26,12 +27,11 @@
  * --out. Exit code phản ánh kết quả tổng — dùng được trực tiếp trong CI:
  *   node verify.mjs --html=gallery.html || exit 1
  */
-import { chromium } from "playwright-core";
 import path from "node:path";
 import fs from "node:fs";
-import os from "node:os";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { kiemTraChromium, launchChromium } from "./lib/chromium.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -46,18 +46,6 @@ function parseArgs(argv) {
   return out;
 }
 
-function findChromium() {
-  const cacheDir = path.join(os.homedir(), ".cache", "ms-playwright");
-  if (!fs.existsSync(cacheDir)) return null;
-  const dirs = fs.readdirSync(cacheDir).filter((d) => d.startsWith("chromium-") && !d.includes("headless_shell"));
-  dirs.sort().reverse(); // bản mới nhất trước
-  for (const d of dirs) {
-    const p = path.join(cacheDir, d, "chrome-linux64", "chrome");
-    if (fs.existsSync(p)) return p;
-  }
-  return null;
-}
-
 const args = parseArgs(process.argv);
 const htmlPath = path.resolve(args.html || DEFAULT_HTML);
 if (!fs.existsSync(htmlPath)) {
@@ -67,14 +55,15 @@ if (!fs.existsSync(htmlPath)) {
 const outDir = args.out ? path.resolve(args.out) : path.dirname(htmlPath);
 fs.mkdirSync(outDir, { recursive: true });
 const maxRaster = args["max-raster"] !== undefined ? Number(args["max-raster"]) : 0;
-const chromiumPath = args.chromium || findChromium();
 const pythonBin = args.python || "python3";
 const pageDpi = args["page-dpi"] ? Number(args["page-dpi"]) : 100;
 
-if (!chromiumPath) {
-  console.error("Không tìm thấy Chromium trong ~/.cache/ms-playwright. Truyền --chromium=<path> thủ công.");
+const kiemChromium = kiemTraChromium(args.chromium);
+if (!kiemChromium.ok) {
+  console.error(kiemChromium.message);
   process.exit(2);
 }
+const chromiumPath = kiemChromium.path;
 
 const results = []; // { name, passed, detail }
 function record(name, passed, detail) {
@@ -84,7 +73,7 @@ function record(name, passed, detail) {
 }
 
 async function main() {
-  const browser = await chromium.launch({ executablePath: chromiumPath, headless: true });
+  const browser = await launchChromium({ executablePath: chromiumPath });
 
   // ── 1. Render màn hình thường, bắt lỗi console/page ──────────────────
   const consoleErrors = [];
@@ -104,21 +93,129 @@ async function main() {
 
   await page.screenshot({ path: path.join(outDir, "verify-screenshot.png"), fullPage: true });
 
-  // ── 2. reduced-motion thật sự được tôn trọng ──────────────────────────
-  const reducedOk = await page.evaluate(() => {
-    // Không thể đổi media feature của context hiện tại; chỉ xác nhận CSS có
-    // đăng ký handler cho @media (prefers-reduced-motion: reduce) bằng cách
-    // dò trong stylesheet — kiểm tra đầy đủ hơn nằm ở context riêng bên dưới.
-    return true;
-  });
+  // ── 2. reduced-motion thật sự tắt chuyển động của TRANG NÀY ───────────
+  //
+  // Bản trước gate này xanh mà không kiểm gì của trang: nó chỉ hỏi
+  // matchMedia("(prefers-reduced-motion: reduce)") trong một context đã khai
+  // reducedMotion:"reduce", tức hỏi Playwright xem Playwright có làm đúng
+  // việc của Playwright không. Câu trả lời luôn true kể cả khi CSS của trang
+  // không có một dòng @media prefers-reduced-motion nào. Biến reducedOk phía
+  // trên còn tệ hơn: một hàm `return true` chưa từng được đọc.
+  //
+  // Bản này đếm SỐ PHẦN TỬ THẬT còn chuyển động, ở hai chế độ:
+  //   thường  -> phải > 0, nếu bằng 0 thì trang không có gì để tắt và gate
+  //              tự khai là chưa kiểm được gì (SKIP), không nhận PASS.
+  //   reduce  -> phải bằng 0.
+  // Vế "thường phải > 0" chính là cái chống tautology: nó ép phép đo phải
+  // CHỨNG MINH ĐƯỢC nó phân biệt được hai chế độ trước khi được quyền xanh.
+  const demChuyenDong = () => {
+    const NGUONG_MS = 1; // 0.001ms cua rule reduce lam tron ve 0.001, duoi nguong
+    const doMs = (v) =>
+      v
+        .split(",")
+        .map((s) => s.trim())
+        .reduce((max, s) => {
+          const n = s.endsWith("ms") ? parseFloat(s) : parseFloat(s) * 1000;
+          return Number.isFinite(n) && n > max ? n : max;
+        }, 0);
+    const dinhDanh = (el) => {
+      const cls = (el.getAttribute("class") || "").trim().split(/\s+/).filter(Boolean).slice(0, 2);
+      return el.tagName.toLowerCase() + (cls.length ? "." + cls.join(".") : "");
+    };
+    // Quét CẢ pseudo-element. Bản đầu của gate này chỉ đọc getComputedStyle(el)
+    // và ra kết quả "trang không có chuyển động nào" trên chính gallery.html,
+    // trong khi components.css:97 có `.sg-card::after { transition: opacity
+    // .18s ease }`. Chuyển động của thư viện này nằm gần hết ở ::after (thanh
+    // accent chạy ra khi hover), nên bỏ pseudo là bỏ đúng thứ cần đo.
+    const co = [];
+    for (const el of document.querySelectorAll("*")) {
+      for (const pseudo of [null, "::before", "::after"]) {
+        const cs = getComputedStyle(el, pseudo);
+        const t = doMs(cs.transitionDuration || "0s");
+        const a = doMs(cs.animationDuration || "0s");
+        if (t > NGUONG_MS || a > NGUONG_MS) {
+          co.push(`${dinhDanh(el)}${pseudo || ""} (transition ${t}ms, animation ${a}ms)`);
+        }
+      }
+    }
+    return co;
+  };
+
+  const dongThuong = await page.evaluate(demChuyenDong);
 
   const ctxReduced = await browser.newContext({ reducedMotion: "reduce" });
   const pageReduced = await ctxReduced.newPage();
   await pageReduced.goto("file://" + htmlPath, { waitUntil: "networkidle" });
-  const reducedMatches = await pageReduced.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches);
+  await pageReduced.evaluate(() => document.fonts.ready);
+  const dongReduce = await pageReduced.evaluate(demChuyenDong);
   await pageReduced.close();
   await ctxReduced.close();
-  record("reduced-motion-context-honored", reducedMatches === true);
+
+  if (dongThuong.length === 0) {
+    console.log(
+      "[SKIP] reduced-motion-tat-chuyen-dong: trang khong co phan tu nao co transition/animation > 1ms " +
+        "o che do thuong, nen khong the chung minh rule @media prefers-reduced-motion co tac dung. " +
+        "Khong tinh la PASS.",
+    );
+  } else {
+    record(
+      "reduced-motion-tat-chuyen-dong",
+      dongReduce.length === 0,
+      `che do thuong ${dongThuong.length} phan tu co chuyen dong, che do reduce con ${dongReduce.length}`,
+    );
+    if (dongReduce.length) console.log("  con chuyen dong khi reduce:", dongReduce.slice(0, 5));
+  }
+
+  // ── 2b. Khoá sáng: file giao khách không được đổi màu theo máy người nhận ──
+  //
+  // Quyết định của người dùng (đợt dọn sau Phase 1): hệ màu tối được GIỮ cho
+  // gallery và trang nội bộ, nhưng file giao đi phải khoá sáng. Lý do là thứ
+  // đo được chứ không phải khẩu vị: chart matplotlib và minh hoạ SVG đang chỉ
+  // có bảng màu sáng, nên một máy khách đặt theme tối sẽ cho trang nền tối mà
+  // chart vẫn nền trắng. Khoá sáng cũng có nghĩa bản HTML và bản PDF trùng
+  // nhau, vì WeasyPrint vốn vứt khối @media prefers-color-scheme.
+  //
+  // Cơ chế đã có sẵn trong CSS: mọi rule tối đều viết
+  // `:root:not([data-theme="light"])`, nên chỉ cần thẻ <html data-theme="light">
+  // là khoá. Gate này KIỂM chứ không tin: mở trang trong context colorScheme
+  // "dark" rồi so màu nền và màu chữ với context "light". Trang khai khoá sáng
+  // mà hai bên vẫn lệch nghĩa là còn rule tối lọt ra ngoài cơ chế :not().
+  const doMau = async (colorScheme) => {
+    const c = await browser.newContext({ colorScheme });
+    const pg = await c.newPage();
+    await pg.goto("file://" + htmlPath, { waitUntil: "networkidle" });
+    await pg.evaluate(() => document.fonts.ready);
+    const mau = await pg.evaluate(() => {
+      const b = getComputedStyle(document.body);
+      return {
+        nen: b.backgroundColor,
+        chu: b.color,
+        khaiKhoaSang: document.documentElement.getAttribute("data-theme") === "light",
+      };
+    });
+    await pg.close();
+    await c.close();
+    return mau;
+  };
+  const mauSang = await doMau("light");
+  const mauToi = await doMau("dark");
+
+  if (!mauSang.khaiKhoaSang) {
+    console.log(
+      '[SKIP] khoa-sang-khong-doi-theo-may-khach: trang khong khai <html data-theme="light">. ' +
+        "Hop le cho trang noi bo (gallery, trang thu nghiem), NHUNG file giao khach thi phai khai, " +
+        `hien tai nen doi ${mauSang.nen} sang ${mauToi.nen} khi may khach dat theme toi.`,
+    );
+  } else {
+    const giongNhau = mauSang.nen === mauToi.nen && mauSang.chu === mauToi.chu;
+    record(
+      "khoa-sang-khong-doi-theo-may-khach",
+      giongNhau,
+      giongNhau
+        ? `nen ${mauSang.nen}, chu ${mauSang.chu}, khong doi o ca hai che do`
+        : `LECH: sang(nen ${mauSang.nen}, chu ${mauSang.chu}) vs toi(nen ${mauToi.nen}, chu ${mauToi.chu})`,
+    );
+  }
 
   // ── 3. Offline thật: chặn mọi request không phải file:// ──────────────
   if (!args["skip-offline"]) {
@@ -142,9 +239,44 @@ async function main() {
     for (const fam of fontFamilies) {
       fontsOk[fam] = await pageOffline.evaluate((f) => document.fonts.check(`16px "${f}"`), fam);
     }
-    const allFontsLoaded = Object.values(fontsOk).every(Boolean);
+    // Bẫy every() trên mảng RỖNG: một trang không khai @font-face nào thì
+    // fontFamilies = [] và Object.values({}).every(Boolean) === true, gate
+    // xanh trong khi chưa kiểm một font nào. Đúng cái bệnh vacuous truth.
+    // Với repo này, trang không nhúng font là LỖI THẬT chứ không phải ca
+    // ngoại lệ: file giao đi phải tự đủ, không được mượn font máy khách.
+    const soFace = fontFamilies.length;
+    const allFontsLoaded = soFace > 0 && Object.values(fontsOk).every(Boolean);
+
+    // Phép đo thứ hai, độc lập: MỰC CHỮ. document.fonts.check() chỉ nói font
+    // đã sẵn sàng, nó không nói phần tử THẬT có dùng font đó không. Đo bề
+    // rộng một chuỗi tiếng Việt có dấu bằng font của <body> rồi so với chính
+    // chuỗi đó vẽ bằng một tên font chắc chắn không tồn tại: hai số bằng nhau
+    // nghĩa là trang đang rơi về font mặc định trình duyệt.
+    const mucChu = await pageOffline.evaluate(() => {
+      const ff = getComputedStyle(document.body).fontFamily;
+      const ctx2d = document.createElement("canvas").getContext("2d");
+      const mau = "Sản lượng vận tải quý IV, tăng 12,4%";
+      ctx2d.font = `16px ${ff}`;
+      const wThat = ctx2d.measureText(mau).width;
+      ctx2d.font = '16px "ht-viz-font-khong-ton-tai-9d3f"';
+      const wMacDinh = ctx2d.measureText(mau).width;
+      return { ff, wThat: Math.round(wThat * 100) / 100, wMacDinh: Math.round(wMacDinh * 100) / 100 };
+    });
+    const dungFontRieng = Math.abs(mucChu.wThat - mucChu.wMacDinh) > 0.5;
+
     record("offline-no-network-requests", blocked.length === 0, `${blocked.length} request bị chặn`);
-    record("offline-fonts-available", allFontsLoaded, JSON.stringify(fontsOk));
+    record(
+      "offline-fonts-available",
+      allFontsLoaded,
+      soFace === 0
+        ? "trang khong khai @font-face nao, khong the tu du khi giao di"
+        : `${soFace} face: ${JSON.stringify(fontsOk)}`,
+    );
+    record(
+      "offline-body-dung-font-nhung",
+      dungFontRieng,
+      `muc chu ${mucChu.wThat}px vs font mac dinh ${mucChu.wMacDinh}px (${mucChu.ff})`,
+    );
     if (blocked.length) console.log("  blocked URLs:", blocked.slice(0, 10));
     await pageOffline.close();
     await ctxOffline.close();

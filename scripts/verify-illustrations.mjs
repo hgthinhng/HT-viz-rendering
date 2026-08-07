@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 // Verify hinh hoc cho minh hoa nhom C. Hai kiem tra deu phai do bang so,
 // vi sai so qua nho de mat bat duoc tren anh full-page.
-import { chromium } from 'playwright-core';
 import { readdirSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
+import { launchChromium } from './lib/chromium.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const EXE = `${process.env.HOME}/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome`;
 const MAX_RATIO = 1.6;
 const MARGIN = 8;
 
@@ -51,7 +50,7 @@ const log = (ok, msg) => {
   if (!ok) failed += 1;
 };
 
-const browser = await chromium.launch({ executablePath: EXE });
+const browser = await launchChromium();
 const page = await browser.newPage();
 
 const examples = readdirSync(path.join(ROOT, 'illustrations/examples')).filter((f) =>

@@ -81,7 +81,9 @@ def test_python_khop_css():
 
     # Font: --font-serif / --font-sans / --font-mono, so sau khi chuan hoa
     # khoang trang (CSS va Python co the khac nhau cho xuong dong).
-    font_map = {"serif": "font-serif", "mono": "font-mono", "sans": "font-sans"}
+    # Lay thang tu tokens.FONTS thay vi liet ke cung ba ten: ban cu bo sot
+    # "display" vi no khong nam trong danh sach cung do.
+    font_map = {k: f"font-{k}" for k in tokens.FONTS}
     for py_name, css_name in font_map.items():
         assert css_name in css, f"tokens.css khong co --{css_name}"
         assert _chuan_hoa_khoang_trang(tokens.FONTS[py_name]) == _chuan_hoa_khoang_trang(
@@ -119,6 +121,82 @@ def test_python_khop_css():
         assert _chuan_hoa_khoang_trang(tokens.SHADOW[py_name]) == _chuan_hoa_khoang_trang(
             css[css_name]
         ), f"SHADOW['{py_name}'] lech: py={tokens.SHADOW[py_name]!r} css={css[css_name]!r}"
+
+
+def test_css_khop_python_chieu_nguoc():
+    """Chieu CSS -> Python. test_python_khop_css chi di MOT CHIEU: no lap
+    theo tokens.py roi tim trong CSS. Them mot bien MOI vao tokens.css ma
+    quen tokens.py thi khong test nao do, va pipeline WeasyPrint se im lang
+    thieu token do (dung chuan CSS thi trinh duyet van dep, ban PDF thi
+    thieu). Ca da xay ra that o huong nguoc lai voi --space-6.
+
+    Test nay lap theo CSS. No khong doi MOI bien CSS phai co trong Python,
+    vi tokens.css con giu bien bo tro chi dung cho man hinh (vd --line-lo,
+    --shadow-*). No doi dung CAC NHOM ma tokens.py tuyen bo la minh giu:
+    mau, font, spacing, radius, shadow.
+    """
+    import sys
+
+    sys.path.insert(0, str(ROOT / "design-system"))
+    import tokens
+
+    css = parse_css_root()
+
+    # Nhom mau: moi bien mau trong CSS phai co trong COLORS, TRU danh sach
+    # mien tru TUONG MINH duoi day. Danh sach tuong minh chu khong phai mot
+    # regex "bo qua bien phu", vi mot regex se im lang nuot ca bien moi that
+    # su thieu. Them mot mau moi vao tokens.css se lam test nay do, va nguoi
+    # sua phai chon: dua vao tokens.py hay khai o day kem ly do.
+    CHI_DUNG_TREN_CSS = {
+        "paper-hair": "nen o rong/hatch, chi ve bang CSS",
+        "paper-elev": "nen card noi khoi, chi ve bang CSS",
+        "ink-faint": "bac nhat trang tri, chart Python khong dung",
+        "line-lo": "duong ke nhat, chi ve bang CSS",
+        "neg-soft": "hang so tinh tay thay color-mix, chi dung trong CSS",
+    }
+    py_colors = {name.replace("_", "-") for name in tokens.COLORS}
+    thieu_mau = [
+        f"--{ten} = {gt}"
+        for ten, gt in css.items()
+        if re.fullmatch(r"#[0-9A-Fa-f]{6}", gt.strip())
+        and ten not in py_colors
+        and ten not in CHI_DUNG_TREN_CSS
+    ]
+    assert not thieu_mau, (
+        "tokens.css co bien mau ma tokens.py khong co, pipeline chart Python se thieu token: "
+        + ", ".join(thieu_mau)
+        + ". Them vao tokens.py, hoac khai vao CHI_DUNG_TREN_CSS kem ly do."
+    )
+
+    # Chieu con lai cua chinh danh sach mien tru: mot ten trong
+    # CHI_DUNG_TREN_CSS ma khong con trong tokens.css nghia la danh sach da
+    # muc. Khong bat cai nay thi mien tru cu tich lai mai va che mat bien that.
+    mien_tru_chet = [t for t in CHI_DUNG_TREN_CSS if t not in css]
+    assert not mien_tru_chet, (
+        f"CHI_DUNG_TREN_CSS con {mien_tru_chet} nhung tokens.css khong con bien do, xoa khoi danh sach"
+    )
+
+    # Nhom font: --font-* trong CSS phai co trong FONTS.
+    py_fonts = {f"font-{k}" for k in tokens.FONTS}
+    thieu_font = [f"--{t}" for t in css if t.startswith("font-") and t not in py_fonts]
+    assert not thieu_font, f"tokens.css co {thieu_font} ma tokens.py khong co"
+
+    # Nhom spacing: so luong --space-N phai bang do dai SPACING. Neu CSS them
+    # --space-9 thi day la cho bat.
+    so_space = len([t for t in css if re.fullmatch(r"space-\d+", t)])
+    assert so_space == len(tokens.SPACING), (
+        f"tokens.css co {so_space} bien --space-N, tokens.py khai {len(tokens.SPACING)} muc"
+    )
+
+    # Nhom radius va shadow: dem tuong tu, chan chuyen them mot ben.
+    so_radius = len([t for t in css if re.fullmatch(r"radius-\d+", t)])
+    assert so_radius == len(tokens.RADIUS), (
+        f"tokens.css co {so_radius} bien --radius-N, tokens.py khai {len(tokens.RADIUS)} muc"
+    )
+    so_shadow = len([t for t in css if re.fullmatch(r"shadow-[\w-]+", t)])
+    assert so_shadow == len(tokens.SHADOW), (
+        f"tokens.css co {so_shadow} bien --shadow-*, tokens.py khai {len(tokens.SHADOW)} muc"
+    )
 
 
 def test_shadow_khong_co_blur():

@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Sinh bao cao tai chinh tieng Viet chat luong xuat ban: HTML self-contained va PDF in duoc",
   "scripts": {
+    "setup:browser": "playwright-core install chromium",
     "test": "node --test \"tests/**/*.test.mjs\"",
     "verify": "node scripts/verify-components.mjs && node scripts/verify-illustrations.mjs && node scripts/verify-charts.mjs",
     "verify:components": "node scripts/verify-components.mjs",

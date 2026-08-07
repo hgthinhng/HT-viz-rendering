@@ -12,18 +12,18 @@ _HEX_RE = re.compile(r'"#[0-9A-Fa-f]{6}"')
 # day (PAPER, INK, TEAL, ...) hoac goi tint()/shade(), khong duoc tu che hex.
 _ALLOWED_FILES = {"_eir_style.py"}
 
-# File duoc MIEN TAM THOI, khong phai vi hex cua no hop le ve mat thiet ke, ma
-# vi ban than FILE nay dang treo cho controller quyet dinh giu hay xoa (F6).
-# viz_render_py.py tu nhan trong docstring cua chinh no la thuoc mot pipeline
-# KHAC ("note-pipeline-viz"), KHONG import _eir_style, va khong file/test/
-# script nao trong repo nay goi no (da grep xac nhan: chi co dong tu-tham-chieu
-# va mot dong comment trong viz_super.py TRO SANG duong dan
-# note-pipeline-viz/scripts/viz_render_py.py, thu muc do khong ton tai trong
-# repo nay). No nhieu kha nang la san pham con sot cua lenh `cp -r` Step 3 chep
-# nguyen thu muc harvest, khong phai thanh vien that su cua thu vien EIR. Neu
-# controller quyet giu no lai trong charts/matplotlib/, phai xu ly 17 hex tran
-# cua no va go mien nay.
-_ORPHAN_FILES_PENDING_DECISION = {"viz_render_py.py"}
+# Danh sach mien tam thoi, gio RONG. Truoc day no chua viz_render_py.py, mot
+# file mo coi cho quyet dinh giu hay xoa. Nguoi dung da quyet XOA (dot don sau
+# Phase 1): file mang bang mau giay nga am da bi bac, khong file nao trong repo
+# import no, va ban goc van con o
+# _harvest/harvest-cfa-skillchain/viz-engine/viz_render_py.py neu can port lai
+# 10 primitive loi sang bang mau lanh.
+#
+# Giu bien nay lai (rong) thay vi xoa han, vi no la CHO DAT dung nghia cho lan
+# sau co file cho quyet dinh, va vi test ben duoi ep moi ten trong danh sach
+# phai TON TAI THAT tren dia. Mot mien tru tro toi file da bien mat la mien tru
+# chet: no khong con che gi, nhung doc vao thi tuong repo van con no.
+_ORPHAN_FILES_PENDING_DECISION = set()
 
 
 def test_khong_file_eir_nao_hardcode_hex_tran():
@@ -52,11 +52,22 @@ def test_khong_file_eir_nao_hardcode_hex_tran():
 
 
 def test_danh_sach_trang_khong_rong_bi_lang_quen():
-    """Bao ve chinh danh sach trang: neu ai do xoa/doi ten
-    _ORPHAN_FILES_PENDING_DECISION ma khong go het hex trong viz_render_py.py
-    truoc, test tren se tu FAIL dung cho (khong can test rieng). Test nay chi
-    dam bao danh sach trang khong am tham phinh to thanh mot regex rong lach
-    luat: moi file trong do phai duoc liet ke TUONG MINH bang ten, khong dung
-    wildcard/regex."""
+    """Bao ve chinh danh sach trang, hai chieu.
+
+    Chieu 1 (da co tu truoc): danh sach khong duoc am tham phinh to thanh mot
+    regex rong lach luat, moi file phai liet ke TUONG MINH bang ten.
+
+    Chieu 2 (them o dot don sau Phase 1): moi ten trong danh sach phai TON TAI
+    THAT trong charts/matplotlib/. Truoc do danh sach van giu ten
+    viz_render_py.py sau khi file bi xoa, va khong phep kiem nao do duoc, vi ca
+    hai test deu chi so bang voi mot hang so cung ghi trong chinh file test.
+    """
     assert _ALLOWED_FILES == {"_eir_style.py"}
-    assert _ORPHAN_FILES_PENDING_DECISION == {"viz_render_py.py"}
+    assert _ORPHAN_FILES_PENDING_DECISION == set()
+
+    co_that = {f.name for f in EIR.glob("*.py")}
+    mien_tru_chet = (_ALLOWED_FILES | _ORPHAN_FILES_PENDING_DECISION) - co_that
+    assert not mien_tru_chet, (
+        f"danh sach trang tro toi file khong con ton tai: {sorted(mien_tru_chet)}. "
+        "Xoa ten do khoi danh sach, dung de mien tru chet nam lai."
+    )

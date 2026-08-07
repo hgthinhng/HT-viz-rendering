@@ -4,9 +4,18 @@
 Merges the COMPONENTS registries of all EIR modules behind ONE spec.json runner, so a
 CFA note can request any institutional/editorial figure — chart, diagram, panel, KPI —
 through a single call and the same spec contract used by the core note-pipeline-viz
-renderer. Core primitives (bar_grouped, line, waterfall, scatter, heatmap, donut, slope,
-tree, payoff, bar_h, bar_stacked) still live in note-pipeline-viz/scripts/viz_render_py.py;
-an unknown component here points you there.
+renderer.
+
+Core primitives (bar_grouped, line, waterfall, scatter, heatmap, donut, slope, tree,
+payoff, bar_h, bar_stacked) are NOT in this repo. They lived in viz_render_py.py, which
+carried the warm palette (#FFFEF8 paper, #1F1F1F ink) that this repo rejected in favour
+of the cold one (#051C2C ink, #2251FF accent), and was deleted after Phase 1 as dead
+code. The nearest institutional equivalents inside the 48 components below are
+comparison (grouped bars), index100 (indexed lines), flow_bridge (waterfall),
+comps_scatter and connected_scatter (scatter), correlation_matrix (heatmap), and
+distribution. If a genuine primitive is needed, port it from
+_harvest/harvest-cfa-skillchain/viz-engine/viz_render_py.py onto the cold palette in
+design-system/tokens.py rather than reviving the old file as-is.
 
 Modules merged:
   viz_eir          21  comparison/rank/time/distribution/sell-side/part-to-whole/editorial
@@ -57,8 +66,9 @@ def render_spec(spec_path, out_dir, only=None, dpi=200):
         fn = COMPONENTS.get(comp)
         if fn is None:
             sys.stderr.write(f"WARN unknown component '{comp}' (id={fid}). If it is a core "
-                             f"primitive (bar_grouped/line/waterfall/...), render it with "
-                             f"note-pipeline-viz/scripts/viz_render_py.py instead.\n")
+                             f"primitive (bar_grouped/line/waterfall/...), this repo does not "
+                             f"ship one. Closest here: comparison, index100, flow_bridge, "
+                             f"comps_scatter, correlation_matrix, distribution.\n")
             fail += 1
             continue
         try:

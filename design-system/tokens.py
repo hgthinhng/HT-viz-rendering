@@ -31,7 +31,14 @@ COLORS = {
 # --font-serif / --font-sans / --font-mono trong tokens.css (khoi :root thu
 # hai). Moi list van ket thuc bang generic keyword: serif, monospace,
 # sans-serif.
+# Fix chieu nguoc (dot don sau Phase 1): them "display". tokens.css co
+# --font-display tu dau, tro CUNG mot stack voi --font-serif (giu hai bien de
+# khoi phai sua moi selector da gan var(--font-display): h1-h3, sg-value,
+# t-abbr). Ban Python truoc thieu han no, va khong test nao do, vi test cu chi
+# di mot chieu Python -> CSS. Chart matplotlib ve tieu de bang vai tro
+# "display" nen day la thieu that, khong phai bien trang tri.
 FONTS = {
+    "display": '"Spectral", "Noto Serif", Georgia, "Times New Roman", serif',
     "serif": '"Spectral", "Noto Serif", Georgia, "Times New Roman", serif',
     "mono": '"IBM Plex Mono", "Noto Sans Mono", Menlo, Consolas, "Liberation Mono", monospace',
     "sans": '"IBM Plex Sans", "Noto Sans", -apple-system, "Segoe UI", sans-serif',

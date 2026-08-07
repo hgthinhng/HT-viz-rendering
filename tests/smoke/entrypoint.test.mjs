@@ -23,8 +23,17 @@ test('SKILL.md ngan, chi dinh tuyen', () => {
 
 test('moi duong dan SKILL.md tro toi deu ton tai', () => {
   const s = readFileSync(path.join(ROOT, 'SKILL.md'), 'utf8');
-  const refs = [...s.matchAll(/`([a-z][\w./-]+\.(?:md|css|py|mjs|js|json|html))`/g)].map(
+  // Regex mo bang [A-Za-z] chu khong phai [a-z]: ban cu bo qua MOI duong dan
+  // bat dau bang chu hoa, tuc bo qua dung hai file quan trong nhat ma SKILL.md
+  // tro toi la `CLAUDE.md` va `README.md`. Hai cai do chua bao gio duoc kiem,
+  // gate xanh suot Phase 1 ma khong cham vao chung.
+  const refs = [...s.matchAll(/`([A-Za-z][\w./-]+\.(?:md|css|py|mjs|js|json|html))`/g)].map(
     (m) => m[1],
+  );
+  assert.ok(refs.length > 0, 'khong trich duoc duong dan nao tu SKILL.md, regex hong');
+  assert.ok(
+    refs.includes('CLAUDE.md'),
+    `regex khong bat duoc CLAUDE.md, ma SKILL.md co tro toi no. Bat duoc: ${refs.join(', ')}`,
   );
   const missing = refs.filter((r) => !existsSync(path.join(ROOT, r)));
   assert.deepEqual(missing, [], `SKILL.md tro toi file khong ton tai: ${missing.join(', ')}`);

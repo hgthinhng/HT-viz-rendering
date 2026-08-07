@@ -21,6 +21,9 @@ Cổng vào cho Claude là `SKILL.md`, chỉ định tuyến, không nhồi nộ
 - Khai `font-family` phải là list kết thúc bằng generic keyword, không dùng một tên trần
 - Không em-dash và en-dash trong mọi nội dung hiển thị
 - Mọi script verify phải trả exit code, 0 là PASS
+- File giao khách phải khoá sáng: `<html lang="vi" data-theme="light">`
+- Font phải nhúng trong file, không trỏ tới đường dẫn tuyệt đối trên máy nào cả
+- Mọi chỗ mở Chromium phải đi qua `scripts/lib/chromium.mjs`
 
 ## `npm test` chỉ quét đúng khi có dấu ngoặc kép trong package.json
 
@@ -37,6 +40,27 @@ Khối đầu giữ 12 biến màu và `--shadow-2/3/none`. Khối sau giữ fon
 ## Cú pháp shadow dùng `rgba(R G B / A)`, không dùng dấu phẩy trong ngoặc
 
 Test tách các lớp shadow bằng `split(",")`. Dấu phẩy bên trong `rgba()` (cú pháp cũ `rgba(R, G, B, A)`) làm hỏng phép tách đó. Giữ nguyên trị số, chỉ đổi cách viết sang cú pháp khoảng trắng và dấu gạch chéo.
+
+## Hệ màu tối: giữ cho trang nội bộ, khoá sáng cho file giao đi
+
+Repo có bảng màu tối (`[data-theme="dark"]` và `@media (prefers-color-scheme: dark)` trong
+`tokens.css` lẫn `components.css`). Nó được GIỮ, dùng cho `gallery.html` và các trang thử
+nghiệm mở trên màn hình.
+
+File giao khách thì khác: phải khai `<html lang="vi" data-theme="light">`. Mọi rule tối đều
+viết `:root:not([data-theme="light"])`, nên đúng một thuộc tính đó là khoá xong.
+
+Lý do là thứ đo được, không phải khẩu vị. Chart matplotlib và minh hoạ SVG hiện chỉ có bảng
+màu sáng, nên máy khách đặt theme tối sẽ cho trang nền `#0A1420` mà chart vẫn nền trắng, lệch
+hẳn. Khoá sáng cũng làm bản HTML trùng bản PDF, vì WeasyPrint vốn vứt cả khối
+`@media (prefers-color-scheme)`.
+
+Nếu sau này muốn mở dark mode cho cả file giao đi thì Phase 2 phải gánh thêm bảng màu tối đầy
+đủ cho ECharts, matplotlib EIR và minh hoạ SVG, cộng gate kiểm cả hai chế độ.
+
+Gate `khoa-sang-khong-doi-theo-may-khach` trong `verify-components.mjs` đo bằng cách mở trang
+ở hai context màu rồi so nền và màu chữ. Trang không khai thì nó SKIP kèm cảnh báo chứ không
+xanh giả.
 
 ## Khi sửa token
 

@@ -4,10 +4,18 @@ Sinh báo cáo và phân tích tài chính tiếng Việt chất lượng xuất
 
 ## Cài đặt
 
+Ba lệnh, chạy đúng thứ tự này từ một máy chưa có gì:
+
 ```bash
 npm install
+npm run setup:browser      # tai Chromium cho playwright-core, thieu buoc nay thi verify chet
 pip install --break-system-packages -r requirements.txt
 ```
+
+`npm run setup:browser` cần mạng và tải khoảng 170MB về `~/.cache/ms-playwright`. `playwright-core`
+không tự tải browser lúc `npm install`, nên đây là bước riêng chứ không phải bước thừa. Mọi script
+trong repo lấy đường dẫn binary từ `scripts/lib/chromium.mjs`, tức hỏi thẳng `playwright-core` bản
+nào khớp phiên bản thư viện, nên không có chuyện hai script chạy hai bản Chromium khác nhau.
 
 ## Kiểm tra hệ thống còn sống
 

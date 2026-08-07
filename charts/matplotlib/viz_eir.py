@@ -230,8 +230,18 @@ def c_spread(p, accent):
     xs = np.array(x, float) if numeric else np.arange(len(x))
     if p.get("diff"):
         d = p["diff"]["values"]
-        ax.fill_between(xs, d, 0, where=[v >= 0 for v in d], color=TEAL, alpha=0.25, lw=0)
-        ax.fill_between(xs, d, 0, where=[v < 0 for v in d], color=BRICK, alpha=0.25, lw=0)
+        # zero_is_signal=True (mac dinh, giu nguyen hanh vi cu, khong pha spec.json nao
+        # dang goi component "spread"): nguong 0 mang nghia canh bao (vd dao nguoc 2s10s)
+        # nen to TEAL/BRICK theo dau. Dat False cho butterfly hoac bat ky spread nao ma
+        # dau khong mang nghia tot/xau pho quat (muc 3.3 cua docs/specs/2026-08-07-
+        # yield-forward-curve-design.md) - khi do CHI dung 1 mau accent trung tinh, tranh
+        # traffic-light gia.
+        zero_is_signal = p["diff"].get("zero_is_signal", True)
+        if zero_is_signal:
+            ax.fill_between(xs, d, 0, where=[v >= 0 for v in d], color=TEAL, alpha=0.25, lw=0)
+            ax.fill_between(xs, d, 0, where=[v < 0 for v in d], color=BRICK, alpha=0.25, lw=0)
+        else:
+            ax.fill_between(xs, d, 0, color=accent, alpha=0.14, lw=0)
         ax.plot(xs, d, color=NAVY, lw=2.0, zorder=3); ax.axhline(0, color=INK, lw=1.0)
         ax.annotate(" " + p["diff"].get("name", "Spread"), (xs[-1], d[-1]), color=NAVY,
                     fontsize=9, va="center", fontweight="bold")

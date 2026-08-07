@@ -145,6 +145,29 @@ Hai giá trị bằng nhau về mặt kinh tế vẫn khác nhau ở chữ số 
 Số chữ số thập phân luôn lấy từ `soThapPhan(series)`. Tự chọn ở mỗi engine là cách bản HTML hiện
 15,45% còn bản PDF hiện 15,5%.
 
+## Soi ảnh chart: hai cách tạo ra lỗi GIẢ, đã dính cả hai trong một buổi
+
+Repo này có sẵn luật "phép cuối cùng là mở ảnh ra nhìn". Luật đó đúng, nhưng phép soi cũng hỏng
+được, và khi nó hỏng thì nó báo lỗi ở chỗ không có lỗi. Hai cách đã dính:
+
+**Chụp sớm hơn animation.** ECharts SSR nhúng CSS animation chạy 1 giây vào SVG, hiệu ứng vẽ
+dần. Chụp sớm thì đường line hiện ra đứt đoạn, trông hệt chart hỏng. Đã mất công truy một ca:
+path trong SVG có đủ tám điểm nối liền và có `stroke` đầy đủ, nhưng ảnh chỉ hiện bốn điểm đầu.
+Chờ ít nhất 1500ms sau khi tải xong.
+
+**Soi ảnh toàn cảnh bị thu nhỏ.** Một chấm scatter đường kính 8px trong SVG 680px, khi xem ở
+ảnh toàn cảnh đã thu nhỏ, biến mất khỏi mắt giữa đám nhãn. Suýt kết luận là "scatter không vẽ
+chấm" trong khi chín chấm đều có, đúng chỗ, viền đúng vai trò. Khi nghi ngờ một chi tiết nhỏ,
+**crop đúng vùng đó ở độ phóng cao** rồi mới phán.
+
+Cách tránh cả hai: nghiệm thu chart bằng **bản PDF qua WeasyPrint**, không phải bản trình duyệt.
+PDF là thứ giao đi, và nó không có animation nên không có trạng thái nửa chừng. Đếm nét vẽ bằng
+`get_drawings()` cho câu trả lời bằng số trước khi cần đến mắt.
+
+Đây là bẫy NGƯỢC với mọi bẫy khác trong file này. Các bẫy kia làm gate xanh giả trong khi thứ
+giao đi đã hỏng. Bẫy này làm mắt thấy đỏ giả trong khi thứ giao đi vẫn đúng. Cả hai đều tốn thời
+gian như nhau, và cái sau còn dẫn tới sửa một thứ không hỏng.
+
 ## Khi thêm chart
 
 Màu lấy từ `charts/echarts/theme.mjs`, không hardcode hex. Mọi script chart phải kết bằng `chart.dispose(); process.exit(0);` vì ECharts SSR không tự thoát process.

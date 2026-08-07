@@ -39,7 +39,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import TEAL, save
 
-_MODULES = ["viz_eir", "viz_eir_stats", "viz_eir_diagram", "viz_eir_panels", "viz_eir_kpi"]
+_MODULES = ["viz_eir", "viz_eir_stats", "viz_eir_diagram", "viz_eir_panels", "viz_eir_kpi",
+            "viz_eir_curves"]
 
 COMPONENTS = {}
 _SOURCE = {}

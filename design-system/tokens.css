@@ -28,7 +28,11 @@
      xanh điện #2251FF trong toàn bộ report). --accent-warm = --copper/--gold
      của Kimi (dùng cho badge nguồn "broker", tách biệt khỏi accent chính,
      dùng tiết chế theo đúng chỉ đạo). --pos dùng CỰC TIẾT CHẾ theo chỉ đạo —
-     xem ghi chú tại từng component dùng --pos (statgrid trend up, risk thấp). */
+     xem ghi chú tại từng component dùng --pos. BA nơi được duyệt, không thêm nơi
+     thứ tư mà không hỏi: statgrid trend up · risk thấp · thẻ kịch bản bản Tích cực
+     (duyệt 07-08, lý do: xanh cho kịch bản tăng là quy ước tài chính gần như bắt
+     buộc, người đọc tổ chức nhận ra ngay mà không phải giải mã; thiết kế vẫn đọc
+     được khi in đen trắng nhờ nhãn chữ TIÊU CỰC/CƠ SỞ/TÍCH CỰC). */
   --paper: #FFFFFF;         /* Kimi [--paper] */
   --paper-hi: #F7F9FC;      /* Kimi [--paper-hi] — panel/hover */
   --paper-hair: #EEF1F6;    /* Kimi [--line-lo] dùng làm nền ô rỗng/hatch */

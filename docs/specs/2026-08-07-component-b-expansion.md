@@ -147,7 +147,11 @@ Dán vào `components.css`, trước khối "26. ACCESSIBILITY", đặt tên ph�
 
 File đề xuất: `components/catalog/26-scenario-cards.md`
 
-> **CHỜ DUYỆT, đọc trước khi merge CSS khối này.** Thẻ kịch bản dùng `var(--pos)` cho viền trên và nhãn "Tích cực" (bull case). `design-system/tokens.css` dòng 30 ghi rõ `--pos` chỉ dùng CỰC TIẾT CHẾ, đúng 2 chỗ đã duyệt (statgrid trend up, risk thấp). Đây sẽ là nơi dùng thứ 3, cần operator xác nhận trước khi merge.
+> **ĐÃ DUYỆT 07-08, không phải hỏi lại.** Người dùng cho phép dùng `var(--pos)` cho bản
+> Tích cực. Ghi chú trong `design-system/tokens.css` đã sửa thành ba nơi được duyệt.
+> Giữ nguyên phương án dự phòng bên dưới phòng khi sau này đổi ý.
+>
+> Ghi chú gốc lúc còn chờ: Thẻ kịch bản dùng `var(--pos)` cho viền trên và nhãn "Tích cực" (bull case). `design-system/tokens.css` dòng 30 ghi rõ `--pos` chỉ dùng CỰC TIẾT CHẾ, đúng 2 chỗ đã duyệt (statgrid trend up, risk thấp). Đây sẽ là nơi dùng thứ 3, cần operator xác nhận trước khi merge.
 >
 > Nếu operator TỪ CHỐI, chỉ cần đổi đúng 2 dòng sau trong CSS ở mục 3.2 (không cần đọc lại phần còn lại của đặc tả):
 > - `.scn-card[data-tone="bull"] { border-top-color: var(--pos); }` → đổi `var(--pos)` thành `var(--accent)`

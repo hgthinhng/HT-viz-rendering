@@ -61,12 +61,37 @@ với reference-kimi.html khối P17 (con tàu bằng chứng, ~45 primitive) v�
   class="containers") và có biến thiên màu/chiều cao để tránh lưới đều.
 
 ## 4. QUY TẮC PHỐI MÀU, 1 accent, N cấp sáng tối, KHÔNG gradient phức tạp
-- Bảng màu cố định mỗi hình: 1 "ink" (near-black, #0f172a) cho viền/khối tối,
-  1 "paper" (nền, thường để trong suốt hoặc #f8fafc), 1 "accent" theo ngành
-  (xem bảng ẩn dụ), và một dải neutral xám CỐ ĐỊNH dùng cho phần "kết cấu"
-  (thép/bê tông) bất kể accent ngành là gì:
-      #1e293b (kết cấu tối) / #475569 (kết cấu vừa) /
-      #94a3b8 (kết cấu sáng) / #e2e8f0 (panel/kính nhạt)
+- **Dải kết cấu là CHÍN bậc và khai bằng BIẾN, không phải hex thô.** Mục này
+  trước đây mô tả bốn bậc. Đếm thật trên 11 file trong `illustrations/svg/`
+  ngày 07-08 thì chúng dùng chín bậc: tài liệu và tài sản đã trôi khỏi nhau,
+  và bản sửa này chép lại đúng thực tế chứ không đổi thiết kế.
+
+      var(--ilus-1, #0f172a)   đậm nhất, đóng vai mực, viền và khối tối
+      var(--ilus-2, #1e293b)   kết cấu tối        (tên cũ: "tối")
+      var(--ilus-3, #334155)
+      var(--ilus-4, #475569)   kết cấu vừa        (tên cũ: "vừa")
+      var(--ilus-5, #64748b)
+      var(--ilus-6, #94a3b8)   kết cấu sáng       (tên cũ: "sáng")
+      var(--ilus-7, #cbd5e1)
+      var(--ilus-8, #e2e8f0)   panel, kính nhạt   (tên cũ: "panel")
+      var(--ilus-9, #f8fafc)   nhạt nhất, đóng vai giấy
+
+- **Giá trị dự phòng trong `var()` là BẮT BUỘC, không phải tuỳ chọn.** File
+  `.svg` còn được mở ĐỘC LẬP ngoài trang HTML (xem `illustrations/examples/`
+  và `scripts/verify-illustrations.mjs`). Mở độc lập thì không `:root` nào
+  khai `--ilus-*`, nên thiếu dự phòng là hình mất sạch màu, và chỉ lộ ra ở
+  đúng đường mở độc lập đó.
+
+- **Đừng viết `var()` vào một hex nằm trong khối comment XML.** Custom property
+  bắt đầu bằng hai dấu gạch ngang, mà XML cấm chuỗi con đó bên trong comment.
+  Một dòng chú thích thuần tài liệu sẽ làm hỏng CẢ FILE, và hỏng theo kiểu
+  WeasyPrint bỏ qua toàn bộ không báo lỗi, PDF ra 0 nét vẽ. Đã cắn thật một
+  lần ở `geography-vietnam-map.svg`.
+
+- Ngoài dải kết cấu, mỗi hình còn có 1 "accent" theo ngành (xem bảng ẩn dụ) và
+  các màu ngữ nghĩa (cảnh báo, tích cực, nước, bầu trời). Nhóm này GIỮ hex thô,
+  vì chúng thuộc trục NGÀNH chứ không thuộc trục CHỦ ĐỀ, và hai trục đó đổi
+  độc lập với nhau.
 - KHÔNG BAO GIỜ dùng quá 4-5 hue riêng biệt trong 1 hình (1 accent + 1 màu
   cảnh báo đỏ dùng dè xẻn + 2-3 neutral + nền). Nhiều hue hơn -> trông như
   poster trẻ em.

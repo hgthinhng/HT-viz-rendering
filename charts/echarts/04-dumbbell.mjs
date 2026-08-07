@@ -30,7 +30,8 @@ chart.setOption({
   tooltip: tooltipDefault,
   grid: { left: 150, right: 60, top: 60, bottom: 40 },
   xAxis: { type: 'value', name: '%', axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => fmtPercent(v, { decimals: 0 }) }, splitLine: { lineStyle: { color: PALETTE.line } } },
-  yAxis: { type: 'category', data: categories, axisLine: { show: false }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
+  yAxis: { type: 'category', data: categories, inverse: true, // sắp theo độ chênh: chênh lớn nhất phải ở TRÊN CÙNG; ECharts mac dinh dat index 0 o DAY nen phai dao truc, khong dao thi hinh ra nguoc voi y dinh ghi o dau file
+         axisLine: { show: false }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
   series: [
     {
       name: 'Đoạn nối', type: 'custom', z: 1,

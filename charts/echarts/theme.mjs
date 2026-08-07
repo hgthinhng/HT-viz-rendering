@@ -39,8 +39,17 @@ export const PALETTE = {
   paper: '#FFFFFF',
 };
 
-export const FONT_STACK = '"Spectral", Georgia, "Times New Roman", serif';
-export const FONT_STACK_MONO = '"IBM Plex Mono", Consolas, "Courier New", monospace';
+// Ten font boc bang NHAY DON, khong phai nhay kep. Day khong phai chuyen thau my:
+// ECharts nhung nguyen font stack nay vao thuoc tinh style="..." cua the <text> trong
+// SVG. Nhay kep long trong nhay kep lam SVG KHONG CON LA XML HOP LE, va hau qua da do
+// duoc: WeasyPrint bo qua toan bo file, PDF ra 0 net ve, chart bien mat sach.
+// Da do ca hai chieu tren cung mot file: ban nhay kep cho 0 drawing, ban nhay don cho
+// 24 drawing va chu WACC doc duoc trong tang text cua PDF.
+// Trinh duyet van hien dung ca hai kieu vi HTML parser de tinh hon XML parser, nen loi
+// nay khong bao gio lo ra neu chi xem ban HTML.
+// Van giu dung luat CLAUDE.md: list ket thuc bang generic keyword.
+export const FONT_STACK = "'Spectral', Georgia, 'Times New Roman', serif";
+export const FONT_STACK_MONO = "'IBM Plex Mono', Consolas, 'Courier New', monospace";
 
 /** Tron hai mau hex theo ty le t (0=hexA, 1=hexB). Dung de dan xuat sac do tu
  * PALETTE thay vi hardcode hex moi trong file chart. */

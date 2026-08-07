@@ -51,6 +51,25 @@ hỏng, và không ai biết cho tới lúc mở file PDF ra nhìn.
 | `aspect-ratio` | Bỏ qua, khối ra cao 0 | Khai `height` bằng px |
 | `overflow`/`clip` trên `<table>` | Bỏ qua, bảng vẫn in ra | Bọc bảng trong `<div class="visually-hidden">` |
 | `writing-mode` | Bỏ qua nhưng VẪN áp `transform` | Quay bằng transform thuần |
+| SVG không phải XML hợp lệ | Bỏ qua CẢ FILE, không báo lỗi | Tên font bọc nháy đơn, xem mục dưới |
+
+## Tên font trong chart phải bọc bằng nháy ĐƠN, nếu không PDF mất sạch chart
+
+`charts/echarts/theme.mjs` khai `FONT_STACK` bằng nháy đơn (`'Spectral', Georgia, ...`), không phải
+nháy kép. Đây không phải chuyện thẩm mỹ. ECharts nhúng nguyên font stack vào thuộc tính
+`style="..."` của thẻ `<text>` trong SVG, nên nháy kép lồng trong nháy kép làm file không còn là
+XML hợp lệ.
+
+Hậu quả đo được trên engine đích: WeasyPrint bỏ qua toàn bộ file, PDF ra 0 nét vẽ, chart biến mất
+sạch mà không báo lỗi gì. Đã đo cả hai chiều trên cùng một file: bản nháy kép cho 0 nét vẽ, bản
+nháy đơn cho 24 nét vẽ và chữ đọc được trong tầng text của PDF.
+
+Lỗi này sống sót suốt Phase 1 trên cả 12 chart. Nó lọt được vì trình duyệt vẫn hiện đúng (HTML
+parser dễ tính hơn XML parser), nên soi bằng mắt trên bản HTML không bao giờ phát hiện ra, và vì
+mọi gate cũ chỉ đếm chuỗi với đếm phần tử chứ không cái nào PARSE.
+
+Gate `verify-charts.mjs` nay parse XML thật. Khi tự set font trong `graphic` hoặc custom
+`renderItem`, luôn lấy `FONT_STACK` từ `theme.mjs`, đừng gõ lại tên font.
 
 Chi tiết nếu cần đào lại: khối ma trận 2x2 dính cả ba cùng lúc. `aspect-ratio: 1 / 0.72` làm
 khung sập thành một đường kẻ, `<table class="visually-hidden">` in đè lên chính khối đó, và

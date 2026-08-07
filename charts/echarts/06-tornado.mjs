@@ -38,7 +38,8 @@ chart.setOption({
     axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => fmtCompact(v + base, { baseUnit: 'ty', decimals: 0 }) },
     splitLine: { lineStyle: { color: PALETTE.line } },
   },
-  yAxis: { type: 'category', data: categories, axisLine: { show: false }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
+  yAxis: { type: 'category', data: categories, inverse: true, // phễu lốc: biên độ lớn nhất phải ở TRÊN CÙNG; ECharts mac dinh dat index 0 o DAY nen phai dao truc, khong dao thi hinh ra nguoc voi y dinh ghi o dau file
+         axisLine: { show: false }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
   series: [
     {
       name: 'Kịch bản bi quan', type: 'bar', stack: 'range', barWidth: 22,

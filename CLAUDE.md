@@ -145,6 +145,24 @@ Hai giá trị bằng nhau về mặt kinh tế vẫn khác nhau ở chữ số 
 Số chữ số thập phân luôn lấy từ `soThapPhan(series)`. Tự chọn ở mỗi engine là cách bản HTML hiện
 15,45% còn bản PDF hiện 15,5%.
 
+## Chart phải tắt animation, nếu không marker bị kéo về gốc toạ độ
+
+`baseOption()` khai `animation: false`. Đây không phải chuyện thẩm mỹ mà là chuyện đúng sai.
+
+ECharts SSR mặc định xuất CSS `@keyframes` cho mọi marker, và keyframe cuối là
+`transform: scale(n,n)`. CSS transform **thắng** thuộc tính XML, mà keyframe đó không mang phần
+translate, nên sau khi animation chạy xong marker bị kéo về gốc toạ độ rồi phóng to. Đã nhìn tận
+mắt trên `out-04-dumbbell.svg` trước khi vá: mọi chấm biến mất khỏi vị trí đúng, còn đúng một
+chấm lạc ở góc trên trái.
+
+Chỉ hỏng ở bản HTML mở bằng trình duyệt. Bản PDF không dính vì WeasyPrint không chạy CSS
+animation, và đó cũng chính là lý do bug này sống sót cả một phase: mọi phép nghiệm thu của repo
+hoặc đi qua PDF, hoặc đi qua gate đếm phần tử. Không phép nào mở SVG bằng trình duyệt thật rồi
+nhìn.
+
+Preset nào tự dựng option mà không qua `baseOption()` thì phải tự khai `animation: false`. Có
+gate trong `verify-charts.mjs` chặn tái phạm, đã kiểm là đỏ được khi gỡ cờ ở nguồn.
+
 ## Soi ảnh chart: hai cách tạo ra lỗi GIẢ, đã dính cả hai trong một buổi
 
 Repo này có sẵn luật "phép cuối cùng là mở ảnh ra nhìn". Luật đó đúng, nhưng phép soi cũng hỏng

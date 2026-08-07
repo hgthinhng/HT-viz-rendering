@@ -26,6 +26,11 @@ const volume = [1.2, 0.9, 2.1, 1.5, 1.0, 3.2, 1.8, 1.1, 0.8, 2.6]; // triệu cp
 
 const chart = echarts.init(null, null, { renderer: 'svg', ssr: true, width: 720, height: 420 });
 chart.setOption({
+  // Tat animation: file nay tu dung option chu khong qua baseOption() nen khong
+  // thua ke duoc co do. Xem ly do day du trong theme.mjs: CSS keyframes cua
+  // ECharts SSR de mat phan translate cua marker, lam cham bi keo ve goc toa do
+  // khi mo bang trinh duyet.
+  animation: false,
   backgroundColor: PALETTE.paper,
   textStyle: { fontFamily: FONT_STACK },
   title: { text: 'Giá và khối lượng giao dịch, mã minh hoạ VNM', subtext: 'Đơn vị: nghìn đồng/cp; khối lượng: triệu cp; quy ước màu sàn HOSE (tăng=lam, giảm=đỏ)', left: 16, top: 8, textStyle: TYPOGRAPHY.title, subtextStyle: TYPOGRAPHY.subtitle },

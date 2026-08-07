@@ -89,6 +89,20 @@ for (const f of charts) {
   // HTML khong bao gio phat hien duoc.
   const loiXml = kiemTraXml(svg);
   if (loiXml) problems.push(`KHONG phai XML hop le (${loiXml}), WeasyPrint se bo qua ca file`);
+
+  // SVG tinh nhung vao bao cao KHONG duoc mang CSS animation. ECharts SSR mac dinh
+  // xuat @keyframes cho moi marker, va keyframe cuoi la `transform: scale(n,n)`.
+  // CSS transform THANG thuoc tinh XML, va keyframe do khong mang phan translate,
+  // nen sau khi animation chay xong marker bi keo ve GOC TOA DO. Da nhin tan mat
+  // tren out-04-dumbbell.svg truoc khi va: moi cham bien mat khoi vi tri dung, con
+  // mot cham lac o goc tren trai.
+  // Chi hong o ban HTML mo bang trinh duyet. Ban PDF khong dinh vi WeasyPrint khong
+  // chay CSS animation, va do cung la ly do bug nay song sot ca mot phase: moi phep
+  // nghiem thu cua repo hoac di qua PDF hoac di qua gate dem phan tu.
+  // Cach chua: `animation: false` trong option, da dat san trong baseOption().
+  if (/@keyframes|animation\s*:/.test(svg)) {
+    problems.push('con CSS animation, marker se bi keo ve goc toa do khi mo bang trinh duyet');
+  }
   log(problems.length === 0, `${svgName}: ${els} phan tu${problems.length ? ' -> ' + problems.join(', ') : ' sach'}`);
 }
 

@@ -46,6 +46,11 @@ segments.forEach((seg, i) => {
 
 const chart = echarts.init(null, null, { renderer: 'svg', ssr: true, width, height });
 chart.setOption({
+  // Tat animation: file nay tu dung option chu khong qua baseOption() nen khong
+  // thua ke duoc co do. Xem ly do day du trong theme.mjs: CSS keyframes cua
+  // ECharts SSR de mat phan translate cua marker, lam cham bi keo ve goc toa do
+  // khi mo bang trinh duyet.
+  animation: false,
   backgroundColor: PALETTE.paper,
   textStyle: { fontFamily: FONT_STACK },
   title: {

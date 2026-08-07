@@ -159,3 +159,79 @@ _eir_style.save(fig, {out_path!r})
     assert "<text" in svg, "save() khong ep svg.fonttype='none', chu da bien thanh path"
     assert "chiết khấu" in svg, "chu tieng Viet khong con nguyen ven qua save()"
     assert "<image" not in svg, "SVG qua save() nhung anh raster"
+
+
+# ── Font nhung trong repo, khong muon font he thong ───────────────────────
+
+TTF = ROOT / "design-system" / "fonts" / "ttf"
+
+
+def test_co_du_file_ttf_trong_repo():
+    """File .ttf phai NAM TRONG repo va duoc commit.
+
+    Truoc day _eir_style.py tro thang vao /usr/share/fonts, tuc mot phu thuoc
+    ngoai repo: may nao thieu Liberation thi chart roi ve DejaVu va nhan tieng
+    Viet mat dau. Sinh lai bang: python3 design-system/fonts/extract-ttf.py
+    """
+    can = [
+        "IBMPlexSans-400.ttf", "IBMPlexSans-600.ttf",
+        "IBMPlexMono-400.ttf", "IBMPlexMono-600.ttf",
+        "Spectral-400.ttf", "Spectral-700.ttf",
+    ]
+    thieu = [t for t in can if not (TTF / t).exists()]
+    assert not thieu, f"thieu file font trong repo: {thieu}. Chay extract-ttf.py"
+
+
+def test_matplotlib_chon_font_trong_repo_chu_khong_phai_font_he_thong():
+    """Do FILE THAT duoc chon, khong tin danh sach ten.
+
+    setup_fonts() tra ve list ten, nhung ten nam dau list KHONG chung minh
+    matplotlib se dung file do: neu ten ho bi lech (vd file 600 khai ho rieng
+    la 'IBM Plex Sans SemiBold') thi xin ban dam se roi sang font khac ma
+    khong bao gi. Da xay ra that o vong dau, phat hien bang chinh phep do nay.
+    Vi vay test hoi thang findfont cho ca sau to hop.
+    """
+    sys.path.insert(0, str(EIR))
+    import matplotlib
+
+    matplotlib.use("agg")
+    from matplotlib import font_manager as fm
+    import _eir_style
+
+    sans, mono = _eir_style.setup_fonts()
+    lech = []
+    for ten, ho in (("sans", sans), ("mono", mono), ("serif", _eir_style.SERIF)):
+        for weight in ("normal", "bold"):
+            duong_dan = Path(fm.findfont(fm.FontProperties(family=ho, weight=weight)))
+            if duong_dan.parent != TTF:
+                lech.append(f"{ten}/{weight} -> {duong_dan}")
+    assert not lech, (
+        "matplotlib dang dung font NGOAI repo, nhan tieng Viet co the mat dau "
+        f"tren may khac:\n{chr(10).join(lech)}"
+    )
+
+
+def test_font_trong_repo_phu_du_dac_ta_tieng_viet():
+    """Doi chieu voi dac ta DOC LAP sinh tu unicodedata, khong phai metadata
+    cua chinh nha cung cap font. Day la bai hoc kiem chung vong tron da ghi
+    trong progress.md: lay nguon tao ra dau ra de kiem dau ra thi luon PASS.
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from fonts_test import DAC_TA_TIENG_VIET_DOC_LAP as DAC_TA
+    from fontTools.ttLib import TTFont
+
+    thieu_tong = {}
+    for f in sorted(TTF.glob("*.ttf")):
+        font = TTFont(f)
+        co = set()
+        for bang in font["cmap"].tables:
+            co |= set(bang.cmap.keys())
+        font.close()
+        # DAC_TA la set cac CODEPOINT (int), khong phai ky tu. Giu nguyen kieu
+        # int de so sanh thang voi khoa cua bang cmap.
+        thieu = sorted(c for c in DAC_TA if c not in co)
+        if thieu:
+            thieu_tong[f.name] = [f"U+{c:04X} {chr(c)!r}" for c in thieu[:10]]
+    assert not thieu_tong, (
+        f"font trong repo thieu codepoint tieng Viet (doi chieu {len(DAC_TA)} codepoint): {thieu_tong}"
+    )

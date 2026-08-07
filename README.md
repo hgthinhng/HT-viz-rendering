@@ -17,6 +17,10 @@ không tự tải browser lúc `npm install`, nên đây là bước riêng ch�
 trong repo lấy đường dẫn binary từ `scripts/lib/chromium.mjs`, tức hỏi thẳng `playwright-core` bản
 nào khớp phiên bản thư viện, nên không có chuyện hai script chạy hai bản Chromium khác nhau.
 
+Không cần cài font hệ thống. Bản HTML nhúng font base64 trong `design-system/fonts/fonts-embedded.css`,
+bản chart matplotlib đọc `design-system/fonts/ttf/` ngay trong repo. Cả hai là cùng một bộ Spectral,
+IBM Plex Sans và IBM Plex Mono, và cả sáu file `.ttf` đã đo là phủ đủ 243 codepoint tiếng Việt.
+
 ## Kiểm tra hệ thống còn sống
 
 ```bash
@@ -29,7 +33,7 @@ python3 -m pytest tests/ -v
 
 | Thư mục | Nội dung |
 |---|---|
-| `design-system/` | Token màu, font, spacing. Nguồn chân lý là `tokens.css` |
+| `design-system/` | Token màu, font, spacing. Nguồn chân lý là `tokens.css`. Font nhúng sẵn: `fonts/fonts-embedded.css` cho HTML, `fonts/ttf/` cho matplotlib |
 | `components/` | Component kể chuyện, print-safe, kèm catalog spec |
 | `charts/echarts/` | Chart cho HTML tương tác |
 | `charts/matplotlib/` | Component EIR cho PDF tĩnh |

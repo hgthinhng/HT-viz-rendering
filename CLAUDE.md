@@ -96,6 +96,12 @@ Sửa `design-system/tokens.css` trước, rồi sửa `design-system/tokens.py`
 
 Màu lấy từ `charts/echarts/theme.mjs`, không hardcode hex. Mọi script chart phải kết bằng `chart.dispose(); process.exit(0);` vì ECharts SSR không tự thoát process.
 
+Chart matplotlib lấy font từ `design-system/fonts/ttf/`, đã nhúng trong repo, không mượn font hệ thống. Đừng thêm đường dẫn `/usr/share/fonts` mới vào `_eir_style.py`: nhánh hệ thống còn lại chỉ là dự phòng cuối. Sinh lại file `.ttf` bằng `python3 design-system/fonts/extract-ttf.py` sau khi `build-fonts.py` chạy lại.
+
+Phải có bản `.ttf` riêng dù repo đã nhúng font base64, vì matplotlib đọc ttf/otf/ttc chứ không đọc woff2, mà `fonts-embedded.css` toàn woff2. Trích ngược từ chính file CSS đó chứ không tải mới từ Google Fonts, để chạy được offline và để bản chart với bản HTML không thể lệch font.
+
+Một cái bẫy đã cắn khi làm việc này: Google Fonts đặt tên họ của bản 600 là `IBM Plex Sans SemiBold`, tức một HỌ KHÁC chứ không phải cấp đậm của `IBM Plex Sans`. Trích nguyên xi thì matplotlib đăng ký hai họ rời rạc, và khi chart xin bản đậm nó không tìm thấy nên tô giả. `extract-ttf.py` ép lại `nameID` 1/16 cho khớp. Kiểm bằng `findfont` chứ đừng tin danh sách tên mà `setup_fonts()` trả về.
+
 ## Khi thêm minh hoạ
 
 Đọc `illustrations/grammar.md` trước. Ba bài tự kiểm bắt buộc: che hết chữ mà không đọc ra biến cấu trúc thì xoá, không polish; đổi ngành mà hình vẫn dùng nguyên được thì đó là trang trí chứ không phải phân tích; kiểm danh sách đen chart giả.

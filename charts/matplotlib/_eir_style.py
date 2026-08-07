@@ -120,14 +120,39 @@ def shade(hexcolor, amount=0.35):
 
 _FONTS_READY = False
 
-# Danh sach ung vien theo thu tu uu tien. Duong dan phai dung: thu muc that
+# Font NHUNG TRONG REPO, uu tien cao nhat. Truoc day danh sach nay bat dau
+# bang font he thong o /usr/share/fonts, tuc mot phu thuoc ngoai repo: may nao
+# thieu Liberation thi roi ve DejaVu va nhan tieng Viet mat dau. Gio ban chart
+# dung dung bo font cua design system (IBM Plex Sans/Mono va Spectral), cung bo
+# ma ban HTML nhung base64, nen hai duong ra khong con lech font.
+#
+# File .ttf sinh boi design-system/fonts/extract-ttf.py, trich nguoc tu
+# fonts-embedded.css nen chay offline. matplotlib khong doc duoc woff2, do la
+# ly do phai co ban .ttf rieng thay vi dung thang file CSS kia.
+#
+# Ca 6 face da do phu 243/243 codepoint theo DAC_TA_TIENG_VIET_DOC_LAP trong
+# tests/consistency/fonts_test.py, tuc dac ta sinh tu unicodedata chu khong
+# phai metadata cua chinh nha cung cap font.
+_TTF = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+    "design-system", "fonts", "ttf",
+)
+
+# Danh sach ung vien theo thu tu uu tien. Ban dam khai rieng mot dong vi
+# matplotlib nap font theo TUNG FILE, khong tu suy ra ban dam tu ban thuong;
+# thieu no thi chu dam bi to gia (synthetic bold) trong ra khac han.
+# Voi nhanh he thong giu lai lam du phong: duong dan phai dung, thu muc that
 # tren he la 'liberation' (KHONG them hau to so nhu ban cu tung hardcode sai)
 # -> os.path.exists tra False -> roi tu do ve DejaVu -> mat dau tieng Viet).
 _SANS_CANDIDATES = [
+    ("IBM Plex Sans", os.path.join(_TTF, "IBMPlexSans-400.ttf")),
+    ("IBM Plex Sans", os.path.join(_TTF, "IBMPlexSans-600.ttf")),
     ("Liberation Sans", "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf"),
     ("DejaVu Sans", None),
 ]
 _MONO_CANDIDATES = [
+    ("IBM Plex Mono", os.path.join(_TTF, "IBMPlexMono-400.ttf")),
+    ("IBM Plex Mono", os.path.join(_TTF, "IBMPlexMono-600.ttf")),
     ("Liberation Mono", "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf"),
     ("Noto Sans Mono", "/usr/share/fonts/truetype/noto/NotoSansMono-Regular.ttf"),
     ("DejaVu Sans Mono", None),
@@ -136,6 +161,8 @@ _MONO_CANDIDATES = [
 # setup_fonts() (interface la (sans_list, mono_list)) nhung van phai la LIST
 # ket thuc generic keyword, khong duoc la mot ten tran, theo luat cung CLAUDE.md.
 _SERIF_CANDIDATES = [
+    ("Spectral", os.path.join(_TTF, "Spectral-400.ttf")),
+    ("Spectral", os.path.join(_TTF, "Spectral-700.ttf")),
     ("DejaVu Serif", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"),
 ]
 
@@ -167,9 +194,14 @@ def _register(candidates):
     for i, (name, path) in enumerate(candidates):
         if path and os.path.exists(path):
             fm.fontManager.addfont(path)
-            names.append(name)
+            # Mot ho font co nhieu FILE (thuong, dam) nhung chi mot TEN. Nap
+            # het cac file, nhung ten thi chi vao list mot lan va giu dung thu
+            # tu uu tien, vi list nay di thang vao font.family cua matplotlib.
+            if name not in names:
+                names.append(name)
         elif path is None:
-            names.append(name)
+            if name not in names:
+                names.append(name)
         elif i == 0:
             warnings.warn(
                 f"_eir_style: KHONG tim thay font DAU TIEN '{name}' tai "

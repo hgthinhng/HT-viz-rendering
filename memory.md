@@ -42,6 +42,11 @@ pip install --break-system-packages -r requirements.txt
 npm test && npm run verify && python3 -m pytest tests/ -v
 ```
 
+Không cần cài font hệ thống: bản HTML nhúng base64 trong `design-system/fonts/fonts-embedded.css`,
+chart matplotlib đọc `design-system/fonts/ttf/` (6 face, 404KB, đã commit). Sinh lại bằng
+`python3 design-system/fonts/extract-ttf.py`, script này trích ngược từ chính file CSS kia nên
+chạy offline. Phải có bản `.ttf` riêng vì matplotlib không đọc được woff2.
+
 Mọi chỗ mở Chromium đều đi qua `scripts/lib/chromium.mjs`, tức hỏi thẳng `playwright-core` xem
 bản nào khớp phiên bản thư viện. Trước đợt dọn, `verify-illustrations.mjs` và `deps.test.mjs`
 hardcode `chromium-1228` còn `verify-components.mjs` tự dò bản mới nhất, nên `npm run verify`

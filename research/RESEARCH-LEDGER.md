@@ -224,6 +224,34 @@ WeasyPrint" ở bất kỳ vòng nào, không riêng shadow.
   bạch hơn nhưng không đều trong vùng xanh dương) - nếu cần độ chính xác cao hơn cho vùng hue
   khác (đỏ, vàng), nên cài CIEDE2000 trước khi mở rộng bảng màu sang các hue đó.
 
+## Vòng 13: nhóm A và nhóm B còn thiếu gì, xếp theo nhu cầu đo được
+
+Hồ sơ: `research/13-chart-component-gap/FINDINGS.md`. Khác `03-chart-doctrine/CHART-SELECTION.md`
+ở chỗ bảng kia trả lời "chọn chart nào cho câu hỏi nào", vòng này trả lời "làm cái nào trước".
+
+Cách xếp hạng: đếm một chart family xuất hiện ở bao nhiêu trên 10 loại báo cáo trong
+`_harvest/lab-opvia/.../archetypes/`, rồi đối chiếu với phủ thật của `charts/echarts/` (12
+preset) và `charts/matplotlib/` (48 component). Kiểm chéo bằng tần suất nhắc trong 66 file
+domain của ThinkTank.
+
+Bốn phát hiện, chi tiết và bảng số ở hồ sơ:
+
+1. Lỗ hổng không nằm ở "ít chart" mà ở LỆCH ENGINE. 43 trên 48 loại của matplotlib không có bản
+   ECharts, và chỗ thủng rơi đúng vào những loại dùng nhiều nhất: line có chú thích 8/10, bar
+   ngang xếp hạng 7/10, scatter phần tư 7/10, dot plot 5/10. Trong khi ECharts lại có sẵn
+   treemap 2/10 và candlestick 1/10.
+2. Đường cong lãi suất và đường cong giá kỳ hạn vắng ở CẢ HAI engine, và không có dòng nào
+   trong bảng tra. Nhu cầu có thật: ThinkTank nhắc `yield curve` 50 lần, `contango` 25 lần, có
+   hai file domain dày dành riêng cho chúng.
+3. `risk_radar` cần ở 4/10 loại báo cáo nhưng radar bị luật cứng cấm. Lệnh cấm giữ nguyên,
+   nhưng phải nâng phương án thay (Cleveland dot plot xếp hạng) thành preset có tên.
+4. Nhóm B thiếu đúng thành phần phổ quát nhất: hộp tóm tắt điều hành, thứ 10/10 loại báo cáo
+   đều cần. `11-exec-qa` và `24-key-point-callout` gần nhưng không thay được.
+
+Còn treo, chưa làm (đây là việc sửa `charts/` và `components/`, ngoài phạm vi một vòng nghiên
+cứu): bốn preset P0 cho ECharts, football field và lưới độ nhạy hai chiều (hai cái này ledger
+đã ghi nợ từ vòng trước), hai đường cong ở P1.
+
 ## Luật cho agent nghiên cứu
 
 - CHỈ ghi vào `research/` và `samples/`. Phase 1 chưa đóng, mọi thư mục khác đang có agent

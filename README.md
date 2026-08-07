@@ -21,6 +21,48 @@ Không cần cài font hệ thống. Bản HTML nhúng font base64 trong `design
 bản chart matplotlib đọc `design-system/fonts/ttf/` ngay trong repo. Cả hai là cùng một bộ Spectral,
 IBM Plex Sans và IBM Plex Mono, và cả sáu file `.ttf` đã đo là phủ đủ 243 codepoint tiếng Việt.
 
+## Máy mới, hoặc phiên Claude mới
+
+Repo nằm ở `github.com/hgthinhng/HT-viz-rendering`, **private**. Trên một máy mới:
+
+```bash
+gh repo clone hgthinhng/HT-viz-rendering ~/HT-viz-rendering
+cd ~/HT-viz-rendering
+npm install
+npm run setup:browser                                   # bước riêng, xem mục Cài đặt
+pip install --break-system-packages -r requirements.txt
+ln -sfn ~/HT-viz-rendering ~/.claude/skills/HT-viz-rendering
+```
+
+Dòng cuối là dòng làm Claude thấy được thư viện: nó trỏ `SKILL.md` vào thư mục skill, và
+`SKILL.md` trỏ tiếp tới `catalog/CATALOG.md`. Từ đó một phiên mới đọc một file là biết thư
+viện có gì mà không phải dò từng thư mục.
+
+Vì repo private nên ảnh trong đó **không hotlink được**: `raw.githubusercontent.com` đòi
+token, và bật GitHub Pages từ repo private trên tài khoản Pro sẽ publish site ra công
+khai. Đó không phải hạn chế đáng tiếc mà là điều không cần tới: chart và minh hoạ được
+nhúng thẳng vào file báo cáo, nên người nhận xem được kể cả khi offline, và kho hình chỉ
+cần mở được trên máy đã clone.
+
+## Thư viện có gì
+
+```bash
+catalog/CATALOG.md          108 tài sản, mỗi dòng: trả lời câu hỏi gì, khi nào đừng dùng
+catalog/contact-sheet.pdf   50 bản xem trước, nhìn cả kho một lượt
+```
+
+Sinh lại sau khi thêm hình mới:
+
+```bash
+python3 scripts/sinh_xem_truoc.py      # render bản xem trước cho component matplotlib
+python3 scripts/sinh_catalog.py        # dựng lại mục lục từ mã nguồn
+python3 scripts/sinh_contact_sheet.py --pdf
+```
+
+Mô tả sửa ở NGUỒN chứ không sửa trong mục lục: comment đầu file preset, docstring
+component, mục `Mô tả / khi nào dùng` của catalog, hoặc `<desc>` của SVG. Có test ép mục
+lục khớp mã nguồn.
+
 ## Làm một báo cáo
 
 Một báo cáo là một thư mục: `noi-dung.md` viết bằng markdown, `so-nguon.json` giữ nguồn cho

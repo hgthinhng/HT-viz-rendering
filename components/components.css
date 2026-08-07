@@ -251,10 +251,27 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
 .heatmatrix .cell-tag { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .04em; display: block; margin-bottom: 2px; }
 
 /* ── 9. KHỐI 06 · MA TRẬN 2×2 ĐỊNH VỊ ─────────────────────────────────── */
-.quad2x2 { display: grid; grid-template-columns: 32px 1fr; grid-template-rows: 1fr 32px; gap: 0; max-width: 640px; }
-.quad2x2 .q-ylabel { grid-row: 1; grid-column: 1; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; color: var(--ink-lo); text-transform: uppercase; }
+.quad2x2 { display: grid; grid-template-columns: 32px 1fr; grid-template-rows: 438px 32px; gap: 0; max-width: 640px; }
+/* Nhãn trục Y quay bằng transform THUẦN, không dùng `writing-mode`. WeasyPrint
+   69.0 bỏ qua writing-mode nhưng VẪN áp transform, nên bản cũ
+   (`writing-mode: vertical-rl` cộng `rotate(180deg)`) ra chữ NGANG bị lật
+   ngược trong PDF: cột rộng 32px ép xuống dòng từng chữ rồi xoay 180 độ, đọc
+   thành "← N ẠỤHN IỢL NÊIB". Trên trình duyệt thì vẫn đúng nên rất dễ lọt.
+   Kỹ thuật dưới đây chỉ dùng box model cộng transform, đã đối chiếu ảnh hai
+   engine: cả hai cho chữ đọc từ dưới lên, mũi tên chỉ lên, đúng chuẩn trục Y.
+   width phải bằng CHIỀU CAO ô (438px), height bằng CHIỀU RỘNG cột (32px). */
+.quad2x2 .q-ylabel { grid-row: 1; grid-column: 1; width: 438px; height: 32px; transform-origin: top left; transform: rotate(-90deg) translateX(-100%); white-space: nowrap; line-height: 32px; text-align: center; font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; color: var(--ink-lo); text-transform: uppercase; }
 .quad2x2 .q-xlabel { grid-row: 2; grid-column: 2; text-align: center; font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; color: var(--ink-lo); text-transform: uppercase; padding-top: 6px; }
-.quad2x2 .q-grid { grid-row: 1; grid-column: 2; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; border: 1px solid var(--ink); aspect-ratio: 1 / 0.72; position: relative; }
+/* Chiều cao khai bằng px chứ không bằng `aspect-ratio: 1 / 0.72`. WeasyPrint
+   69.0 KHÔNG hỗ trợ aspect-ratio: đã đo riêng bằng một khối `width: 200px;
+   aspect-ratio: 1 / 0.72` và nó ra cao 0, sập thành đúng một đường kẻ. Hậu quả
+   trên bản PDF thật: khung ma trận co lại bằng chiều cao nội dung, bốn chấm
+   định vị theo phần trăm của một khung dẹt nên dồn cụm, nhãn tràn ra ngoài.
+   438px là 608 x 0.72, tức đúng tỷ lệ thiết kế cũ ở khổ rộng nhất (max-width
+   640px trừ 32px cột nhãn trục Y). Đổi sang số cố định làm mất tính co giãn
+   theo bề rộng, nhưng ĐƯỢC thứ quan trọng hơn: bản HTML và bản PDF cao bằng
+   nhau. Ai sửa số này phải sửa cả `grid-template-rows` của .quad2x2 cho khớp. */
+.quad2x2 .q-grid { grid-row: 1; grid-column: 2; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; border: 1px solid var(--ink); height: 438px; position: relative; }
 .quad2x2 .q-cell { border: .7px solid var(--line); padding: 10px 12px; position: relative; }
 .quad2x2 .q-cell-title { font-family: var(--font-mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-lo); margin-bottom: 6px; }
 .quad2x2 .q-plot { position: absolute; inset: 0; pointer-events: none; }
@@ -525,6 +542,17 @@ table.opt-compare tr { break-inside: avoid; }
 a:focus-visible, button:focus-visible, [tabindex]:focus-visible, .drillable:focus-visible {
   outline: 2px solid var(--accent); outline-offset: 2px;
 }
+/* Đặt class này lên một <div> BỌC NGOÀI, đừng đặt thẳng lên <table>.
+   WeasyPrint 69.0 không áp `overflow: hidden` lẫn `clip` lên table box, nên
+   `<table class="visually-hidden">` VẪN VẼ RA TRONG PDF trong khi trên trình
+   duyệt thì ẩn. Đã đo bằng ca tối giản 5 dòng: cùng một class, `<span>` ẩn
+   đúng còn `<table>` hiện nguyên. Hậu quả thật đã gặp: bảng dữ liệu dành cho
+   trình đọc màn hình của khối ma trận 2x2 in đè lên chính khối đó.
+   Bọc bằng div thì table giữ nguyên ngữ nghĩa bảng cho trình đọc màn hình,
+   khác hẳn cách chữa bằng `display: block` (cách đó xoá vai trò bảng khỏi cây
+   trợ năng). Có test chặn tái phạm trong tests/consistency/catalog_drift.test.mjs.
+   `<caption class="visually-hidden">` bên trong một bảng HIỆN thì an toàn, đã
+   đo riêng. */
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0,0,0,0); white-space: nowrap; border: 0;

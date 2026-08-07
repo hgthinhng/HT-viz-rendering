@@ -41,6 +41,25 @@ Khối đầu giữ 12 biến màu và `--shadow-2/3/none`. Khối sau giữ fon
 
 Test tách các lớp shadow bằng `split(",")`. Dấu phẩy bên trong `rgba()` (cú pháp cũ `rgba(R, G, B, A)`) làm hỏng phép tách đó. Giữ nguyên trị số, chỉ đổi cách viết sang cú pháp khoảng trắng và dấu gạch chéo.
 
+## Ba thuộc tính CSS mà WeasyPrint bỏ qua, đều đã cắn thật
+
+Cả ba cùng một lớp lỗi: trình duyệt chạy đúng nên bản HTML đẹp, engine đích bỏ qua nên bản PDF
+hỏng, và không ai biết cho tới lúc mở file PDF ra nhìn.
+
+| Thuộc tính | WeasyPrint làm gì | Dùng gì thay |
+|---|---|---|
+| `aspect-ratio` | Bỏ qua, khối ra cao 0 | Khai `height` bằng px |
+| `overflow`/`clip` trên `<table>` | Bỏ qua, bảng vẫn in ra | Bọc bảng trong `<div class="visually-hidden">` |
+| `writing-mode` | Bỏ qua nhưng VẪN áp `transform` | Quay bằng transform thuần |
+
+Chi tiết nếu cần đào lại: khối ma trận 2x2 dính cả ba cùng lúc. `aspect-ratio: 1 / 0.72` làm
+khung sập thành một đường kẻ, `<table class="visually-hidden">` in đè lên chính khối đó, và
+`writing-mode: vertical-rl` cộng `rotate(180deg)` biến nhãn trục Y thành chữ ngang lật ngược
+đọc thành "← N ẠỤHN IỢL NÊIB".
+
+Có hai test chặn tái phạm trong `tests/consistency/catalog_drift.test.mjs`, cả hai đã được kiểm
+là đỏ được khi tái tạo lỗi.
+
 ## Hệ màu tối: giữ cho trang nội bộ, khoá sáng cho file giao đi
 
 Repo có bảng màu tối (`[data-theme="dark"]` và `@media (prefers-color-scheme: dark)` trong

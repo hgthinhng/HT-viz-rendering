@@ -297,3 +297,63 @@ test('khong catalog nao con em-dash hoac en-dash', () => {
     assert.equal(bad.length, 0, `${file} co ${bad.length} em-dash hoac en-dash`);
   }
 });
+
+// ── Hai bay WeasyPrint da gap that o khoi ma tran 2x2, chan tai pham ──────
+//
+// Ca hai deu thuoc mot lop loi: CSS chay dung tren trinh duyet nhung engine
+// dich bo qua thuoc tinh, va vi ban HTML van dep nen khong ai phat hien cho
+// toi luc mo file PDF ra nhin. Test o day chan bang cach doc NGUON, khong
+// render, de no chay nhanh va chay duoc ca khi khong co WeasyPrint.
+
+test('khong dat class visually-hidden thang len the table', () => {
+  // WeasyPrint 69.0 khong ap overflow:hidden lan clip len table box, nen
+  // <table class="visually-hidden"> VAN VE RA trong PDF trong khi trinh duyet
+  // an dung. Da do bang ca toi gian: cung class, <span> an dung con <table>
+  // hien nguyen. Hau qua that: bang du lieu cho trinh doc man hinh cua khoi
+  // ma tran 2x2 in de len chinh khoi do. Cach dung la boc <table> trong mot
+  // <div class="visually-hidden">, vi nhu vay table giu nguyen ngu nghia bang
+  // cho trinh doc man hinh.
+  const nguon = [
+    ['components/gallery.html', readFileSync(path.join(ROOT, 'components/gallery.html'), 'utf8')],
+    ...catalogFiles.map((f) => [`components/catalog/${f}`, readFileSync(path.join(CATALOG, f), 'utf8')]),
+  ];
+  const viPham = [];
+  for (const [ten, src] of nguon) {
+    // Bat ca hai thu tu thuoc tinh: <table class="visually-hidden"> lan
+    // <table id="x" class="a visually-hidden">.
+    const re = /<table\b[^>]*\bclass\s*=\s*"[^"]*\bvisually-hidden\b/g;
+    const so = (src.match(re) || []).length;
+    if (so) viPham.push(`${ten}: ${so} cho`);
+  }
+  assert.deepEqual(
+    viPham,
+    [],
+    'Dat class sr-only len div BOC NGOAI thay vi len chinh the <table>. ' +
+      `WeasyPrint van in bang do ra PDF. Vi pham:\n${viPham.join('\n')}`,
+  );
+});
+
+test('components.css khong dung aspect-ratio', () => {
+  // WeasyPrint 69.0 khong ho tro aspect-ratio: mot khoi width:200px voi
+  // aspect-ratio:1/0.72 ra cao 0, sap thanh dung mot duong ke. Khoi .q-grid
+  // tung dinh dung bay nay: khung ma tran co lai bang chieu cao noi dung, bon
+  // cham dinh vi theo phan tram cua mot khung det nen don cum va nhan tran ra
+  // ngoai. Dung chieu cao khai bang px de hai engine cao bang nhau.
+  // Phai boc HET comment khoi /* ... */ truoc khi quet, khong loc theo tung
+  // dong. Ban dau test nay loc dong mo dau bang "/*" hoac "*", va no do ngay
+  // tren chinh doan comment GIAI THICH vi sao khong duoc dung aspect-ratio,
+  // vi cac dong giua cua khoi comment do bat dau bang khoang trang roi chu.
+  // Ke lai cai bay trong comment thi duoc, dung that thi khong.
+  const cssSachComment = CSS.replace(/\/\*[\s\S]*?\*\//g, (khoi) =>
+    khoi.replace(/[^\n]/g, ' '),
+  );
+  const dong = cssSachComment
+    .split('\n')
+    .map((l, i) => [i + 1, l])
+    .filter(([, l]) => /(^|[^-\w])aspect-ratio\s*:/.test(l));
+  assert.deepEqual(
+    dong.map(([i]) => `dong ${i}: ${CSS.split('\n')[i - 1].trim()}`),
+    [],
+    'aspect-ratio khong render trong WeasyPrint, dung height/width bang px.',
+  );
+});

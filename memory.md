@@ -11,9 +11,12 @@ Nghiệm thu gần nhất, chạy thật chứ không chép lại:
 
 | Lệnh | Kết quả |
 |---|---|
-| `npm test` | 52 pass, 0 fail |
-| `npm run verify` | exit 0, 24 gate PASS và 2 SKIP có ghi rõ lý do |
+| `npm test` | 54 pass, 0 fail |
+| `npm run verify` | exit 0, 23 gate PASS và 2 SKIP có ghi rõ lý do |
 | `python3 -m pytest tests/ -v` | 38 passed |
+
+Hai SKIP là cố ý, không phải gate hỏng: `gallery.html` là trang nội bộ nên không khai
+`data-theme="light"`, và `vietnam-simplification-comparison.html` không dùng lớp annotation.
 
 Trong repo: 50 mẫu ở `samples/`, 12 hồ sơ ở `research/`, 24 catalog spec, 11 minh hoạ SVG,
 14 script chart ECharts, 48 component matplotlib EIR.
@@ -25,13 +28,9 @@ Trong repo: 50 mẫu ở `samples/`, 12 hồ sơ ở `research/`, 24 catalog spe
 và evidence ledger ở `lab-gate/` với `lab-evidence/`. Scope chi tiết nằm ở cuối
 `docs/superpowers/plans/2026-08-06-ht-viz-rendering-phase1.md`.
 
-Một việc nên gộp vào Phase 2, đã đo được nhưng chưa sửa: **khối `.quad2x2` vỡ bố cục trong
-WeasyPrint.** Chấm và nhãn đè lên bảng phía trên, ô lưới chồng chữ. Đã đối chiếu bản trước và
-sau đợt dọn: vỡ y hệt nhau nên đây là lỗi có sẵn từ Phase 1, không phải hồi quy. Nghi can là
-`.q-plot { position: absolute; inset: 0 }` cộng `transform: translate(-50%, -50%)` trên
-`.q-dot-wrap`. Trên Chromium thì đúng, chỉ WeasyPrint mới hỏng. Muốn xem lại trong 30 giây:
-render `components/gallery.html` bằng WeasyPrint, tìm chuỗi "Ưu tiên rót vốn", crop vùng
-quanh nó ở 260dpi.
+Khối `.quad2x2` vỡ bố cục trong WeasyPrint: **đã sửa xong**, xem mục dưới. Nghi can ban đầu
+(`position: absolute` cộng `transform: translate(-50%, -50%)`) hoá ra vô can, cả hai chạy đúng
+trong WeasyPrint.
 
 ## Chạy được từ máy sạch
 
@@ -75,6 +74,24 @@ quyết định đã chốt) và mục 5 (kiến trúc) trước khi động và
    Lý do đầy đủ ở `CLAUDE.md`.
 3. **`.q-dot`: vá cả hai lỗi cùng một rule.** Thêm `display: inline-block` cho hết méo, và thay
    `box-shadow` chết bằng `::before` vẽ vòng tròn thật.
+
+## Ba thuộc tính CSS mà WeasyPrint bỏ qua
+
+Khối ma trận 2x2 dính cả ba cùng lúc, tưởng là một lỗi bố cục hoá ra là ba lỗi độc lập. Bảng
+đầy đủ ở `CLAUDE.md`, tóm tắt:
+
+| Thuộc tính | WeasyPrint làm gì | Đã thay bằng |
+|---|---|---|
+| `aspect-ratio` | Bỏ qua, khối cao 0 | `height: 438px` |
+| `overflow`/`clip` trên `<table>` | Bỏ qua, bảng vẫn in ra | Bọc trong `<div class="visually-hidden">` |
+| `writing-mode` | Bỏ qua nhưng vẫn áp `transform` | `rotate(-90deg) translateX(-100%)` |
+
+Cách tìm ra: dựng ca tối giản đã biết là đúng rồi thêm từng yếu tố. Bốn biến thể đầu (grid lồng
+grid, absolute inset 0, left/top phần trăm, translate âm) đều ĐÚNG, nên nghi can ban đầu bị loại
+hết. Yếu tố thứ năm mới làm vỡ. Bài học lặp lại lần thứ tư trong repo: đoán nguyên nhân theo
+trực giác thì trật, cô lập từng yếu tố thì trúng.
+
+Cả ba đều có test chặn tái phạm, và cả ba test đã được kiểm là ĐỎ ĐƯỢC khi tái tạo lỗi.
 
 ## Bảy điều đã đo được, đừng làm lại
 

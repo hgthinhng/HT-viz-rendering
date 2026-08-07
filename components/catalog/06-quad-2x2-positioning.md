@@ -12,7 +12,10 @@ Trả lời: "Trong danh mục, cái gì nên rót thêm vốn, cái gì nên th
 <!-- Bảng dữ liệu thật cho screen reader, ẩn kiểu sr-only, đứng trước bản
        trực quan (đánh dấu aria-hidden bên dưới) để AT không phải suy luận vị
        trí điểm chấm từ toạ độ CSS (--x/--y chỉ có ý nghĩa thị giác). -->
-  <table class="visually-hidden">
+  <!-- Class sr-only phải nằm trên DIV BỌC NGOÀI. Đặt thẳng lên <table> thì
+       WeasyPrint vẫn in bảng ra và nó đè lên chính ma trận bên dưới. -->
+  <div class="visually-hidden">
+  <table>
     <caption>Ma trận định vị 4 mảng khai thác theo biên lợi nhuận và tăng trưởng nhu cầu</caption>
     <thead><tr><th scope="col">Mảng khai thác</th><th scope="col">Biên lợi nhuận</th><th scope="col">Tăng trưởng nhu cầu</th><th scope="col">Nhóm chiến lược</th></tr></thead>
     <tbody>
@@ -22,6 +25,7 @@ Trả lời: "Trong danh mục, cái gì nên rót thêm vốn, cái gì nên th
       <tr><td>Đại lý &amp; giao nhận</td><td>Thấp</td><td>Thấp</td><td>Cân nhắc thoái</td></tr>
     </tbody>
   </table>
+  </div>
   <div class="quad2x2" aria-hidden="true">
     <div class="q-ylabel">Biên lợi nhuận →</div>
     <div class="q-grid">

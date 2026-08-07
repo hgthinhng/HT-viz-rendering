@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""build_html.py — tu markdown va so nguon, dung ra MOT file HTML tu du.
+"""build_html.py, tu markdown va so nguon, dung ra MOT file HTML tu du.
 
 Cach dung:
     python3 pipeline/build_html.py <noi-dung.md> <ra.html> [--che-do=noi-bo|gui-di]
@@ -264,27 +264,70 @@ class SoNguon:
         return s.get("org", ma)
 
 
-def dung_bang(khoi: list[str], so_nguon: SoNguon) -> str:
-    """Bang markdown dang pipe. Cot nao co dong can phai ben phai thi coi la cot so."""
-    dong = [d.strip().strip("|") for d in khoi]
+def dung_bang(khoi: list[str], so_nguon: SoNguon, chu_thich: str = "") -> str:
+    """Bang markdown dang pipe, co o gop cot va co caption.
+
+    Cot nao co dau hai cham ben phai o dong can le thi la cot SO, duoc gan class `num`
+    de an tabular-nums cua components.css.
+
+    **O gop cot** viet bang mot o rong ngay sau o can gop, dung quy uoc quen thuoc cua
+    markdown mo rong:
+
+        | Nhóm      | 2025 | 2026 |
+        |---|---:|---:|
+        | Dẫn đầu ba doanh nghiệp || 18,6% |
+
+    Hai dau gach dung lien tao mot o rong, va o truoc no nhan `colspan=2`. Khong tu che
+    cu phap moi vi mot cu phap chi ton tai trong repo nay thi nguoi viet phai hoc rieng.
+
+    **Caption** lay tu dong `Bảng: ...` dat ngay TRUOC bang. `<caption>` la the chuan cua
+    HTML va trinh doc man hinh doc no truoc khi vao noi dung bang, khac han mot doan van
+    dat gan do.
+    """
+    def bo_pipe_bien(d: str) -> str:
+        """Bo DUNG mot dau pipe moi ben. `strip("|")` bo nhieu pipe lien tiep, nen mot
+        hang ket thuc bang o gop dang "| a ||| b ||" bi mat o rong cuoi va ra thieu mot
+        cot so voi dong tieu de."""
+        d = d.strip()
+        if d.startswith("|"):
+            d = d[1:]
+        if d.endswith("|"):
+            d = d[:-1]
+        return d
+
+    dong = [bo_pipe_bien(d) for d in khoi]
     tieu_de = [c.strip() for c in dong[0].split("|")]
     can_le = [c.strip() for c in dong[1].split("|")]
     la_so = [c.endswith(":") and not c.startswith(":") for c in can_le]
     than = dong[2:]
 
-    ra = ['<div class="table-wrap">', '<table class="dt">', "<thead><tr>"]
-    for i, t in enumerate(tieu_de):
-        lop = ' class="num"' if i < len(la_so) and la_so[i] else ""
-        ra.append(f'<th scope="col"{lop}>{dung_inline(t, so_nguon)}</th>')
+    def o_va_colspan(cac_o: list[str]):
+        """Gop moi o rong vao o dung truoc no. Tra ve [(noi_dung, colspan, chi_so_cot)]."""
+        ra = []
+        for i, c in enumerate(cac_o):
+            if c == "" and ra:
+                ra[-1][1] += 1
+                continue
+            ra.append([c, 1, i])
+        return ra
+
+    ra = ['<div class="table-wrap">', '<table class="dt">']
+    if chu_thich:
+        ra.append(f"<caption>{dung_inline(chu_thich, so_nguon)}</caption>")
+    ra.append("<thead><tr>")
+    for noi_dung, span, cot in o_va_colspan(tieu_de):
+        lop = ' class="num"' if cot < len(la_so) and la_so[cot] else ""
+        thuoc_tinh = f' colspan="{span}"' if span > 1 else ""
+        ra.append(f'<th scope="col"{lop}{thuoc_tinh}>{dung_inline(noi_dung, so_nguon)}</th>')
     ra.append("</tr></thead><tbody>")
     for d in than:
         if not d.strip():
             continue
-        o = [c.strip() for c in d.split("|")]
         ra.append("<tr>")
-        for i, c in enumerate(o):
-            lop = ' class="num"' if i < len(la_so) and la_so[i] else ""
-            ra.append(f"<td{lop}>{dung_inline(c, so_nguon)}</td>")
+        for noi_dung, span, cot in o_va_colspan([c.strip() for c in d.split("|")]):
+            lop = ' class="num"' if cot < len(la_so) and la_so[cot] else ""
+            thuoc_tinh = f' colspan="{span}"' if span > 1 else ""
+            ra.append(f"<td{lop}{thuoc_tinh}>{dung_inline(noi_dung, so_nguon)}</td>")
         ra.append("</tr>")
     ra.append("</tbody></table></div>")
     return "\n".join(ra)
@@ -348,6 +391,7 @@ class BoDung:
 def dung_than(van_ban: str, so_nguon: SoNguon, goc: Path) -> str:
     bo = BoDung(so_nguon, goc)
     ra: list[str] = []
+    chu_thich_bang = ""
     dong = van_ban.split("\n")
     i = 0
     n = len(dong)
@@ -382,6 +426,15 @@ def dung_than(van_ban: str, so_nguon: SoNguon, goc: Path) -> str:
             i += 1
             continue
 
+        # Dong "Bang: ..." dat ngay TRUOC mot bang thi tro thanh <caption> cua bang do.
+        # Dat sau dong nay bat ky thu gi khac thi no quay ve la mot doan van binh thuong,
+        # nen quy uoc khong the am tham nuot mat mot doan.
+        ke_tiep = next((d for d in dong[i + 1:] if d.strip()), "")
+        if thu.startswith("Bảng:") and "|" in ke_tiep:
+            chu_thich_bang = thu[len("Bảng:"):].strip()
+            i += 1
+            continue
+
         # Bang pipe: dong hien tai va dong ke tiep deu co |, dong ke tiep la duong can le
         if "|" in thu and i + 1 < n and re.fullmatch(r"[\s|:\-]+", dong[i + 1].strip() or "x"):
             khoi = []
@@ -389,7 +442,8 @@ def dung_than(van_ban: str, so_nguon: SoNguon, goc: Path) -> str:
                 khoi.append(dong[i])
                 i += 1
             if len(khoi) >= 2:
-                ra.append(dung_bang(khoi, so_nguon))
+                ra.append(dung_bang(khoi, so_nguon, chu_thich_bang))
+                chu_thich_bang = ""
                 continue
             # khong phai bang that, tra lai de xu ly nhu doan
             i -= len(khoi)

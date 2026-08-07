@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""02-bien-loi-nhuan.py — khoang cach bien loi nhuan giua cac doanh nghiep trong nganh.
+"""02-bien-loi-nhuan.py, khoang cach bien loi nhuan giua cac doanh nghiep trong nganh.
 
 Chart cua BAO CAO, dung component `dumbbell` cua thu vien EIR. Xuat .svg chu khong
 phai .png: `save()` tu ep `svg.fonttype='none'` khi duoi la .svg, nen chu van la

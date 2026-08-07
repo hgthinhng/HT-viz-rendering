@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""pdf_checks.py — moi phep do chi lam duoc tren PDF nhi phan. In mot dong JSON.
+"""pdf_checks.py, moi phep do chi lam duoc tren PDF nhi phan. In mot dong JSON.
 
 Cach dung: python3 gates/pdf_checks.py <file.pdf>
 

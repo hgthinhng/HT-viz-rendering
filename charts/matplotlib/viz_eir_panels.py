@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""viz_eir_panels.py — Editorial/Text-panel group for the EIR viz library.
+"""viz_eir_panels.py, Editorial/Text-panel group for the EIR viz library.
 
 Typography-first structured-text layouts drawn as static matplotlib PNGs (Agg) that
 embed into CFA study-note .docx files. Design language: Editorial Institutional Research
 (FT / Bloomberg / Goldman / Morningstar / The Economist) on the warm CFA palette.
 
-These are TEXT panels — 2x2 quadrant briefs, scenario columns, SWOT, structured
+These are TEXT panels, 2x2 quadrant briefs, scenario columns, SWOT, structured
 comparisons, DuPont equation-of-cards, before/after hero transitions, covenant status
 tables. The discipline is HAIRLINE rules + restrained colour + flat grounds with hairline
 borders, NOT decorative floating cards or drop shadows.

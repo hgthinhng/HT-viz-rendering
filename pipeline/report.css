@@ -1,4 +1,4 @@
-/* report.css — tang trinh bay cua BAO CAO, nam tren tokens.css va components.css.
+/* report.css, tang trinh bay cua BAO CAO, nam tren tokens.css va components.css.
  *
  * Phan cong ro rang, dung lam trong pham vi cua nhau la cach hai noi troi khac nhau:
  *   tokens.css      mau, font, thang chu, spacing, shadow. Nguon chan ly.
@@ -302,6 +302,19 @@ body.bao-cao {
   font-size: var(--fs-caption);
   color: var(--ink-lo);
   margin-top: var(--space-1);
+}
+
+/* ------------------------------------------------------------------ *
+ * Caption cua bang
+ * ------------------------------------------------------------------ */
+.bao-cao table.dt > caption {
+  caption-side: top;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-md);
+  padding-bottom: var(--space-2);
 }
 
 /* ------------------------------------------------------------------ *

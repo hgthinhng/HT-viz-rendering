@@ -11,10 +11,10 @@ Nghiệm thu gần nhất, chạy thật chứ không chép lại:
 
 | Lệnh | Kết quả |
 |---|---|
-| `npm test` | 88 pass, 0 fail |
+| `npm test` | 103 pass, 0 fail |
 | `npm run verify` | exit 0, mọi gate PASS và 2 SKIP có ghi rõ lý do |
 | `python3 -m pytest tests/ -q` | 48 passed |
-| `npm run mau` | 6 trang, 164 nét vẽ, 0 ảnh raster, 10 gate PASS ở bản nội bộ và 9 PASS 1 SKIP ở bản gửi đi |
+| `npm run mau` | 6 trang, 169 nét vẽ, 0 ảnh raster, 10 gate PASS ở bản nội bộ và 9 PASS 1 SKIP ở bản gửi đi |
 
 Phase 1 đóng trước đó: 8 task review sạch, 50 commit, cộng đợt dọn và đợt mở rộng thư viện.
 
@@ -83,15 +83,14 @@ Một lệnh chạy hết: `npm run mau`.
   ink. Tiêu đề biến mất khỏi bìa mà vẫn nguyên trong tầng text.
 - `name` của `valueAxis` đè lên `title.subtext` vì cả hai đóng ở đỉnh trục.
 
-## Ba việc nhỏ còn nợ, làm kèm lúc nào cũng được:
+## Một việc nhỏ còn nợ, làm kèm lúc nào cũng được
 
-- `charts/matplotlib/schema.py` chưa có trường độ tin cậy theo TỪNG ĐIỂM. Họ đường cong cần nó
-  (một đường cong thật trộn cả điểm quan sát được lẫn điểm ước tính dealer) nên đang tái dùng
-  từ vựng `source_tier` ở cấp điểm. Nếu thấy cách đó rối thì thêm trường riêng vào từ vựng.
-- `schema.vocab.json` thiếu đơn vị cho dầu và kim loại quý (USD/thùng, USD/oz), nên
-  `c_futures_curve` phải bỏ riêng phép kiểm đơn vị cấp series cho hai loại đó.
-- Bảng số liệu đi kèm đường cong là ràng buộc cứng của đặc tả nhưng thuộc tầng HTML, chart PNG
+- Bảng số liệu đi kèm đường cong là ràng buộc cứng của đặc tả nhưng thuộc tầng HTML, chart
   không tự lo được. Mọi báo cáo dùng `c_yield_curve` phải ghép thêm `12-hairline-data-table`.
+
+Hai việc còn lại của mục này đã đóng ở đợt dọn 07-08: schema nay có trường `do_tin_cay` riêng
+ở cấp điểm, và từ vựng có đủ `usd_thung` cùng `usd_oz` nên `c_futures_curve` không phải bỏ
+phép kiểm đơn vị nữa.
 
 ## Chạy được từ máy sạch
 
@@ -207,14 +206,33 @@ Cả ba đều có test chặn tái phạm, và cả ba test đã được kiể
 - **Gauge và radar**: cấm. Gauge gợi ý độ chính xác không có thật, radar có trục không độc lập.
 - **Engine PDF**: WeasyPrint, không phải Chromium. Chromium tạo ảnh JPEG ẩn trong Tiling Pattern.
 
+## Đợt dọn sổ nợ 07-08, và cái bẫy nó tự tạo ra
+
+Năm món nợ đã đóng: em-dash trong tài liệu và comment, thư mục `charts/echarts/out/` rỗng,
+`verify-illustrations.mjs` quy lỗi theo chuỗi con, ba nợ schema chart, bảng markdown thiếu
+ô gộp và caption.
+
+**Bài học đắt nhất của đợt này**: phép dọn gạch ngang hàng loạt đã đổi chính hai ký tự nằm
+bên trong character class của hai gate chặn em-dash, biến chúng thành `/[--]/g`. Regex đó
+chỉ còn khớp dấu gạch nối thường, tức gate báo FAIL cho mọi nội dung bình thường và không
+còn bắt em-dash, mà vẫn chạy trơn tru không báo gì. **Một phép dọn hàng loạt có thể vô
+hiệu hoá đúng cái gate canh nó.** Nay hai regex đó viết bằng escape unicode, và luật
+em-dash chuyển thành tuyệt đối cho toàn repo chính, có gate riêng ở
+`tests/consistency/em_dash_repo.test.mjs` miễn trừ đúng hai chỗ tường minh.
+
+Ba việc khác đáng ghi: `verify-illustrations.mjs` nay trích đường dẫn từ từng frame stack
+rồi so basename, đúng cách phía network vẫn làm, nên không còn quy oan cho lớp annotation
+mọi lỗi phát sinh trong file tên kiểu `annotate-demo.js`. Schema chart có trường
+`do_tin_cay` riêng ở cấp điểm, tách khỏi `source.tier` ở cấp series, cộng hai đơn vị
+`usd_thung` và `usd_oz`. Bảng markdown hỗ trợ ô gộp cột và `<caption>`, và ở đây cũng có
+một bẫy nhỏ: `strip("|")` của Python bỏ NHIỀU pipe liên tiếp, nên hàng kết thúc bằng ô gộp
+bị mất một cột mà bảng vẫn hiện ra bình thường.
+
 ## Sổ nợ, chưa chặn ai
 
-- Em-dash trong comment và tài liệu của tài sản harvest: `annotate.js` 33 chỗ, `grammar.md` 44,
-  `metaphor-table.md` 25, `prompt-template.md` 18, comment `tokens.css` khoảng 26. Không phải nội
-  dung hiển thị nên không chặn. Làm một task dọn riêng.
-- `charts/echarts/out/` là thư mục rỗng, verify ghi ra `out-*.svg` ở cấp trên. Xoá hoặc dùng cho đúng.
-- `verify-illustrations.mjs` so khớp lỗi phía `pageerror` theo nội dung văn bản, chưa trích file
-  path từ stack rồi so basename như phía network. Chưa xảy ra trên codebase hiện tại.
+- Em-dash trong `_harvest/` giữ nguyên, đó là bản gốc để còn đối chiếu. Repo chính đã sạch
+  tuyệt đối và có gate ép giữ vậy.
+
 - `_harvest/` vẫn còn 57MB. Phase 2 đã dỡ `lab-gate/` và `lab-evidence/` vào `gates/`;
   `harvest-extras/pipeline-stocklpt/` chưa dỡ, chỉ mới đọc để tham khảo cách dựng markdown.
 - Nhánh PPTX chưa làm. Operator chốt Phase 2 chỉ lo đường HTML sang PDF. Hai bug đã biết của
@@ -222,8 +240,7 @@ Cả ba đều có test chặn tái phạm, và cả ba test đã được kiể
 - 18 preset ECharts vẫn là script hardcode dữ liệu demo, chưa có bề mặt gọi được với dữ liệu
   thật. Báo cáo hiện chép preset vào `hinh/` của mình rồi thay số, và cách đó đúng tinh thần
   "preset là ý tham khảo" nhưng chưa tiện. Cân nhắc ở Phase 3.
-- Bảng markdown trong `build_html.py` chưa hỗ trợ ô gộp và chưa có `<caption>`. Đủ cho bảng
-  số liệu phẳng, chưa đủ cho bảng phân tầng.
+- Bảng markdown chưa hỗ trợ ô gộp HÀNG (`rowspan`), mới chỉ gộp cột. Chưa gặp bài cần tới.
 
 ## Các phase sau
 

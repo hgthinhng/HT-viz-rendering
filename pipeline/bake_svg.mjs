@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * bake_svg.mjs — dong bang minh hoa co callout thanh SVG tinh.
+ * bake_svg.mjs, dong bang minh hoa co callout thanh SVG tinh.
  *
  * VI SAO CAN BUOC NAY. `annotate.js` ve callout bang JavaScript luc chay:
  * cham neo, duong dan, hop nhan deu do `createElementNS` sinh ra sau khi trang

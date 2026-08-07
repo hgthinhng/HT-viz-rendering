@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""viz_eir_kpi.py — EIR KPI / SPARKLINE / ANNOTATION devices for CFA study notes.
+"""viz_eir_kpi.py, EIR KPI / SPARKLINE / ANNOTATION devices for CFA study notes.
 
 Dense dashboard cells with mini trends, plus annotated narrative devices. Static
 matplotlib PNGs (Agg), cream paper, editorial-institutional-research design language
@@ -13,11 +13,11 @@ Editorial meta keys live inside params: title, kicker, subtitle, source, asof, r
 firm. Data keys drive the device.
 
 Components:
-  kpi_card_with_sparkline — grid of KPI cards (big number + delta + sparkline beneath).
-  sparkline_row           — compact table: label | inline sparkline | value | status.
-  annotated_narrative     — editorial prose with inline colour+bold number runs.
-  anomaly_callout         — single time series with one boxed callout on an anomaly.
-  stat_dashboard          — dashboard header of big-stat cells, each with a mini spark/bar.
+  kpi_card_with_sparkline, grid of KPI cards (big number + delta + sparkline beneath).
+  sparkline_row, compact table: label | inline sparkline | value | status.
+  annotated_narrative, editorial prose with inline colour+bold number runs.
+  anomaly_callout, single time series with one boxed callout on an anomaly.
+  stat_dashboard, dashboard header of big-stat cells, each with a mini spark/bar.
 
 Usage:
   python3 viz_eir_kpi.py --spec spec.json --out-dir OUT [--only ID] [--dpi 200]
@@ -245,7 +245,7 @@ def _tone_run_color(tone, accent):
 
 def c_annotated_narrative(p, accent):
     """Editorial commentary panel: a title + a paragraph where KEY NUMBER runs are
-    emphasised inline (bold + tone colour — teal up, brick down, indigo emphasis, steel
+    emphasised inline (bold + tone colour, teal up, brick down, indigo emphasis, steel
     neutral). Runs are laid out line-by-line with a running x cursor (advance by an
     estimated width), wrapping at the right margin; a gold left-bar frames the block and
     a 4-item legend sits beneath."""
@@ -262,7 +262,7 @@ def c_annotated_narrative(p, accent):
     y_top = float(p.get("y_top", 0.62))
     line_h = float(p.get("line_h", 0.072))
     base_fs = float(p.get("fontsize", 14.5))
-    # per-character width factor (figure-fraction per char per pt) — tuned by render.
+    # per-character width factor (figure-fraction per char per pt), tuned by render.
     # bold/number runs read slightly wider; measured widths in mpl are unreliable so we
     # estimate and wrap on the estimate, then verify visually.
     fig_w_in = fig.get_size_inches()[0]
@@ -411,7 +411,7 @@ def c_anomaly_callout(p, accent):
 
 
 def c_stat_dashboard(p, accent):
-    """KPI dashboard header: 3–4 big-stat cells (label + big MONO value + delta + italic
+    """KPI dashboard header: 3-4 big-stat cells (label + big MONO value + delta + italic
     caption) separated by vertical hairlines, EACH carrying a tiny spark or bar strip.
     Richer sibling of kpi_strip; supports a 2-row option via `rows`."""
     stats = p["stats"]

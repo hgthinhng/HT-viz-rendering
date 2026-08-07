@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""viz_eir_curves.py — duong cong lai suat va duong cong gia ky han (matplotlib, tinh).
+"""viz_eir_curves.py, duong cong lai suat va duong cong gia ky han (matplotlib, tinh).
 
 Theo dac ta docs/specs/2026-08-07-yield-forward-curve-design.md. Cung khuon 5 module EIR
 hien co (kicker/tieu de serif/subtitle/source line, cung hop dong spec.json), them 2
@@ -20,10 +20,12 @@ Day la module matplotlib DAU TIEN dung schema.py (validate_series/validate_row/c
 so_thap_phan/nhan_don_vi/co_co). Ky han thua du lieu (muc 5 cua dac ta) tu dat ten rieng
 "quan_sat"/"uoc_tinh"/"bo han diem" TRUOC KHI schema.py ton tai; o day anh xa lai sang
 dung tu vung schema thay vi dung mot he ten thu hai:
-  - do TIN CAY cua 1 diem CO gia tri (quan sat that hay uoc tinh dealer) -> tai dung
-    VOCAB["source_tier"] ("cong-bo"/"uoc-tinh"/"noi-bo") o cap TUNG DIEM (schema goc dat
-    tier o cap series, o day can cap diem vi 1 duong cong co the tron ca ky han thanh
-    khoan cao lan thap trong CUNG 1 snapshot - xem docstring c_yield_curve).
+  - do TIN CAY cua 1 diem CO gia tri (quan sat that, noi suy, hay uoc tinh dealer) ->
+    VOCAB["do_tin_cay"] ("quan_sat"/"noi_suy"/"uoc_tinh") o cap TUNG DIEM. Day la truong
+    RIENG, khac han `source.tier` von la bac cua ca series. Ban dau module nay tai dung
+    `source_tier` o cap diem vi chua co truong rieng, va cach do roi: doc mot diem thi
+    khong biet no dang noi ve nguon cua ca duong hay ve chinh no. Spec cu con dat `tier`
+    o cap diem van chay duoc, `_tu_tier_cu()` quy ve tu vung moi ngay tai cua vao.
   - do CO/KHONG CO gia tri (mot ky han hoan toan khong xuat hien cho 1 snapshot) -> dung
     dung `status` cua schema (co_that/chua_cong_bo/khong_ton_tai/loai_bat_thuong) qua
     `cach_ve()`, khong bia trang thai moi.
@@ -49,6 +51,30 @@ import matplotlib.pyplot as plt
 
 setup_fonts()
 SANS, SERIF, MONO = S.SANS, S.SERIF, S.MONO   # bound AFTER setup so they are resolved
+
+
+# Anh xa tuong thich nguoc: spec cu dat `tier` o cap DIEM voi tu vung `source_tier`, vi
+# luc do chua co truong rieng cho do tin cay cua tung diem. Giu duong doc do lai de spec
+# da viet khong gay, nhung quy ve tu vung moi ngay tai cua vao, de phan con lai cua module
+# chi con lam viec voi MOT he ten.
+_TIER_CU_SANG_DO_TIN_CAY = {
+    "cong-bo": "quan_sat",
+    "uoc-tinh": "uoc_tinh",
+    "noi-bo": "uoc_tinh",
+}
+
+
+def _tu_tier_cu(tier):
+    """None neu khong khai. Nem LoiSchema neu khai mot gia tri khong hieu duoc."""
+    if tier is None:
+        return None
+    if tier not in _TIER_CU_SANG_DO_TIN_CAY:
+        raise LoiSchema(
+            ERR.DO_TIN_CAY_LA,
+            f'tier cu "{tier}" o cap diem khong anh xa duoc sang do_tin_cay. '
+            f'Dung thang do_tin_cay: {", ".join(VOCAB["do_tin_cay"])}',
+        )
+    return _TIER_CU_SANG_DO_TIN_CAY[tier]
 
 
 # --------------------------------------------------------- shared helpers (verbatim
@@ -258,17 +284,20 @@ def c_yield_curve(p, accent):
             else:
                 status = pt.get("status", "co_that")
                 value = pt.get("value")
-                tier = pt.get("tier", "cong-bo") if status == "co_that" else None
-            rows.append({"entity": {"code": tenor}, "status": status, "value": value})
-            if tier is not None and tier not in VOCAB["source_tier"]:
-                raise LoiSchema(
-                    ERR.TIER_LA,
-                    f'diem ky han "{tenor}" (snapshot "{snap.get("name", "")}") co tier '
-                    f'"{tier}" khong nam trong tu vung source_tier',
-                )
+                # `do_tin_cay` la truong RIENG o cap diem, thay cho cach cu tai dung
+                # `source_tier` (von la bac cua ca series). `tier` cu van doc duoc de
+                # spec cu khong gay, nhung anh xa thang sang tu vung moi.
+                if status == "co_that":
+                    tin_cay = pt.get("do_tin_cay") or _tu_tier_cu(pt.get("tier"))
+                else:
+                    tin_cay = None
+            hang = {"entity": {"code": tenor}, "status": status, "value": value}
+            if tin_cay is not None:
+                hang["do_tin_cay"] = tin_cay
+            rows.append(hang)
             if status == "co_that":
                 values[i] = None if value is None else float(value)
-                uncertain[i] = tier != "cong-bo"
+                uncertain[i] = tin_cay != "quan_sat"
                 any_uncertain = any_uncertain or uncertain[i]
             else:
                 mark = cach_ve(status)["danh_dau_truc"]
@@ -385,13 +414,11 @@ def c_futures_curve(p, accent):
     p = {
       meta chuan EIR...
       "spot": 82.4, "spot_label": "Giá giao ngay",
-      "unit": "usd_tan",     # TUY CHON. Chi validate_series() day du khi unit nam trong
-                              # VOCAB["unit"]; hang hoa nhu dau WTI (USD/thung) hay vang
-                              # (USD/oz) KHONG co don vi tuong ung trong tu vung hien tai
-                              # (chi co "usd_tan" cho ca phe), va module nay khong duoc
-                              # phep sua schema.vocab.json de them - neu bo qua "unit",
-                              # van validate TUNG HANG bang validate_row() (status/value/
-                              # entity.code), chi bo qua rieng phep kiem don vi cap series.
+      "unit": "usd_thung",   # TUY CHON nhung NEN khai. Tu vung nay co du don vi hang
+                              # hoa: "usd_tan" ca phe, "usd_thung" dau tho, "usd_oz" kim
+                              # loai quy. Ban truoc phai bo qua rieng phep kiem don vi cap
+                              # series vi hai don vi sau chua co trong tu vung; nay co roi
+                              # nen khai unit la duoc validate_series() day du.
       "contracts": [
         {"month": "M1 (09/2026)", "price": 83.1, "liquid": True},
         {"month": "M12 (08/2027)", "price": 86.4, "liquid": False},  # -> tier "uoc-tinh"
@@ -427,11 +454,13 @@ def c_futures_curve(p, accent):
         if status == "co_that":
             values[i] = None if value is None else float(value)
             liquid = c.get("liquid", True)
-            tier = c.get("tier", "cong-bo" if liquid else "uoc-tinh")
-            if tier not in VOCAB["source_tier"]:
-                raise LoiSchema(ERR.TIER_LA,
-                    f'hop dong "{months[i]}" co tier "{tier}" khong nam trong tu vung')
-            uncertain[i] = tier != "cong-bo"
+            tin_cay = c.get("do_tin_cay") or _tu_tier_cu(c.get("tier")) or (
+                "quan_sat" if liquid else "uoc_tinh")
+            if tin_cay not in VOCAB["do_tin_cay"]:
+                raise LoiSchema(ERR.DO_TIN_CAY_LA,
+                    f'hop dong "{months[i]}" co do_tin_cay "{tin_cay}" khong nam trong tu vung')
+            rows[-1]["do_tin_cay"] = tin_cay
+            uncertain[i] = tin_cay != "quan_sat"
         else:
             mark = cach_ve(status)["danh_dau_truc"]
             if mark and axis_marks.get(i) != "da_loai":

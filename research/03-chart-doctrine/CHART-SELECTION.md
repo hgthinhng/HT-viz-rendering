@@ -9,14 +9,14 @@ Cột "Engine trong repo": tên file `.mjs` trong `charts/echarts/` nếu đã c
 nếu hợp tầng `charts/matplotlib/viz_eir*.py` hơn, hoặc "chưa có, xem mẫu ..." trỏ tới file HTML
 minh hoạ trong `samples/`.
 
-## Deviation — lệch bao nhiêu so với 1 mốc cố định
+## Deviation, lệch bao nhiêu so với 1 mốc cố định
 
 | Câu hỏi | Chart phù hợp | Biến thể | Bẫy thường gặp | Engine trong repo |
 |---|---|---|---|---|
 | Từng khoản mục lệch bao nhiêu so với kế hoạch/kỳ trước, dấu +/- quan trọng? | Diverging bar | Bar 2 phía trục 0, sắp theo độ lệch | Trộn màu valence vào màu chiều (xem luật màu ở CLAUDE.md) | Chưa có sẵn `.mjs` riêng, dựng từ `valueAxis` + 2 series bar giống `01-waterfall.mjs` |
 | So YoY/QoQ hàng loạt chỉ tiêu cùng lúc? | Diverging stacked bar | Xếp chồng phần tăng/giảm | Trục không đối xứng quanh 0 làm khó so 2 phía | Tương tự trên, mở rộng `12-area-stack.mjs` |
 
-## Correlation — hai đại lượng quan hệ thế nào
+## Correlation, hai đại lượng quan hệ thế nào
 
 | Câu hỏi | Chart phù hợp | Biến thể | Bẫy thường gặp | Engine trong repo |
 |---|---|---|---|---|
@@ -24,21 +24,21 @@ minh hoạ trong `samples/`.
 | Giá cổ phiếu và khối lượng cùng lúc? | Line + Column (2 trục) | | Dual-axis dễ tạo tương quan giả khi tự động chọn thang (xem `FINDINGS.md` §3) | `09-candlestick.mjs` (đã có khối lượng dưới nến) |
 | Ma trận tương quan nhiều cặp biến? | XY heatmap | | Thang màu diverging quá gắt gây đọc nhầm mức | `08-heatmap.mjs` |
 
-## Ranking — vị trí trong danh sách quan trọng hơn giá trị tuyệt đối
+## Ranking, vị trí trong danh sách quan trọng hơn giá trị tuyệt đối
 
 | Câu hỏi | Chart phù hợp | Biến thể | Bẫy thường gặp | Engine trong repo |
 |---|---|---|---|---|
 | Xếp hạng 10-15 ngân hàng theo NIM/ROE? | Ordered bar hoặc Cleveland dot plot | Dot plot khi cần giảm mực in (nhiều hạng mục, khổ hẹp) | Không sắp theo giá trị, để mặc định theo alphabet | Chưa có, xem mẫu `chart-cleveland-dot-xep-hang.html` |
 | So 2 mốc thời gian cho cùng danh sách xếp hạng (đầu kỳ vs cuối kỳ)? | Dumbbell / slope | Dumbbell khi 2 điểm rời rạc, slope khi nhấn mạnh xu hướng | Quá nhiều hạng mục làm các đường chồng chéo (>10-12 dòng) | `04-dumbbell.mjs`, `05-slope.mjs` |
 
-## Distribution — giá trị phân bố ra sao
+## Distribution, giá trị phân bố ra sao
 
 | Câu hỏi | Chart phù hợp | Biến thể | Bẫy thường gặp | Engine trong repo |
 |---|---|---|---|---|
 | P/E toàn ngành phân bố thế nào, có ngoại lệ không? | Boxplot / dot strip | Violin nếu cần thấy hình dạng phân bố chi tiết | Boxplot che mất số lượng mẫu nhỏ (n thấp mà vẫn vẽ như phân bố đầy đủ) | Chưa có, ưu tiên matplotlib cho boxplot tĩnh |
 | Phân bố tuổi nợ xấu / kỳ hạn trái phiếu? | Histogram | | Chọn bin-width tuỳ tiện làm méo hình dạng phân bố | matplotlib |
 
-## Change over time — xu hướng theo thời gian
+## Change over time, xu hướng theo thời gian
 
 | Câu hỏi | Chart phù hợp | Biến thể | Bẫy thường gặp | Engine trong repo |
 |---|---|---|---|---|
@@ -47,7 +47,7 @@ minh hoạ trong `samples/`.
 | Dự phóng có dải bất định (upside/downside)? | Fan chart | Dải càng xa càng loang rộng | Không phân biệt được đâu là dữ liệu thực, đâu là dự phóng nếu không đổi kiểu nét | Chưa có, mở rộng từ `12-area-stack.mjs` với `lineStyle.type: 'dashed'` cho đoạn dự phóng |
 | So nhiều chỉ tiêu cùng xu hướng nhưng thang khác nhau? | Small multiples | Lưới 6-9 ô, trục đồng bộ trong từng nhóm cùng đơn vị | Quên đồng bộ trục giữa các ô (xem §6 FINDINGS) | `07-small-multiples.mjs` |
 
-## Part-to-whole — một tổng thể phân rã thành các phần
+## Part-to-whole, một tổng thể phân rã thành các phần
 
 | Câu hỏi | Chart phù hợp | Biến thể | Bẫy thường gặp | Engine trong repo |
 |---|---|---|---|---|
@@ -55,14 +55,14 @@ minh hoạ trong `samples/`.
 | Cơ cấu thay đổi qua nhiều kỳ? | Stacked column hoặc 100% stacked column | | Thứ tự xếp chồng đảo lộn giữa các cột làm khó so 1 dải qua thời gian | `11-stacked-100.mjs`, `12-area-stack.mjs` |
 | Phân cấp lồng nhau (ngành > tiểu ngành > mã)? | Treemap | | Diện tích quá nhỏ mất nhãn, quá nhiều cấp gây rối | `10-treemap.mjs` |
 
-## Magnitude — so sánh độ lớn
+## Magnitude, so sánh độ lớn
 
 | Câu hỏi | Chart phù hợp | Biến thể | Bẫy thường gặp | Engine trong repo |
 |---|---|---|---|---|
 | So quy mô tài sản giữa các ngân hàng? | Column/bar đơn giản | Paired bar nếu so 2 kỳ | Trục không từ 0 (ràng buộc cứng, xem `valueAxis`) | Nền tảng `theme.mjs` |
 | KPI thực tế so mục tiêu, có dải định tính? | Bullet chart | | Vẽ target bằng bar chồng thay vì 1 vạch | `03-bullet.mjs` |
 
-## Flow — khối lượng dịch chuyển giữa các trạng thái
+## Flow, khối lượng dịch chuyển giữa các trạng thái
 
 | Câu hỏi | Chart phù hợp | Biến thể | Bẫy thường gặp | Engine trong repo |
 |---|---|---|---|---|

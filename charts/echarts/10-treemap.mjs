@@ -1,6 +1,6 @@
-// 10-treemap.mjs — Treemap: cơ cấu vốn hoá/doanh thu theo ngành-mã
+// 10-treemap.mjs, Treemap: cơ cấu vốn hoá/doanh thu theo ngành-mã
 // Dùng khi: thể hiện phần-trong-tổng của NHIỀU hạng mục (>8-10) mà stacked bar
-// sẽ quá chật — diện tích ô = độ lớn, phân cụm = nhóm cha (ngành).
+// sẽ quá chật, diện tích ô = độ lớn, phân cụm = nhóm cha (ngành).
 // Dữ liệu cần: cây 2 cấp {group, name, value}. Không hợp khi cần so sánh
 // CHÍNH XÁC 2 giá trị gần nhau (mắt người ước lượng diện tích kém hơn chiều dài).
 // Bẫy thường gặp: (1) tô màu ngẫu nhiên theo từng ô lá thay vì theo NHÓM CHA

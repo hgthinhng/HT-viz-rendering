@@ -47,19 +47,19 @@
   từ PDF cũ hoặc OCR, và một số API trả Unicode không cam kết dạng chuẩn hoá.
 
   CÁCH PHÁT HIỆN TỰ ĐỘNG: python3 -c "import unicodedata as u; s=open(f,
-  encoding='utf-8').read(); assert s == u.normalize('NFC', s)" — chèn vào
+  encoding='utf-8').read(); assert s == u.normalize('NFC', s)", chèn vào
   bước kiểm dữ liệu đầu vào TRƯỚC khi đưa vào template, không sửa ở tầng
   render.
 
   CÁCH SỬA: chuẩn hoá NFC ngay tại điểm nạp dữ liệu (đọc file, nhận input
   form, gọi API) bằng unicodedata.normalize('NFC', s) trong Python hoặc
-  s.normalize('NFC') trong JavaScript — không sửa ở tầng render vì lúc đó
+  s.normalize('NFC') trong JavaScript, không sửa ở tầng render vì lúc đó
   đã quá muộn để biết đâu là dấu "thật" của câu.
 
   KHI NÀO KHÔNG NÊN DÙNG (áp dụng cho MẪU trang này, không phải cho việc
-  chuẩn hoá NFC nói chung — việc đó luôn nên làm):
+  chuẩn hoá NFC nói chung, việc đó luôn nên làm):
   - Đừng dùng cách trình bày "before/after" này cho người đọc cuối (khách
-    hàng nhận báo cáo) — đây là trang chẩn đoán kỹ thuật cho người viết
+    hàng nhận báo cáo), đây là trang chẩn đoán kỹ thuật cho người viết
     template, không phải nội dung xuất bản.
 
   RÀNG BUỘC IN: font-family list kết thúc generic keyword (không dùng font

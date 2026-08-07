@@ -1,6 +1,6 @@
-/* annotate.css — style cho thẻ chi tiết (drill card) của annotate.js.
+/* annotate.css, style cho thẻ chi tiết (drill card) của annotate.js.
    Bản thân callout (chấm neo, đường dẫn, hộp nhãn) là SVG thuần, không cần
-   CSS ngoài — chỉ thẻ chi tiết nổi trên trang mới cần CSS này. */
+   CSS ngoài, chỉ thẻ chi tiết nổi trên trang mới cần CSS này. */
 
 #annotate-drill-card {
   position: fixed;
@@ -52,7 +52,7 @@
 }
 
 /* callout luôn hiện (không dựa vào hover) nên không cần quy tắc @media
-   print đặc biệt — nhưng khai báo tường minh để không ai vô tình thêm
+   print đặc biệt, nhưng khai báo tường minh để không ai vô tình thêm
    opacity:0 mặc định rồi quên bật lại khi in */
 @media print {
   .annotations { opacity: 1 !important; }

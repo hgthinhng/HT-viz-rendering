@@ -1,7 +1,7 @@
-// gen-vietnam-path.mjs — sinh path SVG THẬT cho bản đồ Việt Nam từ dữ liệu
+// gen-vietnam-path.mjs, sinh path SVG THẬT cho bản đồ Việt Nam từ dữ liệu
 // biên giới thật (world-atlas, backed by Natural Earth), thay cho cách
 // tay-gõ toạ độ (đã thử và bị bác bỏ hai lần: bản tay-gõ đọc ra "khối
-// amip", không ra chữ S — xem grammar.md mục 9).
+// amip", không ra chữ S, xem grammar.md mục 9).
 //
 // PHỤ THUỘC (cài 1 lần, đứng cạnh package.json bất kỳ có node_modules mà
 // script này chạy từ trong hoặc dưới thư mục đó):
@@ -17,7 +17,7 @@
 //
 // TÁI SỬ DỤNG CHO QUỐC GIA/VÙNG KHÁC: đổi ID trong `geoms.find(g => g.id
 // === "704")` sang mã ISO numeric của nước khác (vd Thái Lan = "764",
-// Indonesia = "360" — tra trong node_modules/world-atlas/README.md hoặc
+// Indonesia = "360", tra trong node_modules/world-atlas/README.md hoặc
 // http://www.opengeocode.org/cude.php), đổi W/H/toạ độ CITIES cho phù hợp.
 import { createRequire } from "node:module";
 import * as topojson from "topojson-client";
@@ -30,14 +30,14 @@ const require = createRequire(import.meta.url);
 const DIR = path.resolve(new URL(".", import.meta.url).pathname);
 
 // require.resolve() tự đi tìm node_modules/world-atlas theo CHUẨN Node.js
-// (leo dần thư mục cha từ vị trí script) — KHÔNG hardcode đường dẫn tương
+// (leo dần thư mục cha từ vị trí script), KHÔNG hardcode đường dẫn tương
 // đối tới 1 thư mục anh em cụ thể như bản nháp đầu (lỗi nếu di chuyển
 // script sang thư mục khác có độ sâu khác).
 const worldAtlasPath = require.resolve("world-atlas/countries-50m.json");
 let topo = JSON.parse(fs.readFileSync(worldAtlasPath, "utf8"));
 
 // Đơn giản hoá THẬT bằng topojson-simplify (Visvalingam's area) thay vì vẽ
-// tay lại — giữ đúng hình dạng biên giới thật, chỉ bỏ bớt điểm ít quan
+// tay lại, giữ đúng hình dạng biên giới thật, chỉ bỏ bớt điểm ít quan
 // trọng thị giác.
 const SIMPLIFY_WEIGHT = process.env.SIMPLIFY_WEIGHT ? Number(process.env.SIMPLIFY_WEIGHT) : 0.05;
 topo = topoSimplify.presimplify(topo);
@@ -60,7 +60,7 @@ function countPoints(geom) {
 console.error("Tổng điểm sau simplify:", countPoints(feature.geometry));
 
 // Chỉ giữ phần lục địa lớn nhất (bỏ đảo rời) để hình đọc gọn như 1 khối
-// duy nhất — bỏ bước lọc này (comment lại khối if) nếu ngành cần giữ đảo.
+// duy nhất, bỏ bước lọc này (comment lại khối if) nếu ngành cần giữ đảo.
 let mainGeom = feature.geometry;
 if (mainGeom.type === "MultiPolygon") {
   const polys = mainGeom.coordinates;
@@ -71,7 +71,7 @@ if (mainGeom.type === "MultiPolygon") {
     return Math.abs(a / 2);
   };
   const sorted = polys.map((p, i) => ({ i, area: areaOf(p) })).sort((a, b) => b.area - a.area);
-  console.error("Số polygon con:", polys.length, "— giữ polygon lớn nhất");
+  console.error("Số polygon con:", polys.length, ", giữ polygon lớn nhất");
   mainGeom = { type: "Polygon", coordinates: polys[sorted[0].i] };
 }
 console.error("Điểm sau khi chỉ giữ lục địa chính:", countPoints(mainGeom));

@@ -1,6 +1,5 @@
-// 05-slope.mjs — Slope chart: đổi thứ hạng/giá trị giữa 2 mốc cho nhiều thực thể
-// Dùng khi: "thị phần các ngân hàng thay đổi thế nào từ 2025 sang 2026" —
-// khác dumbbell ở chỗ slope nhấn TRỤC THỜI GIAN có hướng (trái->phải), dumbbell
+// 05-slope.mjs, Slope chart: đổi thứ hạng/giá trị giữa 2 mốc cho nhiều thực thể
+// Dùng khi: "thị phần các ngân hàng thay đổi thế nào từ 2025 sang 2026", // khác dumbbell ở chỗ slope nhấn TRỤC THỜI GIAN có hướng (trái->phải), dumbbell
 // nhấn CHÊNH LỆCH không có ý niệm thời gian rõ. Slope hợp khi >4-5 thực thể vì
 // độ dốc đường nói lên "ai tăng nhanh hơn ai" ngay cả khi không đổi hạng.
 // Dữ liệu cần: {label, t1, t2} cho từng thực thể.

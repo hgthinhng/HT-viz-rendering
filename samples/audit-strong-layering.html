@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  MẪU KIỂM TOÁN vòng 4 (10-weasyprint-audit) — khối CẦN PHÂN LỚP MẠNH,
+  MẪU KIỂM TOÁN vòng 4 (10-weasyprint-audit), khối CẦN PHÂN LỚP MẠNH,
   khác thẻ KPI ở audit-kpi-card.html (đó là "nổi nhẹ trên nền trắng thuần").
   Ở đây khối trích kết luận (verdict pull-quote) đặt TRÊN một dải nền màu
   gần cùng độ sáng với chính khối, mô phỏng tình huống thật hay gặp trong
@@ -59,7 +59,7 @@
   .quote-border { background: var(--paper); border: 1px solid var(--ink-lo); border-radius: 3px;
     padding: 26px 30px; max-width: 560px; }
 
-  /* ── KHỐI 3: kỹ thuật thay thế đã verify — khối ink đặc phía sau, lệch
+  /* ── KHỐI 3: kỹ thuật thay thế đã verify, khối ink đặc phía sau, lệch
      vị trí bằng position/transform + z-index. Vùng ink đậm tạo ranh giới
      bằng MÀU khác hẳn nền, không phụ thuộc độ tương phản viền mảnh. */
   .quote-stamp-wrap { position: relative; max-width: 560px; }
@@ -83,7 +83,7 @@
   chương/section-break), chỉ đổi phần tạo ranh giới. So sánh mức độ "chìm vào nền" giữa ba phương án.</p>
 
 <h2>1. box-shadow (kể cả bản hai lớp của chính --shadow-1) <span class="tag bad">chết trong WeasyPrint</span></h2>
-<p class="note">Trong WeasyPrint, khối này KHÔNG khác gì một khối chỉ có border 1px màu nhạt — mà border nhạt
+<p class="note">Trong WeasyPrint, khối này KHÔNG khác gì một khối chỉ có border 1px màu nhạt, mà border nhạt
   trên nền gần cùng tông thì gần như vô hình.</p>
 <div class="ribbon">
   <div class="quote-shadow">

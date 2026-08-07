@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""orchestrator.py — nối trọn đường ống, từ một file nội dung tới PDF đã qua gate.
+"""orchestrator.py, nối trọn đường ống, từ một file nội dung tới PDF đã qua gate.
 
 Cách dùng:
     python3 pipeline/orchestrator.py <noi-dung.md> [--ra=<thu-muc>] [--bo-qua-gate]

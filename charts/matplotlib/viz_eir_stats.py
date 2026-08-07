@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""viz_eir_stats.py — Editorial Institutional Research *statistics & markets* components
+"""viz_eir_stats.py, Editorial Institutional Research *statistics & markets* components
 for CFA study notes. Extends viz_eir.py with 7 quant/technical archetypes.
 
 Static matplotlib PNGs (Agg) that embed into the note .docx like the existing figures.
@@ -148,7 +148,7 @@ def c_correlation_matrix(p, accent):
     for i in range(n):
         for j in range(n):
             if j > i:
-                continue  # mask upper triangle — never draw it
+                continue  # mask upper triangle, never draw it
             v = M[i, j]
             if i == j:
                 fc = diag_fc; txt_col = NAVY
@@ -432,7 +432,7 @@ def c_seasonality(p, accent):
     xs_s, mean_s = _smooth(x, mean)
     _, lo_s = _smooth(x, lo)
     _, hi_s = _smooth(x, hi)
-    # range band: teal-ish for the upper (toward hi), grey for lower — two soft fills
+    # range band: teal-ish for the upper (toward hi), grey for lower, two soft fills
     ax.fill_between(xs_s, mean_s, hi_s, color=GOLD, alpha=0.16, lw=0, zorder=1)
     ax.fill_between(xs_s, lo_s, mean_s, color=INDIGO, alpha=0.10, lw=0, zorder=1)
     ax.plot(xs_s, hi_s, color=GOLD, lw=1.0, alpha=0.55, zorder=2)

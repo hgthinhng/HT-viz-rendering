@@ -62,6 +62,8 @@ class ERR:
     THIEU_NAM = "THIEU_NAM"
     DECIMALS_SAI = "DECIMALS_SAI"
     CHI_SO_NGOAI_PHAM_VI = "CHI_SO_NGOAI_PHAM_VI"
+    DO_TIN_CAY_LA = "DO_TIN_CAY_LA"
+    DO_TIN_CAY_SAI_CAP = "DO_TIN_CAY_SAI_CAP"
 
 
 class LoiSchema(Exception):
@@ -108,6 +110,15 @@ def validate_series(series) -> bool:
         d = series["decimals"]
         if not isinstance(d, int) or isinstance(d, bool) or d < 0 or d > 6:
             raise LoiSchema(ERR.DECIMALS_SAI, f"decimals phai la so nguyen 0 toi 6, dang la {d}")
+    # `do_tin_cay` thuoc cap DIEM, khong thuoc cap series. Chan tuong minh chu khong im
+    # lang bo qua: dat nham cap thi ca duong cong mang mot do tin cay duy nhat, dung thu
+    # ma truong nay sinh ra de tranh.
+    if "do_tin_cay" in series:
+        raise LoiSchema(
+            ERR.DO_TIN_CAY_SAI_CAP,
+            "do_tin_cay thuoc cap TUNG DIEM chu khong phai cap series. "
+            "Bac cua ca series la source.tier",
+        )
 
     for i, row in enumerate(series.get("rows") or []):
         validate_row(row, i)
@@ -157,6 +168,19 @@ def validate_row(row, chi_so: int = 0) -> bool:
 
     if "role" in row and not _trong_tu_vung("role", row["role"]):
         raise LoiSchema(ERR.ROLE_LA, f'{o} role "{row["role"]}" khong nam trong tu vung')
+
+    # `do_tin_cay` la do tin cay cua CHINH DIEM NAY, khac han `source.tier` la bac cua ca
+    # series. Ho duong cong can no: mot duong lai suat that tron ca ky han thanh khoan cao
+    # (quan sat truc tiep) lan ky han thua (dealer bao gia hoac noi suy), trong khi ca
+    # duong van la MOT nguon o cap series. Truoc khi co truong nay, viz_eir_curves.py phai
+    # tai dung `source_tier` o cap diem, va khi do doc mot diem thi khong biet no dang noi
+    # ve nguon cua ca duong hay ve chinh no.
+    if "do_tin_cay" in row and not _trong_tu_vung("do_tin_cay", row["do_tin_cay"]):
+        hop_le = ", ".join(VOCAB["do_tin_cay"])
+        raise LoiSchema(
+            ERR.DO_TIN_CAY_LA,
+            f'{o} do_tin_cay "{row["do_tin_cay"]}" khong nam trong tu vung ({hop_le})',
+        )
     if "period" in row:
         validate_period(row["period"], o)
     return True

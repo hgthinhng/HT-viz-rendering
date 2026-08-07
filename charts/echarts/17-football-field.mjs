@@ -1,4 +1,4 @@
-// 17-football-field.mjs — Football field: dải định giá nhiều phương pháp, vạch giá thị trường
+// 17-football-field.mjs, Football field: dải định giá nhiều phương pháp, vạch giá thị trường
 // Dùng khi: tổng hợp nhiều phương pháp định giá (DCF, comps, giao dịch tiền lệ, biên độ
 // 52 tuần) thành kết luận VÙNG, thay vì báo cáo N con số rời rạc. Sức mạnh nằm ở VÙNG HỘI
 // TỤ (nơi các dải NỘI TẠI chồng lên nhau), không phải trung bình cộng mọi dải.

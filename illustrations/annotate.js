@@ -1,14 +1,14 @@
 /**
- * annotate.js — lớp chú thích (callout) tái dùng được cho minh hoạ ngành
+ * annotate.js, lớp chú thích (callout) tái dùng được cho minh hoạ ngành
  * vẽ tay bằng SVG (xem grammar.txt).
  *
  * Nguyên tắc thiết kế:
  *  - Toàn bộ đường dẫn (leader), điểm neo, hộp nhãn được vẽ THẲNG VÀO SVG
- *    (createElementNS), KHÔNG dùng absolute-positioned HTML overlay — vì
+ *    (createElementNS), KHÔNG dùng absolute-positioned HTML overlay, vì
  *    vậy chúng LUÔN hiện khi in / xuất PDF, không phụ thuộc :hover hay vị
  *    trí cuộn trang (yêu cầu bắt buộc: "hoạt động cả khi in").
  *  - Phần duy nhất là HTML overlay là "drill card" (thẻ chi tiết khi click)
- *    — vì nó cần nổi trên toàn trang và theo vị trí con trỏ, đây là phần
+ *, vì nó cần nổi trên toàn trang và theo vị trí con trỏ, đây là phần
  *    NÂNG CAO/tương tác, không phải kênh thông tin chính (đầu đề + phụ đề
  *    trên nhãn đã đủ nghĩa khi in ra giấy / PPTX, không cần click).
  *
@@ -28,7 +28,7 @@
  *
  * Cố ý viết IIFE + global `window.Annotate` thay vì ES module: báo cáo
  * trong pipeline này thường xuất ra 1 file HTML tĩnh mở trực tiếp qua
- * file:// (không qua HTTP server) — dưới file://, `<script type="module">`
+ * file:// (không qua HTTP server), dưới file://, `<script type="module">`
  * bị Chromium chặn bởi CORS khi import file cùng thư mục (đã kiểm chứng
  * thực nghiệm trong lab này), trong khi <script> thường không bị chặn.
  * Đây cũng là quy ước window.U đã dùng trong reference-kimi.html.
@@ -36,13 +36,13 @@
 (function (global) {
 const NS = "http://www.w3.org/2000/svg";
 
-// Chỉ 3 tone — SIẾT LẠI sau phản hồi thật: bản trước dùng 5 màu viền
+// Chỉ 3 tone, SIẾT LẠI sau phản hồi thật: bản trước dùng 5 màu viền
 // (cam/xanh lá/xanh dương/đen/đỏ) trên cùng 1 hình, đúng kiểu "traffic-
 // light hoá" mà luật màu gốc của dự án cấm (1 accent + 1 màu âm cho tin
 // xấu + trung tính, không hơn). 'neutral' là MẶC ĐỊNH cho mọi callout
 // thông tin thường; 'negative' CHỈ dùng cho callout mang tin xấu/rủi ro
-// thật; 'accent' CHỈ nên dùng cho ĐÚNG 1 callout — con số quan trọng nhất
-// của cả hình — không phải để tô điểm nhiều ô. Việc giới hạn "tối đa 1
+// thật; 'accent' CHỈ nên dùng cho ĐÚNG 1 callout, con số quan trọng nhất
+// của cả hình, không phải để tô điểm nhiều ô. Việc giới hạn "tối đa 1
 // accent/hình" là kỷ luật của người dùng module, annotate.js không ép
 // được bằng code, chỉ ép được số lượng GIÁ TRỊ tone hợp lệ.
 const TONES = {
@@ -82,7 +82,7 @@ function textEl(x, y, s, opts, parent) {
 }
 
 // Ước lượng bề rộng chữ (không có DOM measurement chính xác khi SVG chưa
-// attach) — hệ số ký tự trung bình cho font sans/mono ở các cỡ dùng trong
+// attach), hệ số ký tự trung bình cho font sans/mono ở các cỡ dùng trong
 // callout. Đủ tốt cho việc định kích thước hộp nhãn, không cần chính xác
 // tuyệt đối vì luôn có padding dự phòng.
 function estWidth(str, size, bold) {
@@ -110,14 +110,14 @@ function wrapSub(str, maxChars) {
  * y tăng dần rồi đẩy nhãn sau xuống nếu còn cách nhãn trước < minGap.
  * Áp dụng SAU khi đã tính chiều cao hộp thật của từng nhãn.
  *
- * SỬA LỖI THẬT (phản hồi: hộp nhãn tràn ra ngoài viewBox — đo bằng
+ * SỬA LỖI THẬT (phản hồi: hộp nhãn tràn ra ngoài viewBox, đo bằng
  * check-bbox.mjs xác nhận "THUỶ THỦ ĐOÀN" tràn quá bottomBound dù code có
  * vẻ như đã "nén" cho vừa): công thức nén 1-lượt cũ
  * `shrink * (arr.length - i)` cho phần tử CUỐI (i lớn nhất, cái đang gây
  * tràn) hệ số NHỎ NHẤT, phần tử ĐẦU (không liên quan gì tới tràn) hệ số
- * LỚN NHẤT — hoàn toàn ngược. Sửa bằng 2 lượt kinh điển: lượt 1 từ trên
+ * LỚN NHẤT, hoàn toàn ngược. Sửa bằng 2 lượt kinh điển: lượt 1 từ trên
  * xuống đảm bảo khoảng cách tối thiểu (như cũ), lượt 2 từ DƯỚI LÊN đảm bảo
- * không vượt bottomBound, kéo theo các phần tử phía trên nếu cần — 2 lượt
+ * không vượt bottomBound, kéo theo các phần tử phía trên nếu cần, 2 lượt
  * này LUÔN giữ đúng minGap và luôn ưu tiên sửa đúng phần tử đang tràn.
  */
 function resolveCollisions(items, minGap, topBound, bottomBound) {
@@ -147,10 +147,10 @@ function resolveCollisions(items, minGap, topBound, bottomBound) {
 }
 
 /**
- * Giải va chạm theo chiều NGANG (dành cho bố cục "dải giữa" — xem mục
+ * Giải va chạm theo chiều NGANG (dành cho bố cục "dải giữa", xem mục
  * axis:'horizontal' bên dưới): với mỗi hàng (trên/dưới), sắp nhãn theo x
  * tăng dần rồi đẩy nhãn sau sang phải nếu còn cách nhãn trước < minGap.
- * Đối xứng với resolveCollisions (chiều dọc) — cùng thuật toán 2 lượt,
+ * Đối xứng với resolveCollisions (chiều dọc), cùng thuật toán 2 lượt,
  * đổi trục, cùng lý do sửa lỗi (xem comment ở resolveCollisions).
  */
 function resolveCollisionsHorizontal(items, minGap, leftBound, rightBound) {
@@ -182,7 +182,7 @@ function resolveCollisionsHorizontal(items, minGap, leftBound, rightBound) {
 /**
  * Ràng buộc mới sau phản hồi thật: bản bezier-2-chặng trước đây LUÔN đạt
  * "không cắt qua vật thể" nhưng cái giá là đường lượn rất dài (route tới
- * tận mép avoidBox rồi vòng lại) — ví dụ đo được trên ship-annotated-demo
+ * tận mép avoidBox rồi vòng lại), ví dụ đo được trên ship-annotated-demo
  * bản trước: path "475 TỶ USD" dài ~365 đơn vị trong khi khoảng cách thẳng
  * neo->nhãn chỉ ~215 đơn vị (tỷ lệ ~1.7x, VƯỢT ngưỡng cho phép). Sửa bằng
  * cách đổi hẳn chiến lược:
@@ -190,15 +190,15 @@ function resolveCollisionsHorizontal(items, minGap, leftBound, rightBound) {
  * 1) THAY VÌ kéo dài đường, DỜI NHÃN: nếu nhãn (label.y, cho bố cục cột
  *    dọc trái/phải) rơi vào bên trong dải y bận của avoidBox, đẩy nó ra
  *    mép trên/dưới GẦN NHẤT của avoidBox NGAY TỪ LÚC ĐẶT NHÃN (trước khi
- *    giải va chạm) — xem clampLabelToClearBand(). Sau bước này, nhãn luôn
+ *    giải va chạm), xem clampLabelToClearBand(). Sau bước này, nhãn luôn
  *    nằm ở hàng/cột đã ở vùng trống.
  * 2) Vẽ đường bằng ĐÚNG 1 góc vuông bo tròn nhẹ (Manhattan L), neo -> góc
- *    (ax, ly) -> nhãn — KHÔNG dùng bezier lượn nhiều đoạn. Vì nhãn đã được
+ *    (ax, ly) -> nhãn, KHÔNG dùng bezier lượn nhiều đoạn. Vì nhãn đã được
  *    đảm bảo ở vùng trống (bước 1), góc (ax, ly) luôn nằm ngoài phần bận
  *    của vật thể, nên tuyến 2 đoạn thẳng này KHÔNG cắt qua vật thể mà
  *    không cần vòng tới tận mép khung.
  * 3) Độ dài tuyến Manhattan (|dx|+|dy|) so với khoảng cách thẳng
- *    sqrt(dx²+dy²) luôn có tỷ lệ tệ nhất = sqrt(2) ≈ 1.414 — LUÔN nằm
+ *    sqrt(dx²+dy²) luôn có tỷ lệ tệ nhất = sqrt(2) ≈ 1.414, LUÔN nằm
  *    trong ngưỡng 1.6x yêu cầu, không cần đo dò từng trường hợp. Vẫn có
  *    hàm assertPathLength() bên dưới để tự kiểm bằng số thật, không chỉ
  *    tin vào chứng minh toán học suông.
@@ -216,7 +216,7 @@ function roundedElbow(ax, ay, cx, cy, lx, ly) {
 }
 
 // Tự kiểm bằng số thật (không chỉ tin chứng minh toán học): log cảnh báo
-// nếu 1 tuyến nào đó vẫn vượt 1.6x — không nên xảy ra với roundedElbow
+// nếu 1 tuyến nào đó vẫn vượt 1.6x, không nên xảy ra với roundedElbow
 // nhưng giữ lại phòng khi opts tuỳ biến phá vỡ giả định.
 function assertPathLength(ax, ay, cx, cy, lx, ly, label) {
   const routeLen = Math.hypot(cx - ax, cy - ay) + Math.hypot(lx - cx, ly - cy);
@@ -229,22 +229,22 @@ function assertPathLength(ax, ay, cx, cy, lx, ly, label) {
 }
 
 /**
- * Dời NHÃN ra khỏi dải y bận của avoidBox — áp dụng cho bố cục cột dọc
+ * Dời NHÃN ra khỏi dải y bận của avoidBox, áp dụng cho bố cục cột dọc
  * (axis:'vertical'). Không đụng vào label.x (đã ở lề trái/phải, luôn
  * ngoài avoidBox theo chiều ngang), chỉ nắn label.y nếu nó rơi vào đúng
  * dải y của vật thể. Quyết định đẩy lên hay xuống dựa vào vị trí NHÃN
- * đang có (không phải vị trí neo) — vì mục tiêu ở đây là tìm chỗ TRỐNG gần
+ * đang có (không phải vị trí neo), vì mục tiêu ở đây là tìm chỗ TRỐNG gần
  * nhãn nhất, khác với leader-line (mục tiêu ở đó là thoát nhanh nhất từ
  * ANCHOR).
  */
-// RÀNG BUỘC CỨNG: hộp nhãn phải nằm TRỌN trong viewBox — không tin tưởng
+// RÀNG BUỘC CỨNG: hộp nhãn phải nằm TRỌN trong viewBox, không tin tưởng
 // tuyệt đối vào collision-resolution (dù đã sửa lỗi 2 lượt ở trên) khi có
 // quá nhiều callout chen trong khung nhỏ. Áp CUỐI CÙNG, ngay trước khi vẽ,
 // trên hộp ĐÃ được đặt vị trí: (1) kẹp không cho lọt ra lề trái/trên, (2)
 // nếu tràn lề phải/dưới, THỬ THU HẸP BỀ RỘNG/CAO trước (đến mức tối thiểu
 // còn đọc được), (3) nếu vẫn không đủ chỗ, mới dịch cả hộp vào trong. Tự
 // kiểm bằng check-bbox.mjs (đo x/y/width/height thật của rect đã render so
-// với viewBox) — xem verify-label-bounds.mjs trong PACKAGE/.
+// với viewBox), xem verify-label-bounds.mjs trong PACKAGE/.
 function clampBoxToViewport(box, W, H, margin) {
   const b = { ...box };
   if (b.boxLeft < margin) b.boxLeft = margin;
@@ -287,7 +287,7 @@ function ensureDrillCard() {
 }
 
 // Xây thẻ chi tiết bằng DOM node + textContent (không dùng innerHTML với
-// chuỗi nội suy) — nội dung drill do chính báo cáo tự khai báo lúc build,
+// chuỗi nội suy), nội dung drill do chính báo cáo tự khai báo lúc build,
 // nhưng dựng bằng textContent vẫn an toàn hơn và không tốn thêm chi phí.
 function buildDrillContent(card, drill) {
   card.textContent = "";
@@ -342,13 +342,11 @@ function showDrill(drill, x, y) {
  *
  * item: { anchor:[x,y], label:{x,y}, head, sub, tone, drill }
  *   - anchor: toạ độ điểm neo trên vật thể (theo hệ toạ độ viewBox của SVG)
- *   - label:  toạ độ TÂM hộp nhãn mong muốn — module sẽ tự nắn theo chiều
+ *   - label:  toạ độ TÂM hộp nhãn mong muốn, module sẽ tự nắn theo chiều
  *             dọc để chống chồng (mục "collision"), giữ nguyên x
  *   - tone:   'neutral' (mặc định, dùng cho hầu hết callout) | 'negative'
- *             (CHỈ tin xấu/rủi ro) | 'accent' (CHỈ 1 callout mỗi hình —
- *             con số quan trọng nhất). KHÔNG còn 'good'/'warn'/'bad' —
- *             rút gọn sau phản hồi "traffic-light hoá" trên bản 5-tone.
- *   - drill:  optional { title, value, sub, source } — nếu có, callout
+ *             (CHỈ tin xấu/rủi ro) | 'accent' (CHỈ 1 callout mỗi hình, *             con số quan trọng nhất). KHÔNG còn 'good'/'warn'/'bad', *             rút gọn sau phản hồi "traffic-light hoá" trên bản 5-tone.
+ *   - drill:  optional { title, value, sub, source }, nếu có, callout
  *             click được để mở thẻ chi tiết
  * opts: { minGap=14, boxPad=10, headSize=13, subSize=10.5,
  *          avoidBox={x,y,width,height}, axis='vertical'|'horizontal' }
@@ -356,12 +354,12 @@ function showDrill(drill, x, y) {
  *     "đường dẫn không cắt qua vật thể"). Nên luôn truyền cho hình có mật
  *     độ chi tiết cao (tàu, nhà máy...); có thể bỏ qua cho hình rất thưa.
  *   - axis: 'vertical' (mặc định) = bố cục cũ, nhãn xếp cột dọc theo lề
- *     TRÁI/PHẢI — hợp với vật thể CAO/dày đặc theo chiều dọc (tàu, nhà máy,
+ *     TRÁI/PHẢI, hợp với vật thể CAO/dày đặc theo chiều dọc (tàu, nhà máy,
  *     tháp). 'horizontal' = bố cục "dải giữa" kiểu banner biên tập (chủ
- *     thể nằm trong dải ngang giữa khung, viền trên/dưới để trống — xem
+ *     thể nằm trong dải ngang giữa khung, viền trên/dưới để trống, xem
  *     MOTIF_TABLE.md), nhãn xếp HÀNG NGANG phía TRÊN/DƯỚI, label.x là tâm
  *     hộp (không phải cạnh như mode 'vertical'). Thêm mode này sau khi đối
- *     chiếu với bố cục banner 97-motif — 2 mode phục vụ 2 tỷ lệ khung khác
+ *     chiếu với bố cục banner 97-motif, 2 mode phục vụ 2 tỷ lệ khung khác
  *     nhau, KHÔNG dùng chung được (xem ghi chú trong báo cáo gửi kèm).
  */
 function annotate(svg, items, opts = {}) {
@@ -390,7 +388,7 @@ function annotate(svg, items, opts = {}) {
     } else {
       it._side = it.label.x < W / 2 ? "left" : "right";
       // DỜI NHÃN ra khỏi dải y bận của avoidBox NGAY TỪ ĐẦU (trước khi
-      // giải va chạm) — đây là cách sửa "đường dẫn quá dài" đúng theo yêu
+      // giải va chạm), đây là cách sửa "đường dẫn quá dài" đúng theo yêu
       // cầu: sửa ở NHÃN, không kéo dài ĐƯỜNG. Bố cục 'horizontal' không
       // cần bước này vì hàng trên/dưới vốn đã luôn ở vùng trống.
       it.label.y = clampLabelToClearBand(it.label.y, avoidBox);
@@ -426,10 +424,10 @@ function annotate(svg, items, opts = {}) {
     }
 
     // Ràng buộc cứng: hộp phải nằm trọn trong viewBox (xem
-    // clampBoxToViewport ở trên) — áp NGAY TRÊN vị trí thô, rồi mọi thứ
+    // clampBoxToViewport ở trên), áp NGAY TRÊN vị trí thô, rồi mọi thứ
     // khác (điểm bám leader, vạch màu cạnh hộp) suy ra từ box ĐÃ kẹp, một
     // nguồn sự thật duy nhất, tránh vá lệch như bản thử đầu (tính
-    // attachX/attachY trước rồi patch delta sau — dễ sai, đã bỏ).
+    // attachX/attachY trước rồi patch delta sau, dễ sai, đã bỏ).
     const box = clampBoxToViewport({ boxLeft, boxTop, boxW: it._boxW, boxH: it._boxH }, W, H, 12);
     boxLeft = box.boxLeft; boxTop = box.boxTop; it._boxW = box.boxW; it._boxH = box.boxH;
 

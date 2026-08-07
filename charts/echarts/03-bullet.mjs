@@ -1,6 +1,6 @@
-// 03-bullet.mjs — Bullet chart: thực tế vs kế hoạch/mục tiêu, có dải định tính
+// 03-bullet.mjs, Bullet chart: thực tế vs kế hoạch/mục tiêu, có dải định tính
 // Dùng khi: so KPI thực tế với 1 mục tiêu (target) trên nền dải định tính
-// (kém/đạt/tốt) — gọn hơn gauge khi cần xếp nhiều KPI thành 1 cột.
+// (kém/đạt/tốt), gọn hơn gauge khi cần xếp nhiều KPI thành 1 cột.
 // Dữ liệu cần: mỗi hàng {label, actual, target, bands:[low,mid,high]}.
 // Bẫy thường gặp: (1) tô dải định tính bằng đỏ/vàng/xanh (traffic-light) ->
 // CẤM theo brief, ở đây dùng 3 sắc độ XÁM của cùng 1 ramp trung tính;

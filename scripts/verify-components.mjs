@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * verify.mjs — CLI nghiệm thu tổng quát cho MỌI file HTML dùng components.css
+ * verify.mjs, CLI nghiệm thu tổng quát cho MỌI file HTML dùng components.css
  * của thư viện này (không chỉ gallery.html). Dùng làm gate CI/pre-commit:
  * exit code 0 = mọi kiểm tra PASS, exit code 1 = có kiểm tra FAIL.
  *
@@ -20,11 +20,11 @@
  *   --page-dpi=<n>         DPI khi render trang PDF ra PNG (mặc định 100)
  *
  * Yêu cầu: `npm i -D playwright-core` đã chạy TRONG thư mục chứa script này
- * (hoặc thư mục cha gần nhất có node_modules/playwright-core — ESM resolve
+ * (hoặc thư mục cha gần nhất có node_modules/playwright-core, ESM resolve
  * theo vị trí file, không theo cwd).
  *
  * Output: in từng dòng [PASS]/[FAIL] ra stdout, ghi verify-report.json vào
- * --out. Exit code phản ánh kết quả tổng — dùng được trực tiếp trong CI:
+ * --out. Exit code phản ánh kết quả tổng, dùng được trực tiếp trong CI:
  *   node verify.mjs --html=gallery.html || exit 1
  */
 import path from "node:path";
@@ -303,7 +303,7 @@ async function main() {
       rasterResult = JSON.parse(stdout);
       record("pdf-raster-count", rasterResult.passed, `${rasterResult.raster_count}/${maxRaster} ảnh, ${rasterResult.page_count} trang`);
     } catch (e) {
-      // execFileSync throws on non-zero exit (FAIL case) — output vẫn ở e.stdout
+      // execFileSync throws on non-zero exit (FAIL case), output vẫn ở e.stdout
       if (e.stdout) {
         try {
           rasterResult = JSON.parse(e.stdout.toString());

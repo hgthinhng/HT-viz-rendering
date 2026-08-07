@@ -1,4 +1,4 @@
-# NGHIÊN CỨU VÒNG 09 — MỞ RỘNG BẢNG TRA ẨN DỤ MINH HOẠ NGÀNH
+# NGHIÊN CỨU VÒNG 09, MỞ RỘNG BẢNG TRA ẨN DỤ MINH HOẠ NGÀNH
 
 Vùng nghiên cứu: mở rộng bảng tra ẩn dụ cho minh hoạ ngành ngoài 11 hình hiện có trong
 `illustrations/svg/`. Đây là điểm khác biệt mạnh nhất của repo này so với báo cáo tài chính
@@ -20,7 +20,7 @@ ngành" theo nghĩa bài toán khoảng trống đặt ra.
 
 | File | Ngành | Accent | Bộ phận neo được biến (đếm thật, không suy diễn) |
 |---|---|---|---|
-| `banking-headquarters-vault.svg` | Ngân hàng | `#1d4ed8` | Đường kính cửa vault tròn = quy mô vốn khả dụng; 4 thanh chốt bắt chéo = số lớp kiểm soát/tuân thủ; điểm accent giữa ổ khoá = tỷ lệ CAR. **Chỉ 2-3 điểm neo thật**, phần thân toà nhà chính (cột thức, bậc thềm, mái tam giác) là bối cảnh kiến trúc không neo biến cụ thể nào — silhouette dùng để nhận diện "ngân hàng" chứ không phải nơi gắn callout số liệu. |
+| `banking-headquarters-vault.svg` | Ngân hàng | `#1d4ed8` | Đường kính cửa vault tròn = quy mô vốn khả dụng; 4 thanh chốt bắt chéo = số lớp kiểm soát/tuân thủ; điểm accent giữa ổ khoá = tỷ lệ CAR. **Chỉ 2-3 điểm neo thật**, phần thân toà nhà chính (cột thức, bậc thềm, mái tam giác) là bối cảnh kiến trúc không neo biến cụ thể nào, silhouette dùng để nhận diện "ngân hàng" chứ không phải nơi gắn callout số liệu. |
 | `energy-power-transmission-turbine.svg` | Điện / năng lượng tái tạo | `#0d9488` | Cột điện giàn thép (nút thắt truyền tải) + turbine 3 cánh (công suất phát) + 3 đường dây cong (số lộ truyền tải). 3 điểm neo. |
 | `logistics-container-ship.svg` | Vận tải biển | `#2563eb` | Vạch mớn nước có số 16M/14M/12M/10M/8M = tải trọng thật theo mớn nước; số/tầng container xếp trên boong = khối lượng/TEU. 2 điểm neo số liệu rõ, còn lại (cabin, ống khói, cửa sổ) là bối cảnh. |
 | `manufacturing-cement-factory.svg` | Xi măng | `#d97706` | 3 cyclone tháp trao đổi nhiệt = công đoạn xử lý; ngọn lửa đầu lò nung = vận hành/hiệu suất nhiệt; 3 silo cao thấp khác nhau = tồn kho theo loại. 3-4 điểm neo, phong phú nhất trong nhóm "nhà máy". |
@@ -30,10 +30,10 @@ ngành" theo nghĩa bài toán khoảng trống đặt ra.
 | `retail-storefront-cart.svg` | Bán lẻ | `#f97316` | Giỏ hàng (4 mặt hàng cao thấp khác nhau) = giá trị giỏ hàng/doanh số; tủ kính trưng bày 4 sản phẩm = cơ cấu danh mục bán chạy. 2 điểm neo, quy mô CHỈ Ở MỨC 1 cửa hàng đơn lẻ (xem khoảng trống "bán lẻ hiện đại/chuỗi" ở mục 2). |
 | `geography-vietnam-map.svg` | Công cụ dùng chung | `#0891b2` | 3 điểm thành phố + 1 vùng tô đậm ĐBSCL = phân bổ theo vùng địa lý. Không phải 1 ngành, mà là NỀN dùng cho bất kỳ ngành nào có chiều không gian. |
 | `marketing-conversion-funnel.svg` | Khái niệm dùng chung | `#7c3aed` | 4 tầng phễu thu hẹp dần = tỷ lệ rơi rụng mỗi tầng (rất nhiều biến neo được, nhưng là khái niệm phễu chuyển đổi áp dụng được cho hầu hết ngành có kênh bán hàng, không gắn 1 ngành cụ thể). |
-| `universal-balance-scale.svg` | Khái niệm dùng chung | `#2563eb` | Góc nghiêng đòn cân = 1 biến liên tục (chênh lệch trọng số bằng chứng 2 phía), có công thức toán đi kèm để tái tạo theo dữ liệu thật — đây là hình DUY NHẤT trong 11 hình có tham số hình học phụ thuộc trực tiếp vào số liệu (không phải callout gắn thêm, mà chính GÓC của vật thể). |
+| `universal-balance-scale.svg` | Khái niệm dùng chung | `#2563eb` | Góc nghiêng đòn cân = 1 biến liên tục (chênh lệch trọng số bằng chứng 2 phía), có công thức toán đi kèm để tái tạo theo dữ liệu thật, đây là hình DUY NHẤT trong 11 hình có tham số hình học phụ thuộc trực tiếp vào số liệu (không phải callout gắn thêm, mà chính GÓC của vật thể). |
 
 **Phát hiện đáng chuyển tiếp**: `banking-headquarters-vault.svg` là hình có TỶ LỆ "phần trang trí kiến
-trúc / phần neo được số liệu" cao nhất trong 8 hình theo-ngành — cột thức, bậc thềm, mái tam giác
+trúc / phần neo được số liệu" cao nhất trong 8 hình theo-ngành, cột thức, bậc thềm, mái tam giác
 chiếm phần lớn diện tích silhouette nhưng không neo biến nào, khác hẳn `real-estate-apartment-crane.svg`
 nơi gần như MỌI ô cửa sổ đều có thể trở thành điểm neo. Đây không phải lỗi (vault door vẫn đủ để
 minh hoạ CAR/dự trữ bắt buộc), nhưng nếu vòng sau cần thêm biến cho ngành ngân hàng (ví dụ số chi
@@ -63,7 +63,7 @@ vật lý" - nhà máy/toà nhà/tàu/giàn khoan, không hình nào là "sơ đ
 
 15 ngành còn lại chỉ dừng ở đề xuất bằng chữ (đủ chi tiết bộ phận neo + 3 bài tự kiểm), xem
 `METAPHOR-TABLE-EXT.md` Phần B. Đáng chú ý: 3 trong 15 đề xuất này (y tế, giáo dục, du lịch/khách
-sạn) đều dùng chung công thức hình học gốc "toà nhà nhiều tầng, ô đầy/ô trống" — đã tự gắn cờ CẢNH
+sạn) đều dùng chung công thức hình học gốc "toà nhà nhiều tầng, ô đầy/ô trống", đã tự gắn cờ CẢNH
 BÁO trong bảng vì đây là rủi ro thật với bài tự kiểm 2 (đổi ngành), chỉ được cứu bằng chi tiết nhỏ
 phân biệt (rèm cửa sổ khách sạn khác giường bệnh khác bàn học), không phải bằng silhouette tổng
 thể khác nhau. Đây là phát hiện có giá trị cho vòng sau: khi 3 ngành cùng rơi vào 1 công thức hình
@@ -75,12 +75,12 @@ Tìm qua WebSearch/WebFetch, đối chiếu với nguyên tắc semantic-site c�
 thể có thật, mỗi bộ phận neo một biến số liệu).
 
 **Edward Tufte** (tổng hợp từ nhiều nguồn thứ cấp về "The Visual Display of Quantitative Information"
-và "Envisioning Information"): nguyên tắc "integrated evidence" — chữ giải thích và hình không nên
+và "Envisioning Information"): nguyên tắc "integrated evidence", chữ giải thích và hình không nên
 tách vào 2 không gian nhận thức riêng, chú thích nên nằm NGAY TẠI ĐIỂM CẦN HIỂU, không tách xuống
 chú thích rời. Đây chính là lý do kiến trúc `annotate.js` của repo này (leader-line nối thẳng từ
 neo tới nhãn, không dùng legend rời) đúng hướng đã được kiểm chứng độc lập bởi Tufte, không phải
 chỉ là lựa chọn thẩm mỹ. Nguyên tắc "layering and separation" (nhấn mạnh trong Envisioning
-Information hơn là Visual Display) — thông tin phải có THỨ BẬC lớp rõ ràng, tránh "busy/heavy
+Information hơn là Visual Display), thông tin phải có THỨ BẬC lớp rõ ràng, tránh "busy/heavy
 display" khi không phân lớp đúng; áp dụng trực tiếp vào luật của `grammar.md` mục 3 (ngưỡng số
 lượng shape, phân biệt hoạ tiết kết cấu và hoạ tiết đích callout).
 
@@ -104,7 +104,7 @@ hiểm của vòng này bám sát đúng số lượng ống đó, KHÔNG thêm 
 với cơ chế thật, không phải ngược lại là nghĩ ra 5 biến rồi ép vào một vật thể).
 
 **Reuters Graphics / GEOART** (chuyên gia cutaway dầu khí thương mại): xác nhận cutaway offshore/
-onshore là thể loại minh hoạ thương mại có thật, không phải phát minh riêng của repo này — củng cố
+onshore là thể loại minh hoạ thương mại có thật, không phải phát minh riêng của repo này, củng cố
 độ tin cậy của hướng đi `illustrations/grammar.md` đã chọn (kỹ thuật cutaway kỹ nghệ nặng, không
 phải icon phẳng kiểu flat-design chung chung).
 
@@ -143,7 +143,7 @@ chất lỏng) ngay cả khi phóng to đủ để soi từng chi tiết nhỏ n
 kho lạnh, hay bánh xe van trên đường ống. Riêng chi tiết "đầu kim máy may" ở mẫu dệt may, khi xem ở
 độ phân giải trang A4 thông thường (không phóng to hết cỡ), đọc được rõ là "một dãy trạm nhỏ có 1
 trạm khác màu" (đúng cấu trúc cần truyền tải: 1 trạm dừng) nhưng KHÔNG unique để nhận ra ngay là
-"máy may" nếu tách riêng khỏi bối cảnh cuộn vải bên cạnh — đây là giới hạn thật, không phải khẳng
+"máy may" nếu tách riêng khỏi bối cảnh cuộn vải bên cạnh, đây là giới hạn thật, không phải khẳng
 định phóng đại, và đã ghi lại trung thực trong `samples/metaphor-det-may.html` cũng như trong bảng
 Phần A của `METAPHOR-TABLE-EXT.md`.
 
@@ -151,4 +151,4 @@ Phần A của `METAPHOR-TABLE-EXT.md`.
 
 `Write` tool CHẶN filename `FINDINGS.md` giống các vòng nghiên cứu trước, ghi được bằng `Bash`
 heredoc (`cat > file << 'EOF'`, delimiter có nháy đơn để nội dung markdown chứa backtick không bị
-bash diễn giải) — đúng như ghi chú đã có trong `RESEARCH-LEDGER.md` từ các vòng trước.
+bash diễn giải), đúng như ghi chú đã có trong `RESEARCH-LEDGER.md` từ các vòng trước.

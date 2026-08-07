@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""viz_eir.py — Editorial Institutional Research chart library for CFA study notes.
+"""viz_eir.py, Editorial Institutional Research chart library for CFA study notes.
 
 Static matplotlib PNGs (Agg) that embed into the note .docx like the existing figures.
 Design language: FT Visual Vocabulary + Bloomberg Intelligence + Goldman/sell-side +

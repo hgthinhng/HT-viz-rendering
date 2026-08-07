@@ -1,4 +1,4 @@
-// 02-sankey.mjs — Sankey: dòng tiền / phân bổ doanh thu qua các tầng chi phí
+// 02-sankey.mjs, Sankey: dòng tiền / phân bổ doanh thu qua các tầng chi phí
 // Dùng khi: theo dõi MỘT đại lượng bảo toàn (tiền, khối lượng) chảy qua nhiều
 // tầng phân nhánh (Doanh thu -> Giá vốn/Lợi nhuận gộp -> Chi phí/EBIT -> Thuế/LNST
 // -> Cổ tức/Lợi nhuận giữ lại). KHÔNG dùng khi các tầng không cộng dồn được

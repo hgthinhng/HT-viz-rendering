@@ -54,7 +54,7 @@
     </g>
 
     <!-- cánh phụ kho tiền GẮN LIỀN vào cạnh phải toà nhà chính (không tách
-         rời) — bản v1 đặt cách 30px trông như 2 khối không liên quan -->
+         rời), bản v1 đặt cách 30px trông như 2 khối không liên quan -->
     <g class="vault-wing">
       <rect x="470" y="300" width="150" height="130" fill="#334155" stroke="#0f172a" stroke-width="1.5"/>
       <rect x="470" y="300" width="150" height="18" fill="#475569"/>

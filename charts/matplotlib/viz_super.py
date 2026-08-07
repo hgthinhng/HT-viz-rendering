@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""viz_super.py — unified dispatcher for the super-viz-factory (48 EIR components).
+"""viz_super.py, unified dispatcher for the super-viz-factory (48 EIR components).
 
 Merges the COMPONENTS registries of all EIR modules behind ONE spec.json runner, so a
-CFA note can request any institutional/editorial figure — chart, diagram, panel, KPI —
-through a single call and the same spec contract used by the core note-pipeline-viz
+CFA note can request any institutional/editorial figure, chart, diagram, panel, KPI, through a single call and the same spec contract used by the core note-pipeline-viz
 renderer.
 
 Core primitives (bar_grouped, line, waterfall, scatter, heatmap, donut, slope, tree,

@@ -1,13 +1,13 @@
-// 09-candlestick.mjs — Candlestick + volume: biến động giá cổ phiếu theo phiên
+// 09-candlestick.mjs, Candlestick + volume: biến động giá cổ phiếu theo phiên
 // Dùng khi: trình bày giá OHLC (mở/cao/thấp/đóng) theo thời gian, thường kèm
 // khối lượng giao dịch ở panel dưới cùng trục x để đối chiếu breakout với
 // thanh khoản. Dữ liệu cần: mảng {date, open, close, low, high, volume}.
 // Bẫy thường gặp: (1) không đồng bộ trục x giữa panel giá và panel volume khi
 // zoom -> lệch ngày; (2) dùng xanh lá/đỏ theo quy ước CHỨNG KHOÁN MỸ (tăng=
 // xanh lá, giảm=đỏ) trong khi sàn HOSE/HNX niêm yết dùng xanh LAM=tăng, ĐỎ=
-// giảm, VÀNG=đứng giá — nhầm quy ước màu là lỗi nghiêm trọng với người đọc VN;
+// giảm, VÀNG=đứng giá, nhầm quy ước màu là lỗi nghiêm trọng với người đọc VN;
 // (3) trục giá không nên ép bắt đầu từ 0 (khác bar chart) vì sẽ nén biến động
-// nến vào 1 dải hẹp không đọc được — đây là NGOẠI LỆ có chủ đích của quy tắc
+// nến vào 1 dải hẹp không đọc được, đây là NGOẠI LỆ có chủ đích của quy tắc
 // "trục phải bắt đầu từ 0", vì OHLC là toạ độ tuyệt đối không phải magnitude.
 import * as echarts from 'echarts';
 import fs from 'node:fs';

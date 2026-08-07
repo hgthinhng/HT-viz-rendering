@@ -54,11 +54,14 @@ Ba doanh nghiệp đầu bảng đều có ít nhất hai trong ba điều kiệ
 thu hồi nhiệt thải đã chạy, và sức chứa silo trên hai tuần sản lượng. Ba doanh nghiệp
 cuối bảng không có điều kiện nào trong ba.
 
+Bảng: Ba nhóm doanh nghiệp theo biên lợi nhuận 2025, đối chiếu với hai điều kiện tự chủ năng lượng.
+
 | Nhóm doanh nghiệp | Số lượng | Biên 2025 | Mỏ liền nhà máy | Thu hồi nhiệt |
 |---|---:|---:|---|---|
 | Dẫn đầu | 3 | 11,2% tới 18,6% | Có | Đã chạy |
 | Trung bình | 1 | 7,4% | Có | Đang lắp |
 | Nhóm cuối | 2 | 4,2% tới 5,8% | Không | Chưa có |
+| Toàn ngành, bình quân gia quyền theo sản lượng ||| 9,8% ||
 
 ## Điều cần theo dõi
 

@@ -1,4 +1,4 @@
-// 01-waterfall.mjs — Waterfall: cầu nối P&L (Doanh thu -> Lợi nhuận ròng)
+// 01-waterfall.mjs, Waterfall: cầu nối P&L (Doanh thu -> Lợi nhuận ròng)
 // Dùng khi: giải thích một tổng số bị phân rã bởi các khoản cộng/trừ tuần tự
 // (doanh thu -> COGS -> CP vận hành -> thuế -> LNST; hoặc biến động vốn CSH).
 // Dữ liệu cần: 1 cột nhãn hạng mục + 1 cột giá trị (dương=cộng, âm=trừ),

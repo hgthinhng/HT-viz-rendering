@@ -25,14 +25,14 @@
   NGUỒN CẢM HỨNG: Datawrapper blog "What to consider when visualizing data for
   colorblind readers" (https://www.datawrapper.de/blog/colorblindness-part2) và
   "How your colorblind and colorweak readers see your colors"
-  (https://www.datawrapper.de/blog/colorblindness-part1) — khuyến nghị cốt lõi là
+  (https://www.datawrapper.de/blog/colorblindness-part1), khuyến nghị cốt lõi là
   "get it right in black & white" (kiểm bằng độ sáng, không chỉ bằng hue) và dùng
   hình dạng/pattern làm mã hoá kép thay vì chỉ dựa vào màu.
 
   CHUYỂN SANG BỐI CẢNH NÀY: charts/echarts/12-area-stack.mjs và 11-stacked-100.mjs
   hiện dùng color: [PALETTE.accent, PALETTE.negative, PALETTE.inkLo, PALETTE.ink]
   cho categorical nhiều chuỗi. accent và negative desaturate về độ xám gần nhau
-  (2 màu bão hoà cao thường quy về xám giống nhau khi khử màu) — đây là bằng chứng
+  (2 màu bão hoà cao thường quy về xám giống nhau khi khử màu), đây là bằng chứng
   cụ thể nên bổ sung itemStyle.borderType hoặc pattern cho preset đó (xem
   research/03-chart-doctrine/FINDINGS.md muc 7).
 

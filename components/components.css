@@ -11,9 +11,9 @@
    gốc (Chromium hỗ trợ color-mix(), dùng làm máy tính màu, không dùng để
    render bản giao). Mỗi rule bên dưới có comment nói rõ token nguồn và tỷ
    lệ. Khi mix với "transparent", kết quả luôn là rgb(kênh của token / tỷ lệ
-   mix%) — không cần suy diễn lại, chỉ cần thay token khác nếu token đổi.
+   mix%), không cần suy diễn lại, chỉ cần thay token khác nếu token đổi.
    Vì giá trị giờ là hằng số, nó KHÔNG còn tự đổi theo [data-theme="dark"]
-   như color-mix(var(...)) cũ — bản tối tương ứng được khai riêng ở khối
+   như color-mix(var(...)) cũ, bản tối tương ứng được khai riêng ở khối
    "DARK MODE: thay color-mix()" gần cuối file, mục 27b. */
 
 /* ── 2. RESET & NỀN TẢNG ──────────────────────────────────────────────── */
@@ -27,13 +27,13 @@ body {
   font-size: 17px;
   line-height: var(--lh-body);
   overflow-wrap: break-word;
-  font-synthesis: none; /* cấm italic/bold giả — Latin có dấu bị méo khi synth */
+  font-synthesis: none; /* cấm italic/bold giả, Latin có dấu bị méo khi synth */
 }
 .gallery-shell { max-width: 1180px; margin: 0 auto; padding: 0 28px 120px; }
 .gallery-shell section { margin: 64px 0; }
 /* h1-h3 dùng font-display; ở bản này --font-display và --font-serif CÙNG là
    Spectral nên về mặt hình ảnh không có tương phản display/serif nữa (đúng
-   ý "Spectral cho mọi vai trò chữ") — giữ 2 biến tách riêng chỉ để khỏi phải
+   ý "Spectral cho mọi vai trò chữ"), giữ 2 biến tách riêng chỉ để khỏi phải
    sửa lại từng selector nếu sau này cần tách lại. */
 h1, h2, h3 { font-family: var(--font-display); line-height: var(--lh-heading); letter-spacing: -0.006em; text-wrap: balance; }
 p { text-wrap: pretty; }
@@ -57,7 +57,7 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
   text-transform: uppercase; margin-left: 8px; vertical-align: 2px;
 }
 
-/* Giảm chuyển động cho người dùng nhạy cảm — áp dụng toàn cục */
+/* Giảm chuyển động cho người dùng nhạy cảm, áp dụng toàn cục */
 @media (prefers-reduced-motion: reduce) {
   * , *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -67,10 +67,10 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
   }
 }
 
-/* ── 3. NGUỒN — badge {value, source, date, tier} dùng CHUNG cho mọi component có số liệu ── */
+/* ── 3. NGUỒN, badge {value, source, date, tier} dùng CHUNG cho mọi component có số liệu ── */
 .src-badge {
   /* white-space KHÔNG nowrap: bắt được thật khi soi PDF ở khổ 3-cột statgrid
-     (~208px/thẻ) — badge dài như "Clarksons Research, ước tính" tràn ra khỏi
+     (~208px/thẻ), badge dài như "Clarksons Research, ước tính" tràn ra khỏi
      thẻ vì nowrap ép 1 dòng. Cho phép xuống dòng, chấp nhận badge cao 2 dòng
      khi khung hẹp thay vì tràn viền. */
   display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono);
@@ -162,7 +162,7 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
 .wc-stem { position: absolute; bottom: -6px; width: 1px; height: 6px; background: var(--ink-lo); }
 .wc-caption { font-family: var(--font-serif); font-style: italic; font-size: 12.5px; color: var(--ink-md); margin-top: 10px; }
 /* Fallback list: LUÔN có mặt trong cây accessibility (kỹ thuật sr-only, không
-   dùng display:none — display:none gỡ hẳn khỏi cây a11y). Người dùng screen
+   dùng display:none, display:none gỡ hẳn khỏi cây a11y). Người dùng screen
    reader luôn nhận bản danh sách phẳng gọn gàng; người xem bằng mắt thấy bản
    xếp lớp trực quan (đã gắn aria-hidden). Khi in hoặc khi JS tắt, đảo ngược:
    ẩn bản trực quan (tránh vỡ trang do position:absolute), hiện bản danh sách. */
@@ -204,7 +204,7 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
 .sl-cell { border-top: 1px solid var(--line-lo); border-left: 1px solid var(--line); padding: 8px; display: flex; align-items: stretch; }
 .sl-card {
   /* font-sans (IBM Plex Sans) ở đây, KHÔNG phải font-serif: đúng vai trò hẹp
-     "ô bảng dữ liệu dày đặc" — thẻ swimlane bị co hẹp còn ~174px ở khổ 3 cột
+     "ô bảng dữ liệu dày đặc", thẻ swimlane bị co hẹp còn ~174px ở khổ 3 cột
      (đo thật ở mục mật độ), serif ở khổ đó đọc rời rạc hơn sans đặc chữ. */
   font-family: var(--font-sans);
   border: 1px solid var(--line); background: var(--paper); padding: 8px 10px 7px; font-size: 12px;
@@ -218,7 +218,7 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
 .sl-legend span { display: inline-flex; align-items: center; gap: 5px; }
 .sl-legend i { width: 8px; height: 8px; display: inline-block; }
 .sl-legend .must i { background: var(--accent); } .sl-legend .should i { background: var(--warn); } .sl-legend .could i { background: var(--ink-lo); }
-/* In ấn: min-width 760px + overflow-x:auto KHÔNG paginate được — cột cuối bị
+/* In ấn: min-width 760px + overflow-x:auto KHÔNG paginate được, cột cuối bị
    CẮT NGOÀI TRANG (bắt được thật khi soi từng trang PDF, không phải chỉ đọc
    code). overflow-x:auto chỉ có nghĩa trên màn hình có thanh cuộn; trên giấy
    nó tương đương overflow:hidden. Khi in: bỏ min-width, cho cột co giãn theo
@@ -240,7 +240,7 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
    (1) color-mix() ben trong stop mau, sua nhu moi cho khac trong file nay.
    (2) repeating-linear-gradient() dung cu phap RUT GON "mau vi-tri1 vi-tri2"
    (CSS Images Level 4, kieu "warn22% 0 3px") tu no KHONG render trong
-   WeasyPrint 69.0, doc lap voi color-mix — da do: doi ca color-mix lan giu
+   WeasyPrint 69.0, doc lap voi color-mix, da do: doi ca color-mix lan giu
    nguyen cu phap rut gon van ra 0 fill. Phai doi sang cu phap CO DIEN 4-stop
    "mau vi-tri1, mau vi-tri2, mau2 vi-tri2, mau2 vi-tri3" thi moi ve duoc soc
    (da do: 2 mau phan biet xuat hien tren pixel quet, khac trang tuyet doi).
@@ -311,8 +311,7 @@ table { font-variant-numeric: tabular-nums slashed-zero; }
 /* ── 12. KHỐI 09 · NOTE-BOX (3 biến thể) ──────────────────────────────── */
 .note-box { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 26px 0; padding: 14px 0 16px; font-size: 14.5px; color: var(--ink-md); line-height: 1.75; break-inside: avoid; }
 /* Nhãn trạng thái (GIẢ ĐỊNH/CẢNH BÁO/...) dùng font-sans (Inter), KHÔNG mono:
-   đây là nhãn UI/trạng thái, khác với kicker-ngay-trên-tiêu-đề hay số liệu —
-   quy ước phân vai 4 font: mono = kicker sát tiêu đề + số liệu; sans = mọi
+   đây là nhãn UI/trạng thái, khác với kicker-ngay-trên-tiêu-đề hay số liệu, quy ước phân vai 4 font: mono = kicker sát tiêu đề + số liệu; sans = mọi
    nhãn trạng thái/UI chrome còn lại. Xem thêm .qa-q, .toc-mark, .mb-title,
    .d-title, .ba-label, .lq-status cùng quy ước. */
 .note-box::before { display: block; font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-lo); margin-bottom: 8px; }
@@ -442,7 +441,7 @@ table.opt-compare tr { break-inside: avoid; }
 .drill-panel.open { display: block; }
 .drill-panel .d-title { font-family: var(--font-mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-lo); }
 .drill-panel .d-val { font-family: var(--font-mono); font-size: 18px; font-weight: 700; margin: 2px 0 4px; }
-/* Khi in: mọi drill-panel bung sẵn — không phụ thuộc click chuột */
+/* Khi in: mọi drill-panel bung sẵn, không phụ thuộc click chuột */
 @media print { .drill-panel { display: block !important; } }
 
 /* ── 23. KHỐI 20 · CHAPTER PROGRESS BAR (tĩnh, không fixed) ───────────── */
@@ -484,18 +483,17 @@ table.opt-compare tr { break-inside: avoid; }
    Kỹ thuật vay mượn có kiểm chứng từ render_engine.py dòng 1896-1985 (bản
    DOCX "ĐIỂM MẤU CHỐT"): KHÔNG nền màu, chỉ hai hairline vàng trên/dưới,
    nhãn viết hoa nhỏ căn giữa có letter-spacing, nội dung italic căn giữa.
-   Tái tô màu theo tokens.css (--accent = gold) thay vì indigo gốc — xem lý
+   Tái tô màu theo tokens.css (--accent = gold) thay vì indigo gốc, xem lý
    giải hoà giải màu ở đầu file. Khác note-box.kill/warning ở chỗ đây là kết
    luận TỰ ĐÚC KẾT (không quy về assumption/warning/kill-criteria), dùng khi
    muốn một câu "mang về" nổi bật giữa trang mà không cần khung hộp nặng.
    Trả lời: "Nếu người đọc chỉ nhớ một câu của mục này, câu đó là gì?"
-   KHÔNG dùng thay assertion-evidence (khối 10) — khối đó cần SỐ LIỆU đi kèm,
+   KHÔNG dùng thay assertion-evidence (khối 10), khối đó cần SỐ LIỆU đi kèm,
    khối này là câu kết luận thuần chữ, không có bằng chứng số bên dưới. */
 /* Dùng --warn (gold/copper), KHÔNG dùng --accent (xanh điện): accent xanh đã
-   xuất hiện dày đặc khắp báo cáo (kicker, MUST, badge) — điểm mấu chốt cần
+   xuất hiện dày đặc khắp báo cáo (kicker, MUST, badge), điểm mấu chốt cần
    một tông tách biệt để thật sự "nổi" như một khoảnh khắc dừng lại, không
-   chỉ là "thêm một khối xanh". Nhãn dùng font-mono (không phải font-sans —
-   font-sans ở bản 3 đã thu hẹp vai trò về riêng ô bảng dày đặc). */
+   chỉ là "thêm một khối xanh". Nhãn dùng font-mono (không phải font-sans, font-sans ở bản 3 đã thu hẹp vai trò về riêng ô bảng dày đặc). */
 .key-point { margin: 36px auto; max-width: 640px; text-align: center; break-inside: avoid; }
 .key-point .kp-rule { height: 1px; background: var(--warn); }
 .key-point .kp-rule.top { margin-bottom: 14px; }
@@ -652,7 +650,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, .drillable:focu
   clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 
-/* ── 32. IN ẤN — quy tắc chung áp lên toàn trang ──────────────────────── */
+/* ── 32. IN ẤN, quy tắc chung áp lên toàn trang ──────────────────────── */
 @media print {
   @page { size: A4; margin: 16mm 14mm; }
   body { font-size: 11.5pt; background: #fff; color: #000; }
@@ -670,14 +668,14 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, .drillable:focu
 
   /* BẪY ĐÃ ĐO ĐƯỢC (không nằm trong 3 điều cấm gốc, nhưng cùng họ lỗi):
      box-shadow CÓ BLUR (kể cả không dùng filter/backdrop-filter) bị Chromium
-     "nướng bitmap" khi in — mỗi lớp shadow trong danh sách phẩy trở thành MỘT
+     "nướng bitmap" khi in, mỗi lớp shadow trong danh sách phẩy trở thành MỘT
      ảnh JPEG DeviceGray riêng. Đo được bằng thực nghiệm ban đầu: .sg-card dùng
      shadow có blur (2 lớp) × 6 thẻ KPI = 12 object /Subtype /Image trong PDF
-     xuất ra — xác nhận qua doc.xref_object. Đo tiếp bằng thực nghiệm tách biệt
+     xuất ra, xác nhận qua doc.xref_object. Đo tiếp bằng thực nghiệm tách biệt
      (3 biến thể riêng: blur 0 offset cứng / blur 20px / hai lớp blur 0) xác
-     nhận CHỈ blur > 0 mới bị nướng bitmap — blur = 0 (kể cả nhiều lớp) render
+     nhận CHỈ blur > 0 mới bị nướng bitmap, blur = 0 (kể cả nhiều lớp) render
      vector thật, 0 ảnh raster. Từ đó --shadow-1 ở khối token đã đổi hẳn sang
      "stamped hard shadow" (blur=0) làm ngôn ngữ độ nổi DUY NHẤT toàn hệ thống
-     — override ép box-shadow:none ở đây KHÔNG CÒN CẦN THIẾT NỮA vì bản thân
+     - override ép box-shadow:none ở đây KHÔNG CÒN CẦN THIẾT NỮA vì bản thân
      token đã an toàn khi in ngay từ đầu, không cần vá riêng từng component. */
 }

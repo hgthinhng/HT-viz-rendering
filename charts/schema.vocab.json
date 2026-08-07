@@ -23,6 +23,8 @@
     "usd_tan": { "nhan": "USD/tấn", "decimals": 0 },
     "nghin_dong_tan": { "nhan": "nghìn đồng/tấn", "decimals": 0 },
     "trieu_tan": { "nhan": "triệu tấn", "decimals": 1 },
+    "usd_thung": { "nhan": "USD/thùng", "decimals": 2 },
+    "usd_oz": { "nhan": "USD/oz", "decimals": 1 },
     "teu": { "nhan": "TEU", "decimals": 0 }
   },
 
@@ -30,6 +32,21 @@
     "cong-bo": "Số đã công bố chính thức",
     "uoc-tinh": "Ước tính, chưa phải số công bố",
     "noi-bo": "Tính toán nội bộ từ số công bố"
+  },
+
+  "_doc_do_tin_cay": [
+    "do_tin_cay la do tin cay cua MOT DIEM, khac han source_tier la bac cua CA SERIES.",
+    "Hai truong nay khong thay nhau duoc, va truoc day ho duong cong phai tai dung",
+    "source_tier o cap diem vi chua co truong rieng. Do la cach lam roi: mot duong cong",
+    "lai suat that tron ca ky han thanh khoan cao (quan sat truc tiep tren thi truong)",
+    "lan ky han thua (dealer bao gia hoac noi suy), nhung CA DUONG van la mot nguon duy",
+    "nhat o cap series. Doc source_tier tren mot diem thi khong biet no dang noi ve",
+    "nguon cua ca duong hay ve chinh diem do."
+  ],
+  "do_tin_cay": {
+    "quan_sat": "Quan sát trực tiếp, có giao dịch hoặc có công bố cho đúng điểm này",
+    "noi_suy": "Nội suy giữa hai điểm quan sát, không phải số quan sát được",
+    "uoc_tinh": "Ước tính từ dealer hoặc từ mô hình, chưa có giao dịch xác nhận"
   },
 
   "status": {

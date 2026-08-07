@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""viz_eir_diagram.py — Editorial Institutional Research DIAGRAM library for CFA notes.
+"""viz_eir_diagram.py, Editorial Institutional Research DIAGRAM library for CFA notes.
 
 Node / box / flow diagrams hand-laid in matplotlib (Agg, static PNG) so they embed into
 the Vietnamese CFA study-note .docx exactly like the charts in ``viz_eir.py``. Same
@@ -9,7 +9,7 @@ diagram components.
 
 Design rules (anti "AI slop"): boxes are HAIRLINE navy outline on cream/pale-tint fill,
 squared or lightly rounded corners, NO drop shadows, NO gradients; connectors are thin
-(lw 1.0–1.3) muted/navy arrows; exactly ONE accent (GOLD or TEAL) marks the highlighted /
+(lw 1.0-1.3) muted/navy arrows; exactly ONE accent (GOLD or TEAL) marks the highlighted /
 optimal path. Numbers use the VN-safe mono (S.MONO), labels use the VN-safe sans (S.SANS).
 
 Components (COMPONENTS keys):

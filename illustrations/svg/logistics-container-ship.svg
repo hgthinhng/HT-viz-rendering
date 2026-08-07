@@ -12,14 +12,14 @@
     <g class="hull">
       <path d="M150,300 L650,300 C667.5,300 692.5,255 700,255 L620,398 L150,398 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
       <!-- dải sáng 2-tone PHẢI đi theo đúng đường viền mũi tàu (kể cả đoạn
-           bo cong lên mũi), không phải 1 rect cắt cụt ở x=650 — bản trước
+           bo cong lên mũi), không phải 1 rect cắt cụt ở x=650, bản trước
            dừng rect đúng chỗ mũi bắt đầu, tạo đường ranh dọc giả khiến mũi
            trông như 1 miếng vá tối màu rời khỏi thân thay vì liền khối. -->
       <path d="M150,300 L650,300 C667.5,300 692.5,255 700,255 L652.4,340 L150,340 Z" fill="#475569"/>
-      <!-- gờ sáng dọc mép mũi — phản hồi: mũi liền khối rồi nhưng vẫn tối
+      <!-- gờ sáng dọc mép mũi, phản hồi: mũi liền khối rồi nhưng vẫn tối
            đặc/nặng so với phần thân có dải sáng. Thêm 1 nét mảnh màu sáng
            hơn nền tối, chạy song song mép vát mũi, gợi ánh sáng bắt vào
-           cạnh vát — chỉ trang trí, không đổi khối/silhouette. -->
+           cạnh vát, chỉ trang trí, không đổi khối/silhouette. -->
       <path d="M683,268 L633,378" stroke="#64748b" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
       <path d="M150,368 L636.8,368 L620,398 L150,398 Z" fill="#1d4ed8" fill-opacity="0.16"/>
       <g class="portholes">

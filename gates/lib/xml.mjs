@@ -1,5 +1,5 @@
 /**
- * kiemTraXml — SVG co phai XML hop le khong.
+ * kiemTraXml, SVG co phai XML hop le khong.
  *
  * Day la phep kiem quan trong nhat cua ca repo, va la phep suyt khong ai nghi ra.
  * Ca 12 chart ECharts tung KHONG hop le XML suot Phase 1 vi font stack boc bang

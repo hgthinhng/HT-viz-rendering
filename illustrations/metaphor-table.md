@@ -1,34 +1,34 @@
-# BẢNG TRA ẨN DỤ VẬT LÝ — NGÀNH / LOẠI LUẬN ĐIỂM → HÌNH VẬT LÝ NÊN VẼ
+# BẢNG TRA ẨN DỤ VẬT LÝ, NGÀNH / LOẠI LUẬN ĐIỂM → HÌNH VẬT LÝ NÊN VẼ
 
 CẬP NHẬT sau khi đối chiếu với kho 97 motif CFA (Nano Banana Pro, raster,
 xem `harvest-cfa-library/illustration-icons/MOTIF_TABLE.md` trong dự án gốc
-nếu có quyền truy cập — nếu không có, phần dưới vẫn đọc và dùng được độc
+nếu có quyền truy cập, nếu không có, phần dưới vẫn đọc và dùng được độc
 lập, các trích dẫn CODE_Mx chỉ là bằng chứng tham khảo).
 
-## Quan hệ với kho 97 motif — hai lớp khác nhau, không trùng, bổ sung cho nhau
+## Quan hệ với kho 97 motif, hai lớp khác nhau, không trùng, bổ sung cho nhau
 
 - Kho 97 motif = lớp KHÁI NIỆM HỌC THUẬT CFA trừu tượng (time value of money,
-  duration, credit risk, put-call parity...) — ẩn dụ của họ là vật thể PHỔ
+  duration, credit risk, put-call parity...), ẩn dụ của họ là vật thể PHỔ
   QUÁT/TRỪU TƯỢNG (cán cân, đồng hồ cát, lăng kính, tảng băng) không neo vào
   một NGÀNH hay DOANH NGHIỆP cụ thể nào.
 - Bảng 23 dòng dưới đây = lớp NGÀNH/DOANH NGHIỆP CỤ THỂ (vận tải biển, ngân
-  hàng, bán lẻ, năng lượng...) — đúng khoảng trống mà kho 97 KHÔNG phủ. Bằng
+  hàng, bán lẻ, năng lượng...), đúng khoảng trống mà kho 97 KHÔNG phủ. Bằng
   chứng trực tiếp từ MOTIF_TABLE.md: 4 mục GẦN NHẤT với "ngành cụ thể" mà họ
   có cũng chỉ dừng ở icon nhỏ chung chung, KHÔNG phải một cảnh chi tiết:
   - `ALT_M4` (BĐS/hạ tầng): "property skyline + infrastructure bridge +
-    utility tower" — 3 icon nhỏ xếp cạnh nhau, không phải 1 cảnh có bộ phận
+    utility tower", 3 icon nhỏ xếp cạnh nhau, không phải 1 cảnh có bộ phận
     cắt nghĩa được (khác hẳn `real-estate-apartment-crane.svg` có cần cẩu +
     tầng đang đổ bê tông là ĐÍCH callout thật).
-  - `ALT_M5` (tài nguyên): "farmland + oil barrel + metal ingot" — 3 icon
+  - `ALT_M5` (tài nguyên): "farmland + oil barrel + metal ingot", 3 icon
     nhỏ, không phải 1 giàn khoan/nhà máy có bộ phận đặt tên được.
   - `COR_M2` (stakeholder): nền là "small houses + corporate tower" chỉ để
     làm khung cảnh chung, không phải chủ thể chính.
   - `ECO_M6` (thương mại quốc tế): "hai cảng trao đổi container qua biên
-    giới" — GẦN NHẤT với `logistics-container-ship.svg` nhưng vẫn là 2 icon
+    giới", GẦN NHẤT với `logistics-container-ship.svg` nhưng vẫn là 2 icon
     cảng nhỏ + mũi tên, không phải 1 con tàu có 7 bộ phận đặt tên để gắn
     callout.
 
-  → Kết luận: một báo cáo THẬT thường cần CẢ HAI lớp — ví dụ chương "rủi ro
+  → Kết luận: một báo cáo THẬT thường cần CẢ HAI lớp, ví dụ chương "rủi ro
   tín dụng của Ngân hàng X" có thể mở đầu bằng ẩn dụ khái niệm `FIX_M14`
   (dây xích có 1 mắt nứt) rồi chuyển sang minh hoạ THỰC THỂ cụ thể
   `banking-headquarters-vault.svg` để neo số liệu thật của Ngân hàng X vào
@@ -36,26 +36,26 @@ lập, các trích dẫn CODE_Mx chỉ là bằng chứng tham khảo).
 
 ## Motif dùng chung giữa hai lớp (tái dùng được, không cần nghĩ lại)
 
-- **Họ CÂN/ĐÒN BẨY**: `FSA_M3` (cân 2 đĩa — giống hệt
+- **Họ CÂN/ĐÒN BẨY**: `FSA_M3` (cân 2 đĩa, giống hệt
   `universal-balance-scale.svg`), `FIX_M6` (bập bênh giá/lợi suất), `FIX_M11`
-  (dầm xếp rổ trên điểm tựa), `DER_M9` (2 giỏ cân bằng trên đòn — put-call
+  (dầm xếp rổ trên điểm tựa), `DER_M9` (2 giỏ cân bằng trên đòn, put-call
   parity). QUY TẮC ANTI-REPETITION họ áp dụng đáng học theo: "cân" CHỈ dùng
   tối đa 4 bài, MỖI BÀI RENDER KHÁC NHAU (2 đĩa / bập bênh / dầm-điểm tựa /
-  giỏ trên đòn) — bảng này (dòng 9 dưới) đang ghi "cán cân... dùng chung mọi
+  giỏ trên đòn), bảng này (dòng 9 dưới) đang ghi "cán cân... dùng chung mọi
   ngành" hơi rủi ro nếu 1 báo cáo dùng cán cân >4 lần mà không đổi biến thể:
-  nên áp cùng kỷ luật — nếu 1 deck cần >3-4 lần motif cán cân, đổi biến thể
+  nên áp cùng kỷ luật, nếu 1 deck cần >3-4 lần motif cán cân, đổi biến thể
   hình học (nghiêng tĩnh / bập bênh 2 khối / dầm nhiều rổ) như
   `universal-balance-scale.svg` đã làm, đừng lặp y hệt.
 - **Họ PHỄU**: `FSA_M2` (doanh thu đổ vào đỉnh, thu hẹp qua chi phí, giọt
-  lợi nhuận nhỏ ra đáy) — CÙNG HÌNH HỌC với `marketing-conversion-funnel.svg`,
+  lợi nhuận nhỏ ra đáy), CÙNG HÌNH HỌC với `marketing-conversion-funnel.svg`,
   khác ở NGỮ NGHĨA neo vào (P&L thu hẹp theo chi phí) vs (khách hàng rơi
-  rụng theo tầng) — chứng minh 1 silhouette phễu dùng được cho >1 loại luận
+  rụng theo tầng), chứng minh 1 silhouette phễu dùng được cho >1 loại luận
   điểm, chỉ cần đổi nhãn callout, không cần vẽ lại hình.
 - **Họ TẢNG BĂNG**: `EQ_M5` (giá nổi trên mặt nước, giá trị nội tại chìm bên
-  dưới) — motif rất mạnh, CHƯA có trong 11 hình ở `illustrations/`, nên CÂN
+  dưới), motif rất mạnh, CHƯA có trong 11 hình ở `illustrations/`, nên CÂN
   NHẮC THÊM vào lần mở rộng sau cho luận điểm "định giá thị trường vs giá
   trị thật" (ví dụ: giá cổ phiếu nổi, giá trị sổ sách/tài sản ẩn chìm dưới).
-- **Họ DÂY XÍCH**: `FIX_M14` (rủi ro tín dụng = dây xích có 1 mắt nứt) — ẩn
+- **Họ DÂY XÍCH**: `FIX_M14` (rủi ro tín dụng = dây xích có 1 mắt nứt), ẩn
   dụ "mắt xích yếu nhất" tổng quát, dùng được cho bất kỳ chuỗi phụ thuộc nào
   (chuỗi cung ứng, chuỗi thanh toán, chuỗi tuân thủ), không chỉ tín dụng.
 
@@ -63,7 +63,7 @@ lập, các trích dẫn CODE_Mx chỉ là bằng chứng tham khảo).
 
 1. **Vận tải biển / logistics** → Tàu container, mớn nước, hàng xếp trên
    boong → Mớn nước = tải trọng chở thật; số vạch mớn nước tương ứng công
-   suất tấn/TEU, không phải trang trí — ánh xạ 1-1 với số liệu tải trọng.
+   suất tấn/TEU, không phải trang trí, ánh xạ 1-1 với số liệu tải trọng.
 2. **Cảng biển / hạ tầng logistics** → Cần cẩu giàn (gantry crane) + hàng
    container xếp so le trên bãi → Nhịp xếp/dỡ = throughput cảng; số cần cẩu
    hoạt động ánh xạ trực tiếp công suất xử lý.
@@ -72,7 +72,7 @@ lập, các trích dẫn CODE_Mx chỉ là bằng chứng tham khảo).
    từng trạm, đúng bản chất chi phí sản xuất theo công đoạn.
 4. **Dầu khí thượng nguồn** → Giàn khoan ngoài khơi, tháp khoan, đuốc đốt
    khí → Đuốc đốt (flare) là tín hiệu thị giác thật của lãng phí/khí đồng
-   hành, không phải ẩn dụ gượng — ngành thật sự có đuốc đốt.
+   hành, không phải ẩn dụ gượng, ngành thật sự có đuốc đốt.
 5. **Ngân hàng / tổ chức tín dụng** → Trụ sở + hầm kho tiền (vault) có bánh
    xoay khoá số → Vault = vốn khả dụng bị khoá lại theo tỷ lệ dự trữ bắt
    buộc/CAR, bánh xoay số = lớp kiểm soát tuân thủ nhiều lớp.
@@ -115,7 +115,7 @@ lập, các trích dẫn CODE_Mx chỉ là bằng chứng tham khảo).
     chân" là đúng cơ học thật của rủi ro tập trung nhà cung cấp/khách hàng.
 17. **Bản đồ thị trường / phân bổ theo vùng** → Bản đồ Việt Nam đơn giản
     hoá, đánh dấu vùng bằng chấm/khối màu theo cường độ → Bản đồ là ẩn dụ
-    ĐÚNG NGHĨA ĐEN cho phân bổ địa lý, không phải ẩn dụ chuyển nghĩa — dùng
+    ĐÚNG NGHĨA ĐEN cho phân bổ địa lý, không phải ẩn dụ chuyển nghĩa, dùng
     khi dữ liệu thực sự có chiều không gian.
 18. **Nông nghiệp / thuỷ sản** → Ao nuôi/ruộng theo lô, có chú thích mật
     độ thả nuôi hoặc năng suất/ha → Lô/ao là đơn vị sản xuất thật của
@@ -132,7 +132,7 @@ lập, các trích dẫn CODE_Mx chỉ là bằng chứng tham khảo).
     hạng ghế (economy/business), đúng layout vật lý thật.
 22. **Bảo hiểm** → Chiếc ô (umbrella) che một khu vực, vùng ngoài ô bị mưa
     → Ô che = phạm vi bảo hiểm, vùng ngoài ô = phần rủi ro không được chi
-    trả — ẩn dụ "che chắn" khớp trực giác người dùng bảo hiểm thật.
+    trả, ẩn dụ "che chắn" khớp trực giác người dùng bảo hiểm thật.
 23. **Công nghệ / nền tảng số (platform)** → Bánh răng nhiều cỡ ăn khớp
     nhau → Bánh răng lớn quay chậm kéo bánh răng nhỏ quay nhanh = đúng cơ
     chế network effect / cấu trúc nền tảng nhiều bên (multi-sided
@@ -147,16 +147,16 @@ lập, các trích dẫn CODE_Mx chỉ là bằng chứng tham khảo).
   sai độ lớn.
 - **KHÔNG** dùng khi ẩn dụ CHỈ ĐỂ TRANG TRÍ, không mang thêm thông tin: nếu
   vẽ con tàu nhưng không có callout nào neo vào bộ phận cụ thể của con tàu
-  (tức là con tàu chỉ là hình nền đẹp), thì đó là minh hoạ trang trí — bỏ
+  (tức là con tàu chỉ là hình nền đẹp), thì đó là minh hoạ trang trí, bỏ
   đi hoặc thêm callout thật để nó xứng đáng chiếm chỗ.
 - **KHÔNG** chồng 2 ẩn dụ khác nhau trong cùng 1 hình (vd: vừa cán cân vừa
-  phễu chuyển đổi lồng vào nhau) trừ khi có lý do rất mạnh — người đọc chỉ
+  phễu chuyển đổi lồng vào nhau) trừ khi có lý do rất mạnh, người đọc chỉ
   giải mã được 1 hệ ẩn dụ mỗi lần nhìn.
 - **KHÔNG** dùng ẩn dụ mang hàm ý văn hoá/tôn giáo/chính trị nhạy cảm mà
   không kiểm tra ngữ cảnh người đọc (vd: một số biểu tượng tôn giáo dùng
-  làm "cán cân công lý" ở thị trường khác có thể gây phản cảm) — ưu tiên ẩn
+  làm "cán cân công lý" ở thị trường khác có thể gây phản cảm), ưu tiên ẩn
   dụ trung tính, phổ quát (máy móc, kiến trúc, tự nhiên) trừ khi ngành thật
   sự gắn với biểu tượng đó.
 - **KHÔNG** dùng ẩn dụ phức tạp hơn mức người đọc giải mã được trong <3
-  giây — nếu phải giải thích ẩn dụ bằng một đoạn văn riêng thì ẩn dụ đó
+  giây, nếu phải giải thích ẩn dụ bằng một đoạn văn riêng thì ẩn dụ đó
   thất bại, chọn ẩn dụ đơn giản hơn hoặc bỏ ẩn dụ.

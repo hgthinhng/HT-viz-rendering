@@ -1,9 +1,9 @@
-// 08-heatmap.mjs — Heatmap ma trận: lợi nhuận theo tháng x năm (VN-Index)
+// 08-heatmap.mjs, Heatmap ma trận: lợi nhuận theo tháng x năm (VN-Index)
 // Dùng khi: cần quét nhanh pattern theo 2 chiều rời rạc (tháng x năm, ngành x
 // tiêu chí) mà bảng số thô khó thấy pattern. ĐÂY LÀ DỮ LIỆU CÓ CỰC (lãi/lỗ)
 // nên dùng thang màu DIVERGING (xanh dương=tăng, đỏ=giảm, xám=quanh 0),
 // KHÔNG dùng thang sequential 1-hue vì sẽ không phân biệt được tăng/giảm,
-// và CÀNG KHÔNG dùng rainbow (green-yellow-red) — đó chính là traffic-light hoá.
+// và CÀNG KHÔNG dùng rainbow (green-yellow-red), đó chính là traffic-light hoá.
 // Dữ liệu cần: ma trận [năm][tháng] = giá trị số (ở đây: % thay đổi).
 // Bẫy thường gặp: (1) thang màu không đối xứng quanh 0 -> đọc sai cường độ;
 // (2) ô >2 chữ số không có label -> phải lướt mắt đoán màu, luôn nên có

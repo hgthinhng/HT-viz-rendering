@@ -9,33 +9,33 @@
   ĐO ĐƯỢC (xem research/05-typography-vn/FINDINGS.md mục 1, dùng font
   Spectral 700 thật, đo bounding-box MỰC bằng pixel-scan trên ảnh render,
   KHÔNG suy từ font-size × line-height):
-  - Ký tự có dấu MỘT tầng phía trên (Ô, Â, Ê — nguyên âm + dấu mũ/móc, không
+  - Ký tự có dấu MỘT tầng phía trên (Ô, Â, Ê, nguyên âm + dấu mũ/móc, không
     kèm thanh điệu) cần thêm khoảng 19-20% font-size phía trên so với ký tự
     trần (O, A, E).
   - Ký tự có dấu HAI TẦNG phía trên (Ẫ = a + mũ + ngã) cần thêm tới 35.9%
-    font-size — GẦN GẤP ĐÔI mức một tầng. Đây là trường hợp xấu nhất trong
+    font-size, GẦN GẤP ĐÔI mức một tầng. Đây là trường hợp xấu nhất trong
     bảng chữ cái tiếng Việt vì mũ và thanh ngã cùng nằm trên đỉnh, không
     dùng chung diện tích với nhau.
   - Dấu nặng (chấm dưới, ví dụ Ệ, Ậ) không cộng thêm gì ở TRÊN, nhưng kéo
-    dài khoảng 21-23% font-size ở DƯỚI baseline — ảnh hưởng tới dòng kế
+    dài khoảng 21-23% font-size ở DƯỚI baseline, ảnh hưởng tới dòng kế
     tiếp, không phải dòng chứa nó (xem typo-chu-hoa-toan-phan.html).
-  - Nguyên âm có móc (Ơ, Ư) không xếp chồng theo chiều dọc — móc nằm sang
+  - Nguyên âm có móc (Ơ, Ư) không xếp chồng theo chiều dọc, móc nằm sang
     NGANG, nên Ớ/Ỡ chỉ cần thêm 10-11% chứ không cộng dồn hai tầng.
 
   QUY TẮC RÚT RA: với tiêu đề cỡ 60px trở lên có khả năng gặp tổ hợp hai
   tầng (â/ă/ê/ô + thanh sắc/huyền/hỏi/ngã), chừa padding-top tối thiểu
   38-40% font-size (đã cộng biên an toàn cho sai số khi đổi font thật khi
-  in — số đo gốc 35.9% chỉ đúng cho Spectral 700, font khác có thể lệch vài
-  điểm phần trăm). KHÔNG dùng line-height để tạo khoảng này — line-height
+  in, số đo gốc 35.9% chỉ đúng cho Spectral 700, font khác có thể lệch vài
+  điểm phần trăm). KHÔNG dùng line-height để tạo khoảng này, line-height
   chia đều trên/dưới nên tốn gấp đôi khoảng cần dùng chỉ để giải quyết một
   phía; dùng padding-top hoặc margin-top riêng cho khối tiêu đề.
 
   KHI NÀO KHÔNG NÊN DÙNG:
   - Tiêu đề cỡ dưới 40px: ở cỡ thân bài/tiêu đề phụ, phần trăm này quy ra
-    vài pixel, không đáng để chừa riêng — line-height mặc định của
+    vài pixel, không đáng để chừa riêng, line-height mặc định của
     components/ đã đủ.
   - Khi tiêu đề chắc chắn không chứa nguyên âm â/ă/ê/ô ghép thanh điệu (ví
-    dụ tiêu đề toàn số hoặc toàn tiếng Anh) — không cần padding-top phụ.
+    dụ tiêu đề toàn số hoặc toàn tiếng Anh), không cần padding-top phụ.
   - Đừng áp cứng 40% cho MỌI tiêu đề bất kể nội dung: nếu tiêu đề chỉ có dấu
     một tầng (ví dụ "Doanh thu quý"), 20% là đủ, chừa dư 40% tạo khoảng
     trắng vô nghĩa phía trên.
@@ -43,7 +43,7 @@
     liệu doanh nghiệp thật.
 
   RÀNG BUỘC IN: font-family list kết thúc generic keyword (không dùng font
-  nhúng base64 của repo — xem research/05-typography-vn/FONT-TRAPS.md,
+  nhúng base64 của repo, xem research/05-typography-vn/FONT-TRAPS.md,
   Task 2 đang sửa file đó; dùng font hệ thống có fallback Noto Serif/Georgia
   để không phụ thuộc trạng thái file đang sửa). Shadow chỉ offset cứng,
   blur = 0. Không gauge/radar. Không em-dash/en-dash. @media dùng từ khoá

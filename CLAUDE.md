@@ -31,7 +31,11 @@ Script test là `node --test "tests/**/*.test.mjs"`. npm chạy script qua `sh`,
 
 ## Ranh giới em-dash
 
-Cấm `—` và `–` trong mọi thứ HIỂN THỊ: nội dung HTML, nhãn và tiêu đề chart, `<title>` và `<desc>` của SVG (desc là text trình đọc màn hình đọc lên nên nó có hiển thị), file `.md` trong `components/catalog/`, và mọi chuỗi đi ra `console.log` hoặc `print`. Được phép giữ trong comment mã nguồn và docstring Python, vì đó không phải nội dung giao cho người đọc báo cáo. Đã lọt lưới bốn lần trong Phase 1, gồm một lần ra tận ảnh render.
+Cấm em-dash (U+2014) và en-dash (U+2013) ở MỌI NƠI trong repo chính, kể cả comment mã nguồn và docstring. Miễn trừ đúng hai chỗ, cả hai đều tường minh trong `tests/consistency/em_dash_repo.test.mjs`: thư mục `_harvest/` giữ nguyên bản gốc để còn đối chiếu, và fixture đỏ của gate STYLE bắt buộc phải chứa em-dash, nếu không thì không còn bằng chứng nào rằng gate đó đỏ được.
+
+Ranh giới cũ là "cấm trong nội dung hiển thị, cho phép trong comment". Nó bị bỏ vì đã trả giá hai lần: ranh giới mờ để lại 514 dấu gạch ngang nằm rải trong tài liệu và comment tới mức phải dọn hàng loạt, rồi chính đợt dọn hàng loạt đó phá hai gate (xem mục dưới). Ranh giới tuyệt đối thì không còn chỗ để trôi.
+
+**Gọi hai ký tự này bằng TÊN, đừng dán ký tự vào tài liệu hay vào regex.** Đợt dọn gạch ngang hàng loạt ngày 07-08 đã đổi chính hai ký tự nằm bên trong character class của hai gate chặn em-dash, biến chúng thành `/[--]/g`. Regex đó chỉ còn khớp dấu gạch nối thường: gate báo FAIL cho mọi nội dung bình thường và không còn bắt em-dash, mà vẫn chạy trơn tru không báo gì. Từ nay regex viết bằng escape `\u2014` và `\u2013`, tài liệu gọi tên "em-dash (U+2014)" và "en-dash (U+2013)". Bài học chung: **một phép dọn hàng loạt có thể vô hiệu hoá đúng cái gate canh nó**, nên sau mỗi đợt dọn phải chạy lại bộ test và đọc diff ở vùng mã, không chỉ ở vùng văn xuôi.
 
 ## `design-system/tokens.css` có hai khối `:root`, đó là chủ ý
 

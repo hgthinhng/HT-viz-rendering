@@ -1,4 +1,4 @@
-// 11-stacked-100.mjs — Stacked bar 100%: cơ cấu tỷ trọng qua thời gian
+// 11-stacked-100.mjs, Stacked bar 100%: cơ cấu tỷ trọng qua thời gian
 // Dùng khi: quan tâm TỶ TRỌNG (luôn cộng =100%) hơn giá trị tuyệt đối, vd cơ
 // cấu nguồn vốn (nợ vay/vốn CSH), cơ cấu doanh thu theo kênh bán.
 // Dữ liệu cần: {period, [category]: %} với tổng mỗi period = 100.

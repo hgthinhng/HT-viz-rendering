@@ -1,5 +1,5 @@
 /**
- * pipeline_that.test.mjs — chay duong ong THAT tren bao cao mau, roi chay ca bo gate.
+ * pipeline_that.test.mjs, chay duong ong THAT tren bao cao mau, roi chay ca bo gate.
  *
  * Bo test gate do va gate xanh o tests/consistency/ kiem LOGIC cua tung gate bang du
  * lieu tong hop. No khong kiem duoc mot thu: cau truc JSON ma `gates/pdf_checks.py`

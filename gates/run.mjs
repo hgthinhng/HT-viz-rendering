@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * run.mjs — chay ca bo gate roi in bang. Exit 1 neu co bat ky FAIL cung nao.
+ * run.mjs, chay ca bo gate roi in bang. Exit 1 neu co bat ky FAIL cung nao.
  *
  * Usage:
  *   node gates/run.mjs <file.html> <file.pdf> [--che-do=noi-bo|gui-di] [--cho-phep-anh=N]

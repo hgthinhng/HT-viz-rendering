@@ -62,6 +62,8 @@ export const ERR = Object.freeze({
   THIEU_NAM: 'THIEU_NAM',
   DECIMALS_SAI: 'DECIMALS_SAI',
   CHI_SO_NGOAI_PHAM_VI: 'CHI_SO_NGOAI_PHAM_VI',
+  DO_TIN_CAY_LA: 'DO_TIN_CAY_LA',
+  DO_TIN_CAY_SAI_CAP: 'DO_TIN_CAY_SAI_CAP',
 });
 
 /** Do dai toi da cua entity.code. Khong ep viet hoa, khong ep bo dau, chi ep NGAN.
@@ -130,6 +132,15 @@ export function validateSeries(series) {
       throw new LoiSchema(ERR.DECIMALS_SAI, `decimals phai la so nguyen 0 toi 6, dang la ${series.decimals}`);
     }
   }
+  // `do_tin_cay` thuoc cap DIEM, khong thuoc cap series. Chan tuong minh o day chu khong
+  // im lang bo qua: dat nham cap thi ca duong cong se mang mot do tin cay duy nhat, va do
+  // dung la thu ma truong nay sinh ra de tranh.
+  if (series.do_tin_cay !== undefined) {
+    throw new LoiSchema(
+      ERR.DO_TIN_CAY_SAI_CAP,
+      'do_tin_cay thuoc cap TUNG DIEM chu khong phai cap series. Bac cua ca series la source.tier',
+    );
+  }
   const rows = series.rows || [];
   rows.forEach((r, i) => validateRow(r, i));
   return true;
@@ -175,6 +186,20 @@ export function validateRow(row, chiSo = 0) {
   if (row.role !== undefined && !trongTuVung('role', row.role)) {
     throw new LoiSchema(ERR.ROLE_LA, `${o} role "${row.role}" khong nam trong tu vung`);
   }
+
+  // `do_tin_cay` la do tin cay cua CHINH DIEM NAY, khac han `source.tier` la bac cua ca
+  // series. Ho duong cong can no: mot duong lai suat that tron ca ky han thanh khoan cao
+  // (quan sat truc tiep) lan ky han thua (dealer bao gia hoac noi suy), trong khi ca
+  // duong van la MOT nguon o cap series. Truoc khi co truong nay, viz_eir_curves.py phai
+  // tai dung `source_tier` o cap diem, va khi do doc mot diem thi khong biet no dang noi
+  // ve nguon cua ca duong hay ve chinh no.
+  if (row.do_tin_cay !== undefined && !trongTuVung('do_tin_cay', row.do_tin_cay)) {
+    throw new LoiSchema(
+      ERR.DO_TIN_CAY_LA,
+      `${o} do_tin_cay "${row.do_tin_cay}" khong nam trong tu vung (${Object.keys(VOCAB.do_tin_cay).join(', ')})`,
+    );
+  }
+
   if (row.period !== undefined) validatePeriod(row.period, o);
   return true;
 }

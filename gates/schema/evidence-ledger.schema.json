@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://internal/schema/evidence-ledger.schema.json",
-  "title": "Evidence Ledger — so nguon nang cap cho bao cao tai chinh",
+  "title": "Evidence Ledger, so nguon nang cap cho bao cao tai chinh",
   "description": "Nang cap tu window.SRC/window.RPT kieu reference-kimi.html: SRC la so nguon (K1..K30, moi entry co cat/date/fact/cite) nhung KHONG co lien ket tuong minh toi tung con so trong RPT. Ledger nay tach hai lop: 'sources' (dang ky nguon, 1 nguon dung nhieu lan) va 'values' (moi con so hien thi, bat buoc tro ve dung 1 source_id).",
   "type": "object",
   "required": ["version", "generated_date", "sources", "values"],

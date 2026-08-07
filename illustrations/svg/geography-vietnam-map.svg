@@ -9,7 +9,7 @@
     -> topojson-client.feature -> d3-geo.geoMercator().fitExtent([[24,24],
     [376,676]], geom) -> d3-geo.geoPath(). Đã thử 3 mức đơn giản hoá
     (118/72/50 điểm, xem demo/vietnam-compare.html + png tương ứng) và chọn
-    72 điểm — đủ giữ đặc trưng (eo mảnh, ngón tay đồng bằng sông Cửu Long,
+    72 điểm, đủ giữ đặc trưng (eo mảnh, ngón tay đồng bằng sông Cửu Long,
     biên giới Tây Bắc lởm chởm), không quá dày cho 1 icon minh hoạ. Muốn
     tái tạo hoặc đổi độ chi tiết: `SIMPLIFY_WEIGHT=0.05 node
     gen-vietnam-path.mjs` (số càng nhỏ càng chi tiết).
@@ -29,11 +29,11 @@
       fill="var(--accent)" opacity="0.24" stroke="none"/>
 
     <!-- text city label dùng paint-order="stroke" + stroke trắng làm HALO
-         mỏng quanh chữ — sửa lỗi thật: chữ "Hà Nội" bị đường biên coastline
+         mỏng quanh chữ, sửa lỗi thật: chữ "Hà Nội" bị đường biên coastline
          cắt ngang (chữ và path outline cùng màu tối #0f172a, không có gì
          phân tách). Halo trắng rộng 4px đủ để chữ luôn đọc được dù đè lên
          đường biên hay vùng tô đậm phía dưới. Áp NHẤT QUÁN cho cả 3 nhãn.
-         Giới hạn: halo trắng cứng giả định nền trang là trắng/kem — nếu
+         Giới hạn: halo trắng cứng giả định nền trang là trắng/kem, nếu
          nhúng vào nền tối phải đổi màu stroke tương ứng. -->
     <g class="cities" font-family="'Be Vietnam Pro',sans-serif" font-size="14" font-weight="600">
       <g class="city">

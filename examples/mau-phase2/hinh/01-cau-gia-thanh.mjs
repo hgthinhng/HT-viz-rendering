@@ -1,4 +1,4 @@
-// 01-cau-gia-thanh.mjs — cau noi tu gia ban mot tan xi mang toi loi nhuan mot tan.
+// 01-cau-gia-thanh.mjs, cau noi tu gia ban mot tan xi mang toi loi nhuan mot tan.
 //
 // Day la CHART CUA BAO CAO, khong phai preset cua thu vien. Preset trong
 // charts/echarts/ la y tham khao; bao cao chep lay bo cuc roi thay du lieu that cua

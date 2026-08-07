@@ -1,4 +1,4 @@
-// 14-bar-ranking.mjs — Bar ngang xếp hạng + biến thể Cleveland dot cho khổ hẹp
+// 14-bar-ranking.mjs, Bar ngang xếp hạng + biến thể Cleveland dot cho khổ hẹp
 // Dùng khi: xếp hạng N hạng mục theo 1 chỉ tiêu, vị trí quan trọng hơn giá trị tuyệt đối.
 // KHÔNG dùng khi: so 2 mốc thời gian (04-dumbbell/05-slope); mục đích là cơ cấu %
 // (11-stacked-100); >15-18 hạng mục (lọc top-N + "khác").

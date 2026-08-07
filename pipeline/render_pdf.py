@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""render_pdf.py — HTML tu du sang PDF bang WeasyPrint, co kiem ngay sau khi ghi.
+"""render_pdf.py, HTML tu du sang PDF bang WeasyPrint, co kiem ngay sau khi ghi.
 
 Cach dung:
     python3 pipeline/render_pdf.py <vao.html> <ra.pdf> [--cho-phep-anh=N]

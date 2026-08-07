@@ -1,4 +1,4 @@
-// 18-sensitivity-grid.mjs — Lưới độ nhạy 2 chiều: 2 biến cùng tác động lên 1 kết quả
+// 18-sensitivity-grid.mjs, Lưới độ nhạy 2 chiều: 2 biến cùng tác động lên 1 kết quả
 // Dùng khi: 2 biến giả định thay đổi ĐỒNG THỜI (vd WACC x tăng trưởng dài hạn), kết quả
 // là 1 ma trận N x M, cần đánh dấu riêng 1 ô "base case". Khác 06-tornado (1 biến/lúc,
 // dùng khi chỉ cần 1 biến độ nhạy) và khác 08-heatmap (ma trận DIVERGING categorical có

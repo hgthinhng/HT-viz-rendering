@@ -346,6 +346,123 @@
         "year": 2026,
         "end": "2026-09-30"
       }
+    },
+    {
+      "ten": "do_tin_cay hop le o cap diem",
+      "loai": "row",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "entity": {
+          "code": "10 năm"
+        },
+        "value": 4.82,
+        "do_tin_cay": "quan_sat",
+        "period": {
+          "type": "nam",
+          "year": 2026,
+          "end": "2026-12-31"
+        }
+      }
+    },
+    {
+      "ten": "do_tin_cay noi_suy hop le, ky han thua",
+      "loai": "row",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "entity": {
+          "code": "12 năm"
+        },
+        "value": 4.9,
+        "do_tin_cay": "noi_suy",
+        "period": {
+          "type": "nam",
+          "year": 2026,
+          "end": "2026-12-31"
+        }
+      }
+    },
+    {
+      "ten": "do_tin_cay la, khong nam trong tu vung",
+      "loai": "row",
+      "mong_doi": "fail",
+      "ma_loi": "DO_TIN_CAY_LA",
+      "du_lieu": {
+        "entity": {
+          "code": "10 năm"
+        },
+        "value": 4.82,
+        "do_tin_cay": "dealer_bao",
+        "period": {
+          "type": "nam",
+          "year": 2026,
+          "end": "2026-12-31"
+        }
+      }
+    },
+    {
+      "ten": "do_tin_cay KHONG duoc dat o cap series, do la source_tier",
+      "loai": "series",
+      "mong_doi": "fail",
+      "ma_loi": "DO_TIN_CAY_SAI_CAP",
+      "du_lieu": {
+        "unit": "usd_thung",
+        "source": {
+          "tier": "cong-bo"
+        },
+        "do_tin_cay": "quan_sat",
+        "rows": [
+          {
+            "value": 82.4,
+            "period": {
+              "type": "nam",
+              "year": 2026,
+              "end": "2026-12-31"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "ten": "don vi dau tho usd_thung hop le",
+      "loai": "series",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "unit": "usd_thung",
+        "source": {
+          "tier": "cong-bo"
+        },
+        "rows": [
+          {
+            "value": 82.41,
+            "period": {
+              "type": "nam",
+              "year": 2026,
+              "end": "2026-12-31"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "ten": "don vi kim loai quy usd_oz hop le",
+      "loai": "series",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "unit": "usd_oz",
+        "source": {
+          "tier": "cong-bo"
+        },
+        "rows": [
+          {
+            "value": 2410.5,
+            "period": {
+              "type": "nam",
+              "year": 2026,
+              "end": "2026-12-31"
+            }
+          }
+        ]
+      }
     }
   ]
 }

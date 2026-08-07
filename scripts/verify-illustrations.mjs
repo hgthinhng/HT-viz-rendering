@@ -5,6 +5,7 @@ import { readdirSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { launchChromium } from './lib/chromium.mjs';
+import { laTaiNguyenAnnotation, phanLoaiLoi } from './lib/loi-annotation.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const MAX_RATIO = 1.6;
@@ -22,17 +23,10 @@ const MARGIN = 8;
 // nao. Ai them tai nguyen moi cho lop annotation (vd mot annotate-icons.svg
 // dung chung) PHAI tu tay them ten vao day, quyet dinh hien ra ro rang,
 // khong an trong 1 regex.
-const ANNOTATION_ASSET_NAMES = ['annotate.js', 'annotate.css'];
-
-function isAnnotationAssetUrl(url) {
-  // Lay ten file cuoi cung cua URL (bo query/hash neu co) de so sanh CHINH
-  // XAC, khong dung includes(). Vi du voi 1 url dang
-  // "file:///.../illustrations/annotated-source-badge.png", ten file cuoi
-  // la "annotated-source-badge.png", KHAC "annotate.js"/"annotate.css" nen
-  // khong khop, dung nhu mong doi.
-  const basename = url.split(/[\\/]/).pop().split(/[?#]/)[0];
-  return ANNOTATION_ASSET_NAMES.includes(basename);
-}
+// Ca hai phep phan loai nay nam o scripts/lib/loi-annotation.mjs de BO TEST goi thang
+// duoc. File nay chay top-level va mo Chromium ngay khi import nen khong test noi, ma
+// phep quyet dinh "quy loi cho ai" thi bat buoc phai test duoc.
+const isAnnotationAssetUrl = laTaiNguyenAnnotation;
 
 // (G2, vong 4) So khop noi dung loi JS bang RANH GIOI TU (\b...\b), khong
 // phai chuoi con tuy y. Cung mot ly do voi G1: "annotate" lam chuoi con se
@@ -42,7 +36,6 @@ function isAnnotationAssetUrl(url) {
 // hay mot dong stack "at annotate (file:///.../annotate.js:12:3)", nhung
 // KHONG khop "annotated-...", "unannotated-...", "reannotate...". Da tu do
 // thuc nghiem ca hai chieu truoc khi cai (xem report muc Fix round 4).
-const MENTIONS_ANNOTATE = /\bannotate\b/i;
 
 let failed = 0;
 const log = (ok, msg) => {
@@ -71,28 +64,29 @@ for (const file of examples) {
   //      Playwright ban 'requestfailed' that voi failure().errorText =
   //      "net::ERR_FILE_NOT_FOUND", khong phai suy doan.
   //   2) pageerror (loi JS khong bat duoc, lam mot <script> dung giua
-  //      chung). Chi coi la lien quan annotation NEU noi dung loi (CA
-  //      message LAN stack) co nhac "annotate" nhu MOT TU rieng (xem
-  //      MENTIONS_ANNOTATE). Bat ca stack chu khong chi message: mot loi
-  //      runtime that su ben trong annotate.js (vd goi thuoc tinh tren mot
-  //      gia tri undefined trong logic xu ly callout) co the co MESSAGE
-  //      chung chung khong nhac "annotate" (vd "Cannot read properties of
-  //      undefined (reading 'x')"), nhung STACK luon co it nhat 1 dong
-  //      trich dan duong dan file noi loi phat sinh. Neu file do la
-  //      annotate.js, dong stack se nhac "annotate.js", stack moi la noi co
-  //      bang chung. Chi doc message (String(e)) bo sot dung loai loi nay,
-  //      day la dung F1/F2/G1 "so khop long" nhung o CHIEU NGUOC LAI: bo
-  //      sot chu khong khop nham.
+  //      chung). Phep quy loi nam o scripts/lib/loi-annotation.mjs: trich
+  //      duong dan file tu TUNG FRAME cua stack roi so BASENAME, dung cach
+  //      phia network van lam. Ban truoc quet chuoi con "\bannotate\b" tren
+  //      ca khoi stack, va vi dau gach noi la ranh gioi tu nen no quy oan cho
+  //      lop annotation moi loi phat sinh trong mot file ten kieu
+  //      "annotate-demo.js". Doc ca stack chu khong chi message la co y giu
+  //      lai: mot loi runtime that trong annotate.js co the mang message
+  //      chung chung ("Cannot read properties of undefined"), va chi stack
+  //      moi noi loi phat sinh o dau.
   const pageErrors = [];
   const failedRequests = [];
   const onPageError = (e) => {
     const full = (e && e.stack) || String(e);
+    const phanLoai = phanLoaiLoi(full);
     // Dong DAU TIEN trong full khop MENTIONS_ANNOTATE (co the la chinh dong
     // thong diep, hoac 1 dong "at ..." trong stack). Dung de HIEN THI GON,
     // khong dump nguyen ca khoi stack nhieu dong ra log.
     const lines = full.split('\n').map((l) => l.trim()).filter(Boolean);
-    const matchedLine = lines.find((l) => MENTIONS_ANNOTATE.test(l));
-    pageErrors.push({ full, summary: matchedLine || lines[0] || full });
+    pageErrors.push({
+      full,
+      lienQuan: phanLoai.lienQuan,
+      summary: `${lines[0] || full} [${phanLoai.lyDo}]`,
+    });
   };
   const onRequestFailed = (req) => failedRequests.push(req.url());
   page.on('pageerror', onPageError);
@@ -112,8 +106,8 @@ for (const file of examples) {
   page.off('requestfailed', onRequestFailed);
 
   const annotateLoadFailed = failedRequests.some(isAnnotationAssetUrl);
-  const annotateRelatedErrors = pageErrors.filter((pe) => MENTIONS_ANNOTATE.test(pe.full));
-  const unrelatedErrors = pageErrors.filter((pe) => !MENTIONS_ANNOTATE.test(pe.full));
+  const annotateRelatedErrors = pageErrors.filter((pe) => pe.lienQuan);
+  const unrelatedErrors = pageErrors.filter((pe) => !pe.lienQuan);
 
   // Khong phai moi file .html trong examples/ deu dung lop annotation:
   // vietnam-simplification-comparison.html la demo do-luong 3 muc don gian

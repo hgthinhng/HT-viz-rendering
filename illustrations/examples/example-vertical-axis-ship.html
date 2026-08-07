@@ -25,7 +25,7 @@
   <title>Tàu container - minh hoạ có chú thích</title>
   <desc>Tàu container với bảy chú thích neo vào bảy bộ phận: ống khói, container, cabin, mớn nước, khoang máy, cột cờ, mũi tàu.</desc>
   <!-- Khung 1100x520 RỘNG HƠN silhouette tàu (đặt lệch giữa qua translate) một
-       cách CÓ CHỦ ĐÍCH: chừa ~270-280px trống mỗi bên cho hộp nhãn — bài học
+       cách CÓ CHỦ ĐÍCH: chừa ~270-280px trống mỗi bên cho hộp nhãn, bài học
        rút ra từ vòng lặp trước (canvas 800x500 khít với tàu khiến hộp nhãn
        phải đè lên rìa vật thể mới đủ chỗ chứa chữ). Quy tắc chung: MỌI hình
        dự kiến gắn callout cần viewBox rộng hơn silhouette ít nhất 20-25% mỗi
@@ -102,7 +102,7 @@
   // transform), nên phải tự quy đổi sang hệ toạ độ gốc của <svg>.
   const OX = 130, OY = 10;
   const shift = ([x, y]) => [x + OX, y + OY];
-  // avoidBox = bbox thật của vật thể SAU khi cộng offset — leader-line sẽ đi
+  // avoidBox = bbox thật của vật thể SAU khi cộng offset, leader-line sẽ đi
   // vòng qua vùng trống trên/dưới bbox này thay vì cắt ngang giữa tàu.
   const AVOID = { x: 150 + OX, y: 85 + OY, width: 550, height: 313 };
   Annotate.annotate(svg, [

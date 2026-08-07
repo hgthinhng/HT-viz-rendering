@@ -1,6 +1,6 @@
-// 07-small-multiples.mjs — Small multiples: cùng 1 chỉ số, nhiều thực thể, cùng thang đo
+// 07-small-multiples.mjs, Small multiples: cùng 1 chỉ số, nhiều thực thể, cùng thang đo
 // Dùng khi: so "hình dạng" xu hướng của nhiều mảng/công ty mà 1 chart chồng
-// nhiều đường sẽ rối (>4-5 series) — mỗi ô 1 thực thể, TẤT CẢ chung 1 trục y
+// nhiều đường sẽ rối (>4-5 series), mỗi ô 1 thực thể, TẤT CẢ chung 1 trục y
 // (bắt buộc, nếu không sẽ đánh lừa mắt về độ lớn tương đối).
 // Dữ liệu cần: {entity, series:[q1..q4]} cho N thực thể, cùng đơn vị.
 // Bẫy thường gặp: (1) mỗi ô tự scale riêng -> ô nhỏ trông "biến động dữ dội"
@@ -23,7 +23,7 @@ const segments = [
 ];
 
 const allValues = segments.flatMap((s) => s.data);
-const sharedMax = Math.ceil(Math.max(...allValues) / 10) * 10; // CHUNG 1 thang đo cho mọi ô — bắt buộc
+const sharedMax = Math.ceil(Math.max(...allValues) / 10) * 10; // CHUNG 1 thang đo cho mọi ô, bắt buộc
 
 const cols = 3, rows = Math.ceil(segments.length / cols);
 const cellW = 220, cellH = 150, padTop = 60, padLeft = 20, gap = 10;

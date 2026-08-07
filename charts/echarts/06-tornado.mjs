@@ -1,8 +1,8 @@
-// 06-tornado.mjs — Tornado: phân tích độ nhạy định giá (DCF/LBO sensitivity)
+// 06-tornado.mjs, Tornado: phân tích độ nhạy định giá (DCF/LBO sensitivity)
 // Dùng khi: cho thấy biến nào tác động mạnh nhất lên 1 kết quả (giá trị DN,
-// EPS...) khi thay đổi trong 1 khoảng giả định — sắp theo |biên độ| giảm dần
+// EPS...) khi thay đổi trong 1 khoảng giả định, sắp theo |biên độ| giảm dần
 // để biến quan trọng nhất nằm trên cùng (đúng hình dạng "cái phễu lốc").
-// Dữ liệu cần: {variable, low, high, base} — low/high là kết quả khi biến đó
+// Dữ liệu cần: {variable, low, high, base}, low/high là kết quả khi biến đó
 // ở kịch bản bi quan/lạc quan, base là giá trị trung tâm để tính lệch.
 // Bẫy thường gặp: (1) KHÔNG sắp theo biên độ -> mất hình phễu, khó đọc;
 // (2) dùng 2 màu tuỳ ý cho low/high thay vì nhất quán xuyên suốt mọi biến;

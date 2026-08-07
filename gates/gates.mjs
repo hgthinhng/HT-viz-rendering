@@ -1,5 +1,5 @@
 /**
- * gates.mjs — muoi gate nghiem thu truoc khi giao file. Moi gate la mot ham THUAN
+ * gates.mjs, muoi gate nghiem thu truoc khi giao file. Moi gate la mot ham THUAN
  * nhan cung mot goi du lieu va tra ve { ten, trang_thai, ly_do[] }.
  *
  * Tach khoi `run.mjs` de bo test goi thang duoc tung gate voi fixture do va fixture
@@ -60,7 +60,7 @@ function ghi(ten, trang_thai, ly_do) {
 }
 
 // --------------------------------------------------------------------------- //
-// Gate 1 — FONT-HTML
+// Gate 1, FONT-HTML
 // --------------------------------------------------------------------------- //
 const FONT_WINDOWS_AN_TOAN = [
   'segoe ui', 'times new roman', 'arial', 'calibri', 'cambria',
@@ -127,7 +127,7 @@ export function gateFontHtml({ html }) {
 }
 
 // --------------------------------------------------------------------------- //
-// Gate 2 — FONT-PDF
+// Gate 2, FONT-PDF
 // --------------------------------------------------------------------------- //
 // Ho font he thong Linux. Chung xuat hien trong PDF nghia la trang da am tham roi ve
 // font cua may dang render, va file gui di se khac han file da duyet.
@@ -160,7 +160,7 @@ export function gateFontPdf({ pdf }) {
 }
 
 // --------------------------------------------------------------------------- //
-// Gate 3 — RASTER
+// Gate 3, RASTER
 // --------------------------------------------------------------------------- //
 export function gateRaster({ pdf, choPhepAnh = 0 }) {
   const r = pdf.raster;
@@ -185,7 +185,7 @@ export function gateRaster({ pdf, choPhepAnh = 0 }) {
 }
 
 // --------------------------------------------------------------------------- //
-// Gate 4 — DIACRITICS
+// Gate 4, DIACRITICS
 // --------------------------------------------------------------------------- //
 const RE_DAU_VIET = /[ăâêôơưđẠẢÃÀÁĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴĐạảãàáăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/g;
 
@@ -222,7 +222,7 @@ export function gateDau({ html, pdf }) {
 }
 
 // --------------------------------------------------------------------------- //
-// Gate 5 — CHART-SONG
+// Gate 5, CHART-SONG
 // --------------------------------------------------------------------------- //
 /**
  * Gate quan trong nhat cua ca bo, sinh ra tu bug da song tron mot phase: 12 chart xuat
@@ -282,7 +282,7 @@ export function gateChartSong({ html, pdf }) {
 }
 
 // --------------------------------------------------------------------------- //
-// Gate 6 — CALLOUT-BAKED
+// Gate 6, CALLOUT-BAKED
 // --------------------------------------------------------------------------- //
 /**
  * WeasyPrint khong chay JavaScript. Mot trang dua vao `annotate.js` de ve callout luc
@@ -326,7 +326,7 @@ export function gateCalloutBaked({ html }) {
 }
 
 // --------------------------------------------------------------------------- //
-// Gate 7 — STYLE
+// Gate 7, STYLE
 // --------------------------------------------------------------------------- //
 const CUM_AI_SLOP = [
   'Điều đáng chú ý', 'Không thể phủ nhận', 'Tóm lại', 'Trong bối cảnh',
@@ -338,7 +338,10 @@ export function gateVanPhong({ html }) {
   let trang_thai = 'PASS';
   const text = textHienThi(html);
 
-  const gach = text.match(/[—–]/g);
+  // Escape unicode, KHONG viet ky tu truc tiep. Mot dot don gach ngang hang loat
+  // da tung doi ky tu ngay trong regex nay thanh [--], tuc chi con khop dau gach
+  // noi thuong: gate bao FAIL cho moi noi dung binh thuong va khong con bat em-dash.
+  const gach = text.match(/[\u2014\u2013]/g);
   if (gach && gach.length) {
     trang_thai = 'FAIL';
     ly_do.push(`${gach.length} em-dash hoac en-dash trong noi dung hien thi`);
@@ -363,7 +366,7 @@ export function gateVanPhong({ html }) {
 }
 
 // --------------------------------------------------------------------------- //
-// Gate 8 — PAGEBREAK
+// Gate 8, PAGEBREAK
 // --------------------------------------------------------------------------- //
 export function gateNgatTrang({ html, pdf }) {
   const ly_do = [];
@@ -395,7 +398,7 @@ export function gateNgatTrang({ html, pdf }) {
 }
 
 // --------------------------------------------------------------------------- //
-// Gate 9 — SOURCE-LEAK
+// Gate 9, SOURCE-LEAK
 // --------------------------------------------------------------------------- //
 export function gateRoRiNguon({ duongDanHtml, cheDo = 'gui-di' }) {
   const ly_do = [];
@@ -413,7 +416,7 @@ export function gateRoRiNguon({ duongDanHtml, cheDo = 'gui-di' }) {
 }
 
 // --------------------------------------------------------------------------- //
-// Gate 10 — LEDGER
+// Gate 10, LEDGER
 // --------------------------------------------------------------------------- //
 export function gateSoNguon({ html, duongDanHtml, cheDo = 'noi-bo' }) {
   if (!/<script[^>]*\bid=["']evidence-ledger["']/i.test(html)) {

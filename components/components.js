@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   components.js — hành vi tối thiểu cho thư viện component kể chuyện.
+   components.js, hành vi tối thiểu cho thư viện component kể chuyện.
    Nguyên tắc: mọi hành vi ở đây là TĂNG CƯỜNG (progressive enhancement).
    Nếu JS tắt hoặc khi in, mỗi component phải vẫn đọc được (xem CSS
    .no-js / @media print trong components.css).
@@ -39,7 +39,7 @@
      "greedy layering": mỗi mốc thử đặt ở lane thấp nhất còn trống quanh vị
      trí năm của nó; nếu chồng lấn lane hiện tại, đẩy sang lane cao hơn).
      Khác biệt so với bản gốc: đo bằng offsetWidth thật của DOM (2 lượt:
-     dựng ẩn rồi đo), không ước lượng theo số ký tự × hệ số — chính xác hơn
+     dựng ẩn rồi đo), không ước lượng theo số ký tự × hệ số, chính xác hơn
      với font Spectral biến thiên độ rộng theo từng chữ cái có dấu.       */
   function buildWallChart(root, data) {
     var y0 = data.y0, y1 = data.y1;
@@ -72,16 +72,16 @@
       ticksEl.appendChild(t);
     }
 
-    // Plaques — lượt 1: dựng ẩn để đo offsetWidth thật
+    // Plaques, lượt 1: dựng ẩn để đo offsetWidth thật
     layer.innerHTML = "";
     layer.style.position = "relative";
     var containerW = layer.clientWidth || root.clientWidth || 880;
     var rowH = 58;
 
     // Lưu ý accessibility: khối .wc-axis-wrap cha mang aria-hidden="true" (xem
-    // gallery.html) — bản trực quan này chỉ dành cho mắt nhìn, KHÔNG gắn
+    // gallery.html), bản trực quan này chỉ dành cho mắt nhìn, KHÔNG gắn
     // tabindex/role tương tác ở đây (phần tử focusable bên trong nhánh
-    // aria-hidden là lỗi a11y — screen reader "thấy" ô trống nhưng không đọc
+    // aria-hidden là lỗi a11y, screen reader "thấy" ô trống nhưng không đọc
     // được nội dung). Nội dung đọc được thật nằm ở .wc-fallback-list.
     var built = data.events.map(function (e) {
       var el = document.createElement("div");
@@ -126,7 +126,7 @@
       layer.appendChild(stem);
     });
 
-    // Fallback: danh sách phẳng — hiển thị khi in hoặc khi JS tắt (đảm bảo
+    // Fallback: danh sách phẳng, hiển thị khi in hoặc khi JS tắt (đảm bảo
     // không có mốc nào "biến mất" khỏi bản in dù thuật toán layer có chạy hay không).
     if (fallback) {
       var ol = document.createElement("ol");

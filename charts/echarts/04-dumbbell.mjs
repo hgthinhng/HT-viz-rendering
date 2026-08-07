@@ -1,6 +1,6 @@
-// 04-dumbbell.mjs — Dumbbell: so 2 thời điểm cho nhiều hạng mục cùng lúc
+// 04-dumbbell.mjs, Dumbbell: so 2 thời điểm cho nhiều hạng mục cùng lúc
 // Dùng khi: "biên lợi nhuận gộp từng mảng kinh doanh thay đổi ra sao từ
-// 2025 sang 2026" — tốt hơn 2 cột cạnh nhau vì nhấn vào ĐỘ CHÊNH LỆCH,
+// 2025 sang 2026", tốt hơn 2 cột cạnh nhau vì nhấn vào ĐỘ CHÊNH LỆCH,
 // không phải giá trị tuyệt đối từng cột.
 // Dữ liệu cần: danh sách {label, before, after}. Nên SẮP THEO độ chênh lệch
 // (ranking rule của FT) để mắt đọc pattern nhanh hơn.

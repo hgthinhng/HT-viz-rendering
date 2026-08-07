@@ -1,28 +1,28 @@
 <!doctype html>
 <!--
   MINH HOẠ: quyết định tracking (letter-spacing) và kerning cho tiêu đề
-  tiếng Việt có dấu — không phải "luôn siết" hay "luôn nới", mà là bảng
+  tiếng Việt có dấu, không phải "luôn siết" hay "luôn nới", mà là bảng
   đánh đổi theo NỘI DUNG cụ thể của tiêu đề (có nguyên âm móc Ơ/Ư hay
   không, có phải chữ hoa toàn phần hay không).
 
   ĐO ĐƯỢC (research/05-typography-vn/FINDINGS.md mục 2; công cụ: WeasyPrint
-  xuất PDF, PyMuPDF render lại thành ảnh, so pixel bằng numpy — không phải
+  xuất PDF, PyMuPDF render lại thành ảnh, so pixel bằng numpy, không phải
   đọc source CSS suy diễn):
   - font-kerning: none so với normal trên cụm "TRƯỢT GIÁ TRỊ" (Spectral 700,
-    140px) làm lệch 0.497% tổng số pixel của ảnh — kerning THẬT SỰ dịch
+    140px) làm lệch 0.497% tổng số pixel của ảnh, kerning THẬT SỰ dịch
     chuyển glyph ở các cặp T-R, G-I, T-R lần hai, không phải hiệu ứng giả.
     Tắt kerning không loại bỏ va chạm dấu vì va chạm nằm ở ĐỘ RỘNG neo của
     glyph (móc Ư/Ơ thò ra ngoài hộp chữ danh nghĩa), không nằm ở bảng kerning.
   - Tại tracking mặc định (0), cụm "TRƯỢT GIÁ TRỊ" đã có sẵn MỘT điểm gần
     chạm (khoảng trắng còn 0.5px CSS) do kerning font tự nhiên kéo cặp T-R
-    sát nhau — đây là thiết kế của Spectral, không phải lỗi. Tracking âm chỉ
+    sát nhau, đây là thiết kế của Spectral, không phải lỗi. Tracking âm chỉ
     làm phép tính này XẤU HƠN, không phải TỪ MỘT NỀN AN TOÀN.
   - font-variant-ligatures bật/tắt trên câu trộn tiếng Việt + từ vay mượn
-    tiếng Anh có "fi" (ví dụ "profile") gây khác biệt chỉ 0.006% pixel — vì
+    tiếng Anh có "fi" (ví dụ "profile") gây khác biệt chỉ 0.006% pixel, vì
     bản font Spectral đã cắt cho repo này (subset bằng fontTools) KHÔNG còn
     giữ glyph ligature fi/fl (đã kiểm bằng cách liệt kê glyph order, không
     thấy "f_i"/"f_l"). Tức là: bật/tắt ligature không có tác dụng thực với
-    bộ font embedded của repo — không phải vì an toàn, mà vì ligature đã bị
+    bộ font embedded của repo, không phải vì an toàn, mà vì ligature đã bị
     loại khỏi subset. Nếu sau này đổi cách subset (giữ ligature), phải đo
     lại kiểm tra này.
 
@@ -35,7 +35,7 @@
     nặng): tracking âm nhẹ (-0.01 đến -0.015em) thường an toàn vì các dấu
     này nằm trong biên dọc của glyph, không thò ngang.
   - Chữ hoa toàn phần luôn cần tracking DƯƠNG nhẹ (+0.01 đến +0.03em) để bù
-    cảm giác "đặc" của khối chữ hoa — ngược hướng với nhu cầu siết tracking
+    cảm giác "đặc" của khối chữ hoa, ngược hướng với nhu cầu siết tracking
     để tiết kiệm chiều rộng, nên khi cả hai áp lực cùng xuất hiện (tiêu đề
     hoa toàn phần, dài, cần vừa khổ), ưu tiên giảm cỡ chữ thay vì siết
     tracking.
@@ -48,7 +48,7 @@
   - Số liệu trong trang là MINH HỌA cho mục đích đo kiểu chữ.
 
   RÀNG BUỘC IN: font-family list kết thúc generic keyword (không dùng font
-  nhúng base64 của repo — xem research/05-typography-vn/FONT-TRAPS.md; dùng
+  nhúng base64 của repo, xem research/05-typography-vn/FONT-TRAPS.md; dùng
   font hệ thống có fallback Noto Serif/Georgia). Shadow chỉ offset cứng,
   blur = 0. Không gauge/radar. Không em-dash/en-dash. @media dùng từ khoá
   screen. Đã qua round-trip WeasyPrint + PyMuPDF, tầng text khớp input.

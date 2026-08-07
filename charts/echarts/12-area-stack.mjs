@@ -1,8 +1,8 @@
-// 12-area-stack.mjs — Area stack: cơ cấu GIÁ TRỊ TUYỆT ĐỐI theo thời gian
+// 12-area-stack.mjs, Area stack: cơ cấu GIÁ TRỊ TUYỆT ĐỐI theo thời gian
 // Dùng khi: vừa muốn thấy TỔNG tăng/giảm ra sao, vừa muốn thấy từng phần đóng
-// góp bao nhiêu — khác stacked-bar-100 ở chỗ area-stack giữ nguyên đơn vị
+// góp bao nhiêu, khác stacked-bar-100 ở chỗ area-stack giữ nguyên đơn vị
 // tuyệt đối (không chuẩn hoá về %). Hợp cho ≤4 dải; quá nhiều dải thì dải giữa
-// (không chạm baseline) rất khó đọc biến động riêng — đây chính là bẫy Tufte
+// (không chạm baseline) rất khó đọc biến động riêng, đây chính là bẫy Tufte
 // hay cảnh báo về area chart nhiều lớp.
 // Dữ liệu cần: {period, [series]: giá trị tuyệt đối cùng đơn vị}.
 // Bẫy thường gặp: (1) >4 dải -> dải giữa vô nghĩa, nên chuyển sang small

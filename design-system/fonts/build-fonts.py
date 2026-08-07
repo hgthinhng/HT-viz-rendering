@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
-build-fonts.py — tải bộ font CHỐT (Spectral + IBM Plex Mono + IBM Plex Sans,
+build-fonts.py, tải bộ font CHỐT (Spectral + IBM Plex Mono + IBM Plex Sans,
 lấy nguyên từ reference-kimi.html) từ Google Fonts, giữ lại đúng 2
 unicode-range (latin + vietnamese; bỏ latin-ext vì đó là phạm vi Trung/Đông
-Âu không cần cho nội dung tiếng Việt thuần — cắt khoảng 57% dung lượng font
+Âu không cần cho nội dung tiếng Việt thuần, cắt khoảng 57% dung lượng font
 so với giữ cả 3 subset), base64 hoá, và sinh fonts-embedded.css để nhúng
-thẳng vào HTML — chạy được OFFLINE, không phụ thuộc CDN Google Fonts lúc gửi
+thẳng vào HTML, chạy được OFFLINE, không phụ thuộc CDN Google Fonts lúc gửi
 khách.
 
 Lịch sử đổi bộ font (đừng ngạc nhiên nếu thấy git history có Fraunces/EB
-Garamond/Inter/JetBrains Mono — đó là bản 2 "hoà theo tokens.css StoiX", đã
+Garamond/Inter/JetBrains Mono, đó là bản 2 "hoà theo tokens.css StoiX", đã
 BỊ THAY vì tokens.css phục vụ CFA study notes, khác thể loại report tài
-chính. Bản 3 chốt lại theo reference-kimi.html — 3 nguồn độc lập hội tụ cùng
+chính. Bản 3 chốt lại theo reference-kimi.html, 3 nguồn độc lập hội tụ cùng
 bộ Spectral/IBM Plex, xem components.css đầu file).
 
 Fix round 3 (bug lộn glyph tiếng Việt trong WeasyPrint, ví dụ "nghệ" ra
@@ -95,10 +95,10 @@ UA_MODERN = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML
 # goc" dung de subset lai, xem doan giai thich o docstring dau file.
 UA_LEGACY = "Mozilla/5.0 (Windows NT 5.1; rv:1.9.2.20) Gecko/20110803 Firefox/3.6.20"
 
-# Đổi ở đây nếu cần thêm/bớt trọng số. Giữ tối thiểu — mỗi trọng số x2 subset x ~10-110KB.
+# Đổi ở đây nếu cần thêm/bớt trọng số. Giữ tối thiểu, mỗi trọng số x2 subset x ~10-110KB.
 # Spectral: 400/500/600/700 + 400/600 italic (dek, pull-quote, note-box đều
 # dùng italic). IBM Plex Mono: 400/500/600/700 (số liệu + mọi nhãn kỹ thuật/
-# trạng thái). IBM Plex Sans: 400/600 (CHỈ ô bảng dữ liệu dày đặc — vai trò
+# trạng thái). IBM Plex Sans: 400/600 (CHỈ ô bảng dữ liệu dày đặc, vai trò
 # hẹp, xem components.css khối 1 + khối 4/5/12/13).
 FAMILY_QUERY = (
     "family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600"

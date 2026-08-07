@@ -1,8 +1,8 @@
-// 13-line-annotated.mjs — Line có chú thích sự kiện: xu hướng 1 chỉ tiêu + vì sao đổi hướng
+// 13-line-annotated.mjs, Line có chú thích sự kiện: xu hướng 1 chỉ tiêu + vì sao đổi hướng
 // Dùng khi: một chỉ tiêu đổi hướng rõ rệt tại vài thời điểm, người đọc cần biết SỰ KIỆN
 // nào giải thích bước ngoặt, không chỉ thấy đường lên/xuống. Nhu cầu 8/10 loại báo cáo
 // (research/13-chart-component-gap/FINDINGS.md) nhưng chưa có bản ECharts.
-// Dữ liệu cần: series schema dùng chung (charts/echarts/schema.mjs) — 1 chuỗi rows
+// Dữ liệu cần: series schema dùng chung (charts/echarts/schema.mjs), 1 chuỗi rows
 // {value, period} qua N kỳ, cộng tối đa 4-5 sự kiện {index,label} RIÊNG, không đi qua
 // validateSeries() vì đó là annotation tự do, không phải quan sát.
 // Bẫy thường gặp: (1) nhồi quá 5 sự kiện -> nhãn chồng không gỡ được, tách sang bảng

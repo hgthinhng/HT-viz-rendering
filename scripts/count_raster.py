@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-count_raster.py — đếm object /Subtype /Image trong một file PDF bằng cách
+count_raster.py, đếm object /Subtype /Image trong một file PDF bằng cách
 quét TOÀN BỘ xref qua doc.xref_object(xref, compressed=True), KHÔNG dùng
 doc.get_images(). Lý do bắt buộc dùng xref_object: get_images() bỏ sót ảnh
-nằm trong Tiling Pattern / object stream nén — đã bắt được thật ít nhất 2 lần
+nằm trong Tiling Pattern / object stream nén, đã bắt được thật ít nhất 2 lần
 trong quá trình build thư viện này (xem README.md gốc, mục "bẫy đã đo được").
 
 Dùng làm gate: exit code 0 nếu count <= --max, exit code 1 nếu vượt.

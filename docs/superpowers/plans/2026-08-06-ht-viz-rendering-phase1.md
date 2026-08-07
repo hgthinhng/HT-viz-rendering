@@ -769,7 +769,7 @@ for (const file of examples) {
   const overflow = await page.evaluate((margin) => {
     const svg = document.querySelector('svg[viewBox]');
     if (!svg) return ['khong co svg[viewBox]'];
-    const [, , vw, vh] = svg.getAttribute('viewBox').split(/\s+/).map(Number);
+    const [, vw, vh] = svg.getAttribute('viewBox').split(/\s+/).map(Number);
     const bad = [];
     for (const r of svg.querySelectorAll('rect.anno-box')) {
       const x = +r.getAttribute('x');
@@ -1311,7 +1311,7 @@ test('moi catalog deu noi ro khi nao KHONG nen dung', () => {
 test('khong catalog nao con em-dash hoac en-dash', () => {
   for (const file of catalogFiles) {
     const md = readFileSync(path.join(CATALOG, file), 'utf8');
-    const bad = md.match(/[—–]/g) || [];
+    const bad = md.match(/[\u2014\u2013]/g) || [];
     assert.equal(bad.length, 0, `${file} co ${bad.length} em-dash hoac en-dash`);
   }
 });

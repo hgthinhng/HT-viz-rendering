@@ -293,7 +293,11 @@ test('moi catalog deu noi ro khi nao KHONG nen dung, co neo cu the chu khong ron
 test('khong catalog nao con em-dash hoac en-dash', () => {
   for (const file of catalogFiles) {
     const md = readFileSync(path.join(CATALOG, file), 'utf8');
-    const bad = md.match(/[—–]/g) || [];
+    // Viet bang escape unicode chu KHONG viet ky tu truc tiep: mot dot don gach
+    // ngang hang loat da tung doi ky tu ngay TRONG regex nay, bien no thanh [--]
+    // tuc chi con khop dau gach noi thuong. Gate chan em-dash tu vo hieu hoa chinh
+    // no ma van chay tron tru.
+    const bad = md.match(/[\u2014\u2013]/g) || [];
     assert.equal(bad.length, 0, `${file} co ${bad.length} em-dash hoac en-dash`);
   }
 });

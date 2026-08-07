@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  MẪU KIỂM TOÁN vòng 4 (10-weasyprint-audit) — thẻ KPI STAT GRID (component
+  MẪU KIỂM TOÁN vòng 4 (10-weasyprint-audit), thẻ KPI STAT GRID (component
   01 trong components/components.css) là MỘT TRONG HAI CHỖ THẬT trong toàn
   bộ components/ đang khai box-shadow. Mã ở khối 1 dưới đây COPY NGUYÊN VĂN
   từ components/components.css dòng 76-80 (.sg-card), không sửa gì, để cho
@@ -8,7 +8,7 @@
 
   ĐÃ ĐO BẰNG WeasyPrint 69.0 thật (không suy diễn): box-shadow: var(--shadow-1)
   không tạo ra một điểm ảnh nào. .sg-card có border: 1px solid var(--line)
-  NÊN thẻ vẫn có ranh giới rõ khi in — chỉ mất lớp "nổi khối" hai tông
+  NÊN thẻ vẫn có ranh giới rõ khi in, chỉ mất lớp "nổi khối" hai tông
   (bóng đậm góc dưới-phải + viền sáng góc trên-trái) mà --shadow-1 định
   nghĩa. Xem research/10-weasyprint-audit/FINDINGS.md mục 1 cho số liệu đo
   đầy đủ và research/RESEARCH-LEDGER.md cho lịch sử.
@@ -63,7 +63,7 @@
   .fix-delete { border: 1px solid var(--line); border-radius: 3px; background: var(--paper);
     padding: 18px 20px 16px; position: relative; }
 
-  /* ── KHỐI 3: kỹ thuật thay thế đã verify — khối ink lệch vị trí phía
+  /* ── KHỐI 3: kỹ thuật thay thế đã verify, khối ink lệch vị trí phía
      sau bằng position absolute + z-index, mô phỏng lại đúng hướng bóng
      (lệch phải-dưới) mà --shadow-1 định nghĩa, render THẬT bằng vector,
      không phải hiệu ứng CSS ảo. */

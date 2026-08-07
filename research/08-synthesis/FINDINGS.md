@@ -18,7 +18,7 @@ chứ không phải "ghép ngẫu nhiên".
 `trang: 14, svg: 7, drawing_total: 377, raster xref (quét toàn bộ, không dùng get_images): 0,
 em-dash: 0, en-dash: 0`. Cả 14 trang đã mở ảnh render (`dpi=110`) và xem tận mắt, hai vòng lặp
 sửa lỗi dựa trên ảnh, không dựa trên số liệu text/drawing (xem mục "vấn đề chỉ lộ ra khi đọc
-tuần tự" bên dưới — cả ba lỗi thật đều KHÔNG lộ qua đếm SVG/text, chỉ lộ qua nhìn ảnh).
+tuần tự" bên dưới, cả ba lỗi thật đều KHÔNG lộ qua đếm SVG/text, chỉ lộ qua nhìn ảnh).
 
 ---
 

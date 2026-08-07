@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  MINH HOẠ: chữ hoa toàn phần (all-caps) cỡ lớn tiếng Việt — chỗ dấu dễ vỡ
+  MINH HOẠ: chữ hoa toàn phần (all-caps) cỡ lớn tiếng Việt, chỗ dấu dễ vỡ
   nhất vì chữ hoa có dấu hai tầng (Ộ, Ẫ, Ấ, Ắ...) cần headroom LỚN HƠN chữ
   thường cùng cỡ (chữ hoa vốn đã cao gần chạm đỉnh dòng, dấu chồng đẩy tiếp
   lên trên). Trang này CHỦ ĐỘNG chọn cụm từ tài chính có nhiều dấu hai tầng
@@ -10,8 +10,7 @@
   ĐO ĐƯỢC (research/05-typography-vn/FINDINGS.md mục 2 và 3, đo bằng
   pixel-scan hàng ngang trên ảnh render, KHÔNG suy diễn từ CSS box):
   - Với khối 2 dòng chữ hoa cỡ 80px, line-height 1.0 chỉ để lại 2.5px CSS
-    khoảng trắng giữa dấu nặng cuối dòng trên và dấu mũ/sắc đầu dòng dưới —
-    một biên an toàn mỏng tới mức lệch font 1 điểm trọng lượng (400 thay vì
+    khoảng trắng giữa dấu nặng cuối dòng trên và dấu mũ/sắc đầu dòng dưới, một biên an toàn mỏng tới mức lệch font 1 điểm trọng lượng (400 thay vì
     700) hoặc lệch DPI khi in có thể làm chúng CHẠM nhau. Từ line-height
     1.15 trở lên, khoảng trắng ổn định quanh 5-14px CSS, đủ an toàn.
   - Về tracking ngang: cụm "TRƯỢT GIÁ TRỊ" ở Spectral 700 cỡ 140px đã có một
@@ -24,13 +23,13 @@
   KHI NÀO KHÔNG NÊN DÙNG:
   - Đoạn văn dài toàn chữ hoa: all-caps tiếng Việt cỡ lớn CHỈ dùng cho tiêu
     đề ngắn (dưới ~6 từ). Với đoạn dài, chữ hoa toàn phần vốn đã khó đọc,
-    cộng thêm dấu chồng càng nặng mắt — dùng title-case hoặc sentence-case.
+    cộng thêm dấu chồng càng nặng mắt, dùng title-case hoặc sentence-case.
   - Cỡ chữ dưới 32px: rủi ro va chạm dấu ở cỡ nhỏ gần như không đáng kể so
-    với rủi ro chọn sai bảng màu/độ tương phản — không cần biện pháp này.
+    với rủi ro chọn sai bảng màu/độ tương phản, không cần biện pháp này.
   - Số liệu, tên gọi trong trang là MINH HỌA cho mục đích đo kiểu chữ.
 
   RÀNG BUỘC IN: font-family list kết thúc generic keyword (không dùng font
-  nhúng base64 của repo — xem research/05-typography-vn/FONT-TRAPS.md; dùng
+  nhúng base64 của repo, xem research/05-typography-vn/FONT-TRAPS.md; dùng
   font hệ thống có fallback Noto Serif/Georgia). Shadow chỉ offset cứng,
   blur = 0. Không gauge/radar. Không em-dash/en-dash. @media dùng từ khoá
   screen. Đã qua round-trip WeasyPrint + PyMuPDF, tầng text khớp input.

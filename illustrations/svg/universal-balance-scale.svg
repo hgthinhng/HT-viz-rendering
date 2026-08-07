@@ -3,7 +3,7 @@
   <desc>Cán cân hai đĩa nghiêng về bên trái (đòn bẩy) so với bên phải (rào cản), hình học đòn bẩy nghiêng thật theo tỷ trọng bằng chứng. Dùng chung cho mọi ngành khi cần tổng kết khuyến nghị MUA/GIỮ/BÁN hoặc KHẢ THI/CHƯA KHẢ THI.</desc>
   <!--
     LƯU Ý DÙNG LẠI (khác các file khác trong thư viện): đây là hình DUY NHẤT
-    có 1 tham số phụ thuộc dữ liệu thật — GÓC NGHIÊNG của đòn cân, vì độ
+    có 1 tham số phụ thuộc dữ liệu thật, GÓC NGHIÊNG của đòn cân, vì độ
     nghiêng CHÍNH LÀ thông tin (chênh lệch trọng số 2 bên), không thể để cố
     định như các minh hoạ khác. Bản này dựng sẵn ở tilt=8° (trái nặng hơn).
     Muốn đổi tỷ lệ nghiêng cho báo cáo khác: tính lại lEnd/rEnd bằng

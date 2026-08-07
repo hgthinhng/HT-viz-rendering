@@ -203,3 +203,46 @@
     --shadow-hairline: 0px 1px 0px rgba(0 0 0 / 0.5);
   }
 }
+
+/* ============================================================================
+   CHU DE MAU DAT TEN THEO FILE JSON
+
+   Sinh tu design-system/themes/*.json bang design-system/generate-tokens.mjs. DUNG
+   SUA TAY vung giua hai marker duoi day; sua gia tri o file JSON tuong ung roi chay:
+
+       node design-system/generate-tokens.mjs
+       node design-system/generate-tokens.mjs --kiem   (kiem lech, khong ghi)
+
+   Test drift: tests/consistency/theme_tokens_drift.test.mjs.
+
+   Day la co che CHU DE MAU DAT TEN (bao cao chon TEN bang, khong chon hex), TACH BIET
+   voi khoa [data-theme="light"|"dark"] mode man hinh sang/toi da co san o phia tren.
+   Hien tai chua trang nao khai data-theme="sang-lanh", nen khoi duoi day KHONG doi mau
+   render cua bat ky trang dang chay nao.
+   ============================================================================ */
+/* THEME-TOKENS:BAT-DAU */
+[data-theme="sang-lanh"] {
+  --paper: #FFFFFF;
+  --paper-hi: #F7F9FC;
+  --paper-hair: #EEF1F6;
+  --paper-elev: #F7F9FC;
+  --ink: #051C2C;
+  --ink-md: #42566A;
+  --ink-lo: #8595A6;
+  --ink-faint: #AAB8C4;
+  --line: #DBE2EA;
+  --line-lo: #EEF1F6;
+  --accent: #2251FF;
+  --accent-hi: #1233B8;
+  --accent-soft: #7D9BFF;
+  --pos: #008A6D;
+  --neg: #C22F4E;
+  --neg-soft: #E4A1AF;
+  --warn: #B07A10;
+
+  --ilus-toi: #1e293b;
+  --ilus-vua: #475569;
+  --ilus-sang: #94a3b8;
+  --ilus-panel: #e2e8f0;
+}
+/* THEME-TOKENS:KET-THUC */

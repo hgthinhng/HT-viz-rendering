@@ -6,24 +6,46 @@ import path from 'node:path';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
+// Doc ky vong TU design-system/themes/sang-lanh.json, KHONG hardcode hex trong than
+// test. Truoc ban nay, ky vong nam ngay trong dict `expected` viet tay ben duoi: thu
+// canh gac (test) la mot BAN SAO cua thu bi canh (theme.mjs), nen sua mot gia tri o
+// theme.mjs se khong lam test nay do. Nguon that duy nhat la file JSON, sinh ra ca
+// tokens.css lan theme.mjs bang design-system/generate-tokens.mjs.
+//
+// PALETTE (hand-maintained, dang la ban dung THAT trong moi preset chart) dat ten
+// "negative"/"positive" thay vi "neg"/"pos" cua JSON; ban do KHONG phai bang gia tri
+// nen giu nguyen o day, khong phai mot ban sao cua gia tri mau.
+const TEN_MAP_JSON_SANG_PALETTE = {
+  accent: 'accent',
+  'accent-hi': 'accentHi',
+  'accent-soft': 'accentSoft',
+  neg: 'negative',
+  pos: 'positive',
+  warn: 'warn',
+  ink: 'ink',
+  'ink-md': 'inkMd',
+  'ink-lo': 'inkLo',
+  line: 'line',
+  paper: 'paper',
+};
+
+function kyVongTuChuDeMacDinh() {
+  const du = JSON.parse(
+    readFileSync(path.join(ROOT, 'design-system/themes/sang-lanh.json'), 'utf8'),
+  );
+  const ra = {};
+  for (const [tenJson, tenPalette] of Object.entries(TEN_MAP_JSON_SANG_PALETTE)) {
+    ra[tenPalette] = du.mau[tenJson];
+  }
+  return ra;
+}
+
 test('PALETTE cua chart khop token loi', async () => {
   const { PALETTE } = await import(path.join(ROOT, 'charts/echarts/theme.mjs'));
-  const expected = {
-    accent: '#2251FF',
-    accentHi: '#1233B8',
-    accentSoft: '#7D9BFF',
-    negative: '#C22F4E',
-    positive: '#008A6D',
-    warn: '#B07A10',
-    ink: '#051C2C',
-    inkMd: '#42566A',
-    inkLo: '#8595A6',
-    line: '#DBE2EA',
-    paper: '#FFFFFF',
-  };
+  const expected = kyVongTuChuDeMacDinh();
   for (const [k, v] of Object.entries(expected)) {
     assert.ok(k in PALETTE, `PALETTE thieu khoa ${k}`);
-    assert.equal(PALETTE[k].toUpperCase(), v, `PALETTE.${k} lech: ${PALETTE[k]} mong doi ${v}`);
+    assert.equal(PALETTE[k].toUpperCase(), v.toUpperCase(), `PALETTE.${k} lech: ${PALETTE[k]} mong doi ${v} (theo design-system/themes/sang-lanh.json)`);
   }
 });
 

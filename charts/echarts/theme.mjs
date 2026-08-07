@@ -209,3 +209,43 @@ export function sourceGraphic(text, { width = 700, height = 400 } = {}) {
     silent: true,
   };
 }
+
+// ==============================================================================
+// CHU DE MAU DAT TEN THEO FILE JSON
+//
+// Sinh tu design-system/themes/*.json bang design-system/generate-tokens.mjs. DUNG SUA
+// TAY vung giua hai marker duoi day; sua gia tri o file JSON tuong ung roi chay lai
+// generator. PALETTES la registry MOI theo TEN chu de, tach biet voi PALETTE o tren
+// (PALETTE la ban phang hien dang dung that trong moi preset chart, khong doi).
+// ==============================================================================
+// THEME-TOKENS:BAT-DAU
+export const PALETTES = {
+  'sang-lanh': {
+    mau: {
+      paper: '#FFFFFF',
+      paperHi: '#F7F9FC',
+      paperHair: '#EEF1F6',
+      paperElev: '#F7F9FC',
+      ink: '#051C2C',
+      inkMd: '#42566A',
+      inkLo: '#8595A6',
+      inkFaint: '#AAB8C4',
+      line: '#DBE2EA',
+      lineLo: '#EEF1F6',
+      accent: '#2251FF',
+      accentHi: '#1233B8',
+      accentSoft: '#7D9BFF',
+      positive: '#008A6D',
+      negative: '#C22F4E',
+      negSoft: '#E4A1AF',
+      warn: '#B07A10',
+    },
+    ilus: {
+      toi: '#1e293b',
+      vua: '#475569',
+      sang: '#94a3b8',
+      panel: '#e2e8f0',
+    },
+  },
+};
+// THEME-TOKENS:KET-THUC

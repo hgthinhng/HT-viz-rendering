@@ -60,3 +60,44 @@ SHADOW = {
     "none": "0px 0px 0px rgba(0 0 0 / 0)",
     "hairline": "0px 1px 0px rgba(5 28 44 / 0.35)",
 }
+
+# ==============================================================================
+# CHU DE MAU DAT TEN THEO FILE JSON
+#
+# Sinh tu design-system/themes/*.json bang design-system/generate-tokens.mjs. DUNG SUA
+# TAY vung giua hai marker duoi day; sua gia tri o file JSON tuong ung roi chay lai
+# generator (xem lenh trong tokens.css). THEMES la dict MOI, tach biet voi COLORS o
+# tren: COLORS la ban phang khop voi khoi :root mac dinh cua tokens.css (khong doi),
+# THEMES la registry theo TEN chu de cho tuong lai chon bang bang ten.
+# ==============================================================================
+# THEME-TOKENS:BAT-DAU
+THEMES = {
+    "sang-lanh": {
+        "mau": {
+            "paper": "#FFFFFF",
+            "paper_hi": "#F7F9FC",
+            "paper_hair": "#EEF1F6",
+            "paper_elev": "#F7F9FC",
+            "ink": "#051C2C",
+            "ink_md": "#42566A",
+            "ink_lo": "#8595A6",
+            "ink_faint": "#AAB8C4",
+            "line": "#DBE2EA",
+            "line_lo": "#EEF1F6",
+            "accent": "#2251FF",
+            "accent_hi": "#1233B8",
+            "accent_soft": "#7D9BFF",
+            "pos": "#008A6D",
+            "neg": "#C22F4E",
+            "neg_soft": "#E4A1AF",
+            "warn": "#B07A10",
+        },
+        "ilus": {
+            "toi": "#1e293b",
+            "vua": "#475569",
+            "sang": "#94a3b8",
+            "panel": "#e2e8f0",
+        },
+    },
+}
+# THEME-TOKENS:KET-THUC

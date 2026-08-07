@@ -1,8 +1,10 @@
+import json
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CSS = ROOT / "design-system" / "tokens.css"
+CHU_DE_MAC_DINH = ROOT / "design-system" / "themes" / "sang-lanh.json"
 
 
 def parse_css_root():
@@ -31,26 +33,37 @@ def parse_css_root():
     return out
 
 
+def _mau_chu_de_mac_dinh():
+    """Doc ky vong mau tu design-system/themes/sang-lanh.json, KHONG hardcode hex
+    trong than test.
+
+    Truoc ban nay, ky vong nam ngay trong dict `expected` viet tay ben duoi, tuc
+    thu canh gac (test) la mot BAN SAO cua thu bi canh (tokens.css). Sua mot gia
+    tri o tokens.css se khong lam test nay do, vi test dang so voi chinh no viet
+    tay o cho khac chu khong so voi nguon that. Nguon that duy nhat cho bang mau
+    nay la file JSON, sinh ra ca tokens.css lan tokens.py bang
+    design-system/generate-tokens.mjs; test doc lai chinh file JSON do.
+    """
+    du = json.loads(CHU_DE_MAC_DINH.read_text(encoding="utf-8"))
+    return du["mau"]
+
+
 def test_css_co_du_12_mau():
     css = parse_css_root()
-    expected = {
-        "ink": "#051C2C",
-        "ink-md": "#42566A",
-        "ink-lo": "#8595A6",
-        "line": "#DBE2EA",
-        "paper": "#FFFFFF",
-        "paper-hi": "#F7F9FC",
-        "accent": "#2251FF",
-        "accent-hi": "#1233B8",
-        "accent-soft": "#7D9BFF",
-        "warn": "#B07A10",
-        "pos": "#008A6D",
-        "neg": "#C22F4E",
-    }
-    for name, hexval in expected.items():
+    mau = _mau_chu_de_mac_dinh()
+    # Tap con 12 bien duoc doi chieu tu truoc gio (khop dung nhom COLORS trong
+    # tokens.py), lay TEN tu do chu khong go lai hex; ban chu de day du co them
+    # paper-hair/paper-elev/ink-faint/line-lo/neg-soft, xem CHI_DUNG_TREN_CSS.
+    ten_can_kiem = [
+        "ink", "ink-md", "ink-lo", "line", "paper", "paper-hi",
+        "accent", "accent-hi", "accent-soft", "warn", "pos", "neg",
+    ]
+    for name in ten_can_kiem:
+        hexval = mau[name]
         assert name in css, f"thieu bien --{name} trong tokens.css"
         assert css[name].upper() == hexval.upper(), (
-            f"--{name} lech: css={css[name]} mong doi={hexval}"
+            f"--{name} lech: css={css[name]} mong doi={hexval} "
+            f"(theo design-system/themes/sang-lanh.json)"
         )
 
 

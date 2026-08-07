@@ -1,0 +1,41 @@
+{
+  "_doc": [
+    "Nguon su that DUY NHAT cho bang mau chu de nay. design-system/generate-tokens.mjs",
+    "doc MOI file *.json trong thu muc nay roi sinh ra ba dich: khoi [data-theme=\"ten\"]",
+    "trong tokens.css, dict trong THEMES cua tokens.py, va object PALETTES cua theme.mjs.",
+    "Dung sua tay ba dich do, sua o DAY roi chay: node design-system/generate-tokens.mjs",
+    "Kiem lech (khong ghi): node design-system/generate-tokens.mjs --kiem",
+    "Gia tri trong 'mau' trich NGUYEN VAN tu tokens.css khoi :root dau tien, khong go lai",
+    "tu tri nho. Gia tri trong 'ilus' trich NGUYEN VAN tu illustrations/grammar.md muc 4",
+    "(dai neutral xam CO DINH dung cho phan ket cau/thep/be tong, bat ke accent nganh la",
+    "gi). Day la chu de duy nhat hien co, dung mac dinh cho toan repo tu truoc gio, MOI",
+    "doi cach khai chu khong doi mot gia tri mau nao."
+  ],
+  "chu_de": "sang-lanh",
+  "dung_cho": "An pham mac dinh cua repo: bao cao tai chinh/nganh, ca hai lan html-song va pdf-so. Nen trang lanh, tuong phan cao, doc duoc khi in den trang, hop giong bao cao to chuc nghiem tuc.",
+  "mau": {
+    "paper": "#FFFFFF",
+    "paper-hi": "#F7F9FC",
+    "paper-hair": "#EEF1F6",
+    "paper-elev": "#F7F9FC",
+    "ink": "#051C2C",
+    "ink-md": "#42566A",
+    "ink-lo": "#8595A6",
+    "ink-faint": "#AAB8C4",
+    "line": "#DBE2EA",
+    "line-lo": "#EEF1F6",
+    "accent": "#2251FF",
+    "accent-hi": "#1233B8",
+    "accent-soft": "#7D9BFF",
+    "pos": "#008A6D",
+    "neg": "#C22F4E",
+    "neg-soft": "#E4A1AF",
+    "warn": "#B07A10"
+  },
+  "ilus": {
+    "toi": "#1e293b",
+    "vua": "#475569",
+    "sang": "#94a3b8",
+    "panel": "#e2e8f0"
+  }
+}

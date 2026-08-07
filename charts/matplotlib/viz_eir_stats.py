@@ -27,7 +27,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import (
-    PAPER, PAPER_HI, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
+    PAPER, PAPER_HI, ON_INK, NAVY, INK, MUTED, FAINT, GRID, TEAL, BRICK, GOLD, INDIGO,
     setup_fonts, palette, tone_color, fmt_value, despine, eir_fig,
     draw_masthead, draw_source, save, _badge, tint, shade,
 )
@@ -167,7 +167,7 @@ def c_correlation_matrix(p, accent):
                 fc = diag_fc; txt_col = NAVY
             else:
                 fc = cmap(norm(v))
-                txt_col = PAPER if abs(v) >= 0.55 else INK
+                txt_col = ON_INK if abs(v) >= 0.55 else INK
             ax.add_patch(Rectangle((j - 0.47, (n - 1 - i) - 0.47), 0.94, 0.94,
                                    facecolor=fc, edgecolor=PAPER, linewidth=2.2, zorder=2))
             ax.text(j, (n - 1 - i), _cfmt(v), ha="center", va="center", fontsize=10.5,

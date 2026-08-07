@@ -3,72 +3,72 @@
   <desc>Trụ sở ngân hàng kiểu cột thức cổ điển với bậc thềm, nối với cánh phụ chứa hầm kho tiền có cửa tròn nhiều chốt khoá. Dùng minh hoạ ngành ngân hàng, tổ chức tín dụng, vốn khả dụng bị khoá theo quy định dự trữ.</desc>
   <g class="scene">
     <g class="ground">
-      <rect x="0" y="430" width="800" height="70" fill="#cbd5e1"/>
-      <rect x="0" y="430" width="800" height="5" fill="#94a3b8"/>
+      <rect x="0" y="430" width="800" height="70" fill="var(--ilus-7, #cbd5e1)"/>
+      <rect x="0" y="430" width="800" height="5" fill="var(--ilus-6, #94a3b8)"/>
     </g>
 
     <g class="main-building">
-      <rect x="210" y="255" width="260" height="175" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5"/>
-      <rect x="210" y="345" width="260" height="85" fill="#cbd5e1"/>
-      <path d="M195,255 L340,198 L485,255 Z" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.5"/>
+      <rect x="210" y="255" width="260" height="175" fill="var(--ilus-8, #e2e8f0)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.5"/>
+      <rect x="210" y="345" width="260" height="85" fill="var(--ilus-7, #cbd5e1)"/>
+      <path d="M195,255 L340,198 L485,255 Z" fill="var(--ilus-7, #cbd5e1)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.5"/>
       <rect x="197" y="251" width="286" height="7" fill="var(--accent)"/>
 
-      <g class="columns" stroke="#0f172a" stroke-width="1">
+      <g class="columns" stroke="var(--ilus-1, #0f172a)" stroke-width="1">
         <g class="col">
-          <rect x="240" y="255" width="8" height="145" fill="#f8fafc"/>
-          <rect x="248" y="255" width="8" height="145" fill="#94a3b8"/>
-          <rect x="237" y="251" width="20" height="9" fill="#94a3b8"/>
+          <rect x="240" y="255" width="8" height="145" fill="var(--ilus-9, #f8fafc)"/>
+          <rect x="248" y="255" width="8" height="145" fill="var(--ilus-6, #94a3b8)"/>
+          <rect x="237" y="251" width="20" height="9" fill="var(--ilus-6, #94a3b8)"/>
         </g>
         <g class="col">
-          <rect x="286" y="255" width="8" height="145" fill="#f8fafc"/>
-          <rect x="294" y="255" width="8" height="145" fill="#94a3b8"/>
-          <rect x="283" y="251" width="20" height="9" fill="#94a3b8"/>
+          <rect x="286" y="255" width="8" height="145" fill="var(--ilus-9, #f8fafc)"/>
+          <rect x="294" y="255" width="8" height="145" fill="var(--ilus-6, #94a3b8)"/>
+          <rect x="283" y="251" width="20" height="9" fill="var(--ilus-6, #94a3b8)"/>
         </g>
         <g class="col">
-          <rect x="332" y="255" width="8" height="95" fill="#f8fafc"/>
-          <rect x="340" y="255" width="8" height="95" fill="#94a3b8"/>
-          <rect x="329" y="251" width="20" height="9" fill="#94a3b8"/>
+          <rect x="332" y="255" width="8" height="95" fill="var(--ilus-9, #f8fafc)"/>
+          <rect x="340" y="255" width="8" height="95" fill="var(--ilus-6, #94a3b8)"/>
+          <rect x="329" y="251" width="20" height="9" fill="var(--ilus-6, #94a3b8)"/>
         </g>
         <g class="col">
-          <rect x="378" y="255" width="8" height="145" fill="#f8fafc"/>
-          <rect x="386" y="255" width="8" height="145" fill="#94a3b8"/>
-          <rect x="375" y="251" width="20" height="9" fill="#94a3b8"/>
+          <rect x="378" y="255" width="8" height="145" fill="var(--ilus-9, #f8fafc)"/>
+          <rect x="386" y="255" width="8" height="145" fill="var(--ilus-6, #94a3b8)"/>
+          <rect x="375" y="251" width="20" height="9" fill="var(--ilus-6, #94a3b8)"/>
         </g>
         <g class="col">
-          <rect x="424" y="255" width="8" height="145" fill="#f8fafc"/>
-          <rect x="432" y="255" width="8" height="145" fill="#94a3b8"/>
-          <rect x="421" y="251" width="20" height="9" fill="#94a3b8"/>
+          <rect x="424" y="255" width="8" height="145" fill="var(--ilus-9, #f8fafc)"/>
+          <rect x="432" y="255" width="8" height="145" fill="var(--ilus-6, #94a3b8)"/>
+          <rect x="421" y="251" width="20" height="9" fill="var(--ilus-6, #94a3b8)"/>
         </g>
       </g>
 
       <g class="entrance">
-        <rect x="316" y="352" width="48" height="48" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+        <rect x="316" y="352" width="48" height="48" fill="var(--ilus-2, #1e293b)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
       </g>
-      <g class="steps" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4">
+      <g class="steps" fill="var(--ilus-6, #94a3b8)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4">
         <rect x="306" y="400" width="68" height="9"/>
         <rect x="296" y="409" width="88" height="9"/>
         <rect x="286" y="418" width="108" height="9"/>
       </g>
-      <line x1="340" y1="198" x2="340" y2="172" stroke="#0f172a" stroke-width="2"/>
+      <line x1="340" y1="198" x2="340" y2="172" stroke="var(--ilus-1, #0f172a)" stroke-width="2"/>
       <path d="M340,172 L368,180 L340,188 Z" fill="var(--accent)"/>
     </g>
 
     <!-- cánh phụ kho tiền GẮN LIỀN vào cạnh phải toà nhà chính (không tách
          rời), bản v1 đặt cách 30px trông như 2 khối không liên quan -->
     <g class="vault-wing">
-      <rect x="470" y="300" width="150" height="130" fill="#334155" stroke="#0f172a" stroke-width="1.5"/>
-      <rect x="470" y="300" width="150" height="18" fill="#475569"/>
-      <line x1="470" y1="300" x2="470" y2="430" stroke="#0f172a" stroke-width="1.5"/>
+      <rect x="470" y="300" width="150" height="130" fill="var(--ilus-3, #334155)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.5"/>
+      <rect x="470" y="300" width="150" height="18" fill="var(--ilus-4, #475569)"/>
+      <line x1="470" y1="300" x2="470" y2="430" stroke="var(--ilus-1, #0f172a)" stroke-width="1.5"/>
       <g class="vault-door">
-        <circle cx="545" cy="378" r="48" fill="#94a3b8" stroke="#0f172a" stroke-width="2"/>
-        <circle cx="545" cy="378" r="33" fill="#64748b" stroke="#0f172a" stroke-width="1.4"/>
-        <g stroke="#0f172a" stroke-width="2.6">
+        <circle cx="545" cy="378" r="48" fill="var(--ilus-6, #94a3b8)" stroke="var(--ilus-1, #0f172a)" stroke-width="2"/>
+        <circle cx="545" cy="378" r="33" fill="var(--ilus-5, #64748b)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4"/>
+        <g stroke="var(--ilus-1, #0f172a)" stroke-width="2.6">
           <line x1="545" y1="347" x2="545" y2="409"/>
           <line x1="514" y1="378" x2="576" y2="378"/>
           <line x1="524" y1="357" x2="566" y2="399"/>
           <line x1="566" y1="357" x2="524" y2="399"/>
         </g>
-        <circle cx="545" cy="378" r="9" fill="var(--accent)" stroke="#0f172a" stroke-width="1.2"/>
+        <circle cx="545" cy="378" r="9" fill="var(--accent)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
       </g>
     </g>
   </g>

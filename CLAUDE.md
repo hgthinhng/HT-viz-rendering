@@ -111,6 +111,40 @@ Sửa `design-system/tokens.css` trước, rồi sửa `design-system/tokens.py`
 3. Chạy `node --test tests/consistency/catalog_drift.test.mjs`. Test này ép mọi class trong ví dụ phải tồn tại thật trong CSS
 4. Chạy `npm run verify:components`
 
+## Mọi chart phải đi qua lớp schema dùng chung
+
+Bốn file, một hợp đồng:
+
+| File | Vai trò |
+|---|---|
+| `charts/schema.vocab.json` | Từ vựng, cả hai ngôn ngữ cùng đọc. Thêm đơn vị mới thì sửa ở ĐÂY trước |
+| `charts/echarts/schema.mjs` | Validator phía Node |
+| `charts/matplotlib/schema.py` | Validator phía Python, giữ CÙNG tên trường và CÙNG mã lỗi |
+| `charts/fixtures/schema-cases.json` | 28 ca vàng, cả hai phía cùng chạy. Đổi luật thì thêm ca vào đây TRƯỚC |
+
+Mỗi preset gọi `validateSeries()` hoặc `validate_series()` ngay đầu file, fail-fast lúc build. Một
+chart sai đơn vị trong bản PDF không gọi lại được.
+
+Bốn điều dễ làm sai, đã có lý do cụ thể:
+
+**Đơn vị, nguồn, số thập phân, chiều tốt xấu và loại số liệu nằm ở cấp SERIES, không ở từng hàng.**
+Chính hàm kiểm "không trộn đơn vị" đã tố giác điều đó: nếu trộn đơn vị trong một lượt xếp hạng là
+lỗi, thì đơn vị là thuộc tính của lượt xếp hạng.
+
+**`entity.code` chỉ cần NGẮN, tối đa 24 ký tự, giữ nguyên dấu tiếng Việt.** Đừng ép viết hoa không
+dấu. Mã chứng khoán thì đẹp, nhưng phân khúc kinh doanh và tên chính sách không có mã tự nhiên, và
+"BAN LE" trên trục thì cẩu thả. Cạo dấu là thủ thuật hiển thị, không phải đặc tính dữ liệu.
+
+**Ba loại giá trị thiếu vẽ khác nhau**, đừng gộp thành một `null` chung: `chua_cong_bo` ngắt đường
+và chừa chỗ, `khong_ton_tai` ngắt hẳn, `loai_bat_thuong` ngắt và đánh dấu trên trục để người đọc
+biết là BỊ LOẠI chứ không phải THIẾU. Dùng `cachVe(status)` để hai engine hành xử giống nhau.
+
+**Cờ base case và ngoại lệ tính từ CHỈ SỐ NGUYÊN qua `coCo()`**, không so sánh giá trị số thực.
+Hai giá trị bằng nhau về mặt kinh tế vẫn khác nhau ở chữ số thứ mười lăm.
+
+Số chữ số thập phân luôn lấy từ `soThapPhan(series)`. Tự chọn ở mỗi engine là cách bản HTML hiện
+15,45% còn bản PDF hiện 15,5%.
+
 ## Khi thêm chart
 
 Màu lấy từ `charts/echarts/theme.mjs`, không hardcode hex. Mọi script chart phải kết bằng `chart.dispose(); process.exit(0);` vì ECharts SSR không tự thoát process.

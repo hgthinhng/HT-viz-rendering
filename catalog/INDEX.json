@@ -4,10 +4,10 @@
     "Sua mo ta thi sua o NGUON: comment dau file preset, docstring component,",
     "muc 'Mo ta / khi nao dung' cua catalog, hoac <desc> cua SVG. Roi chay lai."
   ],
-  "tong": 108,
+  "tong": 111,
   "theo_nhom": {
     "chart-echarts": 18,
-    "chart-matplotlib": 50,
+    "chart-matplotlib": 53,
     "component": 29,
     "minh-hoa": 11
   },
@@ -278,6 +278,17 @@
       "xem_truoc": "catalog/xem-truoc/bump.svg"
     },
     {
+      "ma": "calendar_heatmap",
+      "nhom": "chart-matplotlib",
+      "ten": "Lưới ngày kiểu GitHub contributions, một ô cho mỗi ngày",
+      "tep": "charts/matplotlib/viz_eir_risk.py:224",
+      "dinh_dang_giao": "PDF tinh",
+      "tra_loi": "\"Giá trị hằng ngày phân bố ra sao qua một tới hai năm, và ngày nào bất thường?\" Mỗi cột là một tuần, mỗi hàng là một thứ trong tuần; màu ô mã hoá giá trị của ngày đó, viền vàng đánh dấu ngày lệch hơn ba độ lệch chuẩn so với trung bình cả chuỗi.",
+      "du_lieu_can": "dates là danh sách ngày ISO (YYYY-MM-DD), values là một giá trị số cho mỗi ngày, cùng độ dài với dates. Ngày không xuất hiện trong dates để trống (không vẽ ô), không gộp vào 0. Tuỳ chọn value_label mô tả đơn vị giá trị cho thanh chú giải.",
+      "khong_dung_khi": "KHÔNG dùng khi chuỗi dưới tám tuần dữ liệu (56 ngày), vì lưới lúc đó chỉ còn vài cột, không đủ để mắt nhận ra nhịp lặp lại theo tuần;",
+      "xem_truoc": "catalog/xem-truoc/calendar_heatmap.svg"
+    },
+    {
       "ma": "candlestick",
       "nhom": "chart-matplotlib",
       "ten": "Nến giá, mở cao thấp đóng theo từng kỳ",
@@ -377,6 +388,17 @@
       "xem_truoc": "catalog/xem-truoc/diverging_bar.svg"
     },
     {
+      "ma": "drawdown",
+      "nhom": "chart-matplotlib",
+      "ten": "Sụt giảm từ đỉnh (drawdown), phần trăm mất giá tính từ đỉnh gần nhất theo",
+      "tep": "charts/matplotlib/viz_eir_risk.py:119",
+      "dinh_dang_giao": "PDF tinh",
+      "tra_loi": "\"Danh mục này đã từng lỗ sâu nhất bao nhiêu, và mất bao lâu để về lại đỉnh cũ?\" Vùng tô dưới trục 0 là mức sụt giảm so với đỉnh CAO NHẤT tính đến từng thời điểm (không phải so với kỳ liền trước), điểm sụt sâu nhất được đánh dấu kèm phần trăm, và một chú thích riêng ghi số kỳ đã mất để giá trị vượt lại đỉnh cũ, hoặc nói rõ CHƯA HỒI PHỤC nếu chuỗi kết thúc khi còn dưới đỉnh.",
+      "du_lieu_can": "dates là nhãn thời gian tăng dần, values là NAV hoặc giá trị tài sản CÙNG ĐƠN VỊ tại mỗi mốc (không phải lợi suất phần trăm đã tính sẵn từng kỳ, vì drawdown cần biết đỉnh tuyệt đối chứ không đọc lại được từ chuỗi % rời rạc). Tuỳ chọn period_label đặt tên đơn vị kỳ trong câu chú thích hồi phục (mặc định \"phiên\").",
+      "khong_dung_khi": "KHÔNG dùng khi values có dưới hai mươi quan sát, vì khi đó đường sụt giảm chỉ còn vài bậc thang rời rạc, không đủ để đọc ra hình dạng phục hồi;",
+      "xem_truoc": "catalog/xem-truoc/drawdown.svg"
+    },
+    {
       "ma": "dumbbell",
       "nhom": "chart-matplotlib",
       "ten": "Dumbbell, độ dịch chuyển của nhiều hạng mục giữa hai mốc",
@@ -397,6 +419,17 @@
       "du_lieu_can": "result là kết quả, factors là các nhân tử, tích của chúng phải ra đúng result.",
       "khong_dung_khi": "KHÔNG dùng khi tích các nhân tử không khớp kết quả, dù chỉ lệch do làm tròn, vì cả sức thuyết phục của hình nằm ở chỗ phương trình đúng.",
       "xem_truoc": null
+    },
+    {
+      "ma": "ecdf",
+      "nhom": "chart-matplotlib",
+      "ten": "Đường bậc thang phân phối tích luỹ thực nghiệm (ECDF), không cần chia bin",
+      "tep": "charts/matplotlib/viz_eir_risk.py:398",
+      "dinh_dang_giao": "PDF tinh",
+      "tra_loi": "\"Một mã đang nằm ở phân vị bao nhiêu so với toàn ngành?\" Trục dọc là phần trăm quan sát có giá trị nhỏ hơn hoặc bằng trục hoành, đọc trực tiếp mà không phải tự chọn bề rộng bin như histogram. Điểm locate (nếu có) được dóng bằng đường đứt nét kèm phân vị đọc thẳng ra được.",
+      "du_lieu_can": "values là một chuỗi giá trị (toàn ngành, toàn rổ so sánh). Tuỳ chọn locate là một giá trị cần định vị (ví dụ chỉ tiêu của một mã cụ thể) cùng locate_label đặt tên, và x_label cho trục hoành.",
+      "khong_dung_khi": "KHÔNG dùng khi mẫu dưới hai mươi quan sát, vì mỗi bậc thang khi đó nhảy hơn năm phần trăm phân vị và phóng đại một điểm dữ liệu đơn lẻ thành một bước ngoặt của cả đường;",
+      "xem_truoc": "catalog/xem-truoc/ecdf.svg"
     },
     {
       "ma": "exec_dashboard",

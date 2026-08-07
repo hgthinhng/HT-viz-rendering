@@ -278,7 +278,38 @@ def c_calendar_heatmap(p, accent):
             if abs(z) > 3.0:
                 outliers[k] = z
 
-    fig, ax = eir_fig(_meta(p, accent), figsize=(8.6, 4.6), rect=(0.055, 0.22, 0.92, 0.40))
+    # Chieu cao khung phai bam theo SO HANG THAT, khong khai cung.
+    #
+    # Luoi lich dung `set_aspect("equal")` de o ngay vuong, dung tinh than lich
+    # kieu GitHub. Nhung aspect equal cong voi mot rect cao co dinh thi matplotlib
+    # tu CO khung lai cho dung ty le roi CAN GIUA phan con lai, nen phan thua bien
+    # thanh khoang trang chet o tren va duoi luoi. Voi 15 thang, luoi rong khoang
+    # 65 cot va cao 5 hang, tuc ty le trren 13 tren 1: khung vuong chi cao chua toi
+    # mot inch trong khi rect cu danh cho no 1,84 inch. Hai phan ba la khoang trong.
+    #
+    # Hau qua that, khong phai chuyen tham my: khi hinh nay thu ve kho mot cot cua
+    # bao cao, o ngay nho toi muc khong doc duoc mau, ma doc mau chinh la toan bo
+    # gia tri cua loai chart nay.
+    # Tinh bang INCH tuyet doi, khong bang ty le. Lan dau toi sua bang ty le va
+    # nen hong: masthead va chu giai deu can mot chieu cao CO DINH tinh bang inch,
+    # nen khi tong chieu cao co lai thi phan danh cho chung co theo va chung de len
+    # nhau. Ba khoan duoi day cong lai dung bang chieu cao khung.
+    # Hai con so nay do bang mat qua ba vong render, khong phai chon bua. Vong dau
+    # dat chan 1,01 inch va chu giai de len nhan cua thanh mau, vi ban goc dat rect
+    # bottom o 1,01 nhung khung THAT bi aspect equal can giua nen day khung nam cao
+    # hon nhieu, tuc chan trang thuc te rong hon con so trong rect.
+    CAO_MASTHEAD = 1.55   # kicker, tieu de, phu de, duong ke
+    CAO_CHAN = 1.48       # thanh mau, nhan thanh mau, hai dong chu giai, dong nguon
+    RONG_FIG = 8.6
+    RONG_TRUC = RONG_FIG * 0.92
+
+    so_hang = len({dow for (_, dow) in week_of}) or 7
+    # O ngay vuong nen chieu cao luoi suy ra tu chieu rong: mot o rong bang
+    # RONG_TRUC / so_cot, va luoi cao bang so_hang o cong le tren duoi.
+    cao_luoi = RONG_TRUC * (so_hang + 1.2) / max(n_weeks, 1)
+    cao_fig = CAO_MASTHEAD + cao_luoi + CAO_CHAN
+    fig, ax = eir_fig(_meta(p, accent), figsize=(RONG_FIG, cao_fig),
+                      rect=(0.055, CAO_CHAN / cao_fig, 0.92, cao_luoi / cao_fig))
     ax.set_facecolor(PAPER)
     for sp in ax.spines.values():
         sp.set_visible(False)
@@ -293,12 +324,21 @@ def c_calendar_heatmap(p, accent):
                                linewidth=1.8 if is_out else 0.7,
                                zorder=3 if is_out else 2))
     ax.set_xlim(-0.7, n_weeks - 0.3)
-    ax.set_ylim(-0.6, 6.6)
+    # Chi ve nhung hang CO du lieu. Ban cu khai cung `set_ylim(-0.6, 6.6)` tuc bay
+    # hang, va khai cung nhan `CN` o hang 6. Du lieu chung khoan chi co T2 toi T6,
+    # nen nhan CN tro toi mot hang RONG nam duoi day luoi: no dang gan nhan cho mot
+    # thu khong ton tai, va nguoi doc se tuong con mot hang chua ve.
+    dow_co = sorted({dow for (_, dow) in week_of})
+    y_tren = 6 - dow_co[0]
+    y_duoi = 6 - dow_co[-1]
+    ax.set_ylim(y_duoi - 0.6, y_tren + 0.6)
     ax.set_aspect("equal", adjustable="box")
     ax.set_xticks([])
-    show_dow = {1: "T3", 3: "T5", 6: "CN"}  # chi 3 trong 7 hang, tranh chu de nhau
-    ax.set_yticks([6 - i for i in show_dow])
-    ax.set_yticklabels([show_dow[i] for i in show_dow], fontsize=7.8, color=MUTED,
+    # Hien nhan cach mot hang de chu khong de nhau, va CHI trong so hang co that.
+    NHAN_THU = {0: "T2", 1: "T3", 2: "T4", 3: "T5", 4: "T6", 5: "T7", 6: "CN"}
+    hien = dow_co[1::2] or dow_co
+    ax.set_yticks([6 - i for i in hien])
+    ax.set_yticklabels([NHAN_THU[i] for i in hien], fontsize=7.8, color=MUTED,
                        family=MONO)
 
     # nhan thang phia tren luoi, bo qua neu qua gan nhan truoc do (kho hep <=1 nam

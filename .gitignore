@@ -17,3 +17,6 @@ design-system/fonts/font-cache/
 # Artifact do orchestrator sinh ra. Sinh lai bang `npm run mau`, khong commit:
 # ban HTML tu du nang khoang 600KB moi file vi nhung font base64.
 examples/*/ra/
+
+# worktree tam cua agent, khong phai tai san repo
+.claude/

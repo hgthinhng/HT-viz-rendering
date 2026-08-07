@@ -16,16 +16,11 @@ distribution. If a genuine primitive is needed, port it from
 _harvest/harvest-cfa-skillchain/viz-engine/viz_render_py.py onto the cold palette in
 design-system/tokens.py rather than reviving the old file as-is.
 
-Modules merged:
-  viz_eir          21  comparison/rank/time/distribution/sell-side/part-to-whole/editorial
-  viz_eir_stats     7  correlation_matrix, distribution(VaR), tornado, spc_control_chart,
-                       seasonality, candlestick, spread_ladder
-  viz_eir_diagram   8  decision_tree, flowchart, network_graph, mechanism_flow, flow_bridge,
-                       sankey, timeline, lattice
-  viz_eir_panels    7  executive_summary, scenario_cards, swot, comparison, dupont,
-                       before_after, status_strip
-  viz_eir_kpi       5  kpi_card_with_sparkline, sparkline_row, annotated_narrative,
-                       anomaly_callout, stat_dashboard
+Modules merged: xem `_MODULES` ben duoi, va chay `--list` de biet so component that.
+Danh sach ten va so dem KHONG viet o day nua: ban cu ghi 48 component va liet ke 5
+module trong khi ma nguon da co 6 (thieu viz_eir_curves), tuc doan van nay da troi
+khoi ma nguon va khong ai biet. Mot con so viet tay trong docstring khong co gate
+nao canh; `--list` doc thang tu registry nen no khong troi duoc.
 
 Usage:
   python3 viz_super.py --spec spec.json --out-dir OUT [--only ID] [--dpi 200]
@@ -38,8 +33,13 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _eir_style as S
 from _eir_style import TEAL, save
 
+# THEM MODULE MOI THI THEM VAO DAY, neu khong component cua no bien mat khoi ca
+# `--list`, ca `scripts/sinh_xem_truoc.py`, va ca contact sheet, trong khi
+# `sinh_catalog.py` van liet ke no vi script do quet FILE chu khong quet registry.
+# Ket qua la mot component co mat trong muc luc nhung khong co ban xem truoc, va
+# khong loi nao bao ngoai mot dong "bo qua" tren stderr.
 _MODULES = ["viz_eir", "viz_eir_stats", "viz_eir_diagram", "viz_eir_panels", "viz_eir_kpi",
-            "viz_eir_curves"]
+            "viz_eir_curves", "viz_eir_risk"]
 
 COMPONENTS = {}
 _SOURCE = {}

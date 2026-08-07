@@ -39,22 +39,34 @@ nguyên hành vi.
   `npm test` đỏ ở bước đếm.
 - Luật `rgba(R G B / A)` GỠ HẲN. Luật `blur=0` giữ nhưng lý do đã đính chính.
 
-### Việc tiếp theo, ĐÚNG THỨ TỰ NÀY
+### Đã làm XONG bước 3 và bước 5, cộng ba tài sản mới
 
-3. `design-system/themes/*.json` làm nguồn sự thật duy nhất, cộng generator sinh ra cả
-   `tokens.css`, `tokens.py` và `theme.mjs`, cộng test drift. **Bảng màu hiện nằm ở 5 nơi viết
-   tay**, trong đó hai nơi là TEST tự hardcode kỳ vọng (`tokens_test.py:37-45`,
-   `chart_theme.test.mjs:12-22`), tức thứ canh gác lại là bản sao của thứ bị canh.
+**Bước 3 XONG**: `design-system/themes/sang-lanh.json` là nguồn sự thật duy nhất, cộng
+`design-system/generate-tokens.mjs` sinh ra cả `tokens.css`, `tokens.py` và `theme.mjs` qua marker
+`THEME-TOKENS:BAT-DAU/KET-THUC`, cộng `tests/consistency/theme_tokens_drift.test.mjs`. Quan trọng
+nhất: **hai test tự hardcode kỳ vọng nay đọc từ JSON** (`tokens_test.py`, `chart_theme.test.mjs`),
+tức đã xoá đúng cái lỗ "thứ canh gác là bản sao của thứ bị canh". Chưa thêm chủ đề tối, mới dựng
+CƠ CHẾ. Bốn token `--ilus-toi/-vua/-sang/-panel` đã khai sẵn cho bước 4.
+
+**Bước 5 XONG, và con số thật là 22 chứ không phải 29.** Ước lượng 29 đến từ một phép grep thô
+đếm cả comment, docstring, khai hằng số và `facecolor=`/`fc=`/`edgecolor=`/`markerfacecolor=`.
+Đọc từng ngữ cảnh thì đúng 22 chỗ là chữ hoặc glyph đặt trên khối màu đậm. `ON_INK` bằng đúng
+`PAPER` hôm nay nên **31 trên 31 ảnh sinh ra khớp SHA256 tuyệt đối**, không đổi một pixel.
+`viz_eir_kpi.py` không có chỗ nào thuộc nhóm này. Hai chỗ trong `viz_eir_diagram.py` là
+`marker="*"` và ký hiệu `+`/`-`, không phải text thật nhưng đóng đúng vai glyph tương phản trên
+node NAVY, nên xếp vào `ON_INK`; không xếp thì chúng biến mất trên nền tối y hệt chữ.
+
+**Ba tài sản MỚI đầu tiên sau cú bẻ lái**, trong file riêng `charts/matplotlib/viz_eir_risk.py`:
+`c_drawdown`, `c_calendar_heatmap`, `c_ecdf`. Kho lên **111 tài sản** (53 matplotlib). Cả ba là
+vector thuần, 0 raster, đã nghiệm thu bằng cách render PDF thật rồi đếm bằng `doc.xref_object`.
+
+### Việc tiếp theo
+
 4. Migrate **345 hex viết cứng trong 11 file `illustrations/svg/`** sang `var()`. Không tự động
    hoá được vì cùng một hex đóng nhiều vai trong cùng một hình. Trả HAI nợ một lần, xem mục
-   "Hai hệ màu song song" bên dưới.
-5. **29 chỗ `color=PAPER` / `fg=PAPER` / `c=PAPER` trong matplotlib sang một hằng số riêng
-   `ON_INK`. PHẢI XONG TRƯỚC KHI BẬT BẤT KỲ CHỦ ĐỀ NỀN TỐI NÀO.** Chúng là chữ trắng đặt trên
-   khối màu đậm; trên nền tối `PAPER` thành màu tối và ta được chữ tối trên nền tối, đúng lớp
-   lỗi `.bia h1` mà mọi phép đếm đều báo bình thường. 43 chỗ `facecolor=PAPER` thì TỰ ĐÚNG.
-
-**Chưa render thêm một tài sản mới nào.** Kho vẫn đúng 108 như trước. Danh sách nạp đã lọc qua
-khung digital nằm ở memory toàn cục `project_ht_viz_rendering_2026-08-06.md`.
+   "Hai hệ màu song song" bên dưới. Đây là khoản đắt nhất còn lại.
+6. Tách `option()` khỏi `render` trong ECharts để một nguồn preset phục vụ cả hai làn. Xem mục
+   "Các phase sau".
 
 ### Hai hệ màu song song, nợ có từ TRƯỚC cú bẻ lái
 
@@ -96,6 +108,33 @@ bó tay bản trình duyệt. Nó còn đẻ ra luật con `rgba(R G B / A)` t�
 **Bài học cấp doctrine**: repo có gate ép mọi gate phải tự đỏ được, nhưng KHÔNG có gate nào hỏi
 **"luật này còn lý do không"**. Mỗi luật cứng từ nay phải ghi LÝ DO và ĐIỀU KIỆN HẾT HIỆU LỰC
 ngay cạnh nó.
+
+### Ba khe hở tìm được khi dựng ba component mới
+
+**`_eir_style.py: draw_masthead()` không tự xuống dòng.** Phụ đề dài quá khoảng 110 tới 120 ký
+tự thì TRÀN QUA LỀ PHẢI. Đây là bệnh CÓ SẴN, tái hiện được trên component cũ `seasonality` chứ
+không phải do component mới gây ra. Chưa sửa vì nằm ngoài phạm vi đợt đó. Trong lúc chưa sửa thì
+giữ phụ đề dưới 95 ký tự.
+
+**`viz_super.py: _MODULES` là danh sách viết cứng.** Thêm một module mới mà quên khai vào đó thì
+component của nó biến mất khỏi `--list`, khỏi `scripts/sinh_xem_truoc.py`, và khỏi contact sheet,
+TRONG KHI `sinh_catalog.py` vẫn liệt kê nó vì script đó quét FILE chứ không quét registry. Kết
+quả là một component có mặt trong mục lục nhưng không có bản xem trước, và không lỗi nào báo
+ngoài một dòng "bo qua" trên stderr. Đã vấp thật khi nạp `viz_eir_risk.py`. Docstring của
+`viz_super.py` cũng đã trôi từ trước: ghi 48 component và liệt kê 5 module trong khi mã đã có 6.
+Nay docstring không còn viết tay con số nào, chỉ trỏ tới `--list`.
+
+**Bẫy soi ảnh NGƯỢC với bẫy đã ghi trong `CLAUDE.md`.** Luật cũ cảnh báo "soi ảnh toàn cảnh bị
+thu nhỏ làm chi tiết nhỏ biến mất". Ca `c_calendar_heatmap` là chiều ngược lại: soi crop thì mọi
+chi tiết đúng hết (ô outlier đúng màu, viền vàng đúng chỗ, nhãn tháng không đè nhau) nhưng BỐ CỤC
+TỔNG THỂ sai, lưới chỉ chiếm một dải mỏng giữa khung và nhãn `CN` gán cho một hàng không tồn tại.
+Phải soi CẢ HAI, và soi toàn cảnh TRƯỚC.
+
+Một chi tiết kỹ thuật đáng nhớ từ ca đó: `set_aspect("equal")` cộng một `rect` cao cố định thì
+matplotlib CO khung lại cho đúng tỷ lệ rồi CĂN GIỮA phần còn lại, nên phần thừa biến thành khoảng
+trắng chết. Muốn khung lấp đầy thì phải tính chiều cao khung TỪ chiều rộng và số hàng, và tính
+bằng INCH TUYỆT ĐỐI chứ không bằng tỷ lệ, vì masthead và chân trang cần chiều cao cố định; nén
+theo tỷ lệ thì chúng co theo và đè lên nhau.
 
 ### Nợ nhỏ: SVG sinh ra không tái lập được
 

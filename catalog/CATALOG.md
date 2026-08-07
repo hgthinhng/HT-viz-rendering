@@ -4,7 +4,7 @@
 Sửa mô tả thì sửa ở nguồn (comment đầu file preset, docstring component, mục
 `Mô tả / khi nào dùng` của catalog, hoặc `<desc>` của SVG) rồi chạy lại.
 
-Tổng 108 tài sản: 18 chart-echarts, 50 chart-matplotlib, 29 component, 11 minh-hoa.
+Tổng 111 tài sản: 18 chart-echarts, 53 chart-matplotlib, 29 component, 11 minh-hoa.
 
 ## Chart ECharts, cho bản HTML tương tác
 
@@ -43,6 +43,7 @@ Nguồn: `charts/matplotlib/`
 | `boxplot` | "Nhóm nào phân tán rộng hơn, và đuôi nằm ở đâu?" Hộp cho trung vị và tứ phân vị, râu cho vùng ngoài, nên đọc được cả tâm lẫn độ rộng. | KHÔNG dùng khi mỗi nhóm dưới khoảng mười quan sát, vì tứ phân vị của mẫu quá nhỏ là con số gợi ý độ chính xác không có thật (dùng... |
 | `bullet` | "Chỉ tiêu này đã đạt ngưỡng chưa, và đang nằm ở vùng nào?" Thay cho gauge vốn bị repo cấm, và xếp được nhiều dòng thành một cột gọn. | KHÔNG dùng khi không có mục tiêu hoặc ngưỡng thật để so, vì khi đó vạch mục tiêu là một con số bịa nằm giữa hình. |
 | `bump` | "Thứ hạng đổi chỗ thế nào qua các kỳ, ai lên ai xuống?" Trục dọc là HẠNG chứ không phải giá trị, nên hai thực thể cách nhau một bậc trông như nhau dù giá trị chênh rất xa. | KHÔNG dùng khi độ lớn của khoảng cách mới là thông điệp, vì bump cố ý vứt bỏ nó. |
+| `calendar_heatmap` | "Giá trị hằng ngày phân bố ra sao qua một tới hai năm, và ngày nào bất thường?" Mỗi cột là một tuần, mỗi hàng là một thứ trong tuần; màu ô mã hoá giá trị của ngày đó, viền vàng đánh dấu... | KHÔNG dùng khi chuỗi dưới tám tuần dữ liệu (56 ngày), vì lưới lúc đó chỉ còn vài cột, không đủ để mắt nhận ra nhịp lặp lại theo... |
 | `candlestick` | "Trong từng kỳ, giá đi tới đâu và đóng ở đâu so với mở?" Bóng nến giữ lại biên độ trong kỳ mà đường giá đóng cửa vứt mất. | KHÔNG dùng quá khoảng sáu mươi kỳ trên một khổ giấy, vì thân nến mỏng dưới một điểm ảnh thì bóng và thân nhập làm một. |
 | `comparison` | "Hai phương án khác nhau ở những điểm nào?" Hai cột, các dòng thẳng hàng nhau nên so được từng cặp. | KHÔNG dùng khi hai bên không có cùng bộ tiêu chí, vì hàng thẳng nhau khẳng định rằng hai ô cùng hàng nói về cùng một thứ. |
 | `comps_scatter` | "Bội số của doanh nghiệp này cao hay thấp so với mức mà tăng trưởng của nó giải thích được?" Đường hồi quy biến câu hỏi đắt hay rẻ thành khoảng cách tới đường. | KHÔNG dùng khi dưới sáu điểm, vì đường hồi quy qua vài điểm là một khẳng định thống kê không đứng được. |
@@ -52,8 +53,10 @@ Nguồn: `charts/matplotlib/`
 | `decision_tree` | "Quyết định này rẽ nhánh ra sao, mỗi nhánh xác suất bao nhiêu và dẫn tới kết cục nào?" | KHÔNG dùng quá ba tầng, vì cây rộng theo hàm mũ và tầng thứ tư đã vượt khổ giấy. |
 | `distribution` | "Chuỗi này phân bố ra sao, đuôi trái dày cỡ nào, và ngưỡng tổn thất nằm ở đâu?" | KHÔNG dùng khi mẫu quá ngắn để hình dạng có nghĩa, và đừng vẽ vạch độ lệch chuẩn lên một phân phối lệch rõ, vì độ lệch chuẩn khi... |
 | `diverging_bar` | "Hạng mục nào vượt chuẩn, hạng mục nào thua chuẩn, và chênh bao nhiêu?" Mốc không là trục đối xứng nên dấu đọc được ngay mà không phải tra nhãn. | KHÔNG dùng khi mọi giá trị cùng dấu, vì khi đó trục không mất vai trò và hình suy biến thành lollipop nhưng tốn gấp đôi bề ngang. |
+| `drawdown` | "Danh mục này đã từng lỗ sâu nhất bao nhiêu, và mất bao lâu để về lại đỉnh cũ?" Vùng tô dưới trục 0 là mức sụt giảm so với đỉnh CAO NHẤT tính đến từng thời điểm (không phải so với kỳ liền... | KHÔNG dùng khi values có dưới hai mươi quan sát, vì khi đó đường sụt giảm chỉ còn vài bậc thang rời rạc, không đủ để đọc ra hình... |
 | `dumbbell` | "Từng hạng mục dịch chuyển bao nhiêu giữa hai mốc, và hạng mục nào dịch mạnh nhất?" Nhấn vào ĐỘ CHÊNH giữa hai đầu chứ không vào giá trị tuyệt đối, nên đọc nhanh hơn hai cột cạnh nhau. | KHÔNG dùng khi có hơn hai mốc thời gian (dùng index100 hoặc bump), hoặc khi thứ hạng quan trọng hơn độ chênh (dùng lollipop). |
 | `dupont` | "Chỉ số tổng hợp này được tạo bởi những cấu phần nhân với nhau nào, và cấu phần nào kéo nó đi?" Dạng phương trình bằng thẻ. | KHÔNG dùng khi tích các nhân tử không khớp kết quả, dù chỉ lệch do làm tròn, vì cả sức thuyết phục của hình nằm ở chỗ phương... |
+| `ecdf` | "Một mã đang nằm ở phân vị bao nhiêu so với toàn ngành?" Trục dọc là phần trăm quan sát có giá trị nhỏ hơn hoặc bằng trục hoành, đọc trực tiếp mà không phải tự chọn bề rộng bin như... | KHÔNG dùng khi mẫu dưới hai mươi quan sát, vì mỗi bậc thang khi đó nhảy hơn năm phần trăm phân vị và phóng đại một điểm dữ liệu... |
 | `exec_dashboard` | "Toàn cảnh của hồ sơ này trong một trang là gì?" Dùng làm trang mở của báo cáo dài, để người đọc vội vẫn nắm được khung. | KHÔNG dùng cho báo cáo dưới sáu trang, vì khi đó nó lặp lại đúng thứ mà chính báo cáo sắp nói, và không dùng làm nơi chứa mọi số... |
 | `executive_summary` | "Bốn ý phải nhớ của hồ sơ này là gì?" Bốn ô văn bản, không có số liệu nào chen vào. | KHÔNG dùng khi bốn ý chưa thật sự chốt, vì bố cục bốn ô cân đối khẳng định rằng chúng ngang tầm nhau và đã được cân nhắc xong. |
 | `fan` | "Dự báo trung tâm là bao nhiêu, và vùng bất định quanh nó rộng ra thế nào theo thời gian?" Dải tô nhạt dần ra ngoài đọc thẳng thành mức tin cậy. | KHÔNG dùng khi các dải không đến từ một phân phối thật mà chỉ là ba kịch bản rời rạc, vì hình quạt khẳng định một liên tục xác... |

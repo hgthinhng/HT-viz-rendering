@@ -75,15 +75,60 @@ hex**: chúng là accent ngành, thuộc trục khác với trục chủ đề.
 Mọi `var()` có giá trị dự phòng bằng đúng hex cũ, vì các file `.svg` còn được mở ĐỘC LẬP ngoài
 trang HTML. Thiếu dự phòng là hình mất sạch màu, và chỉ lộ ra ở đường mở độc lập.
 
+### ECharts: một nguồn preset cho hai làn, XONG
+
+`option(params)` tách hẳn khỏi render. Ba đường dùng chung một nguồn:
+`render-static.mjs` (SSR, nơi DUY NHẤT ép `animation:false`, cộng hậu xử lý hex sang `var()`) ·
+`mount-live.mjs` (mount trong DOM thật, GIỮ animation mặc định) · `registry.mjs` (18 mục).
+`baseOption()` không còn tự khai `animation:false`, vì đó là luật của ĐƯỜNG SSR chứ không phải
+của dữ liệu chart.
+
+**Bẫy hex nướng vào SVG tĩnh đã chốt cách xử lý**: hậu xử lý trong `renderStatic()` đổi mọi hex
+THUỘC BẢNG MÀU sang `var(--token, #hex-cũ)`. An toàn vì tập hex là TẬP ĐÓNG sinh từ `PALETTE`,
+biết chính xác phải tìm gì. `hex-token.mjs` giữ bảng và hàm `demHexThoConLai()`, có gate riêng đã
+kiểm đỏ được.
+
+Nghiệm thu: 19 output (18 preset cộng biến thể `-dot`) khớp số nét vẽ TUYỆT ĐỐI với bản trước
+refactor. Cộng bằng chứng điều kiện ĐỦ: nhúng SVG đã hậu xử lý vào trang có token giả, accent đo
+được đổi từ `rgb(34, 81, 255)` sang `rgb(255, 106, 0)`, và ảnh chụp xác nhận TOÀN BỘ chart đổi
+theo chứ không riêng một điểm.
+
+### Bộ gate làn `html-song`, chín gate, XONG
+
+`gates/gates_song.mjs` (file riêng, `gates/gates.mjs` giữ nguyên cho làn `pdf-so`), chín cặp
+fixture trong `gates/fixtures/song/`, test ép đỏ xanh ở `tests/consistency/gate_do_xanh_song.test.mjs`.
+`gates/run.mjs` thêm nhánh `--lan=html-song` nhận một mình file HTML; nhánh mặc định giữ nguyên
+hành vi cũ. KHÔNG gate nào bị loại.
+
+`THEME-MATCH` có hai lớp, và chúng bắt HAI BỆNH KHÁC NHAU chứ không dự phòng cho nhau: bệnh kinh
+điển "chart trắng trên nền tối" cho tương phản RẤT CAO (18,5:1) nên lớp đo thực nghiệm không bắt
+được, chỉ lớp khai báo bắt; lớp thực nghiệm bắt bệnh ngược lại là SVG chìm vào nền.
+
+### Ba phát hiện phụ của đợt này
+
+**`06-tornado.mjs` có một tính năng CHƯA BAO GIỜ vẽ ra.** Vạch base-case qua `chart.getOption()`
+cộng gán lại cộng `setOption()` lần hai không hề hiện trên chart: đếm chuỗi "Base" trong SVG gốc
+chỉ ra 1 lần, và đó là từ phụ đề. Đã GIỮ nguyên hành vi để đảm bảo không đổi diện mạo, ghi chú
+trong mã, chưa sửa vì ngoài phạm vi.
+
+**Cả 18 preset cộng `fmt.mjs` đọc `process.argv[1]` và import `node:fs` TĨNH ở đỉnh file**, nên
+ném lỗi ngay khi bị import trong trình duyệt. Nghĩa là `mount-live.mjs` sẽ vô dụng cho toàn bộ
+nếu không sửa. Đã vá bằng import động cộng `typeof process !== 'undefined'`, kiểm bằng mount thật
+qua Chromium và xác nhận `chart.getOption().animation === 'auto'`, tức đường sống KHÔNG bị ép tắt.
+
+**Giới hạn còn lại, đã khai không giấu**: preset 15, 16, 17, 18 vẫn CHƯA mount sống được, vì
+`schema.mjs` dùng chung có `fs.readFileSync('schema.vocab.json')` không điều kiện ở đỉnh file.
+Sửa nó cần thiết kế riêng vì file đó dùng chung với `schema.py`.
+
 ### Việc tiếp theo
 
-- Tách `option()` khỏi `render` trong ECharts để một nguồn preset phục vụ cả hai làn. Xem mục
-  "Các phase sau". Bẫy kiến trúc SSR nướng hex vào SVG tĩnh vẫn CHƯA CHỐT cách xử lý.
-- Bộ gate làn A, chín gate. Đặc tả ở memory toàn cục.
-- `grammar.md` mục 4 vẫn đang mô tả dải bốn bậc trong khi thực tế là chín. Sửa cho khớp.
+- Gỡ nốt `schema.mjs` khỏi `fs` để 4 preset còn lại mount sống được.
+- Sửa `06-tornado.mjs`: hoặc làm vạch base-case vẽ thật, hoặc bỏ hẳn mã chết.
+- Dựng một ẤN PHẨM làn `html-song` thật đầu tiên. Hạ tầng đã đủ, chưa có trang nào dùng.
 - Định nghĩa giá trị cho một chủ đề TỐI. Lúc đó mới đụng giới hạn đã biết: một mã hex trong minh
   hoạ có thể đóng NHIỀU vai (vừa là nền trời vừa là thân kim loại), và ánh xạ một đối một không
   tách hai vai đó ra được. Phải tách ở TỪNG HÌNH chứ không tách ở token.
+- `_eir_style.py: draw_masthead()` chưa tự xuống dòng, phụ đề quá ~110 ký tự vẫn tràn lề phải.
 
 ### Bẫy XML: `var()` bọc vào một hex nằm trong COMMENT làm hỏng CẢ FILE
 

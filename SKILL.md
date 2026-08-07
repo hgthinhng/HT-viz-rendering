@@ -1,6 +1,6 @@
 ---
 name: HT-viz-rendering
-description: Sinh báo cáo và phân tích tài chính tiếng Việt chất lượng xuất bản, xuất HTML self-contained và PDF in được. Có chart tài chính đúng chuẩn, component kể chuyện print-safe, và minh hoạ ngành SVG neo được số liệu vào từng bộ phận vật thể. Dùng khi cần làm báo cáo ngành, báo cáo cổ phiếu, bản tin thị trường, hoặc deal pack.
+description: Sinh báo cáo và phân tích tài chính tiếng Việt chất lượng xuất bản, xuất bản DIGITAL theo hai làn chọn được cho từng ấn phẩm - `html-song` (HTML tự đủ, có animation và tương tác) hoặc `pdf-so` (PDF đọc trên màn hình, tĩnh, có siêu liên kết và bookmark). Có chart tài chính đúng chuẩn, component kể chuyện, và minh hoạ ngành SVG neo được số liệu vào từng bộ phận vật thể. Dùng khi cần làm báo cáo ngành, báo cáo cổ phiếu, bản tin thị trường, hoặc deal pack.
 ---
 
 # HT-viz-rendering
@@ -17,17 +17,28 @@ chọn chart, viết chữ, vẽ minh hoạ, quyết định khó) sẽ tới �
 
 Đây là kết quả ĐO ĐƯỢC, vi phạm là hỏng file giao đi. Chi tiết và lý do ở `CLAUDE.md`.
 
-- Shadow chỉ dùng offset cứng, blur phải bằng 0
+**Sống ở CẢ HAI làn** (không dính gì tới môi trường xuất bản):
+
+- Cấm gauge và radar
+- Không em-dash và en-dash trong mọi nội dung hiển thị, cấm AI-slop, cấm câu kết cách ngôn
+- Mọi số hiển thị phải có mã nguồn trong sổ nguồn, thiếu là build dừng
+- `font-family` phải là list kết thúc generic keyword, không dùng một tên trần
+- Font nhúng thẳng vào file, không trỏ đường dẫn tuyệt đối trên máy đang làm
+- `design-system/tokens.css` có hai khối `:root`, không khai một biến ở cả hai khối
+
+**Chỉ áp cho làn `pdf-so`** (sinh ra vì WeasyPrint hoặc vì trang giấy):
+
 - Cấm `filter: blur()` và `backdrop-filter`
 - Media query co giãn màn hình phải có `screen`
-- Cấm gauge và radar
-- Đếm ảnh raster bằng `doc.xref_object`, không dùng `get_images`
-- Không em-dash và en-dash trong mọi nội dung hiển thị
-- `font-family` phải là list kết thúc generic keyword, không dùng một tên trần
-- `design-system/tokens.css` có hai khối `:root`, không khai một biến ở cả hai khối
-- Shadow viết `rgba(R G B / A)`, không dùng dấu phẩy trong ngoặc màu
-- File giao khách khai `<html lang="vi" data-theme="light">` để không đổi màu theo máy khách
-- Font nhúng thẳng vào file, không trỏ đường dẫn tuyệt đối trên máy đang làm
+- Đếm ảnh raster bằng `doc.xref_object` không dùng `get_images`, ngưỡng 0
+- Callout của minh hoạ phải bake trước, vì WeasyPrint không chạy JavaScript
+- Chart tắt animation, vì ECharts SSR để lại keyframe kéo marker về gốc toạ độ
+
+**Đã ĐỔI, đừng dùng bản cũ**:
+
+- Shadow blur bằng 0 cho họ token hiện tại. Token màn hình `--shadow-man-*` được dùng blur. Lý do cũ ("bẫy raster khi in") SAI, xem `CLAUDE.md`.
+- Luật `rgba(R G B / A)` ĐÃ GỠ, viết cú pháp nào cũng được.
+- Khoá theme: `data-theme` nay là THAM SỐ (`--chu-de`), mặc định vẫn `light`. Chưa được bật chủ đề tối cho tới khi chart matplotlib, chart ECharts và 11 minh hoạ SVG có bản theo nền.
 
 ## Làm một báo cáo: đường ống
 

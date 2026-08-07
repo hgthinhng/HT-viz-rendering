@@ -2,6 +2,107 @@
 
 Đọc file này trước tiên. Nó cho biết đang ở đâu và làm gì tiếp.
 
+## ĐỌC MỤC NÀY TRƯỚC: tiền đề của repo đã đổi (07-08)
+
+Repo được xây trên tiền đề **"PDF IN ĐƯỢC"**. Người dùng đã phán quyết tiền đề đó sai với thực
+tế: không ai in bản giấy nữa. Giữ nó là tự bóp chính mình, vì nó loại oan trọn hai trường phái
+mạnh nhất của nghiên cứu (narrative formats và motion idioms) chỉ vì WeasyPrint không chạy
+JavaScript.
+
+**Đích mới: DIGITAL ONLY, hai làn, người dùng chọn theo từng ấn phẩm.**
+
+| Làn | Là gì | Được phép | Còn ràng buộc |
+|---|---|---|---|
+| `html-song` | HTML tự đủ mở bằng trình duyệt | animation, tương tác, scrollytelling, tooltip, hover, JavaScript lúc chạy, canvas, WebGL, blur, dark mode, responsive | một file tự đủ, chạy offline, không CDN ngoài, font nhúng |
+| `pdf-so` | PDF đọc trên MÀN HÌNH, không phải để in | khổ ngang, màu RGB, siêu liên kết, bookmark, hết lo lề nhà in | tĩnh hoàn toàn, chữ chọn được trong tầng text |
+
+**Engine PDF: người dùng đã chốt GIỮ WeasyPrint**, không đổi Chromium. Nên `bake_svg.mjs`,
+gate 6, bảng ba thuộc tính WeasyPrint bỏ qua, và lệnh cấm `color-mix()` đều GIỮ NGUYÊN cho làn
+`pdf-so`. Siêu liên kết và bookmark vẫn làm được qua `bookmark-level` mà WeasyPrint hỗ trợ sẵn.
+
+**Bảng màu ĐÃ MỞ**: trắng lạnh nay là MẶC ĐỊNH, không còn là hằng số. Ràng buộc con giữ nguyên
+độ cứng: một báo cáo chỉ MỘT bảng màu, báo cáo chọn TÊN bảng chứ không chọn hex, và mọi bảng
+mới phải qua gate tương phản. Gate đó CHƯA CÓ, là việc mới đẻ ra từ quyết định này.
+
+**Bốn luật KHÔNG được nới theo**, vì chúng không sinh ra từ in ấn: cấm gauge và radar (lý do
+đúng sai phân tích) · cấm em-dash, en-dash, AI-slop, câu kết cách ngôn (văn phong) · font phải
+nhúng (máy khách không có font) · mọi số phải có nguồn.
+
+### Đã làm được gì cho cú bẻ lái (commit `e9a1336`)
+
+Bước 1 và 2 XONG. Cả hai đều là GỠ ràng buộc, không thêm tính năng, nên mọi lời gọi cũ giữ
+nguyên hành vi.
+
+- `nap_svg()` nhận `cho_phep_raster`, `lap_trang()` nhận `chu_de`, `dung()` nhận `lan` và
+  `chu_de`, CLI có `--lan` và `--chu-de`. Mặc định `pdf-so` và `light`.
+- `catalog_drift.test.mjs` đổi từ `assert.equal(29)` sang SÀN, nên thêm component không còn làm
+  `npm test` đỏ ở bước đếm.
+- Luật `rgba(R G B / A)` GỠ HẲN. Luật `blur=0` giữ nhưng lý do đã đính chính.
+
+### Việc tiếp theo, ĐÚNG THỨ TỰ NÀY
+
+3. `design-system/themes/*.json` làm nguồn sự thật duy nhất, cộng generator sinh ra cả
+   `tokens.css`, `tokens.py` và `theme.mjs`, cộng test drift. **Bảng màu hiện nằm ở 5 nơi viết
+   tay**, trong đó hai nơi là TEST tự hardcode kỳ vọng (`tokens_test.py:37-45`,
+   `chart_theme.test.mjs:12-22`), tức thứ canh gác lại là bản sao của thứ bị canh.
+4. Migrate **345 hex viết cứng trong 11 file `illustrations/svg/`** sang `var()`. Không tự động
+   hoá được vì cùng một hex đóng nhiều vai trong cùng một hình. Trả HAI nợ một lần, xem mục
+   "Hai hệ màu song song" bên dưới.
+5. **29 chỗ `color=PAPER` / `fg=PAPER` / `c=PAPER` trong matplotlib sang một hằng số riêng
+   `ON_INK`. PHẢI XONG TRƯỚC KHI BẬT BẤT KỲ CHỦ ĐỀ NỀN TỐI NÀO.** Chúng là chữ trắng đặt trên
+   khối màu đậm; trên nền tối `PAPER` thành màu tối và ta được chữ tối trên nền tối, đúng lớp
+   lỗi `.bia h1` mà mọi phép đếm đều báo bình thường. 43 chỗ `facecolor=PAPER` thì TỰ ĐÚNG.
+
+**Chưa render thêm một tài sản mới nào.** Kho vẫn đúng 108 như trước. Danh sách nạp đã lọc qua
+khung digital nằm ở memory toàn cục `project_ht_viz_rendering_2026-08-06.md`.
+
+### Hai hệ màu song song, nợ có từ TRƯỚC cú bẻ lái
+
+11 minh hoạ SVG dùng **345 hex viết cứng, và không một mã nào là `#051C2C` hay `#2251FF`**.
+Chúng là bảng Tailwind (`#0f172a`, `#e2e8f0`, `#64748b`, `#2563eb`, `#f59e0b`, `#0d9488`). Tầng
+minh hoạ **chưa bao giờ đi qua cửa `tokens`**, trong khi nhóm matplotlib đã bị ép đi qua bằng cả
+một khối lập luận ở `_eir_style.py:29-52`. Chỉ `--accent` là di động, xuất hiện đúng 2 lần trong
+89 dòng của `logistics-container-ship.svg`.
+
+Chuyển 345 hex sang `var()` trả cả hai nợ một lượt. Sơn tay sang bảng tối thì trả một nợ và đẻ
+thêm một nợ (22 file thay vì 11).
+
+### Bẫy kiến trúc ECharts phải chốt TRƯỚC khi động vào `theme.mjs`
+
+ECharts SSR ghi hex **thẳng** vào SVG tĩnh, không `var()` nào chạy lúc người đọc xem (kiểm được
+trên `out-01-waterfall.svg`: 0 lần `var(--`, cả 8 mã hex đã bake thành chữ literal). Nên "chart
+theo chủ đề người đọc chọn" KHÔNG làm được bằng CSS. Hai đường, chưa chọn: sinh N bản SVG mỗi
+chart (chi phí nhân theo số chủ đề), hoặc hậu xử lý đổi hex thành `var()` (một bản duy nhất,
+nhưng sót một hex là ra vệt màu lạc rất khó bắt bằng mắt, phải có gate đếm hex còn sót).
+
+### Ba gate rỗng MỚI phát hiện, cộng vào ba cái của Phase 1
+
+4. `gates/gates.mjs:261-264` gate 5 CHART-SONG: SVG không có chuỗi chữ dài từ 4 ký tự thì
+   `continue` mà KHÔNG đổi `trang_thai`. Hình đó vẫn PASS, chỉ còn được che bởi phép kiểm yếu
+   nhất là XML parse được.
+5. Gate `khoa-sang-khong-doi-theo-may-khach` chỉ đọc `getComputedStyle(document.body)`, tức
+   KHÔNG nhìn thấy chart hay minh hoạ, nên không có khả năng phát hiện đúng bệnh mà luật khoá
+   sáng sinh ra để tránh.
+6. `--shadow-*` blur bằng 0 canh một thứ WeasyPrint chưa bao giờ vẽ. Xem mục dưới.
+
+### Một luật cấp hệ thống đã vô nghĩa suốt hai phase
+
+`docs/specs/...design.md:79` chốt "shadow offset cứng là ngôn ngữ độ nổi DUY NHẤT của toàn hệ",
+dựa trên phép đo chạy trên **Chromium in**. Nhưng engine chốt là **WeasyPrint**, và WeasyPrint
+**không vẽ box-shadow bằng bất kỳ cú pháp nào**. Luật đó chưa bao giờ bảo vệ bản giao đi; nó chỉ
+bó tay bản trình duyệt. Nó còn đẻ ra luật con `rgba(R G B / A)` tồn tại CHỈ để một dòng
+`split(",")` trong test chạy đúng.
+
+**Bài học cấp doctrine**: repo có gate ép mọi gate phải tự đỏ được, nhưng KHÔNG có gate nào hỏi
+**"luật này còn lý do không"**. Mỗi luật cứng từ nay phải ghi LÝ DO và ĐIỀU KIỆN HẾT HIỆU LỰC
+ngay cạnh nó.
+
+### Nợ nhỏ: SVG sinh ra không tái lập được
+
+`hinh/ra-*.svg` được commit nhưng matplotlib nhúng `<dc:date>` và một `clip-path` id ngẫu nhiên,
+nên mỗi lần chạy `npm run mau` là cây git bẩn thêm một file dù không có gì đổi thật. Chữa bằng
+`svg.hashsalt` và tắt metadata.
+
 ## Đang ở đâu
 
 **Phase 2 ĐÓNG.** Đường ống từ markdown ra PDF đã qua gate chạy được bằng một lệnh, và
@@ -132,11 +233,20 @@ quyết định đã chốt) và mục 5 (kiến trúc) trước khi động và
    trong 48 component EIR là comparison, index100, flow_bridge, comps_scatter, correlation_matrix,
    distribution. Bản gốc vẫn nằm ở `_harvest/harvest-cfa-skillchain/viz-engine/viz_render_py.py`
    nếu cần port lại sang bảng màu lạnh.
-2. **Hệ màu tối: GIỮ cho trang nội bộ, KHOÁ SÁNG cho file giao đi.** File giao khách phải khai
-   `<html lang="vi" data-theme="light">`. Gate `khoa-sang-khong-doi-theo-may-khach` đo bằng cách
-   mở trang ở hai context màu rồi so nền với màu chữ. Đã đo hậu quả thật nếu quên khai: nền đổi
-   từ `#FFFFFF` sang `#0A1420` trên máy khách đặt theme tối, trong khi chart vẫn nền trắng.
-   Lý do đầy đủ ở `CLAUDE.md`.
+2. **Hệ màu tối: GIỮ cho trang nội bộ, KHOÁ SÁNG cho file giao đi.** ĐÃ SỬA MỘT PHẦN ở cú bẻ lái
+   07-08, đọc kỹ vì luật này có HAI TẦNG và chúng có số phận khác nhau.
+
+   *Tầng quyết định*: đã mở. `data-theme` nay là tham số `--chu-de` chứ không còn ghi cứng trong
+   f-string của `lap_trang()`.
+
+   *Tầng nợ tài sản*: **VẪN NGUYÊN, và người dùng mở bảng màu KHÔNG trả hộ được.** Lý do đo được
+   ban đầu là chart matplotlib và minh hoạ SVG chỉ có bảng màu sáng, nên máy khách đặt theme tối
+   cho ra trang nền `#0A1420` mà chart vẫn nền trắng. Đó là sự thật về mã nguồn, không phải về
+   khẩu vị. Vì vậy **mặc định vẫn là `light`** cho tới khi trả xong nợ ở Phase 3.
+
+   Gate `khoa-sang-khong-doi-theo-may-khach` phải viết lại: nó chỉ đọc
+   `getComputedStyle(document.body)` nên KHÔNG nhìn thấy chart hay minh hoạ, tức không có khả
+   năng phát hiện đúng cái bệnh mà luật này sinh ra để tránh.
 3. **`.q-dot`: vá cả hai lỗi cùng một rule.** Thêm `display: inline-block` cho hết méo, và thay
    `box-shadow` chết bằng `::before` vẽ vòng tròn thật.
 
@@ -200,11 +310,19 @@ Cả ba đều có test chặn tái phạm, và cả ba test đã được kiể
   và `README.md`. Cách chữa chung: mỗi gate phải chứng minh được nó PHÂN BIỆT ĐƯỢC hai trạng thái
   trước khi được quyền xanh, và phải tự đỏ được khi cố tình phá.
 
-## Ba xung đột đã phân xử, đừng mở lại
+## Hai xung đột đã phân xử, đừng mở lại
 
-- **Bảng màu**: chốt trắng lạnh (`#051C2C` ink, `#2251FF` accent) chứ không phải giấy ngà ấm.
 - **Gauge và radar**: cấm. Gauge gợi ý độ chính xác không có thật, radar có trục không độc lập.
+  Đây là lý do ĐÚNG SAI PHÂN TÍCH, không dính gì môi trường xuất bản, nên nó sống qua mọi tiền
+  đề. Bảy mục trong nghiên cứu là radar cải trang và bị loại theo: `radviz`, `star-coordinates`,
+  `dust-and-magnet`, `star-glyph`, `shape-coding`, `progress-ring`, `wind-rose`.
 - **Engine PDF**: WeasyPrint, không phải Chromium. Chromium tạo ảnh JPEG ẩn trong Tiling Pattern.
+  Đã cân lại một lần nữa ở cú bẻ lái 07-08 và người dùng CHỐT GIỮ.
+
+**Bảng màu đã RỜI khỏi danh sách này.** Nó từng chốt trắng lạnh chứ không phải giấy ngà ấm, và ba
+nguồn độc lập hội tụ ủng hộ nó vẫn là bằng chứng tốt. Nhưng ngày 07-08 người dùng chủ động mở:
+trắng lạnh nay là MẶC ĐỊNH chứ không phải hằng số. Cái mất là quyền phủ quyết một bảng màu khác,
+không phải cái mất về bằng chứng.
 
 ## Đợt dọn sổ nợ 07-08, và cái bẫy nó tự tạo ra
 
@@ -271,7 +389,31 @@ Hai lỗi bắt được nhờ chính contact sheet, cả hai đều nằm sẵn
 - `c_sensitivity_grid` dùng bảng màu ấm `_cmap_warm()` trong khi repo đã chốt bảng màu
   lạnh. Chưa đụng vì nó nằm ngoài phạm vi đợt này.
 
-## Các phase sau
+## Các phase sau, ĐÃ ĐỊNH NGHĨA LẠI theo cú bẻ lái
 
-Viết plan riêng khi phase trước nghiệm thu xong. Phase 3 doctrine và preset. Phase 4 báo cáo
-mẫu vận tải biển, nghiệm thu bằng chính mười gate của repo.
+Viết plan riêng khi phase trước nghiệm thu xong.
+
+**Phase 3 nay là TRẢ NỢ NỀN, không phải xây tính năng.** Người dùng đã chốt thứ tự này. Chi tiết
+ở mục đầu file. Tóm tắt: generator chủ đề từ JSON, migrate 345 hex minh hoạ, 29 chỗ `color=PAPER`
+sang `ON_INK`. Xong ba việc đó thì mỗi chủ đề mới chỉ còn khoảng 5 file thay vì 17.
+
+**Phase 4: dựng làn `html-song` cho chạy được.** Tách `option()` khỏi `render` trong ECharts để
+một nguồn preset phục vụ cả hai làn, cộng bundle tree-shaken. Đã ĐO THẬT: bundle qua
+`echarts/core` nặng 733KB thô so với 1,1MB của bản đầy đủ, giảm 371KB tức 33% trên mọi file làn
+A, và nghiệm thu bằng render thật sankey 31/31, treemap 48/48, candlestick 49/49 nét vẽ, giống
+hệt engine đầy đủ và trùng khớp file `.svg` đang commit. Danh sách đủ cho cả 18 preset: 8 Chart
+(`bar/line/scatter/custom/heatmap/sankey/treemap/candlestick`), Component
+(`grid/tooltip/title/legend/graphic/markLine/markPoint/markArea/visualMap`), Feature
+`labelLayout`, chỉ `SVGRenderer`.
+
+**Phase 5: bộ gate làn A.** Chín gate mới, mỗi cái đã có phép đo và mô tả fixture đỏ:
+`OFFLINE-INTACT`, `JS-SILENT-FAIL`, `REDUCED-MOTION`, `KEYBOARD-PATH`, `CONTRAST-ALL-THEMES`,
+`SIZE-BUDGET`, `NO-JS-CONTENT`, `RESPONSIVE-WIDTH`, `THEME-MATCH`. Đặc tả đầy đủ ở memory toàn
+cục. Hai gate đã cân và LOẠI vì không dựng nổi fixture đỏ tất định: "mượt 60fps" và "trang phải
+đẹp".
+
+**Phase 6: báo cáo mẫu vận tải biển**, nghiệm thu bằng bộ gate của đúng làn nó chọn.
+
+Mười gate cũ KHÔNG chết: cả mười sống nguyên cho làn `pdf-so`, chỉ `report.css` đổi khổ trang và
+tầng 2 của gate 5 phải trỏ đúng cặp file. Cộng bốn gate mới chỉ digital PDF mới có:
+`HYPERLINK-LIVE`, `BOOKMARK-OUTLINE`, `PAGE-RATIO`, `MIN-FONT-SCREEN`.

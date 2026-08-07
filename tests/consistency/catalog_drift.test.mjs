@@ -159,8 +159,22 @@ function hasRealCssAnchor(tail) {
 const VACUOUS_OPENING =
   /^(?:KHÔNG dùng|không nên dùng|Khong dung)\s*(?:khi|để|cho|nếu)?\s*(?:không\s+)?(?:phù\s*hợp|hợp\s*lý|thích\s*hợp|hợp\b|cần\s*thiết|đúng(?:\s+ngữ\s*cảnh)?|tùy\s*(?:trường\s*hợp|tình\s*huống))/i;
 
-test('co du 29 file catalog', () => {
-  assert.equal(catalogFiles.length, 29, `co ${catalogFiles.length} file, mong doi 29`);
+// So SAN, khong phai so BANG. Ban cu khai `assert.equal(..., 29)`, nghia la them
+// bat ky component moi nao cung lam `npm test` do ngay o buoc DEM, truoc ca buoc
+// kiem noi dung, va nguoi them phai vao sua con so trong than test. Voi mot repo
+// dang mo rong thu vien thi do la chot chan chu khong phai phep do.
+//
+// Giu lai dang san vi no van bat duoc ca THAT: mot file catalog bi xoa am tham.
+// Cai no KHONG con bat duoc: xoa mot file roi them mot file khac, tong khong doi.
+// Ca do da co `catalog_khop_nguon.test.mjs` lo, vi test do ep muc luc phai khop
+// voi file that tren dia theo CA HAI chieu.
+const SAN_FILE_CATALOG = 29;
+
+test('khong file catalog nao bi xoa am tham', () => {
+  assert.ok(
+    catalogFiles.length >= SAN_FILE_CATALOG,
+    `co ${catalogFiles.length} file, san la ${SAN_FILE_CATALOG}. Giam nghia la co file bi xoa`,
+  );
 });
 
 for (const file of catalogFiles) {

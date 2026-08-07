@@ -199,17 +199,70 @@ def test_css_khop_python_chieu_nguoc():
     )
 
 
+def _tach_lop_shadow(val: str) -> list[str]:
+    """Tach cac LOP shadow theo dau phay o CAP NGOAI CUNG, bo qua dau phay nam
+    trong ngoac.
+
+    Ban cu dung thang `val.split(",")`, va chinh dieu do de ra mot luat cung
+    rieng trong CLAUDE.md: "cu phap shadow dung rgba(R G B / A), khong dung dau
+    phay trong ngoac". Luat do khong bao ve gi cho ban giao di ca; no ton tai
+    chi de mot phep tach chuoi trong test nay chay dung. Vao mot ngay dep troi
+    ai do viet rgba(R, G, B, A) theo dung chuan CSS thi test bao loi o cho khong
+    co loi. Sua phep tach thi luat con do khong con ly do ton tai.
+    """
+    lop: list[str] = []
+    sau = 0
+    hien_tai: list[str] = []
+    for ky_tu in val:
+        if ky_tu == "(":
+            sau += 1
+        elif ky_tu == ")":
+            sau -= 1
+        if ky_tu == "," and sau == 0:
+            lop.append("".join(hien_tai).strip())
+            hien_tai = []
+            continue
+        hien_tai.append(ky_tu)
+    con_lai = "".join(hien_tai).strip()
+    if con_lai:
+        lop.append(con_lai)
+    return lop
+
+
 def test_shadow_khong_co_blur():
+    """Blur phai bang 0 cho HO shadow dang dung trong bao cao.
+
+    Dinh chinh ly do, vi ly do cu ghi trong ban truoc la SAI ke tu khi doi
+    engine: "bay raster khi in". Phep do de ra luat do chay tren Chromium in
+    (chi blur > 0 moi bi nuong bitmap). Nhung engine PDF cua repo la
+    WeasyPrint, va WeasyPrint KHONG VE box-shadow bang bat ky cu phap nao. Tuc
+    blur=0 chua bao gio bao ve ban PDF giao di; no chi rang buoc ban trinh
+    duyet, suot hai phase.
+
+    Vay tai sao van giu? Vi mot ly do NHO HON va that: bao cao lan `pdf-so` van
+    co the bi nguoi doc bam in tu trinh duyet, va luc do blur > 0 se bi nuong
+    bitmap that. Do la rui ro thap nhung co that, va giu nguong 0 khong ton gi
+    cho ho token hien tai.
+
+    Cai KHONG con nua: quyen phu quyet cua luat nay len toan he. Ban thiet ke
+    cu chot "shadow offset cung la ngon ngu do noi DUY NHAT cua toan he" dua
+    tren phep do da het hieu luc. Lan `html-song` khong di qua WeasyPrint va
+    khong ai bam in, nen no duoc dung thang do noi mem day du; token man-hinh
+    rieng khai o day khi nao co nguoi dung that, dat ten `--shadow-man-*` de
+    vong lap duoi nay khong cham toi.
+    """
     css = parse_css_root()
     for name, val in css.items():
-        if name.startswith("shadow"):
-            parts = [p.strip() for p in val.split(",")]
-            for p in parts:
-                nums = re.findall(r"(-?\d+(?:\.\d+)?)px", p)
-                assert len(nums) >= 3, f"--{name} thieu thanh phan: {p}"
-                assert float(nums[2]) == 0.0, (
-                    f"--{name} co blur={nums[2]}px, phai bang 0 (bay raster khi in)"
-                )
+        if not name.startswith("shadow") or name.startswith("shadow-man-"):
+            continue
+        for p in _tach_lop_shadow(val):
+            nums = re.findall(r"(-?\d+(?:\.\d+)?)px", p)
+            assert len(nums) >= 3, f"--{name} thieu thanh phan: {p}"
+            assert float(nums[2]) == 0.0, (
+                f"--{name} co blur={nums[2]}px, phai bang 0. Ly do khong phai "
+                f"WeasyPrint (no khong ve shadow gi ca) ma la ca nguoi doc bam "
+                f"in tu trinh duyet. Can shadow mem thi khai --shadow-man-*"
+            )
 
 
 def test_khong_bien_nao_bi_khai_hai_lan_trong_root():

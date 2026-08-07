@@ -13,7 +13,7 @@ Cổng vào cho Claude là `SKILL.md`, chỉ định tuyến, không nhồi nộ
 
 ## Luật cứng, không có ngoại lệ
 
-- Shadow chỉ dùng offset cứng, blur phải bằng 0
+- Shadow blur phải bằng 0 cho họ token hiện tại; token màn hình `--shadow-man-*` được dùng blur (lý do đã đính chính, xem mục riêng bên dưới)
 - Cấm `filter: blur()` và `backdrop-filter`
 - Media query co giãn màn hình phải viết `@media screen and (max-width: ...)`
 - Cấm gauge và radar
@@ -41,9 +41,23 @@ Ranh giới cũ là "cấm trong nội dung hiển thị, cho phép trong commen
 
 Khối đầu giữ 12 biến màu và `--shadow-2/3/none`. Khối sau giữ font, thang chữ, `--space-*`, `--radius-*`, `--shadow-1`, `--shadow-hairline`. Không biến nào được khai ở cả hai khối, có test ép điều đó. Lý do phải có test: hai khối `:root` cùng specificity thì khối SAU thắng trong cascade, nên khai trùng sẽ làm giá trị render khác giá trị đang ghi trong `tokens.py` mà không ai biết. Đã xảy ra thật với `--space-6`.
 
-## Cú pháp shadow dùng `rgba(R G B / A)`, không dùng dấu phẩy trong ngoặc
+## Cú pháp shadow: luật cũ ĐÃ GỠ, viết kiểu nào cũng được
 
-Test tách các lớp shadow bằng `split(",")`. Dấu phẩy bên trong `rgba()` (cú pháp cũ `rgba(R, G, B, A)`) làm hỏng phép tách đó. Giữ nguyên trị số, chỉ đổi cách viết sang cú pháp khoảng trắng và dấu gạch chéo.
+Luật cũ bắt viết `rgba(R G B / A)` và cấm dấu phẩy trong ngoặc. Nó **không bảo vệ gì cho file giao đi**. Nó tồn tại đúng một lý do: `test_shadow_khong_co_blur` tách các lớp shadow bằng `split(",")` thẳng tuột, nên dấu phẩy bên trong `rgba()` làm phép tách đó vỡ. Tức một luật cứng cấp repo sinh ra để phục vụ một dòng code trong test.
+
+Nay `_tach_lop_shadow()` tách theo dấu phẩy ở **cấp ngoài cùng**, bỏ qua dấu phẩy nằm trong ngoặc. Cả `rgba(R G B / A)` lẫn `rgba(R, G, B, A)` đều đọc đúng, đã kiểm cả hai chiều. Luật con hết lý do tồn tại nên đã gỡ.
+
+Bài học chung, quan trọng hơn bản thân luật này: **một luật cứng đẻ ra để phục vụ một phép đo là dấu hiệu phép đo đó viết ẩu.** Sửa phép đo trước khi ra luật cho người dùng.
+
+## Luật shadow blur bằng 0: LÝ DO ĐÃ ĐÍNH CHÍNH, phạm vi đã thu hẹp
+
+Luật vẫn còn, nhưng lý do ghi trong bản cũ **sai kể từ lúc đổi engine**, và cái sai đó sống suốt hai phase.
+
+Bản thiết kế chốt "shadow offset cứng là ngôn ngữ độ nổi DUY NHẤT của toàn hệ", dựa trên phép đo chạy trên **Chromium in** (chỉ blur > 0 mới bị nướng bitmap). Nhưng engine PDF của repo là **WeasyPrint**, và WeasyPrint **không vẽ box-shadow bằng bất kỳ cú pháp nào**. Nghĩa là `blur = 0` **chưa bao giờ bảo vệ bản PDF giao đi**; nó chỉ bó tay bản trình duyệt.
+
+Lý do THẬT còn lại, nhỏ hơn nhiều nhưng có thật: báo cáo làn `pdf-so` vẫn có thể bị người đọc bấm in từ trình duyệt, và lúc đó blur > 0 bị nướng bitmap thật. Giữ ngưỡng 0 cho họ token hiện tại không tốn gì.
+
+Cái đã mất là **quyền phủ quyết của luật này lên toàn hệ**. Làn `html-song` không đi qua WeasyPrint và không ai bấm in, nên nó được dùng thang độ nổi mềm đầy đủ. Token màn hình khai tên `--shadow-man-*`, và `test_shadow_khong_co_blur` cố ý bỏ qua tiền tố đó.
 
 ## Ba thuộc tính CSS mà WeasyPrint bỏ qua, đều đã cắn thật
 

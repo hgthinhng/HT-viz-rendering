@@ -57,6 +57,29 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 
+# LAN xuat ban. Truc nay TRUC GIAO voi truc `che_do` (noi-bo / gui-di): `che_do`
+# quyet dinh AI DUOC DOC gi, `lan` quyet dinh THU GIAO DI LA GI.
+#
+#   pdf-so    PDF doc tren MAN HINH. Tinh hoan toan, vi WeasyPrint khong chay JS.
+#             Giu nguong 0 anh raster: ba ly do trong render_pdf.py (nang file, vo
+#             net khi phong to, mat kha nang chon chu) deu con dung tren man hinh,
+#             va man hinh con bi pinch-zoom nen raster lo ra NHIEU hon giay.
+#   html-song HTML tu du mo bang trinh duyet. Duoc animation, tuong tac, raster.
+#
+# Mac dinh la `pdf-so` de moi loi goi cu giu nguyen hanh vi hom nay.
+LAN_MAC_DINH = "pdf-so"
+CAC_LAN = ("pdf-so", "html-song")
+
+# Chu de mau. Truoc day chuoi `data-theme="light"` ghi CUNG trong f-string cua
+# lap_trang(), khong nhan tham so, nen khong ai doi duoc ma khong sua ma nguon.
+#
+# Nay la tham so, nhung mac dinh VAN la `light`, va do la co y: bang mau toi da
+# co san trong tokens.css, NHUNG chart matplotlib, chart ECharts va 11 minh hoa
+# SVG deu chi co ban sang. Bat chu de toi truoc khi tra xong khoan no do la tu
+# tao ra dung cai loi da do duoc: trang nen #0A1420 ma chart van nen trang. Go
+# hardcode va bat dark mode la HAI viec, day moi la viec thu nhat.
+CHU_DE_MAC_DINH = "light"
+
 # Chuoi HIEN THI cho nguoi doc, nen phai co day du dau tieng Viet. Comment va ten bien
 # trong repo viet khong dau, nhung do la ma nguon chu khong phai thu in ra giay.
 BAC_BANG_CHUNG = {
@@ -178,7 +201,7 @@ def gioi_han_style_svg(svg: str, ma_hinh: str) -> str:
     return RE_KHOI_STYLE.sub(bo_hep, svg)
 
 
-def nap_svg(duong_dan: Path, tien_to: str) -> str:
+def nap_svg(duong_dan: Path, tien_to: str, cho_phep_raster: bool = False) -> str:
     if not duong_dan.exists():
         raise LoiDung(f"khong tim thay file hinh: {duong_dan}")
     svg = duong_dan.read_text(encoding="utf-8")
@@ -194,10 +217,19 @@ def nap_svg(duong_dan: Path, tien_to: str) -> str:
     svg = re.sub(r"<\?xml[^>]*\?>", "", svg)
     svg = re.sub(r"<!DOCTYPE[^>]*>", "", svg)
     svg = re.sub(r"<metadata>.*?</metadata>", "", svg, flags=re.S)
-    if "<image" in svg or "base64" in svg:
+    # Chan raster o TANG DUNG, som hon gate 3 RASTER. Ly do phai chan o day chu
+    # khong cho gate lo: gate doc file PDF da render xong, con day bat duoc ngay
+    # lan hinh dau tien, kem ten file sai.
+    #
+    # Chan CO DIEU KIEN chu khong tuyet doi. Lan `pdf-so` giu nguyen nguong 0 vi
+    # ba ly do trong render_pdf.py deu con dung tren man hinh: nang file, vo net
+    # khi phong to, va mat kha nang chon chu. Lan `html-song` thi cho phep, va do
+    # la mot quyet dinh ve TRAI NGHIEM chu khong phai mot lo hong ky thuat.
+    if not cho_phep_raster and ("<image" in svg or "base64" in svg):
         raise LoiDung(
             f"{duong_dan} co <image> hoac base64 nhung ben trong. Hinh trong bao cao "
-            f"phai la vector thuan, neu khong ban PDF se mang anh raster."
+            f"phai la vector thuan, neu khong ban PDF se mang anh raster. "
+            f"Lan html-song thi dung --lan=html-song de cho phep."
         )
     return gioi_han_style_svg(doi_tien_to_id(svg.strip(), tien_to), tien_to)
 
@@ -348,7 +380,8 @@ def doc_directive(dong: str) -> tuple[str, dict]:
 
 
 class BoDung:
-    def __init__(self, so_nguon: SoNguon, goc: Path):
+    def __init__(self, so_nguon: SoNguon, goc: Path, lan: str = LAN_MAC_DINH):
+        self.lan = lan
         self.so_nguon = so_nguon
         self.goc = goc
         self.so_hinh = 0
@@ -361,7 +394,7 @@ class BoDung:
         duong = (self.goc / src) if not os.path.isabs(src) else Path(src)
         self.so_hinh += 1
         ma_hinh = tt.get("id") or f"hinh-{self.so_hinh}"
-        svg = nap_svg(duong, ma_hinh)
+        svg = nap_svg(duong, ma_hinh, cho_phep_raster=(self.lan == "html-song"))
 
         chu = tt.get("chu", "")
         dong_nguon = ""
@@ -388,8 +421,8 @@ class BoDung:
         raise LoiDung(f"directive khong biet: {loai}")
 
 
-def dung_than(van_ban: str, so_nguon: SoNguon, goc: Path) -> str:
-    bo = BoDung(so_nguon, goc)
+def dung_than(van_ban: str, so_nguon: SoNguon, goc: Path, lan: str = LAN_MAC_DINH) -> str:
+    bo = BoDung(so_nguon, goc, lan)
     ra: list[str] = []
     chu_thich_bang = ""
     dong = van_ban.split("\n")
@@ -549,7 +582,7 @@ def dung_danh_muc_nguon(so_nguon: SoNguon) -> str:
     )
 
 
-def lap_trang(meta: dict, than: str, so_nguon: SoNguon) -> str:
+def lap_trang(meta: dict, than: str, so_nguon: SoNguon, chu_de: str = CHU_DE_MAC_DINH) -> str:
     css = "\n".join(
         (REPO / p).read_text(encoding="utf-8")
         for p in (
@@ -568,7 +601,7 @@ def lap_trang(meta: dict, than: str, so_nguon: SoNguon) -> str:
         )
     tieu_de = html_mod.escape(meta.get("tieu_de", "Báo cáo"))
     return f"""<!DOCTYPE html>
-<html lang="vi" data-theme="light">
+<html lang="vi" data-theme="{html_mod.escape(chu_de)}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -587,7 +620,13 @@ def lap_trang(meta: dict, than: str, so_nguon: SoNguon) -> str:
 """
 
 
-def dung(nguon_md: Path, ra_html: Path, che_do: str) -> Path:
+def dung(
+    nguon_md: Path,
+    ra_html: Path,
+    che_do: str,
+    lan: str = LAN_MAC_DINH,
+    chu_de: str = CHU_DE_MAC_DINH,
+) -> Path:
     van_ban = nguon_md.read_text(encoding="utf-8")
     meta, than_md = tach_front_matter(van_ban)
 
@@ -599,8 +638,11 @@ def dung(nguon_md: Path, ra_html: Path, che_do: str) -> Path:
         raise LoiDung(f"khong tim thay so nguon: {p_ledger}")
     so_nguon = SoNguon(json.loads(p_ledger.read_text(encoding="utf-8")), che_do)
 
-    than = dung_than(than_md, so_nguon, nguon_md.parent)
-    trang = lap_trang(meta, than, so_nguon)
+    if lan not in CAC_LAN:
+        raise LoiDung(f"lan khong biet: {lan}. Chi nhan mot trong {CAC_LAN}")
+
+    than = dung_than(than_md, so_nguon, nguon_md.parent, lan)
+    trang = lap_trang(meta, than, so_nguon, chu_de)
 
     ra_html.parent.mkdir(parents=True, exist_ok=True)
     ra_html.write_text(trang, encoding="utf-8")
@@ -612,16 +654,21 @@ def main() -> int:
     ap.add_argument("nguon", type=Path)
     ap.add_argument("ra", type=Path)
     ap.add_argument("--che-do", dest="che_do", default="noi-bo", choices=["noi-bo", "gui-di"])
+    ap.add_argument("--lan", dest="lan", default=LAN_MAC_DINH, choices=list(CAC_LAN))
+    ap.add_argument("--chu-de", dest="chu_de", default=CHU_DE_MAC_DINH)
     tham_so = ap.parse_args()
 
     try:
-        duong = dung(tham_so.nguon, tham_so.ra, tham_so.che_do)
+        duong = dung(tham_so.nguon, tham_so.ra, tham_so.che_do, tham_so.lan, tham_so.chu_de)
     except LoiDung as e:
         print(f"build_html FAIL: {e}", file=sys.stderr)
         return 1
 
     kich_thuoc = duong.stat().st_size
-    print(f"build_html OK -> {duong} ({kich_thuoc / 1024:.0f}KB, che do {tham_so.che_do})")
+    print(
+        f"build_html OK -> {duong} ({kich_thuoc / 1024:.0f}KB, "
+        f"che do {tham_so.che_do}, lan {tham_so.lan}, chu de {tham_so.chu_de})"
+    )
     return 0
 
 

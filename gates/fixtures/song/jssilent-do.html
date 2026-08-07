@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Fixture do: JS-SILENT-FAIL</title>
+</head>
+<body>
+<div id="khoi-1" data-tuong-tac>Bang chi tiet tuong tac</div>
+<script>
+  // Loi runtime xay ra TRUOC dong gan lop, nen khoi khong bao gio duoc khoi tao.
+  // Trang van hien binh thuong tren man hinh (div van co san trong DOM), nen anh
+  // chup se trong hoan toan giong ban xanh: day chinh la benh JS-SILENT-FAIL.
+  ham_khong_ton_tai_9d3f();
+  document.getElementById('khoi-1').classList.add('da-khoi-tao');
+</script>
+</body>
+</html>

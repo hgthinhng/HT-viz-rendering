@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Fixture xanh: KEYBOARD-PATH</title>
+</head>
+<body>
+<div id="nut-1" data-tuong-tac data-tuong-tac-dich="ket-qua" tabindex="0" role="button">Xem chi tiet</div>
+<div id="ket-qua" class="an">chua mo</div>
+<script>
+  var nut = document.getElementById('nut-1');
+  var dich = document.getElementById('ket-qua');
+  function hienThi() {
+    dich.textContent = 'da mo';
+    dich.classList.add('mo');
+  }
+  nut.addEventListener('click', hienThi);
+  nut.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      hienThi();
+    }
+  });
+</script>
+</body>
+</html>

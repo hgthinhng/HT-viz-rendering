@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Fixture do: KEYBOARD-PATH</title>
+</head>
+<body>
+<div id="nut-1" data-tuong-tac data-tuong-tac-dich="ket-qua" tabindex="0" role="button">Xem chi tiet</div>
+<div id="ket-qua" class="an">chua mo</div>
+<script>
+  // Co tabindex nen NAM TRONG duong Tab (kiem tra 1 se PASS rieng phan nay), nhung
+  // chi gan trinh xu ly click, KHONG co keydown cho Enter. Nguoi dung ban phim
+  // focus dung phan tu nhung bam Enter thi khong co gi xay ra: day la benh
+  // KEYBOARD-PATH that, khac voi benh "khong tabindex" don gian hon.
+  var nut = document.getElementById('nut-1');
+  var dich = document.getElementById('ket-qua');
+  nut.addEventListener('click', function () {
+    dich.textContent = 'da mo';
+    dich.classList.add('mo');
+  });
+</script>
+</body>
+</html>

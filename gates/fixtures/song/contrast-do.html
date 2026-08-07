@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Fixture do: CONTRAST-ALL-THEMES</title>
+<style>
+:root[data-theme="light"] {
+  --bg: #FFFFFF;
+  --text: #111111;
+  --pos: #16A34A;
+  --neg: #DC2626;
+}
+/* Chu de toi: chu gan nhu trung mau nen (tuong phan ~1:1, duoi nguong 4.5:1),
+   va --neg bi gan mot mau XANH DUONG (goc hue ~221 do), ngoai dai 340-20 cho
+   phep. Chu de sang van dung ca hai chieu, de chung minh gate quet DUNG chu
+   de dang hong chu khong bao ca trang FAIL mo ho. */
+:root[data-theme="dark"] {
+  --bg: #0A1420;
+  --text: #14202C;
+  --pos: #22C55E;
+  --neg: #2563EB;
+}
+body { background: var(--bg); color: var(--text); font-size: 16px; padding: 24px; }
+</style>
+</head>
+<body>
+<p>Doanh thu quy III dat 1.240 ty dong, tang 12,4% so voi cung ky nam truoc.</p>
+<p>Bien phi gop giam nhe con 18,2% do gia dau vao ha nhiet.</p>
+</body>
+</html>

@@ -21,6 +21,8 @@
     "lan": { "nhan": "lần", "decimals": 1 },
     "diem": { "nhan": "điểm", "decimals": 1 },
     "usd_tan": { "nhan": "USD/tấn", "decimals": 0 },
+    "nghin_dong_tan": { "nhan": "nghìn đồng/tấn", "decimals": 0 },
+    "trieu_tan": { "nhan": "triệu tấn", "decimals": 1 },
     "teu": { "nhan": "TEU", "decimals": 0 }
   },
 

@@ -8,11 +8,15 @@
     "setup:browser": "playwright-core install chromium",
     "test": "node --test \"tests/**/*.test.mjs\"",
     "verify": "node scripts/verify-components.mjs && node scripts/verify-illustrations.mjs && node scripts/verify-charts.mjs",
+    "mau": "python3 pipeline/orchestrator.py examples/mau-phase2/noi-dung.md",
+    "gate": "node gates/run.mjs",
     "verify:components": "node scripts/verify-components.mjs",
     "verify:illustrations": "node scripts/verify-illustrations.mjs",
     "verify:charts": "node scripts/verify-charts.mjs"
   },
   "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "playwright-core": "^1.49.0",
     "echarts": "^6.1.0",
     "d3-geo": "^3.1.1",

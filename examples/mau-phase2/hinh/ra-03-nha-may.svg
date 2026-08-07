@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="nha-may" viewBox="0 0 1100 520" role="img" style="--accent:#2251FF">
+  <title>Nhà máy xi măng với năm con số neo vào năm bộ phận</title>
+  <desc>Nhà máy xi măng: mỏ đá vôi và băng chuyền vào, tháp trao đổi nhiệt nhiều tầng cyclone, lò nung quay có ngọn lửa ở đầu ra, máy làm nguội clinker, dãy silo thành phẩm. Năm chú thích neo vào năm bộ phận mang đúng chức năng kinh tế mà con số đo.</desc>
+  <g class="scene" transform="translate(150,10)">
+    <g class="ground">
+      <rect x="0" y="430" width="800" height="70" fill="#cbd5e1"/>
+      <rect x="0" y="430" width="800" height="5" fill="#94a3b8"/>
+    </g>
+
+    <g class="quarry">
+      <path d="M25,430 L45,388 L60,400 L78,372 L95,398 L112,430 Z" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+      <path d="M45,388 L60,400 L78,372" fill="none" stroke="#64748b" stroke-width="1.2"/>
+    </g>
+
+    <g class="conveyor-in">
+      <path d="M78,372 L345,300 L345,312 L78,384 Z" fill="#475569" stroke="#0f172a" stroke-width="1.2"/>
+      <circle cx="78" cy="378" r="7" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+      <circle cx="345" cy="306" r="7" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+      <line x1="150" y1="359" x2="150" y2="430" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="230" y1="341" x2="230" y2="430" stroke="#94a3b8" stroke-width="3"/>
+    </g>
+
+    <g class="preheater-tower">
+      <rect x="350" y="90" width="35" height="340" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+      <rect x="385" y="90" width="35" height="340" fill="#64748b" stroke="#0f172a" stroke-width="1.4"/>
+      <rect x="350" y="90" width="70" height="14" fill="rgb(34, 81, 255)"/>
+      <g class="cyclones" fill="#94a3b8" stroke="#0f172a" stroke-width="1.3">
+        <rect x="322" y="140" width="28" height="34"/>
+        <rect x="322" y="205" width="28" height="34"/>
+        <rect x="322" y="270" width="28" height="34"/>
+      </g>
+    </g>
+
+    <g class="kiln">
+      <path d="M420,345 L650,365 L650,380 L420,360 Z" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+      <path d="M420,360 L650,380 L650,395 L420,375 Z" fill="#64748b" stroke="#0f172a" stroke-width="1.4"/>
+      <line x1="460" y1="349" x2="460" y2="379" stroke="#0f172a" stroke-width="1.6"/>
+      <line x1="540" y1="357" x2="540" y2="387" stroke="#0f172a" stroke-width="1.6"/>
+      <line x1="610" y1="363" x2="610" y2="393" stroke="#0f172a" stroke-width="1.6"/>
+      <g class="piers" fill="#475569" stroke="#0f172a" stroke-width="1.2">
+        <path d="M448,430 L472,430 L468,378.5 L452,378.5 Z"/>
+        <path d="M528,430 L552,430 L548,385.4 L532,385.4 Z"/>
+        <path d="M598,430 L622,430 L618,391.5 L602,391.5 Z"/>
+      </g>
+      <path d="M655,388 C648,375 660,368 655,355 C670,366 675,382 662,392 C659,389 657,389 655,388 Z" fill="#ea580c"/>
+      <path d="M655,383 C651,375 658,371 655,364 C663,371 665,380 658,386 Z" fill="#fbbf24"/>
+    </g>
+
+    <g class="cooler">
+      <rect x="650" y="375" width="55" height="45" fill="#334155" stroke="#0f172a" stroke-width="1.4"/>
+      <rect x="650" y="375" width="55" height="12" fill="#475569"/>
+    </g>
+
+    <g class="silos" stroke="#0f172a" stroke-width="1.3">
+      <g class="silo">
+        <rect x="712" y="240" width="8" height="190" fill="#f8fafc"/>
+        <rect x="720" y="240" width="8" height="190" fill="#cbd5e1"/>
+        <path d="M712,240 A8,7 0 0 1 728,240 Z" fill="#f8fafc"/>
+      </g>
+      <g class="silo">
+        <rect x="734" y="252" width="8" height="178" fill="#f8fafc"/>
+        <rect x="742" y="252" width="8" height="178" fill="#cbd5e1"/>
+        <path d="M734,252 A8,7 0 0 1 750,252 Z" fill="#f8fafc"/>
+      </g>
+      <g class="silo">
+        <rect x="756" y="246" width="8" height="184" fill="#f8fafc"/>
+        <rect x="764" y="246" width="8" height="184" fill="#cbd5e1"/>
+        <path d="M756,246 A8,7 0 0 1 772,246 Z" fill="#f8fafc"/>
+      </g>
+    </g>
+  </g>
+<g class="annotations"><g class="callout" cursor="default"><circle cx="228" cy="388" r="3.2" fill="#334155"/><circle cx="228" cy="388" r="6" fill="none" stroke="#334155" stroke-width="1" stroke-opacity="0.4"/><path class="anno-leader" d="M 228 388 L 228 452.96 Q 228 456 224.96 456 L 220.4 456" fill="none" stroke="#334155" stroke-width="1.3" stroke-opacity="0.85"/><rect class="anno-box" x="24" y="428" width="196.4" height="56" rx="5" fill="#f8fafc" stroke="#334155" stroke-width="1.1"/><rect class="anno-bar" x="217.4" y="428" width="3" height="56" fill="#334155"/><text x="34" y="444" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="13" font-weight="700" fill="#0f172a" text-anchor="start">Mỏ đá vôi tự có</text><text x="34" y="458" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">Băng chuyền thẳng vào nhà máy,</text><text x="34" y="472" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">không cước vận chuyển</text></g><g class="callout" cursor="default"><circle cx="486" cy="232" r="3.2" fill="#334155"/><circle cx="486" cy="232" r="6" fill="none" stroke="#334155" stroke-width="1" stroke-opacity="0.4"/><path class="anno-leader" d="M 486 232 L 486 94 Q 486 84 476 84 L 220.4 84" fill="none" stroke="#334155" stroke-width="1.3" stroke-opacity="0.85"/><rect class="anno-box" x="24" y="56" width="196.4" height="56" rx="5" fill="#f8fafc" stroke="#334155" stroke-width="1.1"/><rect class="anno-bar" x="217.4" y="56" width="3" height="56" fill="#334155"/><text x="34" y="72" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="13" font-weight="700" fill="#0f172a" text-anchor="start">196 nghìn đồng/tấn</text><text x="34" y="86" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">Điện năng, chủ yếu quạt hút và</text><text x="34" y="100" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">nghiền</text></g><g class="callout" cursor="default"><circle cx="807" cy="382" r="3.2" fill="rgb(34, 81, 255)"/><circle cx="807" cy="382" r="6" fill="none" stroke="rgb(34, 81, 255)" stroke-width="1" stroke-opacity="0.4"/><path class="anno-leader" d="M 807 382 L 807 94 Q 807 84 817 84 L 867.8399999999999 84" fill="none" stroke="rgb(34, 81, 255)" stroke-width="1.3" stroke-opacity="0.85"/><rect class="anno-box" x="867.8399999999999" y="56" width="208.16000000000003" height="56" rx="5" fill="color(srgb 0.922196 0.940627 0.988941)" stroke="rgb(34, 81, 255)" stroke-width="1.1"/><rect class="anno-bar" x="867.8399999999999" y="56" width="3" height="56" fill="rgb(34, 81, 255)"/><text x="877.8399999999999" y="72" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="13" font-weight="700" fill="#0f172a" text-anchor="start">342 nghìn đồng/tấn</text><text x="877.8399999999999" y="86" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">Than và nhiên liệu đốt lò, khoản</text><text x="877.8399999999999" y="100" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">chi lớn nhất</text></g><g class="callout" cursor="default"><circle cx="827" cy="408" r="3.2" fill="#334155"/><circle cx="827" cy="408" r="6" fill="none" stroke="#334155" stroke-width="1" stroke-opacity="0.4"/><path class="anno-leader" d="M 827 408 L 827 164 Q 827 154 837 154 L 861.96 154" fill="none" stroke="#334155" stroke-width="1.3" stroke-opacity="0.85"/><rect class="anno-box" x="861.96" y="126" width="214.04000000000002" height="56" rx="5" fill="#f8fafc" stroke="#334155" stroke-width="1.1"/><rect class="anno-bar" x="861.96" y="126" width="3" height="56" fill="#334155"/><text x="871.96" y="142" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="13" font-weight="700" fill="#0f172a" text-anchor="start">Thu hồi nhiệt thải</text><text x="871.96" y="156" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">Máy làm nguội clinker, bù lại một</text><text x="871.96" y="170" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">phần điện mua ngoài</text></g><g class="callout" cursor="default"><circle cx="892" cy="310" r="3.2" fill="#334155"/><circle cx="892" cy="310" r="6" fill="none" stroke="#334155" stroke-width="1" stroke-opacity="0.4"/><path class="anno-leader" d="M 892 310 L 892 446.33599999999996 Q 892 456 882.336 456 L 867.8399999999999 456" fill="none" stroke="#334155" stroke-width="1.3" stroke-opacity="0.85"/><rect class="anno-box" x="867.8399999999999" y="428" width="208.16000000000003" height="56" rx="5" fill="#f8fafc" stroke="#334155" stroke-width="1.1"/><rect class="anno-bar" x="867.8399999999999" y="428" width="3" height="56" fill="#334155"/><text x="877.8399999999999" y="444" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="13" font-weight="700" fill="#0f172a" text-anchor="start">Silo thành phẩm</text><text x="877.8399999999999" y="458" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">Sức chứa quyết định khả năng chờ</text><text x="877.8399999999999" y="472" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">giá</text></g></g></svg>

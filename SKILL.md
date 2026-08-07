@@ -29,6 +29,25 @@ chọn chart, viết chữ, vẽ minh hoạ, quyết định khó) sẽ tới �
 - File giao khách khai `<html lang="vi" data-theme="light">` để không đổi màu theo máy khách
 - Font nhúng thẳng vào file, không trỏ đường dẫn tuyệt đối trên máy đang làm
 
+## Làm một báo cáo: đường ống
+
+Một báo cáo là một THƯ MỤC. Chép `examples/mau-phase2/` làm khung rồi thay nội dung.
+
+```bash
+python3 pipeline/orchestrator.py <thu-muc>/noi-dung.md
+```
+
+Chạy trọn: sinh hình, ghi kịch bản CK1, dựng ba bản bìa CK2, dựng HTML tự đủ cả bản nội
+bộ lẫn bản gửi đi, xuất PDF, rồi chạy mười gate. Quy ước chi tiết ở `CLAUDE.md`.
+
+Ba điều phải nhớ trước khi viết dòng đầu tiên:
+
+- Minh hoạ có callout phải bake bằng `pipeline/bake_svg.mjs` trước, vì WeasyPrint không
+  chạy JavaScript nên callout vẽ lúc chạy sẽ vắng mặt khỏi PDF.
+- Mỗi số hiển thị viết `{{ma}}` và phải có mặt trong sổ nguồn của báo cáo, xem
+  `examples/mau-phase2/so-nguon.json`, nếu không thì build dừng ngay.
+- Bản gửi khách xuất bằng `--che-do=gui-di`, và nó KHÔNG mang sổ nguồn.
+
 ## Theo thành phần
 
 | Cần | Ở đâu |
@@ -38,6 +57,9 @@ chọn chart, viết chữ, vẽ minh hoạ, quyết định khó) sẽ tới �
 | Chart tĩnh cho PDF | `charts/matplotlib/` |
 | Chart tương tác cho HTML | `charts/echarts/` |
 | Minh hoạ ngành | `illustrations/svg/` và `illustrations/grammar.md` |
+| Đường ống và trang giấy | `pipeline/` |
+| Mười gate nghiệm thu | `gates/` |
+| Báo cáo mẫu chạy được | `examples/mau-phase2/` |
 
 ## Ý tham khảo, không phải khuôn ép
 
@@ -50,4 +72,5 @@ hết hay dùng đúng nguyên bản. Thiết kế có tự do sáng tạo, mi�
 
 ## Trước khi giao file
 
-Chạy `npm run verify`. FAIL là không được giao. Quy ước làm việc chi tiết ở `CLAUDE.md`.
+Chạy `node gates/run.mjs <html> <pdf> --che-do=gui-di` trên đúng bản sắp gửi, và
+`npm run verify` cho thư viện hình. FAIL là không được giao.

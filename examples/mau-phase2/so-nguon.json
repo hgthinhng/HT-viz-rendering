@@ -1,0 +1,147 @@
+{
+  "version": "1.0",
+  "generated_date": "2026-08-07",
+  "_doc": [
+    "So nguon cua bao cao mau Phase 2. MOI SO TRONG FILE NAY LA SO MINH HOA, dung de",
+    "nghiem thu duong ong ky thuat, khong phai so cong bo cua bat ky doanh nghiep nao.",
+    "Ghi ro dieu do ngay trong truong `org` de khong ai nham lan khi mo file ra doc, va",
+    "de tier T5_derived phan anh dung ban chat: day la so suy dien cho muc dich mau.",
+    "Nguon K9 co sensitivity=internal_only de nghiem thu duoc ca hai che do xuat."
+  ],
+  "sources": [
+    {
+      "id": "K1",
+      "org": "Số liệu minh hoạ cho mẫu kỹ thuật, không phải số công bố",
+      "tier": "T5_derived",
+      "sensitivity": "public",
+      "published_date": "2026-08-01",
+      "cite": "Bộ số minh hoạ dựng cho mẫu Phase 2 của HT-viz-rendering, 2026-08-01"
+    },
+    {
+      "id": "K2",
+      "org": "Số liệu minh hoạ cho mẫu kỹ thuật, không phải số công bố",
+      "tier": "T5_derived",
+      "sensitivity": "public",
+      "published_date": "2026-08-01",
+      "cite": "Cơ cấu giá thành minh hoạ dựng cho mẫu Phase 2, 2026-08-01"
+    },
+    {
+      "id": "K3",
+      "org": "Số liệu minh hoạ cho mẫu kỹ thuật, không phải số công bố",
+      "tier": "T5_derived",
+      "sensitivity": "public",
+      "published_date": "2026-08-01",
+      "cite": "Bảng so sánh doanh nghiệp minh hoạ dựng cho mẫu Phase 2, 2026-08-01"
+    },
+    {
+      "id": "K9",
+      "org": "Ước tính nội bộ chưa công bố",
+      "tier": "T4_internal_estimate",
+      "sensitivity": "internal_only",
+      "published_date": "2026-08-05",
+      "cite": "Mô hình biên lợi nhuận nội bộ, bản nháp chưa soát xét",
+      "public_label": "ước tính trên dữ liệu đã công bố"
+    }
+  ],
+  "values": [
+    {
+      "id": "v_san_luong",
+      "display": "112,4 triệu tấn",
+      "value": 112.4,
+      "unit": "trieu tan",
+      "period": "2025",
+      "source_id": "K1",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "san_luong_nganh"
+    },
+    {
+      "id": "v_cong_suat",
+      "display": "134,0 triệu tấn",
+      "value": 134.0,
+      "unit": "trieu tan",
+      "period": "2025",
+      "source_id": "K1",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "san_luong_nganh"
+    },
+    {
+      "id": "v_gia_ban",
+      "display": "1.180 nghìn đồng/tấn",
+      "value": 1180,
+      "unit": "nghin dong/tan",
+      "period": "2025",
+      "source_id": "K2",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cau_gia_thanh"
+    },
+    {
+      "id": "v_than",
+      "display": "342 nghìn đồng/tấn",
+      "value": 342,
+      "unit": "nghin dong/tan",
+      "period": "2025",
+      "source_id": "K2",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cau_gia_thanh"
+    },
+    {
+      "id": "v_dien",
+      "display": "196 nghìn đồng/tấn",
+      "value": 196,
+      "unit": "nghin dong/tan",
+      "period": "2025",
+      "source_id": "K2",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cau_gia_thanh"
+    },
+    {
+      "id": "v_loi_nhuan",
+      "display": "148 nghìn đồng/tấn",
+      "value": 148,
+      "unit": "nghin dong/tan",
+      "period": "2025",
+      "source_id": "K2",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cau_gia_thanh"
+    },
+    {
+      "id": "v_bien_dan_dau",
+      "display": "18,6%",
+      "value": 18.6,
+      "unit": "%",
+      "period": "2025",
+      "source_id": "K3",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "so_sanh_dn"
+    },
+    {
+      "id": "v_bien_thap_nhat",
+      "display": "4,2%",
+      "value": 4.2,
+      "unit": "%",
+      "period": "2025",
+      "source_id": "K3",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "so_sanh_dn"
+    },
+    {
+      "id": "v_bien_2027",
+      "display": "11,5%",
+      "value": 11.5,
+      "unit": "%",
+      "period": "2027",
+      "source_id": "K9",
+      "retrieved_date": "2026-08-05",
+      "tier": "T4_internal_estimate",
+      "chart_id": "du_bao_bien"
+    }
+  ]
+}

@@ -4,16 +4,19 @@
 
 ## Đang ở đâu
 
-**Phase 1 ĐÓNG.** Cả 8 task review sạch, 50 commit. Đợt dọn sau Phase 1 cũng xong: repo giờ
-chạy được từ một máy chưa có gì, và ba việc treo chờ người dùng quyết đã có phán quyết.
+**Phase 2 ĐÓNG.** Đường ống từ markdown ra PDF đã qua gate chạy được bằng một lệnh, và
+mười gate đều đã chứng minh là đỏ được với fixture đỏ của chính chúng.
 
 Nghiệm thu gần nhất, chạy thật chứ không chép lại:
 
 | Lệnh | Kết quả |
 |---|---|
-| `npm test` | 65 pass, 0 fail |
-| `npm run verify` | exit 0, 29 gate PASS và 2 SKIP có ghi rõ lý do |
-| `python3 -m pytest tests/ -v` | 48 passed |
+| `npm test` | 88 pass, 0 fail |
+| `npm run verify` | exit 0, mọi gate PASS và 2 SKIP có ghi rõ lý do |
+| `python3 -m pytest tests/ -q` | 48 passed |
+| `npm run mau` | 6 trang, 164 nét vẽ, 0 ảnh raster, 10 gate PASS ở bản nội bộ và 9 PASS 1 SKIP ở bản gửi đi |
+
+Phase 1 đóng trước đó: 8 task review sạch, 50 commit, cộng đợt dọn và đợt mở rộng thư viện.
 
 Hai SKIP là cố ý, không phải gate hỏng: `gallery.html` là trang nội bộ nên không khai
 `data-theme="light"`, và `vietnam-simplification-comparison.html` không dùng lớp annotation.
@@ -34,22 +37,53 @@ Trong repo: 50 mẫu ở `samples/`, 14 hồ sơ ở `research/`, 29 catalog spe
 4. **Họ đường cong** cho matplotlib: `viz_eir_curves.py` với `c_yield_curve` và
    `c_futures_curve`, cộng cờ `zero_is_signal` thêm vào `c_spread`.
 
-## Việc tiếp theo, làm ngay
+## Phase 2 đã dựng gì
 
-**Phase 2: pipeline HTML sang PDF và bộ gate nghiệm thu.** Đây là việc duy nhất còn mở ở tầng
-kiến trúc, và giờ nó là ưu tiên rõ ràng chứ không còn là một trong hai lựa chọn.
+Kế hoạch và lý do đầy đủ ở `docs/superpowers/plans/2026-08-07-phase2-pipeline-va-gate.md`.
+Quy ước dùng hàng ngày ở `CLAUDE.md`. Tóm tắt để biết cái gì nằm đâu:
 
-Lý do nó thành ưu tiên: đợt vừa rồi tìm ra bug 12 chart xuất SVG không hợp lệ XML làm bản PDF
-mất sạch chart suốt cả một phase mà không ai biết. Bug đó sống được vì **không có pipeline nào
-chạy chart qua WeasyPrint rồi kiểm kết quả**. Thư viện nay đã có 18 preset ECharts, 50 component
-matplotlib và 29 component HTML; thêm càng nhiều mà không có pipeline gác cổng thì càng nhiều
-thứ hỏng im lặng.
+```
+pipeline/
+├── orchestrator.py   một lệnh chạy trọn sáu bước, ba checkpoint ghi artifact
+├── build_html.py     markdown + sổ nguồn -> một file HTML tự đủ
+├── render_pdf.py     WeasyPrint, và tự mở lại file kiểm ngay sau khi ghi
+├── bake_svg.mjs      đóng băng callout của annotate.js thành SVG tĩnh
+└── report.css        trang giấy: khổ, lề, chạy đầu chân trang, ba kiểu bìa
 
-Nguyên liệu có sẵn trong `_harvest/`: pipeline hoàn chỉnh ở `harvest-extras/pipeline-stocklpt/`,
-6 gate và evidence ledger ở `lab-gate/` với `lab-evidence/`. Scope chi tiết ở cuối
-`docs/superpowers/plans/2026-08-06-ht-viz-rendering-phase1.md`.
+gates/
+├── run.mjs           runner, in bảng, trả exit code
+├── gates.mjs         mười gate, mỗi gate một hàm thuần để test gọi thẳng
+├── pdf_checks.py     mọi phép đo trên PDF nhị phân, gọi một lần dùng chung
+└── fixtures/         cặp đỏ và xanh cho từng gate
 
-Ba việc nhỏ còn nợ, làm kèm lúc nào cũng được:
+examples/mau-phase2/  báo cáo mẫu 6 trang, chạm cả hai engine chart và một minh hoạ
+```
+
+Một lệnh chạy hết: `npm run mau`.
+
+## Bốn thứ Phase 2 tìm ra, đều đo được bằng số
+
+1. **Callout của minh hoạ mất sạch trong PDF.** `annotate.js` vẽ bằng JavaScript lúc chạy,
+   WeasyPrint không chạy JS. Bản gốc con tàu qua WeasyPrint cho 42 nét vẽ và 0 trên 7
+   callout; bản đã bake cho 74 nét vẽ và đủ 7. Bug lớp thứ tư cùng họ với ba lớp cũ, đã
+   sống trong repo suốt Phase 1.
+2. **Tầng text không phân biệt được font đúng với font hệ thống.** Cùng một trang, bản có
+   `@font-face` cho `Spectral`, bản bỏ `@font-face` cho `Noto-Serif`. Cả hai đều 0 FFFD,
+   0 ký tự synthetic, tầng text đúng dấu y hệt. Gate 2 FONT-PDF sinh ra từ đây.
+3. **Callout khai `'Be Vietnam Pro'`, một font repo không nhúng.** Mọi callout đang in
+   bằng font hệ thống. Đã vá `annotate.js` sang `'IBM Plex Sans'`.
+4. **Trục giá trị in `1,200` thay vì `1.200`.** Mặc định của ECharts, ảnh hưởng mọi preset
+   không tự truyền formatter. Đã vá `valueAxis` trong `theme.mjs`.
+
+## Ba cái bẫy của tầng trang giấy, đã cắn thật
+
+- `string-set: content()` đặt lên `body` biến toàn bộ văn bản thành chuỗi chân trang, và
+  WeasyPrint in nguyên khối đó tràn đè lên cả trang.
+- `.bao-cao h1 { color: var(--ink) }` đè màu kế thừa từ `.bia`, cho ra chữ ink trên nền
+  ink. Tiêu đề biến mất khỏi bìa mà vẫn nguyên trong tầng text.
+- `name` của `valueAxis` đè lên `title.subtext` vì cả hai đóng ở đỉnh trục.
+
+## Ba việc nhỏ còn nợ, làm kèm lúc nào cũng được:
 
 - `charts/matplotlib/schema.py` chưa có trường độ tin cậy theo TỪNG ĐIỂM. Họ đường cong cần nó
   (một đường cong thật trộn cả điểm quan sát được lẫn điểm ước tính dealer) nên đang tái dùng
@@ -181,9 +215,17 @@ Cả ba đều có test chặn tái phạm, và cả ba test đã được kiể
 - `charts/echarts/out/` là thư mục rỗng, verify ghi ra `out-*.svg` ở cấp trên. Xoá hoặc dùng cho đúng.
 - `verify-illustrations.mjs` so khớp lỗi phía `pageerror` theo nội dung văn bản, chưa trích file
   path từ stack rồi so basename như phía network. Chưa xảy ra trên codebase hiện tại.
-- `_harvest/` vẫn còn 57MB, 860 file. Phase 2 và 3 dỡ dần vào đúng chỗ.
+- `_harvest/` vẫn còn 57MB. Phase 2 đã dỡ `lab-gate/` và `lab-evidence/` vào `gates/`;
+  `harvest-extras/pipeline-stocklpt/` chưa dỡ, chỉ mới đọc để tham khảo cách dựng markdown.
+- Nhánh PPTX chưa làm. Operator chốt Phase 2 chỉ lo đường HTML sang PDF. Hai bug đã biết của
+  `html2pptx.js` (SVG làm crash cả file, bảng mất trắng) vẫn nằm nguyên trong `_harvest/`.
+- 18 preset ECharts vẫn là script hardcode dữ liệu demo, chưa có bề mặt gọi được với dữ liệu
+  thật. Báo cáo hiện chép preset vào `hinh/` của mình rồi thay số, và cách đó đúng tinh thần
+  "preset là ý tham khảo" nhưng chưa tiện. Cân nhắc ở Phase 3.
+- Bảng markdown trong `build_html.py` chưa hỗ trợ ô gộp và chưa có `<caption>`. Đủ cho bảng
+  số liệu phẳng, chưa đủ cho bảng phân tầng.
 
 ## Các phase sau
 
-Viết plan riêng khi phase trước nghiệm thu xong. Phase 2 pipeline và gate. Phase 3 doctrine và
-preset. Phase 4 báo cáo mẫu vận tải biển.
+Viết plan riêng khi phase trước nghiệm thu xong. Phase 3 doctrine và preset. Phase 4 báo cáo
+mẫu vận tải biển, nghiệm thu bằng chính mười gate của repo.

@@ -1,0 +1,378 @@
+/* report.css — tang trinh bay cua BAO CAO, nam tren tokens.css va components.css.
+ *
+ * Phan cong ro rang, dung lam trong pham vi cua nhau la cach hai noi troi khac nhau:
+ *   tokens.css      mau, font, thang chu, spacing, shadow. Nguon chan ly.
+ *   components.css  29 khoi ke chuyen. Khong dung cho tang trang.
+ *   report.css      trang giay: kho trang, le, chay dau chan trang, cot chu, hinh,
+ *                   trang bia, danh muc nguon. CHI file nay biet toi @page.
+ *
+ * Moi luat cung cua repo deu song o day, khong co ngoai le:
+ *   - khong `filter: blur()`, khong `backdrop-filter`
+ *   - shadow chi offset cung, blur bang 0 (lay tu --shadow-1)
+ *   - moi media query co gian man hinh deu viet `@media screen and (...)`, vi vung
+ *     in A4 chi con 688 toi 717px sau le nen breakpoint mobile tu kich hoat khi in
+ *   - khong `aspect-ratio`, WeasyPrint bo qua va khoi ra cao 0
+ *   - khong `writing-mode`, WeasyPrint bo qua no nhung VAN ap transform
+ *   - khong `color-mix()`, WeasyPrint 69 cho ra 0 fill
+ */
+
+/* ------------------------------------------------------------------ *
+ * Kho trang va chay dau chan trang
+ * ------------------------------------------------------------------ */
+@page {
+  size: A4;
+  margin: 18mm 16mm 16mm 16mm;
+
+  @bottom-left {
+    content: string(chay-dau-bao-cao);
+    font-family: var(--font-mono);
+    font-size: 8pt;
+    color: #8595A6;
+    padding-bottom: 4mm;
+  }
+  @bottom-right {
+    content: counter(page) " / " counter(pages);
+    font-family: var(--font-mono);
+    font-size: 8pt;
+    color: #8595A6;
+    padding-bottom: 4mm;
+  }
+}
+
+/* Trang bia khong mang chay dau chan trang: bia co danh tinh rieng, so trang tren
+   bia la dau hieu tai lieu duoc lap may moc. */
+@page bia {
+  margin: 0;
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+/* ------------------------------------------------------------------ *
+ * Nen trang va cot chu
+ * ------------------------------------------------------------------ */
+html {
+  font-size: 17px;
+}
+body.bao-cao {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+/* KHONG dat `string-set: ... content()` len body. `content()` lay noi dung cua
+   CHINH phan tu do, nen dat o body thi chuoi chay chan trang tro thanh toan bo van
+   ban cua bao cao, va WeasyPrint in nguyen khoi do vao vung chan trang, tran ra de
+   len ca trang. Da nhin tan mat: mot lop chu mo phu kin trang 2. Chi h2 duoc khai,
+   vi chi ten section moi dang chay xuong chan trang. */
+
+.bao-cao > * {
+  max-width: 165mm;
+}
+
+/* ------------------------------------------------------------------ *
+ * Trang bia
+ * ------------------------------------------------------------------ */
+.bia {
+  page: bia;
+  break-after: page;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 46mm 20mm 20mm 20mm;
+  min-height: 297mm;
+  max-width: none;
+  box-sizing: border-box;
+}
+.bia-kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+  margin: 0 0 var(--space-5) 0;
+}
+.bia .bia-ten {
+  font-family: var(--font-display);
+  /* Phai khai mau o day, va phai du specificity de thang `.bao-cao h1`. Ban truoc
+     khong khai nen h1 lay `color: var(--ink)` cua khoi tieu de chung, tuc chu mau
+     #051C2C nam tren nen bia cung mau #051C2C. Tieu de bao cao bien mat sach khoi
+     trang bia ma van con nguyen trong tang text, nen moi phep dem deu bao binh thuong. */
+  color: var(--paper);
+  font-size: 34pt;
+  line-height: var(--lh-heading);
+  font-weight: 600;
+  margin: 0 0 var(--space-4) 0;
+  max-width: 150mm;
+}
+.bia-dek {
+  font-size: var(--fs-dek);
+  font-style: italic;
+  color: #B7C4D1;
+  margin: 0 0 var(--space-8) 0;
+  max-width: 130mm;
+}
+.bia-meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: #8595A6;
+  border-top: 1px solid #223449;
+  padding-top: var(--space-4);
+}
+.bia-meta span + span::before {
+  content: " · ";
+  color: #5A6E80;
+}
+
+/* Ba kieu bia, khai bang `bia_kieu` trong front-matter. Chung ton tai de checkpoint 2
+   co ba ban that de so, dung noi dung that, thay vi ba bien the bay ra cho co. Ba kieu
+   khong thay the nhau tuy y: kieu dac hop bao cao nganh, kieu hairline hop ban tin
+   dinh ky doc nhanh, kieu vien accent hop deal pack can mot diem neo thi giac manh. */
+
+/* Kieu 2: nen giay, hai hairline, chu ink. Nhe hon, hop ban tin dinh ky. */
+.bia--hairline {
+  background: var(--paper);
+  color: var(--ink);
+  padding: 40mm 20mm 20mm 20mm;
+  border-top: 3px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.bia--hairline .bia-kicker { color: var(--accent); }
+.bia--hairline .bia-ten { color: var(--ink); }
+.bia--hairline .bia-dek { color: var(--ink-md); }
+.bia--hairline .bia-meta {
+  color: var(--ink-lo);
+  border-top-color: var(--line);
+}
+.bia--hairline .bia-meta span + span::before { color: var(--ink-faint); }
+
+/* Kieu 3: nen ink, mot dai accent day lam diem neo thi giac. */
+.bia--vien-accent {
+  border-left: 14mm solid var(--accent);
+  padding-left: 16mm;
+}
+.bia--vien-accent .bia-kicker { color: var(--paper); }
+
+/* ------------------------------------------------------------------ *
+ * Tieu de va than bai
+ * ------------------------------------------------------------------ */
+.bao-cao h1,
+.bao-cao h2,
+.bao-cao h3,
+.bao-cao h4 {
+  font-family: var(--font-display);
+  line-height: var(--lh-heading);
+  color: var(--ink);
+  /* Tieu de dinh day trang roi noi dung nhay sang trang sau la loi bo cuc kinh
+     dien cua ban in. `break-after: avoid` giu tieu de di cung doan dau tien. */
+  break-after: avoid;
+  break-inside: avoid;
+}
+.bao-cao h2 {
+  font-size: var(--fs-h2);
+  margin: var(--space-8) 0 var(--space-4) 0;
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--ink);
+  /* Ten section chay xuong chan trang. `content()` o day lay dung noi dung cua h2,
+     khac han khi dat len body (xem ghi chu o khoi body). */
+  string-set: chay-dau-bao-cao content();
+}
+/* CO Y khong dat `break-before: page` cho h2.
+   Ban truoc co, va no dung voi bao cao dai nhung sai voi bao cao ngan: mot section
+   ket thuc o dau trang de lai gan tron mot trang trang, va do la ba trang trang trong
+   ban mau sau trang. Quyen ngat trang thuoc ve TAC GIA, viet `::: ngat-trang` o dung
+   cho muon ngat. Pipeline khong doan ho nhip cua bai. */
+.bao-cao h2.dau-tien {
+  margin-top: var(--space-6);
+}
+.bao-cao h3 {
+  font-size: var(--fs-h3);
+  margin: var(--space-6) 0 var(--space-3) 0;
+}
+.bao-cao h4 {
+  font-size: var(--fs-body);
+  font-weight: 700;
+  margin: var(--space-5) 0 var(--space-2) 0;
+}
+.bao-cao p {
+  margin: 0 0 var(--space-4) 0;
+  /* Hai dong mo coi la dau hieu ban in lam voi. */
+  orphans: 2;
+  widows: 2;
+}
+.bao-cao .lede {
+  font-size: var(--fs-dek);
+  font-style: italic;
+  color: var(--ink-md);
+}
+.bao-cao ul,
+.bao-cao ol {
+  margin: 0 0 var(--space-4) 0;
+  padding-left: var(--space-5);
+}
+.bao-cao li {
+  margin-bottom: var(--space-2);
+}
+.bao-cao blockquote {
+  margin: var(--space-5) 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--paper-hi);
+  border-left: 3px solid var(--accent);
+  break-inside: avoid;
+}
+.bao-cao blockquote p:last-child {
+  margin-bottom: 0;
+}
+.bao-cao hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: var(--space-6) 0;
+}
+.bao-cao code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--paper-hi);
+  padding: 1px 4px;
+  border-radius: var(--radius-1);
+}
+.bao-cao a {
+  color: var(--accent-hi);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+
+/* ------------------------------------------------------------------ *
+ * Con so co nguon
+ * ------------------------------------------------------------------ */
+.v {
+  font-family: var(--font-mono);
+  font-size: 0.94em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.v-nguon {
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+  color: var(--ink-lo);
+  vertical-align: super;
+  margin-left: 1px;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ *
+ * Hinh: chart, minh hoa
+ * ------------------------------------------------------------------ */
+.hinh {
+  margin: var(--space-6) 0;
+  /* Hinh bi cat doi giua hai trang la loi nang nhat cua ban in bao cao. */
+  break-inside: avoid;
+  max-width: 165mm;
+}
+.hinh-khung {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-1);
+}
+.hinh-khung svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.hinh-chu {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-md);
+  margin-top: var(--space-3);
+}
+.hinh-so {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-right: var(--space-2);
+}
+.hinh-nguon {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--ink-lo);
+  margin-top: var(--space-1);
+}
+
+/* ------------------------------------------------------------------ *
+ * Danh muc nguon cuoi bao cao
+ * ------------------------------------------------------------------ */
+.nguon-muc {
+  break-before: page;
+}
+.nguon-danh-sach {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: var(--fs-small);
+}
+.nguon-danh-sach li {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line-lo);
+  break-inside: avoid;
+}
+.nguon-ma {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--accent);
+  flex: 0 0 auto;
+  min-width: 34px;
+}
+.nguon-than {
+  flex: 1 1 auto;
+}
+.nguon-bac {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--ink-lo);
+  display: block;
+  margin-top: 2px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Ngat trang tuong minh trong noi dung
+ * ------------------------------------------------------------------ */
+.ngat-trang {
+  break-after: page;
+  height: 0;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ *
+ * Man hinh: chi de doc ban HTML cho de, khong dinh toi ban in.
+ * `screen` la BAT BUOC. Thieu no thi khoi nay tu chay khi in, vi vung in A4 chi
+ * con khoang 688 toi 717px sau le, hep hon hau het breakpoint mobile.
+ * ------------------------------------------------------------------ */
+@media screen {
+  body.bao-cao {
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-6);
+    box-shadow: var(--shadow-1);
+  }
+  .bia {
+    min-height: auto;
+    padding: var(--space-8) var(--space-7);
+    margin: calc(-1 * var(--space-7)) calc(-1 * var(--space-6)) var(--space-7);
+  }
+}
+@media screen and (max-width: 700px) {
+  body.bao-cao {
+    padding: var(--space-5) var(--space-4);
+  }
+  .bia-ten {
+    font-size: 26pt;
+  }
+}

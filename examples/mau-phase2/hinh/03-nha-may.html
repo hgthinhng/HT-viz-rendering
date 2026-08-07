@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Nhà máy xi măng: năm con số neo vào năm bộ phận</title>
+<style>
+  /* Trang nay KHONG phai file giao di. No la ban khac cua mot hinh: mo bang Chromium,
+     de annotate.js ve callout, roi pipeline/bake_svg.mjs dong bang thanh SVG tinh.
+     Chi file SVG tinh do moi di vao bao cao. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1000px; background: #f8fafc; padding: 24px; }
+  #nha-may { width: 100%; height: auto; display: block; background: #ffffff; }
+</style>
+<link rel="stylesheet" href="../../../design-system/fonts/fonts-embedded.css">
+<link rel="stylesheet" href="../../../illustrations/annotate.css">
+</head>
+<body>
+
+<!-- Khung 1100x520 rong hon silhouette nha may 800x500 mot cach co chu dich: chua cho
+     hop nhan hai ben. Canvas khit vat the lam hop nhan phai de len ria vat the. -->
+<svg id="nha-may" viewBox="0 0 1100 520" role="img" style="--accent:#2251FF">
+  <title>Nhà máy xi măng với năm con số neo vào năm bộ phận</title>
+  <desc>Nhà máy xi măng: mỏ đá vôi và băng chuyền vào, tháp trao đổi nhiệt nhiều tầng cyclone, lò nung quay có ngọn lửa ở đầu ra, máy làm nguội clinker, dãy silo thành phẩm. Năm chú thích neo vào năm bộ phận mang đúng chức năng kinh tế mà con số đo.</desc>
+  <g class="scene" transform="translate(150,10)">
+    <g class="ground">
+      <rect x="0" y="430" width="800" height="70" fill="#cbd5e1"/>
+      <rect x="0" y="430" width="800" height="5" fill="#94a3b8"/>
+    </g>
+
+    <g class="quarry">
+      <path d="M25,430 L45,388 L60,400 L78,372 L95,398 L112,430 Z" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+      <path d="M45,388 L60,400 L78,372" fill="none" stroke="#64748b" stroke-width="1.2"/>
+    </g>
+
+    <g class="conveyor-in">
+      <path d="M78,372 L345,300 L345,312 L78,384 Z" fill="#475569" stroke="#0f172a" stroke-width="1.2"/>
+      <circle cx="78" cy="378" r="7" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+      <circle cx="345" cy="306" r="7" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+      <line x1="150" y1="359" x2="150" y2="430" stroke="#94a3b8" stroke-width="3"/>
+      <line x1="230" y1="341" x2="230" y2="430" stroke="#94a3b8" stroke-width="3"/>
+    </g>
+
+    <g class="preheater-tower">
+      <rect x="350" y="90" width="35" height="340" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+      <rect x="385" y="90" width="35" height="340" fill="#64748b" stroke="#0f172a" stroke-width="1.4"/>
+      <rect x="350" y="90" width="70" height="14" fill="var(--accent)"/>
+      <g class="cyclones" fill="#94a3b8" stroke="#0f172a" stroke-width="1.3">
+        <rect x="322" y="140" width="28" height="34"/>
+        <rect x="322" y="205" width="28" height="34"/>
+        <rect x="322" y="270" width="28" height="34"/>
+      </g>
+    </g>
+
+    <g class="kiln">
+      <path d="M420,345 L650,365 L650,380 L420,360 Z" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
+      <path d="M420,360 L650,380 L650,395 L420,375 Z" fill="#64748b" stroke="#0f172a" stroke-width="1.4"/>
+      <line x1="460" y1="349" x2="460" y2="379" stroke="#0f172a" stroke-width="1.6"/>
+      <line x1="540" y1="357" x2="540" y2="387" stroke="#0f172a" stroke-width="1.6"/>
+      <line x1="610" y1="363" x2="610" y2="393" stroke="#0f172a" stroke-width="1.6"/>
+      <g class="piers" fill="#475569" stroke="#0f172a" stroke-width="1.2">
+        <path d="M448,430 L472,430 L468,378.5 L452,378.5 Z"/>
+        <path d="M528,430 L552,430 L548,385.4 L532,385.4 Z"/>
+        <path d="M598,430 L622,430 L618,391.5 L602,391.5 Z"/>
+      </g>
+      <path d="M655,388 C648,375 660,368 655,355 C670,366 675,382 662,392 C659,389 657,389 655,388 Z" fill="#ea580c"/>
+      <path d="M655,383 C651,375 658,371 655,364 C663,371 665,380 658,386 Z" fill="#fbbf24"/>
+    </g>
+
+    <g class="cooler">
+      <rect x="650" y="375" width="55" height="45" fill="#334155" stroke="#0f172a" stroke-width="1.4"/>
+      <rect x="650" y="375" width="55" height="12" fill="#475569"/>
+    </g>
+
+    <g class="silos" stroke="#0f172a" stroke-width="1.3">
+      <g class="silo">
+        <rect x="712" y="240" width="8" height="190" fill="#f8fafc"/>
+        <rect x="720" y="240" width="8" height="190" fill="#cbd5e1"/>
+        <path d="M712,240 A8,7 0 0 1 728,240 Z" fill="#f8fafc"/>
+      </g>
+      <g class="silo">
+        <rect x="734" y="252" width="8" height="178" fill="#f8fafc"/>
+        <rect x="742" y="252" width="8" height="178" fill="#cbd5e1"/>
+        <path d="M734,252 A8,7 0 0 1 750,252 Z" fill="#f8fafc"/>
+      </g>
+      <g class="silo">
+        <rect x="756" y="246" width="8" height="184" fill="#f8fafc"/>
+        <rect x="764" y="246" width="8" height="184" fill="#cbd5e1"/>
+        <path d="M756,246 A8,7 0 0 1 772,246 Z" fill="#f8fafc"/>
+      </g>
+    </g>
+  </g>
+</svg>
+
+<script src="../../../illustrations/annotate.js"></script>
+<script>
+  // Toa do neo phai cong offset translate(150,10) cua <g class="scene">, vi lop
+  // annotation la SIBLING cua scene chu khong nam trong nhom bi transform.
+  const OX = 150, OY = 10;
+  const doi = ([x, y]) => [x + OX, y + OY];
+  const svg = document.getElementById('nha-may');
+  // Vung can tranh la bbox that cua nha may sau khi cong offset: duong dan callout
+  // di vong qua khoang trong tren duoi thay vi cat ngang qua thiet bi.
+  const TRANH = { x: 25 + OX, y: 90 + OY, width: 747, height: 340 };
+
+  // Moi con so neo vao dung bo phan lam chuc nang do luong no trong thuc te, theo
+  // semantic-site principle trong illustrations/grammar.md. Mot con so khong co cho
+  // ngoi ngu nghia thi dua ve van xuoi, khong treo bua canh hinh.
+  Annotate.annotate(svg, [
+    { anchor: doi([78, 378]), label: { x: 24, y: 300 },
+      head: 'Mỏ đá vôi tự có', sub: 'Băng chuyền thẳng vào nhà máy, không cước vận chuyển',
+      tone: 'neutral' },
+    { anchor: doi([336, 222]), label: { x: 24, y: 120 },
+      head: '196 nghìn đồng/tấn', sub: 'Điện năng, chủ yếu quạt hút và nghiền',
+      tone: 'neutral' },
+    { anchor: doi([657, 372]), label: { x: 1076, y: 120 },
+      head: '342 nghìn đồng/tấn', sub: 'Than và nhiên liệu đốt lò, khoản chi lớn nhất',
+      tone: 'accent' },
+    { anchor: doi([677, 398]), label: { x: 1076, y: 250 },
+      head: 'Thu hồi nhiệt thải', sub: 'Máy làm nguội clinker, bù lại một phần điện mua ngoài',
+      tone: 'neutral' },
+    { anchor: doi([742, 300]), label: { x: 1076, y: 380 },
+      head: 'Silo thành phẩm', sub: 'Sức chứa quyết định khả năng chờ giá',
+      tone: 'neutral' },
+  ], { avoidBox: TRANH, axis: 'vertical' });
+</script>
+</body>
+</html>

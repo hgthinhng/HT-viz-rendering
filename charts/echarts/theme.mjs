@@ -25,6 +25,9 @@
 // tofu nen de lot QC. SVG co the duoc mo doc lap, khong co font nhung cua
 // trang, nen fallback la bat buoc chu khong phai de phong.
 
+// fmt.mjs khong import gi ca nen huong import nay khong tao vong lap.
+import { fmtNumber } from './fmt.mjs';
+
 export const PALETTE = {
   accent: '#2251FF',
   accentHi: '#1233B8',
@@ -151,7 +154,12 @@ export function baseOption({ title, subtitle, width = 700, height = 400 } = {}) 
   };
 }
 
-/** Trục giá trị chuẩn: gridline mảnh 1px solid, KHÔNG bao giờ dashed, bắt đầu từ 0 cho bar/column. */
+/** Trục giá trị chuẩn: gridline mảnh 1px solid, KHÔNG bao giờ dashed, bắt đầu từ 0 cho bar/column.
+ *
+ * CAN THAN voi `name`: ECharts dat ten truc o DINH truc, dung vung ma `title.subtext`
+ * dang chiem, nen chart vua co subtitle vua khai `name` thi hai chuoi de len nhau.
+ * Da nhin tan mat tren ban PDF dau tien cua Phase 2. Quy uoc cua repo: don vi ghi o
+ * PHU DE, khong lap lai o ten truc. */
 export function valueAxis(opts = {}) {
   const { name, min, startAtZero = true, axisLabelFormatter } = opts;
   return {
@@ -161,7 +169,15 @@ export function valueAxis(opts = {}) {
     min: startAtZero ? 0 : min,
     axisLine: { show: false },
     axisTick: { show: false },
-    axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: axisLabelFormatter },
+    // Mac dinh phai la dinh dang so tieng Viet, khong duoc de ECharts tu lo. Bo mac
+    // dinh cua ECharts dung dau phay lam hang nghin, nen truc in ra "1,200" trong khi
+    // ca repo doc "1.200" la mot nghin hai tram. Da nhin tan mat tren ban PDF dau tien
+    // cua Phase 2. Chi doi dau phan cach o day, KHONG tu rut gon don vi: rut gon la
+    // viec cua preset vi chi preset moi biet don vi that la tien, phan tram hay lan.
+    axisLabel: {
+      ...TYPOGRAPHY.axisLabel,
+      formatter: axisLabelFormatter ?? ((v) => fmtNumber(v, { decimals: null })),
+    },
     splitLine: { lineStyle: { color: PALETTE.line, width: 1, type: 'solid' } },
   };
 }

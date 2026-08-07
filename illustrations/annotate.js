@@ -59,10 +59,19 @@ function el(tag, attrs, parent) {
   return n;
 }
 
+// Font phai la font repo NHUNG SAN, khong phai font chi co tren may dang lam. Ban
+// truoc khai "'Be Vietnam Pro', sans-serif" cho nhanh chu: repo nhung dung ba ho la
+// Spectral, IBM Plex Sans va IBM Plex Mono, khong ho nao ten Be Vietnam Pro. Hau qua
+// do duoc trong Phase 2: moi callout roi ve `sans-serif`, tuc font he thong, va trong
+// ban PDF thi thanh Noto Serif hoac DejaVu. Tang text van doc dung nen khong phep kiem
+// nao thay, nhung chu tren giay khac hoan toan chu trong bao cao.
+// Luat cung cua repo: font-family phai la list KET THUC bang tu khoa generic.
 function textEl(x, y, s, opts, parent) {
   const t = el("text", {
     x, y,
-    "font-family": opts.mono ? "'IBM Plex Mono', Menlo, Consolas, monospace" : "'Be Vietnam Pro', sans-serif",
+    "font-family": opts.mono
+      ? "'IBM Plex Mono', Menlo, Consolas, monospace"
+      : "'IBM Plex Sans', 'Noto Sans', sans-serif",
     "font-size": opts.size || 12.5,
     "font-weight": opts.bold ? 700 : 400,
     fill: opts.fill || "#0f172a",

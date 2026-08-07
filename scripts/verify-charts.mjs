@@ -7,42 +7,9 @@ import { execFileSync } from 'node:child_process';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-
-/** Tra ve chuoi mo ta loi neu SVG khong phai XML hop le, chuoi rong neu hop le.
- * Dung python3 lam trong tai vi Node khong co san bo phan tich XML, va repo da phu
- * thuoc python3 cho count_raster.py nen khong them phu thuoc moi.
- *
- * Ve an toan: bo phan tich XML cua thu vien chuan de dinh don XXE va billion-laughs.
- * O day dau vao la SVG do CHINH repo vua sinh ra o dong tren, khong phai file nguoi
- * ngoai gui, nen be mat tan cong bang 0. Du vay van chan hai duong do bang cach TU
- * TAY dung expat voi entity handler tu choi moi entity, thay vi goi thang ET.fromstring:
- * expat khong tai external DTD, va handler duoi day cat luon nhanh internal entity
- * (billion-laughs). Khong them phu thuoc defusedxml cho mot viec chi chay trong gate
- * noi bo. Neu sau nay gate nay duoc dung de nghiem thu SVG tu nguon NGOAI, phai doi
- * sang defusedxml va them vao requirements.txt. */
-const KIEM_XML_PY = `
-import sys, xml.parsers.expat
-p = xml.parsers.expat.ParserCreate()
-def tu_choi_entity(*a, **k):
-    raise xml.parsers.expat.ExpatError('tu choi entity, khong parse entity trong gate nay')
-p.EntityDeclHandler = tu_choi_entity
-p.ExternalEntityRefHandler = lambda *a: False
-p.Parse(sys.stdin.buffer.read(), True)
-`;
-
-function kiemTraXml(svg) {
-  try {
-    execFileSync('python3', ['-c', KIEM_XML_PY], {
-      input: svg,
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-    return '';
-  } catch (e) {
-    const err = (e.stderr || '').toString().trim().split('\n').pop() || e.message;
-    return err.replace(/^.*ParseError:\s*/, '');
-  }
-}
+// Phep kiem XML nam o gates/lib/xml.mjs de gate cua Phase 2 va verify cua Phase 1
+// dung CHUNG mot ban. Hai ban song song la cach de hai noi troi khac nhau.
+import { kiemTraXml } from '../gates/lib/xml.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIR = path.join(ROOT, 'charts/echarts');

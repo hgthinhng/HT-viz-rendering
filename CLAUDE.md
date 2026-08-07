@@ -196,6 +196,148 @@ Phải có bản `.ttf` riêng dù repo đã nhúng font base64, vì matplotlib 
 
 Một cái bẫy đã cắn khi làm việc này: Google Fonts đặt tên họ của bản 600 là `IBM Plex Sans SemiBold`, tức một HỌ KHÁC chứ không phải cấp đậm của `IBM Plex Sans`. Trích nguyên xi thì matplotlib đăng ký hai họ rời rạc, và khi chart xin bản đậm nó không tìm thấy nên tô giả. `extract-ttf.py` ép lại `nameID` 1/16 cho khớp. Kiểm bằng `findfont` chứ đừng tin danh sách tên mà `setup_fonts()` trả về.
 
+## Đường ống: từ markdown ra PDF đã qua gate
+
+Một lệnh chạy trọn sáu bước:
+
+```bash
+python3 pipeline/orchestrator.py examples/mau-phase2/noi-dung.md   # hoặc: npm run mau
+```
+
+| Bước | Làm gì |
+|---|---|
+| 1 HÌNH | chạy mọi `hinh/*.mjs` và `hinh/*.py` của báo cáo, bake mọi `hinh/*.html` |
+| 2 CK1 | ghi kịch bản kể chuyện: mỗi section một câu hỏi, hình nào trả lời |
+| 3 CK2 | dựng ba bản bìa bằng nội dung thật, đủ ba kiểu, để chọn một |
+| 4 DỰNG | HTML tự đủ, cả bản nội bộ lẫn bản gửi đi |
+| 5 CK3 | xuất PDF cả hai bản |
+| 6 GATE | chạy mười gate trên cả hai bản |
+
+Checkpoint ghi artifact rồi in đường dẫn, KHÔNG hỏi y/n trên terminal. Script dừng chờ
+gõ phím thì không chạy được trong test tự động, không chạy được khi Claude gọi, và
+không chạy được trong batch. Điểm dừng để duyệt vẫn còn, chỉ khác ai bấm nút.
+
+Báo cáo là một thư mục, không phải một file:
+
+```
+examples/mau-phase2/
+├── noi-dung.md      front-matter + markdown + directive
+├── so-nguon.json    mỗi số một nguồn, một bậc bằng chứng, một ngày lấy về
+├── hinh/            script sinh hình, và file ra-*.svg chúng sinh ra
+└── ra/              artifact, đã gitignore, sinh lại bằng npm run mau
+```
+
+Bốn directive, viết trên một dòng riêng:
+
+```
+::: chart src=hinh/ra-01-x.svg id=hinh-x chu="Chú thích" nguon=K2
+::: minh-hoa src=hinh/ra-03-y.svg id=hinh-y chu="Chú thích" nguon=K2
+::: ngat-trang
+```
+
+Số có nguồn viết `{{ma_gia_tri}}` ngay trong câu văn. Mã không có trong sổ nguồn thì
+build dừng ngay, không im lặng bỏ qua: một con số không nguồn trong bản PDF đã gửi đi
+thì không gọi lại được.
+
+## Hai chế độ xuất, không được gộp
+
+`noi-bo` nhúng đủ sổ nguồn vào `<script id="evidence-ledger">`, danh mục nguồn hiện tên
+tổ chức và trích dẫn đầy đủ. `gui-di` KHÔNG nhúng sổ nguồn, và nguồn `internal_only`
+chỉ hiện `public_label`.
+
+Lý do bản gửi đi không nhúng sổ nguồn: nhúng vào là tự đưa tên cơ quan và kênh tin ra
+ngoài trong một thẻ script mà người đọc không thấy nhưng `Ctrl+U` thì thấy. Cả hai bản
+dựng từ cùng một file markdown nên không có đường nào để chúng nói hai điều khác nhau.
+
+## Minh hoạ có callout PHẢI bake trước khi vào báo cáo
+
+`annotate.js` vẽ callout bằng JavaScript lúc chạy. WeasyPrint không chạy JavaScript.
+Nhúng thẳng file HTML minh hoạ vào báo cáo thì bản PDF mất sạch lớp chú thích, tức mất
+đúng phần mang giá trị của minh hoạ neo số liệu.
+
+Đo được trên `example-vertical-axis-ship.html`: bản gốc qua WeasyPrint cho 42 nét vẽ và
+197 ký tự text, 0 trên 7 callout. Bản đã bake cho 74 nét vẽ và đủ 7 callout.
+
+```bash
+node pipeline/bake_svg.mjs <vao.html> <ra.svg> --selector="#ma-svg"
+```
+
+Bake làm ba việc: chờ annotate chạy xong rồi đóng băng cây SVG, resolve `var()` và
+`color-mix()` thành màu thật, ghim `font-family` đã resolve và đổi nháy kép sang nháy
+đơn. Gate 6 CALLOUT-BAKED chặn nếu quên.
+
+## Mười gate, và luật gate phải tự đỏ được
+
+```bash
+node gates/run.mjs <file.html> <file.pdf> --che-do=noi-bo|gui-di
+```
+
+| # | Gate | Bắt gì |
+|---|---|---|
+| 1 | FONT-HTML | font đầu stack phải Windows-safe hoặc nhúng base64 phủ dấu tiếng Việt |
+| 2 | FONT-PDF | tên font THẬT trong PDF, đỏ khi thấy Noto, Liberation, DejaVu |
+| 3 | RASTER | đếm `/Subtype /Image` qua `xref_object`, mặc định phải bằng 0 |
+| 4 | DIACRITICS | U+FFFD và ký tự CÓ DẤU bị đánh synthetic |
+| 5 | CHART-SONG | mọi SVG parse được XML, và để lại chữ trong tầng text của PDF |
+| 6 | CALLOUT-BAKED | trang không còn gọi `annotate.js` lúc chạy |
+| 7 | STYLE | em-dash, en-dash, AI-slop, câu kết cách ngôn |
+| 8 | PAGEBREAK | CSS bảo vệ, và hình học thật tìm thẻ bị cắt ngang biên trang |
+| 9 | SOURCE-LEAK | cụm từ cấm, tên riêng viết tắt, đối chiếu sổ nguồn ở bản gửi đi |
+| 10 | LEDGER | sổ nguồn hợp lệ: không mồ côi, không lệch bậc, không lệch đơn vị |
+
+**Mọi gate mới phải có cặp fixture đỏ và xanh trong `gates/fixtures/`, và phải có test
+trong `tests/consistency/gate_do_xanh.test.mjs` ép bản xanh PASS và bản đỏ FAIL.** Gate
+nào không đỏ được với fixture đỏ của chính nó thì gate đó chưa tồn tại. Repo này đã có
+ba gate như vậy ở Phase 1, cả ba đều chạy trơn tru và cả ba đều vô dụng.
+
+## Gate 2 FONT-PDF ra đời vì tầng text không phân biệt được font sai
+
+Đây là phép đo mà bộ gate cũ không có, và nó lấp đúng một lỗ hổng đo được bằng số. Cùng
+một trang HTML:
+
+| Bản | Font trong PDF | FFFD | Ký tự synthetic | Tầng text |
+|---|---|---|---|---|
+| Có `@font-face` base64 | `Spectral`, `IBM-Plex-Mono` | 0 | 0 | đúng dấu |
+| Bỏ `@font-face` | `Noto-Serif`, `Liberation-Mono` | 0 | 0 | đúng dấu |
+
+Hai bản giống hệt nhau ở mọi phép đo tầng văn bản. Chỉ đọc tên font trong PDF mới phân
+biệt được. Nghĩa là gate dấu tiếng Việt, dù viết đúng tới đâu, cũng mù hoàn toàn với ca
+file rơi về font hệ thống Linux.
+
+Một hệ quả cần biết khi đọc số: font subset không nhúng glyph dấu CÁCH, nên MuPDF đánh
+dấu mọi dấu cách là synthetic. Một bản PDF sạch 6 trang cho ra 119 ca như vậy. Đếm cả
+thì gate đỏ vĩnh viễn, nên gate 4 chỉ đếm synthetic trên riêng tập ký tự có dấu.
+
+## Đối chiếu chuỗi với tầng text của PDF phải bỏ hết khoảng trắng
+
+Trích text từ PDF nuốt khoảng trắng giữa các glyph sát nhau: "475 TỶ USD" ra thành
+"475TỶUSD". So nguyên văn sẽ báo thiếu một chuỗi đang có thật trên giấy. Dùng `boTrang()`
+trong `gates/gates.mjs` cho mọi phép đối chiếu kiểu này.
+
+## Ba cái bẫy của tầng trình bày, đều đã cắn thật ở Phase 2
+
+**`string-set: ... content()` KHÔNG được đặt lên `body`.** `content()` lấy nội dung của
+chính phần tử đó, nên đặt ở body thì chuỗi chạy chân trang trở thành toàn bộ văn bản của
+báo cáo, và WeasyPrint in nguyên khối đó vào vùng chân trang, tràn ra đè lên cả trang.
+Chỉ `h2` được khai.
+
+**Màu tiêu đề trên nền tối phải đủ specificity.** `.bao-cao h1` khai `color: var(--ink)`
+đè lên `color` kế thừa từ `.bia`, cho ra chữ `#051C2C` trên nền `#051C2C`. Tiêu đề biến
+mất khỏi trang bìa mà vẫn nguyên trong tầng text, nên mọi phép đếm đều báo bình thường.
+
+**`name` của `valueAxis` đè lên `title.subtext`.** ECharts đặt tên trục ở đỉnh trục,
+đúng chỗ phụ đề đang chiếm. Quy ước của repo: đơn vị ghi ở PHỤ ĐỀ, không lặp ở tên trục.
+
+## SVG nhúng inline phải đổi tiền tố id và bó hẹp `<style>`
+
+Nhiều SVG trên cùng một trang mà trùng `id` thì `url(#grad)` của hình sau trỏ nhầm vào
+định nghĩa của hình trước, và triệu chứng hiện ra là "hình thứ hai mất màu" chứ không
+phải một lỗi rõ ràng. `build_html.py` tự đổi tiền tố.
+
+matplotlib còn xuất kèm `<style>*{stroke-linejoin: round}</style>`. Trong file `.svg`
+riêng thì `*` chỉ chạm chính nó; nhúng inline vào HTML thì `*` chạm mọi phần tử của cả
+trang. `build_html.py` gắn tiền tố `#<mã-hình>` vào trước mọi selector.
+
 ## Khi thêm minh hoạ
 
 Đọc `illustrations/grammar.md` trước. Ba bài tự kiểm bắt buộc: che hết chữ mà không đọc ra biến cấu trúc thì xoá, không polish; đổi ngành mà hình vẫn dùng nguyên được thì đó là trang trí chứ không phải phân tích; kiểm danh sách đen chart giả.

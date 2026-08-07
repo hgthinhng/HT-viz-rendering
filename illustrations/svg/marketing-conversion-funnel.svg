@@ -3,7 +3,7 @@
   <desc>Phễu vật lý bốn tầng thu hẹp dần, hạt đầu vào rơi từ trên xuống, một phần rò rỉ ra ngoài ở mỗi tầng, phần còn lại ra khỏi vòi hẹp phía dưới. Dùng minh hoạ kênh chuyển đổi khách hàng. Độ thu hẹp mỗi tầng ánh xạ tỷ lệ rơi rụng thật.</desc>
   <g class="scene">
     <g class="ground">
-      <rect x="0" y="520" width="600" height="40" fill="#cbd5e1"/>
+      <rect x="0" y="520" width="600" height="40" fill="var(--ilus-7, #cbd5e1)"/>
     </g>
 
     <g class="input-particles" fill="var(--accent)" opacity="0.8">
@@ -17,7 +17,7 @@
       <circle cx="330" cy="42" r="6"/>
     </g>
 
-    <g class="funnel" stroke="#0f172a" stroke-width="1.5">
+    <g class="funnel" stroke="var(--ilus-1, #0f172a)" stroke-width="1.5">
       <path d="M80,60 L520,60 L472.5,150 L127.5,150 Z" fill="#ddd6fe"/>
       <path d="M127.5,150 L472.5,150 L425,240 L175,240 Z" fill="#c4b5fd"/>
       <path d="M175,240 L425,240 L377.5,330 L222.5,330 Z" fill="#a78bfa"/>
@@ -38,9 +38,9 @@
     </defs>
 
     <g class="output-tray">
-      <path d="M245,460 L355,460 L345,486 L255,486 Z" fill="#94a3b8" stroke="#0f172a" stroke-width="1.4"/>
-      <rect x="270" y="486" width="10" height="30" fill="#64748b" stroke="#0f172a" stroke-width="1.2"/>
-      <rect x="320" y="486" width="10" height="30" fill="#64748b" stroke="#0f172a" stroke-width="1.2"/>
+      <path d="M245,460 L355,460 L345,486 L255,486 Z" fill="var(--ilus-6, #94a3b8)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.4"/>
+      <rect x="270" y="486" width="10" height="30" fill="var(--ilus-5, #64748b)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
+      <rect x="320" y="486" width="10" height="30" fill="var(--ilus-5, #64748b)" stroke="var(--ilus-1, #0f172a)" stroke-width="1.2"/>
       <circle cx="300" cy="472" r="5" fill="var(--accent)"/>
     </g>
   </g>

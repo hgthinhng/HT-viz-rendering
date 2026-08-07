@@ -243,11 +243,19 @@ def main() -> int:
         print(f"orchestrator FAIL: {e}", file=sys.stderr)
         return 1
 
+    # Chi liet ke artifact cua BUOC DA CHAY. In ca ba checkpoint sau mot lan chay
+    # `--chi=ck1` la bao cao sai su that: nguoi doc tuong ba ban bia va hai ban PDF vua
+    # duoc sinh lai, trong khi chung con nguyen tu lan chay truoc hoac chua ton tai.
     print()
     print("XONG. Artifact nam o", thu_muc_ra)
-    print("  CK1 kich ban:      ck1-kich-ban.md")
-    print("  CK2 ba ban bia:    ck2-bia-dac.pdf, ck2-bia-hairline.pdf, ck2-bia-vien-accent.pdf")
-    print(f"  CK3 ban day du:    {ten}-noi-bo.pdf va {ten}-gui-di.pdf")
+    if "ck1" in can_chay:
+        print("  CK1 kich ban:      ck1-kich-ban.md")
+    if "ck2" in can_chay:
+        print("  CK2 ba ban bia:    ck2-bia-dac.pdf, ck2-bia-hairline.pdf, ck2-bia-vien-accent.pdf")
+    if "ck3" in can_chay:
+        print(f"  CK3 ban day du:    {ten}-noi-bo.pdf va {ten}-gui-di.pdf")
+    if "hinh" in can_chay:
+        print(f"  Hinh da sinh:      {thu_muc_bao_cao / 'hinh'}/ra-*.svg")
     return 0
 
 

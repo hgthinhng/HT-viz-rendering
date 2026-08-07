@@ -75,6 +75,13 @@ const H = 430;
 const chart = echarts.init(null, null, { renderer: 'svg', ssr: true, width: W, height: H });
 
 chart.setOption({
+  // animation:false: baseOption() KHONG con tu khai truong nay (xem charts/echarts/
+  // theme.mjs va render-static.mjs -- animation nay tu ban tach option/render ECharts
+  // la thuoc tinh cua LAN XUAT, khong con cua baseOption()). File nay tu goi
+  // echarts.init(ssr:true) truc tiep, khong di qua renderStatic() dung chung, nen phai
+  // tu khai o day de tranh dung lai bug marker bi keo ve goc toa do khi mo SVG bang
+  // trinh duyet (chi tiet: charts/echarts/render-static.mjs).
+  animation: false,
   ...baseOption({
     title: 'Điện và than nuốt gần một nửa giá bán mỗi tấn',
     subtitle: `Cầu nối từ giá bán tới lợi nhuận trước thuế, ${donVi}, năm 2025`,

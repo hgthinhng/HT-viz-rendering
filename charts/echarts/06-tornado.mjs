@@ -12,65 +12,74 @@
 // (bất lợi trong so sánh, được phép); lạc quan PHẢI trung tính, KHÔNG tô
 // accent, vì "kịch bản tốt hơn = xanh dương" chính là tô màu dương cho bên có
 // lợi, dạng traffic-light bị cấm dù đội lốt "chỉ là tô theo chiều tăng/giảm".
-import * as echarts from 'echarts';
-import fs from 'node:fs';
 import { baseOption, TYPOGRAPHY, PALETTE, tooltipDefault } from './theme.mjs';
 import { fmtCompact } from './fmt.mjs';
+import { renderStatic } from './render-static.mjs';
 
-const base = 850; // tỷ đồng, giá trị doanh nghiệp base case
-const raw = [
-  { variable: 'WACC (±1.5đpt)', low: 720, high: 1010 },
-  { variable: 'Tăng trưởng dài hạn (±0.5đpt)', low: 790, high: 925 },
-  { variable: 'Biên EBITDA (±2đpt)', low: 810, high: 895 },
-  { variable: 'Vốn đầu tư/DThu (±1đpt)', low: 830, high: 875 },
-  { variable: 'Thuế suất hiệu dụng (±2đpt)', low: 838, high: 862 },
-];
-const rows = [...raw].sort((a, b) => (b.high - b.low) - (a.high - a.low)); // sắp theo biên độ giảm dần
-const categories = rows.map((r) => r.variable);
-
-const chart = echarts.init(null, null, { renderer: 'svg', ssr: true, width: 720, height: 380 });
-chart.setOption({
-  ...baseOption({ title: 'Phân tích độ nhạy giá trị doanh nghiệp (DCF)', subtitle: `Base case = ${fmtCompact(base, { baseUnit: 'ty', decimals: 0 })}, sắp theo biên độ tác động` }),
-  tooltip: tooltipDefault,
-  grid: { left: 200, right: 40, top: 60, bottom: 40 },
-  xAxis: {
-    type: 'value',
-    axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => fmtCompact(v + base, { baseUnit: 'ty', decimals: 0 }) },
-    splitLine: { lineStyle: { color: PALETTE.line } },
-  },
-  yAxis: { type: 'category', data: categories, inverse: true, // phễu lốc: biên độ lớn nhất phải ở TRÊN CÙNG; ECharts mac dinh dat index 0 o DAY nen phai dao truc, khong dao thi hinh ra nguoc voi y dinh ghi o dau file
-         axisLine: { show: false }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
-  series: [
-    {
-      name: 'Kịch bản bi quan', type: 'bar', stack: 'range', barWidth: 22,
-      itemStyle: { color: PALETTE.negative },
-      data: rows.map((r) => r.low - base),
-      label: { show: true, position: 'left', formatter: (p) => fmtCompact(p.value + base, { baseUnit: 'ty', decimals: 0 }), ...TYPOGRAPHY.dataLabel },
-    },
-    {
-      name: 'Kịch bản lạc quan', type: 'bar', stack: 'range', barWidth: 22,
-      itemStyle: { color: PALETTE.inkLo },
-      data: rows.map((r) => r.high - base),
-      label: { show: true, position: 'right', formatter: (p) => fmtCompact(p.value + base, { baseUnit: 'ty', decimals: 0 }), ...TYPOGRAPHY.dataLabel },
-    },
+export const MAC_DINH = {
+  base: 850, // tỷ đồng, giá trị doanh nghiệp base case
+  raw: [
+    { variable: 'WACC (±1.5đpt)', low: 720, high: 1010 },
+    { variable: 'Tăng trưởng dài hạn (±0.5đpt)', low: 790, high: 925 },
+    { variable: 'Biên EBITDA (±2đpt)', low: 810, high: 895 },
+    { variable: 'Vốn đầu tư/DThu (±1đpt)', low: 830, high: 875 },
+    { variable: 'Thuế suất hiệu dụng (±2đpt)', low: 838, high: 862 },
   ],
-  markLine: undefined,
-});
-
-// vạch base-case ở x=0
-const opt = chart.getOption();
-opt.series[0].markLine = {
-  silent: true,
-  symbol: 'none',
-  lineStyle: { color: PALETTE.ink, type: 'solid', width: 1.5 },
-  label: { formatter: 'Base', ...TYPOGRAPHY.axisName },
-  data: [{ xAxis: 0 }],
 };
-chart.setOption(opt);
 
-const svg = chart.renderToSVGString();
-fs.writeFileSync(new URL('./out-06-tornado.svg', import.meta.url), svg);
-console.log('06-tornado: OK,', svg.length, 'bytes, <image>?', svg.includes('<image'));
+export function option(params) {
+  const { base, raw } = params;
+  const rows = [...raw].sort((a, b) => (b.high - b.low) - (a.high - a.low)); // sắp theo biên độ giảm dần
+  const categories = rows.map((r) => r.variable);
 
-chart.dispose();
-process.exit(0);
+  return {
+    ...baseOption({ title: 'Phân tích độ nhạy giá trị doanh nghiệp (DCF)', subtitle: `Base case = ${fmtCompact(base, { baseUnit: 'ty', decimals: 0 })}, sắp theo biên độ tác động` }),
+    tooltip: tooltipDefault,
+    grid: { left: 200, right: 40, top: 60, bottom: 40 },
+    xAxis: {
+      type: 'value',
+      axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => fmtCompact(v + base, { baseUnit: 'ty', decimals: 0 }) },
+      splitLine: { lineStyle: { color: PALETTE.line } },
+    },
+    yAxis: { type: 'category', data: categories, inverse: true, // phễu lốc: biên độ lớn nhất phải ở TRÊN CÙNG; ECharts mac dinh dat index 0 o DAY nen phai dao truc, khong dao thi hinh ra nguoc voi y dinh ghi o dau file
+           axisLine: { show: false }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
+    // LOI CO SAN, PHAT HIEN LUC TACH FILE NAY (khong sua o day, xem bao cao ban
+    // tach): ban TRUOC ban tach dung `const opt = chart.getOption(); opt.series[0]
+    // .markLine = {...}; chart.setOption(opt);` de ve vach base-case tai x=0. Da do
+    // bang thuc nghiem: chart.getOption() roi setOption() lai KHONG lam markLine
+    // hien ra trong SVG that (dem phan tu 2 ban giong/khac markLine deu ra dung 50
+    // phan tu cho file nay, "Base" chi xuat hien 1 lan trong subtitle, khong co lan
+    // thu 2 tren chart). Tuc vach base-case CHUA BAO GIO ve duoc tren SVG that, du
+    // code nhin nhu co. Ban tach nay GIU DUNG hanh vi hien tai (khong markLine) de
+    // thoa dieu kien "khong doi dien mao" cua viec tach option/render; sua lai vach
+    // base-case la mot viec KHAC, ngoai pham vi tach nay.
+    series: [
+      {
+        name: 'Kịch bản bi quan', type: 'bar', stack: 'range', barWidth: 22,
+        itemStyle: { color: PALETTE.negative },
+        data: rows.map((r) => r.low - base),
+        label: { show: true, position: 'left', formatter: (p) => fmtCompact(p.value + base, { baseUnit: 'ty', decimals: 0 }), ...TYPOGRAPHY.dataLabel },
+        // KHONG khai markLine o day -- xem ghi chu ngay duoi day, day la DUNG hanh vi
+        // hien tai, khong phai thieu sot cua ban tach nay.
+      },
+      {
+        name: 'Kịch bản lạc quan', type: 'bar', stack: 'range', barWidth: 22,
+        itemStyle: { color: PALETTE.inkLo },
+        data: rows.map((r) => r.high - base),
+        label: { show: true, position: 'right', formatter: (p) => fmtCompact(p.value + base, { baseUnit: 'ty', decimals: 0 }), ...TYPOGRAPHY.dataLabel },
+      },
+    ],
+  };
+}
+
+// Giu nguyen duong CLI de verify-charts.mjs va catalog khong vo. `typeof process !==
+// 'undefined'` dung TRUOC de tranh ReferenceError khi file nay bi import trong trinh
+// duyet (lan html-song qua mount-live.mjs); `node:fs` chuyen sang import DONG cung ly do
+// (chi tiet: 01-waterfall.mjs).
+if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  const { writeFileSync } = await import('node:fs');
+  const svg = renderStatic(option, MAC_DINH, { width: 720, height: 380 });
+  writeFileSync(new URL('./out-06-tornado.svg', import.meta.url), svg);
+  console.log('06-tornado: OK,', svg.length, 'bytes, <image>?', svg.includes('<image'));
+  process.exit(0);
+}

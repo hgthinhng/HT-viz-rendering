@@ -32,10 +32,32 @@
     "neg-soft": "#E4A1AF",
     "warn": "#B07A10"
   },
+  "_doc_ilus": [
+    "DAI KET CAU cua minh hoa SVG, chin bac, dam nhat la 1 nhat nhat la 9.",
+    "",
+    "Ban dau khoi nay chi co bon bac, trich tu illustrations/grammar.md muc 4. Dem that",
+    "tren 11 file trong illustrations/svg/ thi chung dung CHIN bac chu khong phai bon:",
+    "grammar.md va tai san da troi khoi nhau tu truoc. Bon ten cu (toi/vua/sang/panel)",
+    "roi vao bac 2, 4, 6, 8 cua dai nay.",
+    "",
+    "Danh so theo VI TRI thay vi dat ten uoc le, vi chin bac thi khong con ten nao goi",
+    "duoc cho dung ma khong phai bia. Bac 1 dong vai muc (132 lan, nhieu nhat), bac 9",
+    "dong vai giay.",
+    "",
+    "GIOI HAN da biet, phai ghi ra: mot ma hex trong minh hoa co the dong NHIEU vai",
+    "(vd vua la nen troi vua la than kim loai). Anh xa mot doi mot giu nguyen dien mao",
+    "hom nay, nhung khi ai do dinh nghia gia tri cho mot chu de TOI thi hai vai do khong",
+    "tach rieng duoc. Luc do phai tach o TUNG HINH chu khong tach o day."
+  ],
   "ilus": {
-    "toi": "#1e293b",
-    "vua": "#475569",
-    "sang": "#94a3b8",
-    "panel": "#e2e8f0"
+    "1": "#0f172a",
+    "2": "#1e293b",
+    "3": "#334155",
+    "4": "#475569",
+    "5": "#64748b",
+    "6": "#94a3b8",
+    "7": "#cbd5e1",
+    "8": "#e2e8f0",
+    "9": "#f8fafc"
   }
 }

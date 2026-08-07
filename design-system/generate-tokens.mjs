@@ -57,7 +57,11 @@ export const KHOA_MAU_CHUAN = [
   'pos', 'neg', 'neg-soft',
   'warn',
 ];
-export const KHOA_ILUS_CHUAN = ['toi', 'vua', 'sang', 'panel'];
+// Dai ket cau CHIN bac, dam nhat la 1 nhat nhat la 9. Ban dau schema nay khai bon
+// ten (toi/vua/sang/panel) lay tu illustrations/grammar.md muc 4, nhung dem that
+// tren 11 file trong illustrations/svg/ thi chung dung CHIN bac: grammar.md va tai
+// san da troi khoi nhau tu truoc. Bon ten cu roi vao bac 2, 4, 6, 8.
+export const KHOA_ILUS_CHUAN = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 const RE_HEX = /^#[0-9a-fA-F]{6}$/;
 

@@ -23,10 +23,31 @@ Trong repo: 50 mẫu ở `samples/`, 12 hồ sơ ở `research/`, 24 catalog spe
 
 ## Việc tiếp theo, làm ngay
 
-**Viết plan Phase 2 rồi thi công**: pipeline HTML sang PDF và bộ gate nghiệm thu. Nguyên liệu
+Có HAI hướng đang mở, chọn một rồi làm dứt điểm, đừng đan xen.
+
+**Hướng 1, mở rộng thư viện. Đã có đặc tả đủ để code thẳng, chỉ thiếu người thi công.** Thứ tự
+dưới đây là kết quả phản biện của bốn mô hình ngoài, cả bốn đều bác thứ tự trực giác ban đầu
+(chi tiết ở `research/14-chart-expansion-plan/PHAN-BIEN-4-LLM.md`):
+
+1. `charts/schema.mjs`, schema dữ liệu dùng chung hai engine. Làm TRƯỚC mọi preset, vì mỗi
+   preset tự định nghĩa đơn vị và ngưỡng là thêm một chỗ để bản HTML lệch bản PDF.
+2. Hộp tóm tắt điều hành, khối 25. Thứ 10 trên 10 loại báo cáo đều cần, rẻ nhất, thuần HTML.
+3. Bốn chart xương sống: line có chú thích, bar ngang xếp hạng, scatter phần tư, dot phân phối.
+4. Cleveland dot plot thay radar, cộng ngữ pháp so sánh đa tiêu chí.
+5. Họ đường cong lãi suất và giá kỳ hạn, cả hai engine.
+
+Đặc tả tương ứng: `docs/specs/2026-08-07-echarts-preset-expansion.md` (6 preset, 956 dòng, có
+schema chung), `2026-08-07-component-b-expansion.md` (5 component nhóm B), và
+`2026-08-07-yield-forward-curve-design.md` (họ đường cong).
+
+**Hướng 2, Phase 2 như kế hoạch cũ**: pipeline HTML sang PDF và bộ gate nghiệm thu. Nguyên liệu
 đã có sẵn trong `_harvest/`: pipeline hoàn chỉnh ở `harvest-extras/pipeline-stocklpt/`, 6 gate
 và evidence ledger ở `lab-gate/` với `lab-evidence/`. Scope chi tiết nằm ở cuối
 `docs/superpowers/plans/2026-08-06-ht-viz-rendering-phase1.md`.
+
+Gợi ý chọn: hướng 2 trước thì hợp lý hơn, vì bug SVG hợp lệ XML vừa cho thấy đường ra PDF là
+chỗ dễ hỏng im lặng nhất, và pipeline có gate sẽ bắt sớm những lỗi kiểu đó cho mọi chart thêm
+sau này.
 
 Khối `.quad2x2` vỡ bố cục trong WeasyPrint: **đã sửa xong**, xem mục dưới. Nghi can ban đầu
 (`position: absolute` cộng `transform: translate(-50%, -50%)`) hoá ra vô can, cả hai chạy đúng

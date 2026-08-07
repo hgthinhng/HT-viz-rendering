@@ -1,0 +1,351 @@
+{
+  "_doc": [
+    "HOP DONG giua hai ban schema. charts/echarts/schema.mjs va charts/matplotlib/schema.py",
+    "cung chay bo ca nay. Khi mot ben doi luat ma ben kia quen, test do NGAY, khong can ai",
+    "nho gi ca.",
+    "Moi ca ghi ro: phai PASS hay phai FAIL, va neu FAIL thi FAIL voi MA LOI nao. Doi chieu",
+    "bang MA chu khong bang cau chu tieng Viet, de sua loi nhan khong lam do test phia kia.",
+    "Them luat moi thi them ca vao day TRUOC, roi moi sua hai validator."
+  ],
+  "cases": [
+    {
+      "ten": "series hop le day du",
+      "loai": "series",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "unit": "phan_tram",
+        "source": {
+          "tier": "cong-bo",
+          "label": "BCTC quý 2/2026"
+        },
+        "as_of": "2026-08-07",
+        "direction": "cao_tot",
+        "kind": "ty_le",
+        "decimals": 1,
+        "rows": [
+          {
+            "entity": {
+              "code": "VCB",
+              "name": "Ngân hàng TMCP Ngoại thương Việt Nam"
+            },
+            "value": 19.8,
+            "role": "chinh",
+            "period": {
+              "type": "quy",
+              "q": 2,
+              "year": 2026,
+              "end": "2026-06-30"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "ten": "series toi gian, chi co unit va source",
+      "loai": "series",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "unit": "ty_dong",
+        "source": {
+          "tier": "noi-bo",
+          "label": "Tính toán nội bộ"
+        },
+        "rows": [
+          {
+            "value": 1250
+          }
+        ]
+      }
+    },
+    {
+      "ten": "entity.code giu dau tieng Viet van hop le",
+      "loai": "row",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "entity": {
+          "code": "Bán lẻ",
+          "name": "Bán lẻ tiêu dùng nhanh"
+        },
+        "value": 18.7
+      }
+    },
+    {
+      "ten": "ba trang thai thieu deu phai de value null",
+      "loai": "row",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "value": null,
+        "status": "chua_cong_bo"
+      }
+    },
+    {
+      "ten": "khong ton tai, vd chua niem yet o ky do",
+      "loai": "row",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "value": null,
+        "status": "khong_ton_tai"
+      }
+    },
+    {
+      "ten": "loai bat thuong, vd P/E am 500",
+      "loai": "row",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "value": null,
+        "status": "loai_bat_thuong"
+      }
+    },
+    {
+      "ten": "thieu unit",
+      "loai": "series",
+      "mong_doi": "fail",
+      "ma_loi": "THIEU_UNIT",
+      "du_lieu": {
+        "source": {
+          "tier": "cong-bo"
+        },
+        "rows": []
+      }
+    },
+    {
+      "ten": "unit khong nam trong tu vung",
+      "loai": "series",
+      "mong_doi": "fail",
+      "ma_loi": "UNIT_LA",
+      "du_lieu": {
+        "unit": "dong_bac",
+        "source": {
+          "tier": "cong-bo"
+        },
+        "rows": []
+      }
+    },
+    {
+      "ten": "thieu source",
+      "loai": "series",
+      "mong_doi": "fail",
+      "ma_loi": "THIEU_SOURCE",
+      "du_lieu": {
+        "unit": "phan_tram",
+        "rows": []
+      }
+    },
+    {
+      "ten": "tier khong nam trong tu vung",
+      "loai": "series",
+      "mong_doi": "fail",
+      "ma_loi": "TIER_LA",
+      "du_lieu": {
+        "unit": "phan_tram",
+        "source": {
+          "tier": "nghe-noi"
+        },
+        "rows": []
+      }
+    },
+    {
+      "ten": "direction bia",
+      "loai": "series",
+      "mong_doi": "fail",
+      "ma_loi": "DIRECTION_LA",
+      "du_lieu": {
+        "unit": "phan_tram",
+        "source": {
+          "tier": "cong-bo"
+        },
+        "direction": "cang_cao_cang_vui",
+        "rows": []
+      }
+    },
+    {
+      "ten": "kind bia",
+      "loai": "series",
+      "mong_doi": "fail",
+      "ma_loi": "KIND_LA",
+      "du_lieu": {
+        "unit": "ty_dong",
+        "source": {
+          "tier": "cong-bo"
+        },
+        "kind": "tong_hop",
+        "rows": []
+      }
+    },
+    {
+      "ten": "decimals am",
+      "loai": "series",
+      "mong_doi": "fail",
+      "ma_loi": "DECIMALS_SAI",
+      "du_lieu": {
+        "unit": "phan_tram",
+        "source": {
+          "tier": "cong-bo"
+        },
+        "decimals": -1,
+        "rows": []
+      }
+    },
+    {
+      "ten": "co entity nhung thieu code",
+      "loai": "row",
+      "mong_doi": "fail",
+      "ma_loi": "THIEU_CODE",
+      "du_lieu": {
+        "entity": {
+          "name": "Ngân hàng TMCP Ngoại thương Việt Nam"
+        },
+        "value": 19.8
+      }
+    },
+    {
+      "ten": "code do nguyen ten phap nhan day du vao truc",
+      "loai": "row",
+      "mong_doi": "fail",
+      "ma_loi": "CODE_QUA_DAI",
+      "du_lieu": {
+        "entity": {
+          "code": "Ngân hàng Thương mại Cổ phần Ngoại thương Việt Nam",
+          "name": "VCB"
+        },
+        "value": 19.8
+      }
+    },
+    {
+      "ten": "status co_that ma value null",
+      "loai": "row",
+      "mong_doi": "fail",
+      "ma_loi": "VALUE_KHONG_DUOC_NULL",
+      "du_lieu": {
+        "value": null,
+        "status": "co_that"
+      }
+    },
+    {
+      "ten": "status thieu ma van giu so cu, nguon loi im lang",
+      "loai": "row",
+      "mong_doi": "fail",
+      "ma_loi": "VALUE_PHAI_NULL",
+      "du_lieu": {
+        "value": -500,
+        "status": "loai_bat_thuong"
+      }
+    },
+    {
+      "ten": "value la NaN",
+      "loai": "row",
+      "mong_doi": "fail",
+      "ma_loi": "VALUE_KHONG_DUOC_NULL",
+      "du_lieu": {
+        "value": "khong phai so"
+      }
+    },
+    {
+      "ten": "status bia",
+      "loai": "row",
+      "mong_doi": "fail",
+      "ma_loi": "STATUS_LA",
+      "du_lieu": {
+        "value": null,
+        "status": "hoi_thieu"
+      }
+    },
+    {
+      "ten": "role bia",
+      "loai": "row",
+      "mong_doi": "fail",
+      "ma_loi": "ROLE_LA",
+      "du_lieu": {
+        "value": 1,
+        "role": "ngoi_sao"
+      }
+    },
+    {
+      "ten": "period thieu end, bay nam tai chinh lech",
+      "loai": "period",
+      "mong_doi": "fail",
+      "ma_loi": "THIEU_PERIOD_END",
+      "du_lieu": {
+        "type": "quy",
+        "q": 1,
+        "year": 2026
+      }
+    },
+    {
+      "ten": "period.end khong phai ISO",
+      "loai": "period",
+      "mong_doi": "fail",
+      "ma_loi": "PERIOD_END_SAI_DINH_DANG",
+      "du_lieu": {
+        "type": "quy",
+        "q": 1,
+        "year": 2026,
+        "end": "31/03/2026"
+      }
+    },
+    {
+      "ten": "period type bia",
+      "loai": "period",
+      "mong_doi": "fail",
+      "ma_loi": "PERIOD_TYPE_LA",
+      "du_lieu": {
+        "type": "thang",
+        "end": "2026-03-31"
+      }
+    },
+    {
+      "ten": "period type quy nhung khong co q",
+      "loai": "period",
+      "mong_doi": "fail",
+      "ma_loi": "THIEU_QUY",
+      "du_lieu": {
+        "type": "quy",
+        "year": 2026,
+        "end": "2026-03-31"
+      }
+    },
+    {
+      "ten": "quy ngoai pham vi",
+      "loai": "period",
+      "mong_doi": "fail",
+      "ma_loi": "QUY_NGOAI_PHAM_VI",
+      "du_lieu": {
+        "type": "quy",
+        "q": 5,
+        "year": 2026,
+        "end": "2026-12-31"
+      }
+    },
+    {
+      "ten": "quy thieu nam",
+      "loai": "period",
+      "mong_doi": "fail",
+      "ma_loi": "THIEU_NAM",
+      "du_lieu": {
+        "type": "quy",
+        "q": 1,
+        "end": "2026-03-31"
+      }
+    },
+    {
+      "ten": "period thoi diem hop le",
+      "loai": "period",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "type": "thoi_diem",
+        "end": "2026-08-07"
+      }
+    },
+    {
+      "ten": "nam tai chinh lech, quy 1 ket thuc 30/9",
+      "loai": "period",
+      "mong_doi": "pass",
+      "du_lieu": {
+        "type": "quy",
+        "q": 1,
+        "year": 2026,
+        "end": "2026-09-30"
+      }
+    }
+  ]
+}

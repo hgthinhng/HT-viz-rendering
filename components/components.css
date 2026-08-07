@@ -538,7 +538,101 @@ table.opt-compare tr { break-inside: avoid; }
   :root:not([data-theme="light"]) table.opt-compare td.rec { background: rgb(91 135 255 / 5%); }
 }
 
-/* ── 26. ACCESSIBILITY: focus visible chung ───────────────────────────── */
+/* ── 26. KHỐI 25 · TÓM TẮT ĐIỀU HÀNH BỐN Ô ────────────────────────────── */
+.exec-summary { border: 1.4px solid var(--ink); margin: 40px 0; box-shadow: var(--shadow-1); break-inside: avoid; }
+.es-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 12px 20px; border-bottom: 1.4px solid var(--ink); }
+.es-kicker { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.es-meta { font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-lo); }
+.es-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.es-cell { padding: 18px 20px 16px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); break-inside: avoid; }
+.es-cell:nth-child(1), .es-cell:nth-child(2) { border-top: 0; }
+.es-cell:nth-child(odd) { border-left: 0; }
+.es-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.es-label::before { content: ""; width: 14px; height: 2px; background: currentColor; }
+.es-thesis .es-label { color: var(--accent-hi); }
+.es-catalyst .es-label { color: var(--ink-md); }
+.es-risk .es-label { color: var(--neg); }
+.es-action .es-label { color: var(--warn); }
+.es-text { font-size: 14px; line-height: 1.6; margin: 0; }
+.es-list { margin: 0; padding: 0; list-style: none; }
+.es-list li { font-size: 13px; line-height: 1.55; padding-left: 15px; position: relative; margin-bottom: 8px; }
+.es-list li:last-child { margin-bottom: 0; }
+.es-list li::before { content: "▸"; position: absolute; left: 0; top: 0; color: var(--ink-lo); font-size: 11px; }
+.es-tag { display: inline-block; font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .04em; color: var(--accent-hi); border: 1px solid var(--accent-soft); border-radius: var(--radius-1); padding: 0 4px; margin-right: 6px; vertical-align: 1px; }
+@media screen and (max-width: 640px) {
+  .es-grid { grid-template-columns: 1fr; }
+  .es-cell { border-left: 0; border-top: 1px solid var(--line); }
+  .es-cell:first-child { border-top: 0; }
+}
+
+/* ── 27. KHỐI 26 · THẺ KỊCH BẢN ────────────────────────────────────────
+   CHO DUYET: --pos dung cho data-tone="bull" la noi dung dung thu 3 ngoai 2 cho da duyet
+   trong tokens.css (statgrid trend up, risk thap). DA DUOC OPERATOR XAC NHAN 07-08,
+   xem ghi chu tai dau tokens.css va docs/specs/2026-08-07-component-b-expansion.md. */
+.scenario-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 32px 0; }
+.scn-card { border: 1px solid var(--line); border-top: 3px solid var(--ink-lo); background: var(--paper); box-shadow: var(--shadow-1); padding: 16px 18px 14px; break-inside: avoid; }
+.scn-card[data-tone="bear"] { border-top-color: var(--neg); }
+.scn-card[data-tone="base"] { border-top-color: var(--ink); border-width: 1.4px; border-left: 3px solid var(--ink); }
+.scn-card[data-tone="bull"] { border-top-color: var(--pos); }
+.scn-head { display: flex; justify-content: space-between; align-items: baseline; }
+.scn-name { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.scn-card[data-tone="bear"] .scn-name { color: var(--neg); }
+.scn-card[data-tone="bull"] .scn-name { color: var(--pos); }
+.scn-prob { font-family: var(--font-mono); }
+.scn-prob-num { font-weight: 700; font-size: 24px; }
+.scn-prob-unit { font-size: 12px; color: var(--ink-lo); }
+.scn-value { font-family: var(--font-mono); font-weight: 700; font-size: 19px; margin: 10px 0 8px; }
+.scn-value small { font-size: 11px; font-weight: 400; color: var(--ink-md); margin-left: 3px; }
+.scn-headline { font-size: 13px; line-height: 1.55; margin: 0 0 10px; }
+.scn-trigger { font-size: 11.5px; color: var(--ink-md); line-height: 1.5; padding-top: 10px; border-top: 1px dashed var(--line); }
+.scn-trigger-label { display: block; font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-lo); margin-bottom: 3px; }
+@media screen and (max-width: 700px) { .scenario-cards { grid-template-columns: 1fr; } }
+
+/* ── 28. KHỐI 27 · DẢI THẮNG THUA ─────────────────────────────────────── */
+.winlose { border: 1px solid var(--line); margin: 32px 0; }
+.wl-event { padding: 14px 20px; border-bottom: 1.4px solid var(--ink); }
+.wl-event-label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-lo); margin-bottom: 6px; }
+.wl-event-text { font-family: var(--font-serif); font-weight: 700; font-size: 15px; line-height: 1.4; }
+.wl-split { display: grid; grid-template-columns: 1fr 1fr; }
+.wl-side { padding: 16px 20px; }
+.wl-win { border-right: 1px solid var(--line); }
+.wl-side-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.wl-win .wl-side-label { color: var(--accent-hi); }
+.wl-lose .wl-side-label { color: var(--neg); }
+.wl-win .wl-side-label::before { content: "▲"; font-size: 9px; }
+.wl-lose .wl-side-label::before { content: "▼"; font-size: 9px; }
+.wl-entity { padding: 10px 0; border-top: 1px solid var(--line-lo); break-inside: avoid; }
+.wl-entity:first-of-type { border-top: 0; padding-top: 0; }
+.wl-entity-name { font-weight: 700; font-size: 13.5px; margin-bottom: 3px; }
+.wl-entity-why { font-size: 12px; color: var(--ink-md); line-height: 1.5; }
+@media screen and (max-width: 640px) {
+  .wl-split { grid-template-columns: 1fr; }
+  .wl-win { border-right: 0; border-bottom: 1px solid var(--line); }
+}
+
+/* ── 29. KHỐI 28 · NGÃ BA CHÍNH SÁCH ──────────────────────────────────── */
+.policy-fork { border: 1.4px solid var(--ink); margin: 36px 0; break-inside: avoid; }
+.pf-root { border-bottom: 1.4px solid var(--ink); padding: 16px 20px; text-align: center; }
+.pf-root-label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-lo); margin-bottom: 6px; }
+.pf-root-text { font-family: var(--font-serif); font-weight: 700; font-size: 15px; line-height: 1.4; max-width: 52ch; margin: 0 auto; }
+.pf-branches { display: grid; grid-template-columns: 1fr 1fr; }
+.pf-branch { padding: 16px 20px 14px; break-inside: avoid; }
+.pf-branch[data-branch="a"] { border-right: 1px solid var(--line); }
+.pf-branch-label { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-lo); margin-bottom: 8px; }
+.pf-cond { font-weight: 700; font-size: 14px; line-height: 1.4; margin-bottom: 10px; }
+.pf-cond-tag { font-family: var(--font-mono); font-weight: 700; font-size: 10px; letter-spacing: .08em; color: var(--accent-hi); margin-right: 6px; }
+.pf-outcome-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-lo); margin-bottom: 4px; }
+.pf-outcome p { font-size: 12.5px; color: var(--ink-md); line-height: 1.55; margin: 0; }
+@media screen and (max-width: 640px) {
+  .pf-branches { grid-template-columns: 1fr; }
+  .pf-branch[data-branch="a"] { border-right: 0; border-bottom: 1px solid var(--line); }
+}
+
+/* ── 30. KHỐI 29 · DẢI TỰ SỰ CHEN GIỮA CHART ──────────────────────────── */
+.narrative-strip { max-width: 62ch; margin: 26px auto; font-family: var(--font-serif); font-style: italic; font-size: 15px; line-height: 1.7; color: var(--ink-md); text-align: center; break-inside: avoid; }
+.narrative-strip .ns-link { display: block; font-family: var(--font-mono); font-style: normal; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-lo); margin-bottom: 8px; }
+
+/* ── 31. ACCESSIBILITY: focus visible chung ───────────────────────────── */
 a:focus-visible, button:focus-visible, [tabindex]:focus-visible, .drillable:focus-visible {
   outline: 2px solid var(--accent); outline-offset: 2px;
 }
@@ -558,7 +652,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, .drillable:focu
   clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 
-/* ── 27. IN ẤN — quy tắc chung áp lên toàn trang ──────────────────────── */
+/* ── 32. IN ẤN — quy tắc chung áp lên toàn trang ──────────────────────── */
 @media print {
   @page { size: A4; margin: 16mm 14mm; }
   body { font-size: 11.5pt; background: #fff; color: #000; }
@@ -567,7 +661,8 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible, .drillable:focu
   a { color: inherit; text-decoration: underline; }
   .sg-card, .gate-row, .wc-plaque, .exec-qa, .assertion-card, .note-box,
   .legal-quote, .pull-quote, .risk-row, .step-chain .step-item, .method-box,
-  table.dt tr, table.opt-compare tr, .drill-panel, .sl-card, .ba-panel {
+  table.dt tr, table.opt-compare tr, .drill-panel, .sl-card, .ba-panel,
+  .exec-summary, .scn-card, .wl-entity, .policy-fork {
     break-inside: avoid;
   }
   h2, h3, .sec-kicker { break-after: avoid; }

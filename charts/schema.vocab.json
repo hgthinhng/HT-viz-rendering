@@ -1,0 +1,75 @@
+{
+  "_doc": [
+    "Tu vung dung chung cho lop schema chart. CA HAI ngon ngu doc file NAY, khong ben nao",
+    "khai lai danh sach trong ma nguon cua minh. Phan lon thu troi dat theo thoi gian la tu",
+    "vung (them mot don vi, them mot tier), va tu vung nam gon trong file nay.",
+    "Luat ngu nghia (tron don vi, ba loai gia tri thieu) van phai viet tay hai lan, va cach",
+    "chong troi cho phan do la bo fixture vang o charts/fixtures/, ca hai validator chay",
+    "cung mot bo.",
+    "KHONG dung codegen: voi vai tram dong schema, duong ong sinh ma ton cong bao tri hon",
+    "chinh schema, va khi no hong thi nguoi sua la nguoi khong hieu no."
+  ],
+  "schema_version": "1.0.0",
+
+  "unit": {
+    "ty_dong": { "nhan": "tỷ đồng", "decimals": 0 },
+    "nghin_ty_dong": { "nhan": "nghìn tỷ đồng", "decimals": 1 },
+    "trieu_dong": { "nhan": "triệu đồng", "decimals": 0 },
+    "nghin_dong_cp": { "nhan": "nghìn đồng/cổ phiếu", "decimals": 1 },
+    "phan_tram": { "nhan": "%", "decimals": 1 },
+    "diem_co_ban": { "nhan": "điểm cơ bản", "decimals": 0 },
+    "lan": { "nhan": "lần", "decimals": 1 },
+    "diem": { "nhan": "điểm", "decimals": 1 },
+    "usd_tan": { "nhan": "USD/tấn", "decimals": 0 },
+    "teu": { "nhan": "TEU", "decimals": 0 }
+  },
+
+  "source_tier": {
+    "cong-bo": "Số đã công bố chính thức",
+    "uoc-tinh": "Ước tính, chưa phải số công bố",
+    "noi-bo": "Tính toán nội bộ từ số công bố"
+  },
+
+  "status": {
+    "co_that": {
+      "nghia": "Quan sat co that, value la so",
+      "ve": "ve binh thuong"
+    },
+    "chua_cong_bo": {
+      "nghia": "Ky da qua nhung doanh nghiep chua cong bo so",
+      "ve": "ngat duong, chua cho trong, KHONG noi thang qua"
+    },
+    "khong_ton_tai": {
+      "nghia": "Thuc the chua ton tai o ky do, vd chua niem yet",
+      "ve": "ngat duong hoan toan, khong ve gi, khong chua cho"
+    },
+    "loai_bat_thuong": {
+      "nghia": "Co so nhung da chu dong loai vi pha thang do, vd P/E am 500",
+      "ve": "ngat duong, ve mot dau hieu tai truc de nguoi doc biet la BI LOAI chu khong phai THIEU"
+    }
+  },
+
+  "direction": {
+    "cao_tot": "Gia tri cao hon la tot hon, vd ROE",
+    "thap_tot": "Gia tri thap hon la tot hon, vd ty le no xau",
+    "trung_tinh": "Khong co chieu tot xau, vd von hoa"
+  },
+
+  "kind": {
+    "so_du": "So du tai mot thoi diem. KHONG duoc cong don qua cac ky",
+    "luy_ke_ky": "Phat sinh trong ky. Cong don duoc",
+    "ty_le": "Ty le. KHONG duoc binh quan cong, phai tinh lai tu tu va mau"
+  },
+
+  "role": {
+    "chinh": "Thuc the trong tam cua bai, ve net lien dam nhat",
+    "so_sanh": "Nhom so sanh, ve net lien manh",
+    "tham_chieu": "Moc tham chieu hoac trung vi nganh, ve net dut"
+  },
+
+  "period_type": {
+    "quy": "Theo quy, can them q va year va end",
+    "nam": "Theo nam, can them year va end",
+    "thoi_diem": "Mot thoi diem cu the, can them end"
+  }
+}

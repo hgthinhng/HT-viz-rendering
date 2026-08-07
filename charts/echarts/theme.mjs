@@ -53,7 +53,7 @@ export const FONT_STACK_MONO = "'IBM Plex Mono', Consolas, 'Courier New', monosp
 
 /** Tron hai mau hex theo ty le t (0=hexA, 1=hexB). Dung de dan xuat sac do tu
  * PALETTE thay vi hardcode hex moi trong file chart. */
-function mixHex(hexA, hexB, t) {
+export function mixHex(hexA, hexB, t) {
   const parse = (h) => {
     const s = h.replace('#', '');
     return [0, 2, 4].map((i) => parseInt(s.slice(i, i + 2), 16));
@@ -74,6 +74,26 @@ function mixHex(hexA, hexB, t) {
 PALETTE.bandLo = mixHex(PALETTE.paper, PALETTE.inkLo, 0.15);
 PALETTE.bandMid = mixHex(PALETTE.paper, PALETTE.inkLo, 0.3);
 PALETTE.bandHi = mixHex(PALETTE.paper, PALETTE.inkLo, 0.45);
+
+/** Thang mau lien tuc N bac, MOT hue duy nhat, tu gan-paper toi mau dich.
+ *
+ * Dung cho truong DO LON lien tuc (vd luoi do nhay WACC x g), noi chi co
+ * "thap den cao" chu KHONG co hai cuc am duong. Dung thang hai hue o day la
+ * ngam gan nghia tot/xau cho mot dai von khong co nghia do, tuc traffic-light
+ * tra hinh.
+ *
+ * Bac dau khong bat dau tu 0 ma tu 0,12: mot o gan nhu trang tren nen trang
+ * khong doc duoc la mot o hay hai o, va khi in den trang thi mat han. Bac cuoi
+ * la mau dich nguyen ban.
+ *
+ * KHONG dung cho delta hay so sanh co ben loi ben hai; nhung ca do da co
+ * PALETTE.accent va PALETTE.negative. */
+export function sequentialScale(hex = PALETTE.accent, steps = 5) {
+  if (steps < 2) throw new Error('sequentialScale: can it nhat 2 bac');
+  return Array.from({ length: steps }, (_, i) =>
+    mixHex(PALETTE.paper, hex, 0.12 + (i / (steps - 1)) * 0.88),
+  );
+}
 
 export const TYPOGRAPHY = {
   title: { fontSize: 15, fontWeight: 'bold', fontFamily: FONT_STACK, color: PALETTE.ink },

@@ -126,6 +126,35 @@ export function fmtAxisLabel(value, opts = {}) {
 }
 
 // ------------------------- SELF TEST (>=15 case) -------------------------
+/** Boc chuoi dai thanh nhieu dong theo ranh gioi TU, khong cat giua am tiet.
+ *
+ * Dung cho nhan truc va chu thich dai. Nguong tinh theo SO KY TU chu khong theo
+ * pixel: font mono cua repo rong deu nen quy doi duoc, con font serif thi con so
+ * nay la uoc luong, phai nhin anh that de chinh.
+ *
+ * LUU Y VE PHAM VI: day la loi thoat cho nhan KHONG co ma ngan tu nhien (ten
+ * phan khuc kinh doanh, ten chinh sach). Voi thuc the CO ma ngan (ma chung
+ * khoan, ma nganh) thi rut gon phai lam o TANG DU LIEU qua entity.code, khong
+ * phai boc dong o tang hien thi. Boc dong tren truc lam lech chieu cao hang va
+ * kho kiem soat khi so hang thay doi.
+ */
+export function wrapLabel(text, maxCharsPerLine = 16) {
+  const words = String(text).split(/\s+/).filter(Boolean);
+  const lines = [];
+  let cur = '';
+  for (const w of words) {
+    const next = cur ? `${cur} ${w}` : w;
+    if (next.length > maxCharsPerLine && cur) {
+      lines.push(cur);
+      cur = w;
+    } else {
+      cur = next;
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines.length ? lines : [''];
+}
+
 export function runSelfTest() {
   const cases = [
     [() => fmtNumber(1234567.89, { decimals: 2 }), '1.234.567,89'],

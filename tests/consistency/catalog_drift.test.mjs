@@ -159,8 +159,8 @@ function hasRealCssAnchor(tail) {
 const VACUOUS_OPENING =
   /^(?:KHÔNG dùng|không nên dùng|Khong dung)\s*(?:khi|để|cho|nếu)?\s*(?:không\s+)?(?:phù\s*hợp|hợp\s*lý|thích\s*hợp|hợp\b|cần\s*thiết|đúng(?:\s+ngữ\s*cảnh)?|tùy\s*(?:trường\s*hợp|tình\s*huống))/i;
 
-test('co du 24 file catalog', () => {
-  assert.equal(catalogFiles.length, 24, `co ${catalogFiles.length} file, mong doi 24`);
+test('co du 29 file catalog', () => {
+  assert.equal(catalogFiles.length, 29, `co ${catalogFiles.length} file, mong doi 29`);
 });
 
 for (const file of catalogFiles) {

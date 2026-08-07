@@ -2,70 +2,131 @@
 
 Đọc file này trước tiên. Nó cho biết đang ở đâu và làm gì tiếp.
 
+## Đang ở đâu
+
+**Phase 1 ĐÓNG.** Cả 8 task review sạch, 50 commit. Đợt dọn sau Phase 1 cũng xong: repo giờ
+chạy được từ một máy chưa có gì, và ba việc treo chờ người dùng quyết đã có phán quyết.
+
+Nghiệm thu gần nhất, chạy thật chứ không chép lại:
+
+| Lệnh | Kết quả |
+|---|---|
+| `npm test` | 52 pass, 0 fail |
+| `npm run verify` | exit 0, 24 gate PASS và 2 SKIP có ghi rõ lý do |
+| `python3 -m pytest tests/ -v` | 38 passed |
+
+Trong repo: 50 mẫu ở `samples/`, 12 hồ sơ ở `research/`, 24 catalog spec, 11 minh hoạ SVG,
+14 script chart ECharts, 48 component matplotlib EIR.
+
 ## Việc tiếp theo, làm ngay
 
-Thi công **Phase 1** theo `docs/superpowers/plans/2026-08-06-ht-viz-rendering-phase1.md` bằng skill `superpowers:subagent-driven-development`. Kế hoạch có 8 task, 64 step, mỗi step đã có code thật và lệnh thật, không có chỗ trống nào cần đoán.
+**Viết plan Phase 2 rồi thi công**: pipeline HTML sang PDF và bộ gate nghiệm thu. Nguyên liệu
+đã có sẵn trong `_harvest/`: pipeline hoàn chỉnh ở `harvest-extras/pipeline-stocklpt/`, 6 gate
+và evidence ledger ở `lab-gate/` với `lab-evidence/`. Scope chi tiết nằm ở cuối
+`docs/superpowers/plans/2026-08-06-ht-viz-rendering-phase1.md`.
 
-Bắt đầu từ Task 1. Không nhảy cóc, vì Task 1 dựng `package.json` mà mọi task sau đều cần.
+Một việc nên gộp vào Phase 2, đã đo được nhưng chưa sửa: **khối `.quad2x2` vỡ bố cục trong
+WeasyPrint.** Chấm và nhãn đè lên bảng phía trên, ô lưới chồng chữ. Đã đối chiếu bản trước và
+sau đợt dọn: vỡ y hệt nhau nên đây là lỗi có sẵn từ Phase 1, không phải hồi quy. Nghi can là
+`.q-plot { position: absolute; inset: 0 }` cộng `transform: translate(-50%, -50%)` trên
+`.q-dot-wrap`. Trên Chromium thì đúng, chỉ WeasyPrint mới hỏng. Muốn xem lại trong 30 giây:
+render `components/gallery.html` bằng WeasyPrint, tìm chuỗi "Ưu tiên rót vốn", crop vùng
+quanh nó ở 260dpi.
 
-## Repo này là gì
-
-Sinh báo cáo và phân tích tài chính tiếng Việt chất lượng xuất bản: HTML self-contained và PDF in được, có chart tài chính đúng chuẩn, component kể chuyện print-safe, và minh hoạ ngành SVG neo được số liệu vào từng bộ phận vật thể.
-
-Thiết kế đầy đủ ở `docs/specs/2026-08-06-ht-viz-rendering-design.md`, 15 mục. Đọc mục 3 (bảng quyết định đã chốt) và mục 5 (kiến trúc) trước khi động vào code.
-
-## Bối cảnh: mọi thứ trong repo đến từ đâu
-
-Phiên trước dùng 13 subagent khảo sát và thí nghiệm. Kết quả nằm ở `_harvest/`, 860 file, đã commit. Đây là khu tạm, Phase 1 sẽ dỡ dần vào đúng chỗ.
-
-| Thư mục trong `_harvest/` | Nội dung |
-|---|---|
-| `lab-B-components/PACKAGE/` | 22 component kể chuyện, 24 file catalog, font nhúng base64, script verify. Đã render PDF 16 trang, 0 ảnh raster |
-| `lab-C-illustration/PACKAGE/` | 11 minh hoạ ngành SVG, lớp annotation, ngữ pháp vẽ, bảng tra ẩn dụ, prompt vẽ hình mới |
-| `lab-A-charts/` | 12 chart ECharts chạy thật, theme, hàm định dạng số tiếng Việt đã test 25/25 |
-| `harvest-cfa-skillchain/viz-engine/` | 48 component matplotlib EIR institutional, kèm `EIR_DESIGN.md` |
-| `harvest-extras/pipeline-stocklpt/` | Pipeline HTML sang PDF hoàn chỉnh, football_field, sensitivity_grid, adapter FiinQuant |
-| `harvest-extras/thinktank/` | 6 hợp đồng đầu ra, nhãn sự kiện/diễn giải/giả thuyết, 12 acceptance test |
-| `harvest-misc/vn-humanizer/` | Register R6 dành riêng cho báo cáo tài chính, `lint_vi.py` chạy được |
-| `harvest-misc/typst-render/` | Phương án PDF dự phòng, verify vector tuyệt đối nhưng chưa chọn |
-| `lab-gate/`, `lab-evidence/` | 6 gate nghiệm thu và evidence ledger, dùng ở Phase 2 |
-| `harvest-mindset/` | Giáo trình thiết kế, nguồn cho `doctrine/06-mindset.md` ở Phase 3 |
-| `reference-kimi.html` | Báo cáo tham chiếu 815 KB, điểm neo cho token màu |
-
-## Bảy điều đã đo được, đừng làm lại
-
-1. **Chỉ `box-shadow` có blur mới bị nướng bitmap khi in.** Offset cứng blur 0 an toàn tuyệt đối. Đo bằng ba biến thể độc lập.
-2. **`@media (max-width: Npx)` thiếu `screen` tự kích hoạt khi in**, vì vùng in A4 chỉ 688 tới 717px sau margin.
-3. **Bug rớt dấu tiếng Việt không do engine** mà do khai `font-family` bằng một tên trần thay vì list kết thúc generic keyword. Lỗi ra dạng "Sô´liệu" chứ không phải ô vuông nên rất dễ lọt QC.
-4. **Đo dấu tiếng Việt phải dùng mực chữ qua Canvas `measureText()`**. So `getBoundingClientRect().height` với `fontSize × lineHeight` là tautology, không bao giờ phát hiện được lỗi.
-5. **Dấu tiếng Việt chỉ giảm 4% ký tự mỗi dòng**, không cần buffer line-height kiểu CJK.
-6. **`echarts.init` với `ssr:true` không tự thoát process.** Mọi script chart phải kết bằng `chart.dispose(); process.exit(0);`.
-7. **Đếm ảnh trong PDF phải dùng `doc.xref_object`**, `get_images()` bỏ sót ảnh trong Tiling Pattern.
-
-## Ba cái bẫy đã gặp thật, đừng lặp lại
-
-- **Catalog drift**: bộ Opvia có file catalog mô tả HTML dùng class không tồn tại trong CSS. Trang vẫn chạy nhưng suy biến âm thầm. Task 7 của Phase 1 sinh ra để chống đúng bệnh này.
-- **PACKAGE tự nhận là tự đủ**: cả hai PACKAGE chạy được ở thư mục gốc của chúng nhưng `ERR_MODULE_NOT_FOUND` khi copy sang chỗ khác. Task 1 vá.
-- **Verify script chọn class không tồn tại**: `annotate.js` không gắn class nào cho path và rect, nên script verify sẽ báo PASS mà chưa kiểm gì. Task 4 Step 4 vá.
-
-## Ba xung đột đã phân xử, đừng mở lại
-
-- **Bảng màu**: chốt trắng lạnh (`#051C2C` ink, `#2251FF` accent) chứ không phải giấy ngà ấm. Ba nguồn độc lập hội tụ: `reference-kimi.html`, thư viện style McKinsey, và giáo trình thiết kế dòng 88.
-- **Gauge và radar**: cấm. Gauge gợi ý độ chính xác không có thật, radar có trục không độc lập nên diện tích vô nghĩa.
-- **Engine PDF**: WeasyPrint, không phải Chromium. Chromium tạo ảnh JPEG ẩn trong Tiling Pattern.
-
-## Các phase sau
-
-Viết plan riêng khi phase trước nghiệm thu xong. Phase 2 pipeline và gate. Phase 3 doctrine và preset. Phase 4 báo cáo mẫu vận tải biển. Scope chi tiết ở cuối file plan Phase 1.
-
-## Nghiệm thu Phase 1
-
-Bốn lệnh này phải chạy sạch từ một shell mới:
+## Chạy được từ máy sạch
 
 ```bash
 cd ~/HT-viz-rendering
-npm install && pip install --break-system-packages -r requirements.txt
-npm test
-npm run verify
-python3 -m pytest tests/ -v
+npm install
+npm run setup:browser      # BUOC RIENG, playwright-core khong tu tai browser
+pip install --break-system-packages -r requirements.txt
+npm test && npm run verify && python3 -m pytest tests/ -v
 ```
+
+Mọi chỗ mở Chromium đều đi qua `scripts/lib/chromium.mjs`, tức hỏi thẳng `playwright-core` xem
+bản nào khớp phiên bản thư viện. Trước đợt dọn, `verify-illustrations.mjs` và `deps.test.mjs`
+hardcode `chromium-1228` còn `verify-components.mjs` tự dò bản mới nhất, nên `npm run verify`
+nghiệm thu bằng hai binary khác nhau trong cùng một lần chạy, và trên máy sạch thì chết ENOENT.
+Có gate trong `deps.test.mjs` chặn tái phạm: nó quét `scripts/` và `tests/` tìm đường dẫn cache
+hardcode lẫn lời gọi `launch()` trực tiếp.
+
+## Repo này là gì
+
+Sinh báo cáo và phân tích tài chính tiếng Việt chất lượng xuất bản: HTML self-contained và PDF
+in được, có chart tài chính đúng chuẩn, component kể chuyện print-safe, và minh hoạ ngành SVG
+neo được số liệu vào từng bộ phận vật thể.
+
+Thiết kế đầy đủ ở `docs/specs/2026-08-06-ht-viz-rendering-design.md`, 15 mục. Đọc mục 3 (bảng
+quyết định đã chốt) và mục 5 (kiến trúc) trước khi động vào code. Quy ước làm việc chi tiết ở
+`CLAUDE.md`, cổng vào cho Claude là `SKILL.md`.
+
+## Ba phán quyết của người dùng ở đợt dọn sau Phase 1
+
+1. **`viz_render_py.py`: XOÁ.** Nó mang bảng màu giấy ngà ấm đã bị bác và không file nào import.
+   Hệ quả phải biết: repo không còn 10 primitive lõi (bar_grouped, line, waterfall, scatter,
+   heatmap, donut, slope, payoff, bar_h, bar_stacked) ở đường matplotlib. Tương đương gần nhất
+   trong 48 component EIR là comparison, index100, flow_bridge, comps_scatter, correlation_matrix,
+   distribution. Bản gốc vẫn nằm ở `_harvest/harvest-cfa-skillchain/viz-engine/viz_render_py.py`
+   nếu cần port lại sang bảng màu lạnh.
+2. **Hệ màu tối: GIỮ cho trang nội bộ, KHOÁ SÁNG cho file giao đi.** File giao khách phải khai
+   `<html lang="vi" data-theme="light">`. Gate `khoa-sang-khong-doi-theo-may-khach` đo bằng cách
+   mở trang ở hai context màu rồi so nền với màu chữ. Đã đo hậu quả thật nếu quên khai: nền đổi
+   từ `#FFFFFF` sang `#0A1420` trên máy khách đặt theme tối, trong khi chart vẫn nền trắng.
+   Lý do đầy đủ ở `CLAUDE.md`.
+3. **`.q-dot`: vá cả hai lỗi cùng một rule.** Thêm `display: inline-block` cho hết méo, và thay
+   `box-shadow` chết bằng `::before` vẽ vòng tròn thật.
+
+## Bảy điều đã đo được, đừng làm lại
+
+1. **Chỉ `box-shadow` có blur mới bị nướng bitmap khi in.** Offset cứng blur 0 an toàn tuyệt đối.
+   Đo bằng ba biến thể độc lập. Ngoài ra WeasyPrint không render box-shadow bằng bất kỳ cú pháp
+   nào, nên bóng chỉ tồn tại trên trình duyệt.
+2. **`@media (max-width: Npx)` thiếu `screen` tự kích hoạt khi in**, vì vùng in A4 chỉ 688 tới
+   717px sau margin.
+3. **Bug rớt dấu tiếng Việt không do engine** mà do khai `font-family` bằng một tên trần thay vì
+   list kết thúc generic keyword. Lỗi ra dạng "Sô´liệu" chứ không phải ô vuông nên rất dễ lọt QC.
+4. **Đo dấu tiếng Việt phải dùng mực chữ qua Canvas `measureText()`**. So
+   `getBoundingClientRect().height` với `fontSize × lineHeight` là tautology, không bao giờ phát
+   hiện được lỗi. Gate `offline-body-dung-font-nhung` dùng đúng phép này.
+5. **Dấu tiếng Việt chỉ giảm 4% ký tự mỗi dòng**, không cần buffer line-height kiểu CJK.
+6. **`echarts.init` với `ssr:true` không tự thoát process.** Mọi script chart phải kết bằng
+   `chart.dispose(); process.exit(0);`.
+7. **Đếm ảnh trong PDF phải dùng `doc.xref_object`**, `get_images()` bỏ sót ảnh trong Tiling Pattern.
+8. **`color-mix()` không render trong WeasyPrint 69.0**, ra 0 fill. Viết `rgb(R G B / A)` thay thế.
+9. **`outline` không bo theo `border-radius` trong WeasyPrint**: đặt outline lên một chấm tròn thì
+   ra khung vuông. Đã thử và loại khi vá `.q-dot`.
+
+## Bốn cái bẫy đã gặp thật, đừng lặp lại
+
+- **Catalog drift**: bộ Opvia có file catalog mô tả HTML dùng class không tồn tại trong CSS. Trang
+  vẫn chạy nhưng suy biến âm thầm. `tests/consistency/catalog_drift.test.mjs` chống đúng bệnh này.
+- **PACKAGE tự nhận là tự đủ**: cả hai PACKAGE chạy được ở thư mục gốc của chúng nhưng
+  `ERR_MODULE_NOT_FOUND` khi copy sang chỗ khác.
+- **Verify script chọn class không tồn tại**: script verify báo PASS mà chưa kiểm gì.
+- **Gate xanh vì phép đo rỗng**: ba ca đã gặp và đã vá ở đợt dọn. `reduced-motion` cũ chỉ hỏi
+  Playwright xem Playwright có làm đúng việc của Playwright không, luôn true kể cả khi CSS không
+  có dòng nào. `offline-fonts-available` cũ dùng `.every(Boolean)` trên mảng rỗng nên trang không
+  khai font nào vẫn xanh. Regex quét `SKILL.md` mở bằng `[a-z]` nên chưa bao giờ kiểm `CLAUDE.md`
+  và `README.md`. Cách chữa chung: mỗi gate phải chứng minh được nó PHÂN BIỆT ĐƯỢC hai trạng thái
+  trước khi được quyền xanh, và phải tự đỏ được khi cố tình phá.
+
+## Ba xung đột đã phân xử, đừng mở lại
+
+- **Bảng màu**: chốt trắng lạnh (`#051C2C` ink, `#2251FF` accent) chứ không phải giấy ngà ấm.
+- **Gauge và radar**: cấm. Gauge gợi ý độ chính xác không có thật, radar có trục không độc lập.
+- **Engine PDF**: WeasyPrint, không phải Chromium. Chromium tạo ảnh JPEG ẩn trong Tiling Pattern.
+
+## Sổ nợ, chưa chặn ai
+
+- Em-dash trong comment và tài liệu của tài sản harvest: `annotate.js` 33 chỗ, `grammar.md` 44,
+  `metaphor-table.md` 25, `prompt-template.md` 18, comment `tokens.css` khoảng 26. Không phải nội
+  dung hiển thị nên không chặn. Làm một task dọn riêng.
+- `charts/echarts/out/` là thư mục rỗng, verify ghi ra `out-*.svg` ở cấp trên. Xoá hoặc dùng cho đúng.
+- `verify-illustrations.mjs` so khớp lỗi phía `pageerror` theo nội dung văn bản, chưa trích file
+  path từ stack rồi so basename như phía network. Chưa xảy ra trên codebase hiện tại.
+- `_harvest/` vẫn còn 57MB, 860 file. Phase 2 và 3 dỡ dần vào đúng chỗ.
+
+## Các phase sau
+
+Viết plan riêng khi phase trước nghiệm thu xong. Phase 2 pipeline và gate. Phase 3 doctrine và
+preset. Phase 4 báo cáo mẫu vận tải biển.

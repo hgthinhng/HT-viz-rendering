@@ -606,6 +606,11 @@ CSS_KHO_NGANG = """
    Cach dung o day: MOT cot chu, rong hon kho doc mot chut, canh trai; phan
    doi ra cua kho ngang danh cho hinh va bang, la thu that su can be ngang. */
 .bao-cao > * { max-width: 182mm; }
+/* Can GIUA cot chu. Phai viet `body.bao-cao > *` chu khong phai `.bao-cao > *`:
+   report.css khai `.bao-cao p { margin: ... }` voi do uu tien (0,1,1), cao hon
+   `.bao-cao > *` (0,1,0), nen margin auto bi ghi de va cot chu van dinh le
+   trai. Da nhin tan mat mot lan truoc khi tim ra. */
+body.bao-cao > * { margin-left: auto; margin-right: auto; }
 .bao-cao > .hinh,
 .bao-cao > .table-wrap,
 .bao-cao > figure,
@@ -616,6 +621,12 @@ CSS_KHO_NGANG = """
 .bao-cao table.dt { font-size: 0.82em; }
 .bao-cao table.dt th,
 .bao-cao table.dt td { padding-top: 3px; padding-bottom: 3px; }
+/* Tieu de cot duoc XUONG DONG. components.css khai `table.dt th` la nowrap,
+   hop ly cho bang it cot ten ngan, nhung o bang nhieu cot ten day du thi be
+   rong toi thieu cua bang vuot qua kho giay va WeasyPrint CAT mat may cot
+   cuoi, khong bao gi. Da nhin tan mat: cot "Hang von hoa" bien khoi trang.
+   Cho xuong dong thi tieu de cao them mot dong, con toan bo bang vao tron. */
+.bao-cao table.dt th { white-space: normal; }
 @media screen { body.bao-cao { max-width: 297mm; } }
 """
 

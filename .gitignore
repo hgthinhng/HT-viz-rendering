@@ -20,3 +20,8 @@ examples/*/ra/
 
 # worktree tam cua agent, khong phai tai san repo
 .claude/
+
+# An pham that cua khach hang. Repo nay la thu vien PUBLIC, nen ban giao di
+# song trong repo cua chinh du an do, khong song o day. Da tach bo TPB ra
+# `~/tpb-buongmophong/an-pham-vn30-10kb/` ngay 09-08.
+bao-cao/

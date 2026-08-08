@@ -245,8 +245,16 @@ body.bao-cao {
 /* ------------------------------------------------------------------ *
  * Con so co nguon
  * ------------------------------------------------------------------ */
+/* Con so trong VAN XUOI dung font-sans chu khong dung font-mono. Ly do do
+   duoc, khong phai khau vi: IBM Plex Mono la font DON CACH, moi glyph chiem
+   tron mot o ke ca dau phay thap phan, nen "0,54%" hien ra thanh "0 , 54%" va
+   nguoi doc thay nhu loi go. Tieng Viet dung dau phay lam dau thap phan nen
+   moi so le trong cau deu dinh. Mono van giu nguyen vai tro o ma nguon, chay
+   dau chan trang va nhan truc chart, la cho con so xep THANH COT va can cung
+   be rong. tabular-nums giu lai de chu so van thang hang khi so nam trong
+   bang. */
 .v {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.94em;
   font-variant-numeric: tabular-nums;
   color: var(--ink);

@@ -582,6 +582,39 @@ def dung_danh_muc_nguon(so_nguon: SoNguon) -> str:
     )
 
 
+# Kho trang ngang, bat bang front-matter `kho_trang: ngang`. Khoi nay DE dung ba
+# thu va khong dung gi khac: kho giay, be rong khoi hinh va bang, be rong khung
+# man hinh. Cot CHU giu nguyen 165mm co chu dich - be rong doc duoc khong doi
+# theo kho giay, mot dong chu dai 265mm thi mat truot dong; phan doi ra cua kho
+# ngang danh cho hinh va bang, la thu that su can be ngang.
+CSS_KHO_NGANG = """
+@page { size: A4 landscape; margin: 15mm 18mm 13mm 18mm; }
+@page bia { margin: 0; }
+/* KHONG dung column-count o lan pdf-so. Da thu va do duoc: WeasyPrint 69 chay
+   van xuoi hai cot voi `column-span: all` cho tieu de va bang thi NUOT NOI
+   DUNG - hai section cuoi bien mat khoi PDF va bang cut con mot phan, trong
+   khi ban HTML van du. Gate DIACRITICS bat duoc bang so (PDF it hon HTML 24%
+   ky tu co dau) nhung khong bao FAIL, nen loi nay du suc di thang ra file
+   giao neu chi nhin ban HTML.
+   Cach dung o day: MOT cot chu, rong hon kho doc mot chut, canh trai; phan
+   doi ra cua kho ngang danh cho hinh va bang, la thu that su can be ngang. */
+.bao-cao > * { max-width: 182mm; }
+.bao-cao > .hinh,
+.bao-cao > .table-wrap,
+.bao-cao > figure,
+.bia { max-width: 100%; }
+.hinh { max-width: 100%; }
+/* Bang nhieu cot o kho ngang: ha thang chu mot bac de 11 cot vao tron be
+   ngang thay vi tu xuong dong trong o. */
+.bao-cao table.dt { font-size: 0.82em; }
+.bao-cao table.dt th,
+.bao-cao table.dt td { padding-top: 3px; padding-bottom: 3px; }
+@media screen { body.bao-cao { max-width: 297mm; } }
+"""
+
+KHO_TRANG_HOP_LE = ("doc", "ngang")
+
+
 def lap_trang(meta: dict, than: str, so_nguon: SoNguon, chu_de: str = CHU_DE_MAC_DINH) -> str:
     css = "\n".join(
         (REPO / p).read_text(encoding="utf-8")
@@ -592,6 +625,11 @@ def lap_trang(meta: dict, than: str, so_nguon: SoNguon, chu_de: str = CHU_DE_MAC
             "pipeline/report.css",
         )
     )
+    kho_trang = str(meta.get("kho_trang", "doc")).strip().lower()
+    if kho_trang not in KHO_TRANG_HOP_LE:
+        raise LoiDung(f"kho_trang khong biet: {kho_trang!r}. Chi nhan {KHO_TRANG_HOP_LE}")
+    if kho_trang == "ngang":
+        css += CSS_KHO_NGANG
     the_ledger = ""
     if so_nguon.che_do == "noi-bo":
         the_ledger = (

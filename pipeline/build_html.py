@@ -259,9 +259,16 @@ def dung_inline(van_ban: str, so_nguon: "SoNguon") -> str:
 class SoNguon:
     """So nguon da nap, cong cac phep tra cuu ma tang trinh bay can."""
 
-    def __init__(self, du_lieu: dict, che_do: str):
+    def __init__(self, du_lieu: dict, che_do: str, danh_dau: bool = True):
         self.du_lieu = du_lieu
         self.che_do = che_do
+        # danh_dau=False: bo ky hieu nguon dang chi so tren canh tung con so.
+        # data-evid VAN GIU nguyen tren the .v, nen so nguon van doi chieu duoc
+        # va gate LEDGER van chay dung; danh muc nguon cuoi bao cao va dong
+        # "Nguon:" duoi moi hinh cung khong doi. Chi bo mot lop nhieu thi giac
+        # khi ca bao cao chi co mot nguon duy nhat, luc do ky hieu lap lai hai
+        # muoi lan tren mot trang khong them thong tin nao.
+        self.danh_dau = danh_dau
         self.nguon = {s["id"]: s for s in du_lieu.get("sources", [])}
         self.gia_tri = {v["id"]: v for v in du_lieu.get("values", [])}
         self.da_dung_nguon: set[str] = set()
@@ -275,10 +282,10 @@ class SoNguon:
             )
         hien = v.get("display") or f"{v['value']} {v['unit']}"
         self.da_dung_nguon.add(v["source_id"])
-        return (
-            f'<span class="v" data-evid="{html_mod.escape(ma)}">{html_mod.escape(hien)}</span>'
-            f'<span class="v-nguon">{html_mod.escape(v["source_id"])}</span>'
-        )
+        the_so = f'<span class="v" data-evid="{html_mod.escape(ma)}">{html_mod.escape(hien)}</span>'
+        if not self.danh_dau:
+            return the_so
+        return the_so + f'<span class="v-nguon">{html_mod.escape(v["source_id"])}</span>'
 
     def nhan_nguon(self, ma: str) -> str:
         """Chuoi hien thi cho mot nguon, da ap quy tac che do xuat."""
@@ -674,7 +681,12 @@ def dung(
     p_ledger = nguon_md.parent / duong_ledger
     if not p_ledger.exists():
         raise LoiDung(f"khong tim thay so nguon: {p_ledger}")
-    so_nguon = SoNguon(json.loads(p_ledger.read_text(encoding="utf-8")), che_do)
+    danh_dau = str(meta.get("danh_dau_nguon", "co")).strip().lower()
+    if danh_dau not in ("co", "khong"):
+        raise LoiDung(f"danh_dau_nguon khong biet: {danh_dau!r}. Chi nhan 'co' hoac 'khong'")
+    so_nguon = SoNguon(
+        json.loads(p_ledger.read_text(encoding="utf-8")), che_do, danh_dau=(danh_dau == "co")
+    )
 
     if lan not in CAC_LAN:
         raise LoiDung(f"lan khong biet: {lan}. Chi nhan mot trong {CAC_LAN}")

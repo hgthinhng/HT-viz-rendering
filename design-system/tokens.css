@@ -38,7 +38,13 @@
   --paper-elev: #F7F9FC;    /* không có card "nổi khối" riêng trong Kimi, dùng lại paper-hi */
   --ink: #051C2C;           /* Kimi [--ink], = huashu-design McKinsey deep-blue, = dòng 88 giáo trình */
   --ink-md: #42566A;        /* Kimi [--ink-md] */
-  --ink-lo: #8595A6;        /* Kimi [--ink-lo] */
+  /* #8595A6 cu chi cho 3,07:1 tren nen giay, DUOI nguong WCAG 4,5:1 cho van ban, ma 41
+     cho trong report.css cong components.css dung bac muc nay lam mau CHU. Sua tung rule
+     la vo ich vi benh nam o token. #66788C giu nguyen sac va do bao hoa, chi ha do sang
+     toi muc vua du: do lai duoc 4,54:1. Bac `dark` (#7E93A6 tren #0A1420) san 5,83:1 nen
+     giu nguyen. NGUON la design-system/themes/sang-lanh.json, dong nay la ban CHEP TAY
+     cua khoi :root cu, phai sua kem cho khong lech. */
+  --ink-lo: #66788C;        /* Kimi [--ink-lo], da ha do sang cho dat WCAG */
   --ink-faint: #AAB8C4;     /* dẫn xuất nhạt hơn ink-lo, chỉ dùng trang trí, Kimi không có bậc này */
   --line: #DBE2EA;          /* Kimi [--line] */
   --line-lo: #EEF1F6;       /* Kimi [--line-lo] */
@@ -228,7 +234,7 @@
   --paper-elev: #F7F9FC;
   --ink: #051C2C;
   --ink-md: #42566A;
-  --ink-lo: #8595A6;
+  --ink-lo: #66788C;
   --ink-faint: #AAB8C4;
   --line: #DBE2EA;
   --line-lo: #EEF1F6;

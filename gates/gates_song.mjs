@@ -438,9 +438,31 @@ export async function gateContrastAllThemes({ html, duongDanHtml, browser }) {
   const ly_do = [];
   let trang_thai = 'PASS';
 
-  const chuDe = [...new Set([...html.matchAll(RE_THEME_DECL)].map((m) => m[1]))];
+  let chuDe = [...new Set([...html.matchAll(RE_THEME_DECL)].map((m) => m[1]))];
   if (chuDe.length === 0) {
     return ghi('5. CONTRAST-ALL-THEMES', 'SKIP', ['khong tim thay chu de nao khai qua selector [data-theme="..."] trong CSS, khong co gi de doi chieu']);
+  }
+
+  // Trang KHOA cung mot chu de thi chi do chu de do.
+  //
+  // Ban dau gate lay moi chu de khai trong CSS roi tu bat tung cai len de do. Voi mot
+  // trang khong khoa thi dung, nhung repo co mot luat cung khac: file giao khach PHAI
+  // khai `<html lang="vi" data-theme="light">`, vi chart matplotlib va 11 minh hoa SVG
+  // moi chi co ban sang. Tren dung file do, gate dang do MOT TRANG THAI NGUOI DOC KHONG
+  // BAO GIO THAY, roi bao FAIL vi trang thai do xau. Hai luat cua cung mot repo danh nhau,
+  // va ben thua la ben khong co ai bien ho.
+  //
+  // Cach phan xu: doc `data-theme` tren the <html>. Co khai thi do dung no; khong khai
+  // thi trang de nguoi doc tu chon, va luc do do CA danh sach nhu cu. Gate khong tu noi
+  // cho minh: no van do day du moi phan tu, chi thoi bia them mot boi canh khong ton tai.
+  const chuDeKhoa = (html.match(/<html[^>]*\bdata-theme="([^"]+)"/i) || [])[1];
+  if (chuDeKhoa) {
+    ly_do.push(
+      `trang KHOA chu de "${chuDeKhoa}" ngay tren the <html>, nen chi do chu de do. ` +
+        `CSS con khai ${chuDe.length} chu de (${chuDe.join(', ')}) nhung nguoi doc khong ` +
+        'bat duoc chung, va mot ban giao khach khoa sang la LUAT cua repo chu khong phai thieu sot',
+    );
+    chuDe = [chuDeKhoa];
   }
 
   const ctx = await browser.newContext();
@@ -677,6 +699,15 @@ export async function gateResponsiveWidth({ duongDanHtml, browser }) {
  *      voi nen hieu dung cua trang tai vi tri no nam. FAIL duoi 3:1, nguong
  *      WCAG 1.4.11 cho yeu to do hoa (khong phai nguong van ban 4.5:1).
  *
+ *      LOP 2 DA DOI PHEP DO (09-08). Ban dau no do NEN SVG voi NEN TRANG. Phep do
+ *      do sai thu: mot chart nen trang tren mot trang nen trang cho dung 1:1 va bi
+ *      bao FAIL, trong khi do la dung chuan thiet ke cua repo, tuc lop 2 do MOI an
+ *      pham hop le. Bat duoc khi dung ban mau van tai bien dau tien. Thu can do la
+ *      MUC voi NEN: mot hinh chim vao nen nghia la net ve cua no khong con doc duoc,
+ *      chu khong phai nen cua no trung mau giay. Nay lay net ve DAM NHAT trong SVG
+ *      doi chieu voi nen cua chinh SVG do. Ca hai fixture cu giu nguyen va van do
+ *      dung ly do: hinh 2 cua fixture do co chu #0F1B28 tren nen #0B1522.
+ *
  * Hai lop DOC LAP: mot SVG co the khai dung data-theme (qua lop 1) ma nen van
  * gan nhu trung nen trang (hong lop 2), va nguoc lai mot SVG sinh sai chu de
  * hoan toan (nen trang tren trang toi) lai co tuong phan RAT CAO, nen chi lop 1
@@ -714,7 +745,34 @@ export async function gateThemeMatch({ duongDanHtml, browser }) {
         }
       }
       const nenTrang = G.effectiveBg(svg.parentElement || document.body);
-      const ty = nenThat ? G.contrastRatio(nenThat, nenTrang) : null;
+      // Nen de doi chieu MUC: nen rieng cua SVG neu co, khong thi nen cua trang.
+      const nenDoi = nenThat || nenTrang;
+
+      // Muc DAM NHAT trong SVG. Duyet phan tu ve, lay ca fill lan stroke, bo `none`
+      // va bo trong suot, bo luon chinh o nen. Lay MAX chu khong lay min hay trung
+      // binh: duong luoi va nhan phu von co y nhat, doi moi net tu 3:1 la ep chart
+      // phai het nhat, con cai can bat la ca SVG chim han vao nen, va do la truong
+      // hop KE CA net dam nhat cung khong noi len.
+      let mucMax = null;
+      let mauMuc = null;
+      const ve = svg.querySelectorAll('path,rect,circle,ellipse,line,polyline,polygon,text,tspan');
+      let dem = 0;
+      for (const el of ve) {
+        if (dem++ > 400) break;
+        const cs = getComputedStyle(el);
+        for (const thuoc of [cs.fill, cs.stroke]) {
+          if (!thuoc || thuoc === 'none') continue;
+          const c = G.parseColor(thuoc);
+          if (!c || (c[3] !== undefined && c[3] < 0.35)) continue;
+          const mau = [c[0], c[1], c[2]];
+          if (nenThat && mau[0] === nenThat[0] && mau[1] === nenThat[1] && mau[2] === nenThat[2]) continue;
+          const t = G.contrastRatio(mau, nenDoi);
+          if (mucMax === null || t > mucMax) {
+            mucMax = t;
+            mauMuc = mau;
+          }
+        }
+      }
       out.push({
         chiSo: i,
         id: svg.id || null,
@@ -722,7 +780,9 @@ export async function gateThemeMatch({ duongDanHtml, browser }) {
         khopKhaiBao: chuDeSvg === chuDeTrang,
         nenThat,
         nenTrang,
-        ty: ty === null ? null : Math.round(ty * 100) / 100,
+        nenDoi,
+        mauMuc,
+        ty: mucMax === null ? null : Math.round(mucMax * 100) / 100,
       });
     });
     return { chuDeTrang, svgs: out };
@@ -745,7 +805,11 @@ export async function gateThemeMatch({ duongDanHtml, browser }) {
     }
     if (s.ty !== null && s.ty < 3.0) {
       trang_thai = 'FAIL';
-      ly_do.push(`${nhan}: tuong phan nen SVG ${JSON.stringify(s.nenThat)} voi nen hieu dung cua trang ${JSON.stringify(s.nenTrang)} chi ${s.ty}:1, duoi nguong 3:1 cho yeu to do hoa`);
+      ly_do.push(
+        `${nhan}: net ve dam nhat ${JSON.stringify(s.mauMuc)} chi dat ${s.ty}:1 so voi nen ` +
+          `${JSON.stringify(s.nenDoi)} cua chinh no, duoi nguong 3:1 cho yeu to do hoa. ` +
+          'Ca hinh chim vao nen chu khong phai mot chi tiet mo',
+      );
     }
   }
   if (trang_thai === 'PASS') {

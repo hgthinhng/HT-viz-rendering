@@ -37,7 +37,10 @@ export const PALETTE = {
   warn: '#B07A10',
   ink: '#051C2C',
   inkMd: '#42566A',
-  inkLo: '#8595A6',
+  // Ha do sang tu #8595A6: gia tri cu cho 3,07:1 tren nen giay, duoi nguong WCAG
+  // 4,5:1 cho van ban. Nguon la design-system/themes/sang-lanh.json; PALETTE phang
+  // nay la ban chep tay nen phai sua kem, va chart_theme.test.mjs ep dieu do.
+  inkLo: '#66788C',
   line: '#DBE2EA',
   paper: '#FFFFFF',
 };
@@ -223,7 +226,7 @@ export const PALETTES = {
       paperElev: '#F7F9FC',
       ink: '#051C2C',
       inkMd: '#42566A',
-      inkLo: '#8595A6',
+      inkLo: '#66788C',
       inkFaint: '#AAB8C4',
       line: '#DBE2EA',
       lineLo: '#EEF1F6',

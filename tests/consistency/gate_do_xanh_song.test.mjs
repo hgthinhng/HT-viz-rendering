@@ -98,6 +98,21 @@ test('gate 5 CONTRAST-ALL-THEMES phan biet chu de dat nguong voi chu de mot chu 
   assert.match(noiDung, /--neg co goc hue.*ngoai dai cho phep/);
 });
 
+test('gate 5 chi do chu de ma trang KHOA, khong bia them boi canh nguoi doc khong thay', { timeout: 30000 }, async () => {
+  // `contrast-khoa-xanh.html` giong `contrast-do.html` tung ky tu tru mot thu: the
+  // <html> khoa data-theme="light". Chu de "dark" trong CSS van hong y nguyen. Cap nay
+  // la bang chung cho nhanh moi: gate doc chu de khoa thay vi tu bat tung chu de len.
+  // Khong co no thi nhanh do khong duoc kiem gi, va mot nhanh khong ai kiem la mot
+  // nhanh co the am tham lam gate ngung bat benh that.
+  const khoa = await gateContrastAllThemes(goi('contrast-khoa-xanh.html'));
+  assert.equal(
+    khoa.trang_thai,
+    'PASS',
+    `trang khoa sang ma van bao FAIL theo chu de toi: ${khoa.ly_do.join(' | ')}`,
+  );
+  assert.match(khoa.ly_do.join(' | '), /trang KHOA chu de "light"/);
+});
+
 // --------------------------------------------------------------------------- //
 test('gate 6 SIZE-BUDGET phan biet file nho voi file vuot tran 8MB', () => {
   const xanh = gateSizeBudget({ duongDanHtml: path.join(FIX, 'size-xanh.html') });

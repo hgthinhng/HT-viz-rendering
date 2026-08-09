@@ -263,12 +263,11 @@ body.bao-cao {
 .v-nguon {
   font-family: var(--font-mono);
   font-size: 0.72em;
-  /* `--ink-md` chu khong phai `--ink-lo`. Nhan nguon co y nhat de khong cuop mach doc,
-     nhung `--ink-lo` (#8595A6) tren nen giay cho tuong phan 3,07:1, duoi nguong WCAG
-     4,5:1 cho van ban. Gate 5 CONTRAST-ALL-THEMES do duoc dieu do tren an pham that.
-     Nhan nguon la THONG TIN chu khong phai trang tri: mot con so khong doc noi nguon
-     thi bang khong co nguon. Do 7,2:1 sau khi doi. */
-  color: var(--ink-md);
+  /* Giu `--ink-lo` de nhan nguon van nhat hon than bai. Ban truoc doi tam sang
+     `--ink-md` vi `--ink-lo` khi do la #8595A6, chi 3,07:1 tren nen giay. Nay chinh
+     token da ha do sang xuong #66788C cho dat 4,5:1, nen khong con ly do de mot rule
+     rieng phai lech khoi thang mau. */
+  color: var(--ink-lo);
   vertical-align: super;
   margin-left: 1px;
   white-space: nowrap;

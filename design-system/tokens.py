@@ -14,7 +14,8 @@ sau (bản người dùng đã phân xử giữ), không phải giá trị ban �
 COLORS = {
     "ink": "#051C2C",
     "ink_md": "#42566A",
-    "ink_lo": "#8595A6",
+    # Xem ghi chu trong tokens.css: ha do sang cho dat WCAG 4,5:1 tren nen giay.
+    "ink_lo": "#66788C",
     "line": "#DBE2EA",
     "paper": "#FFFFFF",
     "paper_hi": "#F7F9FC",
@@ -80,7 +81,7 @@ THEMES = {
             "paper_elev": "#F7F9FC",
             "ink": "#051C2C",
             "ink_md": "#42566A",
-            "ink_lo": "#8595A6",
+            "ink_lo": "#66788C",
             "ink_faint": "#AAB8C4",
             "line": "#DBE2EA",
             "line_lo": "#EEF1F6",

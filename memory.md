@@ -82,25 +82,53 @@ Không lỗi nào bắt được bằng test đơn vị, cả bốn chỉ lộ k
    chart. Cộng thêm: SVG TĨNH nhúng vào trang chưa từng có ai gắn `data-theme`, nay
    `khai_chu_de_svg()` trong `build_html.py` lo.
 
-### Bản mẫu vận tải biển: 6 PASS, 2 FAIL, 1 SKIP
+### Bản mẫu vận tải biển: 8 PASS, 0 FAIL, 1 SKIP
 
 `examples/van-tai-bien/`, hai chart sống cộng một minh hoạ bake. Chạy bằng:
 
     python3 pipeline/orchestrator.py examples/van-tai-bien/noi-dung.md --lan=html-song
 
-Hai gate còn đỏ, và **cả hai đều là câu hỏi về LUẬT chứ không phải lỗi của ấn phẩm**, nên
-để nguyên chờ người dùng phán:
+Gate 3 REDUCED-MOTION là SKIP chứ không phải PASS, và đó là hành vi đúng của nó: trang
+không có phần tử nào chạy animation CSS ở chế độ thường (animation của chart là animation
+JavaScript trong ECharts), nên gate tự khai là không chứng minh được nó phân biệt được hai
+trạng thái. Nó thà SKIP còn hơn xanh giả.
 
-- **Gate 5 CONTRAST-ALL-THEMES.** Hai phần khác nhau. Phần `light` là lỗi thật ở tầng
-  token: `--ink-lo` (#8595A6) cho 3,07:1 trên nền giấy, dưới ngưỡng 4,5:1, mà **41 chỗ
-  trong `report.css` và `components.css` dùng nó làm màu CHỮ**. Sửa `.v-nguon` xong thì
-  `.hinh-nguon` lộ ra ngay, vì bệnh nằm ở token. Phần `dark` thì là xung đột luật: repo
-  bắt file giao khách khoá `data-theme="light"`, còn gate tự bật chủ đề tối để đo một
-  trạng thái người đọc không bao giờ thấy.
-- **Gate 9 THEME-MATCH lớp 2** đo tương phản giữa NỀN SVG và NỀN TRANG, đòi từ 3:1. Chart
-  nền trắng trên trang nền trắng cho đúng 1:1, nên lớp này đỏ với MỌI ấn phẩm đúng chuẩn
-  thiết kế của repo. Ý định gate là bắt "SVG chìm vào nền", nhưng thứ cần đo là NÉT VẼ với
-  nền chứ không phải nền với nền.
+### Ba phán quyết về LUẬT, và vì sao không phải là nới gate cho dễ
+
+Hai gate đỏ ban đầu không phải lỗi của ấn phẩm mà là phép đo sai. Người dùng đã chốt cả ba.
+
+**Token `--ink-lo` hạ độ sáng, #8595A6 sang #66788C.** Giá trị cũ cho 3,07:1 trên nền giấy,
+dưới ngưỡng WCAG 4,5:1, mà **41 chỗ** trong `report.css` và `components.css` dùng bậc mực
+này làm màu CHỮ. Sửa `.v-nguon` thì `.hinh-nguon` lộ ra ngay, nên bệnh nằm ở token chứ
+không ở rule. Bậc `dark` (#7E93A6 trên #0A1420) sẵn 5,83:1 nên giữ nguyên.
+
+**Sửa màu phải sửa ở `design-system/themes/*.json` rồi chạy `node design-system/generate-tokens.mjs`.**
+Đã mất một vòng vì sửa thẳng vào `tokens.css`. Nhưng generator KHÔNG lo hết: ba nơi là bản
+CHÉP TAY nằm ngoài vùng marker và phải sửa kèm, `tokens.css` khối `:root` đầu, `tokens.py`
+dict đầu, và `PALETTE` phẳng trong `charts/echarts/theme.mjs`. Chính `PALETTE` phẳng đó mới
+là thứ mọi preset chart đọc, còn `PALETTES` sinh từ JSON là registry theo tên chủ đề.
+`chart_theme.test.mjs` ép hai bên khớp nên quên là đỏ.
+
+**Gate 5 chỉ đo chủ đề mà trang KHOÁ.** Trước đó gate lấy mọi chủ đề khai trong CSS rồi tự
+bật từng cái lên. Trên một file giao khách, thứ đó vi phạm một luật cứng khác của repo là
+khoá `data-theme="light"`: gate đang đo một trạng thái người đọc không bao giờ thấy rồi báo
+FAIL vì trạng thái đó xấu. Nay đọc `data-theme` trên thẻ `<html>`; có khai thì đo đúng nó,
+không khai thì đo cả danh sách như cũ. `contrast-do.html` đã bỏ `data-theme` khỏi thẻ
+`<html>` cho khớp ngữ nghĩa, và có cặp mới `contrast-khoa-xanh.html` giống nó từng ký tự
+trừ đúng chỗ khoá, để nhánh mới cũng có bằng chứng đỏ xanh.
+
+**Gate 9 lớp 2 đổi từ đo NỀN sang đo MỰC.** Phép đo cũ so nền SVG với nền trang và đòi từ
+3:1, nên một chart nền trắng trên trang nền trắng cho đúng 1:1 và bị FAIL, tức lớp 2 đỏ với
+MỌI ấn phẩm đúng chuẩn thiết kế. Ý định của gate là bắt "SVG chìm vào nền", mà thứ nói lên
+điều đó là nét vẽ chứ không phải nền. Nay lấy nét vẽ ĐẬM NHẤT trong SVG đối chiếu với nền
+của chính nó. Lấy max chứ không lấy min: đường lưới và nhãn phụ vốn cố ý nhạt, đòi mọi nét
+từ 3:1 là ép chart phải hết nhạt. Cả hai fixture cũ giữ nguyên và vẫn đỏ đúng lý do, vì
+hình 2 của fixture đỏ có chữ #0F1B28 trên nền #0B1522.
+
+Bài học chung, đáng nhớ hơn ba ca này: **một gate chưa từng chạy trên ấn phẩm thật là một
+gate chưa được kiểm.** Chín gate làn song đều có cặp fixture đỏ xanh và đều đỏ được, nhưng
+hai trong chín đo sai thứ, và fixture không thể lộ ra điều đó vì fixture do chính người
+viết gate dựng theo đúng giả định của người viết gate.
 
 ## ĐỌC MỤC NÀY TRƯỚC: tiền đề của repo đã đổi (07-08)
 

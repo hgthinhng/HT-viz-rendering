@@ -1,11 +1,11 @@
 // mount-live.mjs, duong mount CHUNG cho lan `html-song`: option() thuan -> instance
 // ECharts SONG trong DOM cua trinh duyet.
 //
-// Khac render-static.mjs o hai diem, ca hai deu CO CHU Y:
-//   - KHONG dat ssr:true / renderer:'svg' rieng: echarts.init(container) tu doc kich
-//     thuoc that cua container (clientWidth/clientHeight) va chon renderer canvas mac
-//     dinh cua ECharts trong trinh duyet, hop voi mot trang tu du co JavaScript luc
-//     chay, KHAC ban tinh nhung vao bao cao.
+// Khac render-static.mjs o ba diem, ca ba deu CO CHU Y:
+//   - KHONG dat ssr:true: echarts.init(container) tu doc kich thuoc that cua container
+//     (clientWidth/clientHeight), khac ban tinh nhung vao bao cao. Renderer thi CO dat,
+//     va la 'svg' chu khong phai canvas mac dinh: ly do day du o `echarts-song.mjs`,
+//     tom tat la gate THEME-MATCH quet the <svg> nen chart canvas nam ngoai tam gate.
 //   - KHONG ep animation:false: lan html-song khong di qua duong SSR xuat CSS
 //     @keyframes gay loi keo marker ve goc toa do (xem render-static.mjs), nen duoc
 //     giu nguyen animation mac dinh cua ECharts -- day chinh la nang luc lan
@@ -13,7 +13,7 @@
 //   - KHONG hau xu ly mau: chart mount song trong DOM da doc duoc `var(--accent)`
 //     v.v. qua getComputedStyle() ngay tu itemStyle.color goc (JS truyen thang gia
 //     tri), khong can buoc doi hex sang var() nhu SVG tinh.
-import * as echarts from 'echarts';
+import { echarts } from './echarts-song.mjs';
 
 /** Mount 1 preset SONG vao 1 phan tu DOM.
  *
@@ -24,12 +24,29 @@ import * as echarts from 'echarts';
  * @returns {import('echarts').ECharts} instance ECharts, goi .dispose()/.resize() sau
  */
 export function mountLive(optionFn, params, container) {
-  const chart = echarts.init(container);
+  const chart = echarts.init(container, null, { renderer: 'svg' });
   const optTho = optionFn(params);
   const { _veSauLayout: veSauLayout, ...opt } = optTho;
   chart.setOption(opt);
   if (typeof veSauLayout === 'function') {
     chart.setOption({ graphic: veSauLayout(chart) });
   }
+  ganChuDe(container);
   return chart;
+}
+
+/** Chep `data-theme` cua trang xuong the <svg> ma ECharts vua sinh.
+ *
+ * KHONG phai trang tri. Gate `THEME-MATCH` cua lan song doi MOI the <svg> trong DOM tu
+ * khai chu de va khai dung chu de cua trang; SVG tinh nhung vao bao cao thi da mang san
+ * thuoc tinh do tu luc build, con SVG do ECharts sinh luc chay thi khong ai gan cho no.
+ * Thieu mot dong nay la chart song lam ca gate do, va do dung la kieu do that chu khong
+ * phai do oan: mot chart mount ra khi trang dang o chu de toi ma khong ai khai gi thi
+ * khong co cach nao biet no da doc dung chu de hay chua.
+ */
+function ganChuDe(container) {
+  const chuDe = document.documentElement.getAttribute('data-theme');
+  if (!chuDe) return;
+  const svg = container.querySelector('svg');
+  if (svg) svg.setAttribute('data-theme', chuDe);
 }

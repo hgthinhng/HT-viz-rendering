@@ -14,7 +14,6 @@
 // lợi, dạng traffic-light bị cấm dù đội lốt "chỉ là tô theo chiều tăng/giảm".
 import { baseOption, TYPOGRAPHY, PALETTE, tooltipDefault } from './theme.mjs';
 import { fmtCompact } from './fmt.mjs';
-import { renderStatic } from './render-static.mjs';
 
 export const MAC_DINH = {
   base: 850, // tỷ đồng, giá trị doanh nghiệp base case
@@ -77,6 +76,11 @@ export function option(params) {
 // duyet (lan html-song qua mount-live.mjs); `node:fs` chuyen sang import DONG cung ly do
 // (chi tiet: 01-waterfall.mjs).
 if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  // `render-static.mjs` keo ca goi ECharts vao, nen import TINH o dinh file lam
+  // bundle lan `html-song` mat sach tree-shaking va keo ban day du 1,1MB. Import
+  // DONG ngay trong nhanh CLI: duong tinh van chay y het, con trinh duyet khong
+  // bao gio cham toi module nay.
+  const { renderStatic } = await import('./render-static.mjs');
   const { writeFileSync } = await import('node:fs');
   const svg = renderStatic(option, MAC_DINH, { width: 720, height: 380 });
   writeFileSync(new URL('./out-06-tornado.svg', import.meta.url), svg);

@@ -8,6 +8,9 @@ out/
 .omc/
 .superpowers/
 charts/echarts/out-*.svg
+# Bundle lan `html-song`, sinh lai bang `npm run bundle:song` trong khoang mot giay.
+# Mot file 787KB sinh tu dong ma commit vao repo la cach nhanh nhat de no troi khoi nguon.
+charts/echarts/ra-song/
 components/verify-print.pdf
 components/verify-screenshot.png
 components/verify-report.json

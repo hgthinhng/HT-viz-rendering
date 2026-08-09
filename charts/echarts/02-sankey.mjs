@@ -8,7 +8,6 @@
 // sai bảo toàn, phải kiểm tổng trước khi vẽ; (2) quá nhiều node (>10-12) làm
 // rối; (3) dùng màu ngẫu nhiên cho từng luồng thay vì tô theo node nguồn.
 import { baseOption, TYPOGRAPHY, PALETTE } from './theme.mjs';
-import { renderStatic } from './render-static.mjs';
 
 export const MAC_DINH = {
   nodes: [
@@ -96,6 +95,11 @@ export function option(params) {
 // duyet (lan html-song qua mount-live.mjs); `node:fs` chuyen sang import DONG cung ly do
 // (chi tiet: 01-waterfall.mjs).
 if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  // `render-static.mjs` keo ca goi ECharts vao, nen import TINH o dinh file lam
+  // bundle lan `html-song` mat sach tree-shaking va keo ban day du 1,1MB. Import
+  // DONG ngay trong nhanh CLI: duong tinh van chay y het, con trinh duyet khong
+  // bao gio cham toi module nay.
+  const { renderStatic } = await import('./render-static.mjs');
   try {
     const { writeFileSync } = await import('node:fs');
     const svg = renderStatic(option, MAC_DINH, { width: 760, height: 440 });

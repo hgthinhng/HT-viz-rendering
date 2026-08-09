@@ -28,14 +28,15 @@
  * Ban Python tuong duong: charts/matplotlib/schema.py, phai giu CUNG TEN TRUONG.
  * Chong troi dat giua hai ban: charts/fixtures/, ca hai validator chay cung bo ca.
  */
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+// Nap tu vung bang IMPORT ATTRIBUTE chu khong bang `fs.readFileSync`. Ban cu doc file
+// luc chay, nen file nay nem loi ngay khi bi import trong trinh duyet, va do la ly do
+// bon preset 15-18 chua mount song duoc suot Phase 4. Import attribute giai quyet ca
+// hai dau ma KHONG nhan doi tu vung: Node doc thang file JSON, con esbuild inline noi
+// dung file vao bundle lan `html-song`. `schema.vocab.json` van la nguon duy nhat, ban
+// Python `schema.py` van doc dung file do.
+import VOCAB_JSON from '../schema.vocab.json' with { type: 'json' };
 
-const HERE = path.dirname(fileURLToPath(import.meta.url));
-const VOCAB_PATH = path.resolve(HERE, '..', 'schema.vocab.json');
-
-export const VOCAB = JSON.parse(fs.readFileSync(VOCAB_PATH, 'utf8'));
+export const VOCAB = VOCAB_JSON;
 export const SCHEMA_VERSION = VOCAB.schema_version;
 
 /** Ma loi ON DINH. Fixture vang doi chieu bang MA nay chu khong bang cau chu tieng

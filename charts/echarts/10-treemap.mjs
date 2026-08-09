@@ -10,7 +10,6 @@
 // bảng màu categorical vượt ngưỡng an toàn CVD.
 import { TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
 import { fmtCompact } from './fmt.mjs';
-import { renderStatic } from './render-static.mjs';
 
 // nhóm cha = ngành (categorical, tối đa 4 để an toàn CVD all-pairs theo dataviz skill)
 export const MAC_DINH = {
@@ -64,6 +63,11 @@ export function option(params) {
 // duyet (lan html-song qua mount-live.mjs); `node:fs` chuyen sang import DONG cung ly do
 // (chi tiet: 01-waterfall.mjs).
 if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  // `render-static.mjs` keo ca goi ECharts vao, nen import TINH o dinh file lam
+  // bundle lan `html-song` mat sach tree-shaking va keo ban day du 1,1MB. Import
+  // DONG ngay trong nhanh CLI: duong tinh van chay y het, con trinh duyet khong
+  // bao gio cham toi module nay.
+  const { renderStatic } = await import('./render-static.mjs');
   const { writeFileSync } = await import('node:fs');
   const svg = renderStatic(option, MAC_DINH, { width: 720, height: 420 });
   writeFileSync(new URL('./out-10-treemap.svg', import.meta.url), svg);

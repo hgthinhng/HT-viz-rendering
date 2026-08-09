@@ -10,7 +10,6 @@
 // nến vào 1 dải hẹp không đọc được, đây là NGOẠI LỆ có chủ đích của quy tắc
 // "trục phải bắt đầu từ 0", vì OHLC là toạ độ tuyệt đối không phải magnitude.
 import { TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
-import { renderStatic } from './render-static.mjs';
 
 // quy ước sàn HOSE: tăng = xanh lam (dùng accent), giảm = đỏ (dùng negative), đứng giá = vàng tham chiếu (không dùng ở đây vì không có phiên đứng giá trong mẫu)
 export const MAC_DINH = {
@@ -63,6 +62,11 @@ export function option(params) {
 // duyet (lan html-song qua mount-live.mjs); `node:fs` chuyen sang import DONG cung ly do
 // (chi tiet: 01-waterfall.mjs).
 if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  // `render-static.mjs` keo ca goi ECharts vao, nen import TINH o dinh file lam
+  // bundle lan `html-song` mat sach tree-shaking va keo ban day du 1,1MB. Import
+  // DONG ngay trong nhanh CLI: duong tinh van chay y het, con trinh duyet khong
+  // bao gio cham toi module nay.
+  const { renderStatic } = await import('./render-static.mjs');
   const { writeFileSync } = await import('node:fs');
   const svg = renderStatic(option, MAC_DINH, { width: 720, height: 420 });
   writeFileSync(new URL('./out-09-candlestick.svg', import.meta.url), svg);

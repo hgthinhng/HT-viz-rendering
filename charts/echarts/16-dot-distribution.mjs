@@ -19,7 +19,6 @@
 import { baseOption, TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
 import { fmtMultiple } from './fmt.mjs';
 import { validateSeries, soThapPhan, nhanDonVi, coCo } from './schema.mjs';
-import { renderStatic } from './render-static.mjs';
 
 export const MAC_DINH = {
   groupNames: ['Thép', 'Xi măng', 'VLXD khác'],
@@ -165,6 +164,11 @@ export function option(params) {
 // duyet (lan html-song qua mount-live.mjs); `node:fs` chuyen sang import DONG cung ly do
 // (chi tiet: 01-waterfall.mjs).
 if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  // `render-static.mjs` keo ca goi ECharts vao, nen import TINH o dinh file lam
+  // bundle lan `html-song` mat sach tree-shaking va keo ban day du 1,1MB. Import
+  // DONG ngay trong nhanh CLI: duong tinh van chay y het, con trinh duyet khong
+  // bao gio cham toi module nay.
+  const { renderStatic } = await import('./render-static.mjs');
   const { writeFileSync } = await import('node:fs');
   const { width, height } = tinhKichThuoc(MAC_DINH);
   const svg = renderStatic(option, MAC_DINH, { width, height });

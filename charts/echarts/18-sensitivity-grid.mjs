@@ -20,7 +20,6 @@
 import { baseOption, PALETTE, TYPOGRAPHY, FONT_STACK_MONO, sequentialScale } from './theme.mjs';
 import { fmtNumber, fmtPercent } from './fmt.mjs';
 import { validateSeries, soThapPhan, nhanDonVi, coCo } from './schema.mjs';
-import { renderStatic } from './render-static.mjs';
 
 const W = 700, H = 460;
 const GRID = { left: 76, right: 24, top: 96, bottom: 84 };
@@ -188,6 +187,11 @@ export function option(params) {
 // duyet (lan html-song qua mount-live.mjs); `node:fs` chuyen sang import DONG cung ly do
 // (chi tiet: 01-waterfall.mjs).
 if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  // `render-static.mjs` keo ca goi ECharts vao, nen import TINH o dinh file lam
+  // bundle lan `html-song` mat sach tree-shaking va keo ban day du 1,1MB. Import
+  // DONG ngay trong nhanh CLI: duong tinh van chay y het, con trinh duyet khong
+  // bao gio cham toi module nay.
+  const { renderStatic } = await import('./render-static.mjs');
   const { writeFileSync } = await import('node:fs');
   const svg = renderStatic(option, MAC_DINH, { width: W, height: H });
   writeFileSync(new URL('./out-18-sensitivity-grid.svg', import.meta.url), svg);

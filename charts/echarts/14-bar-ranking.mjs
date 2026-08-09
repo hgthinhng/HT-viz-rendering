@@ -26,7 +26,6 @@
 import { baseOption, TYPOGRAPHY, PALETTE, FONT_STACK, tooltipDefault } from './theme.mjs';
 import { fmtPercent } from './fmt.mjs';
 import { validateSeries, soThapPhan, nhanDonVi } from './schema.mjs';
-import { renderStatic } from './render-static.mjs';
 
 // % biên lợi nhuận gộp minh hoạ theo phân khúc, KHÔNG phải số thật. entity.code là
 // tên rút gọn NGẮN, giữ dấu tiếng Việt (không phải mã tự chế viết hoa không dấu) --
@@ -179,6 +178,11 @@ export function option(params) {
 // duyet (lan html-song qua mount-live.mjs); `node:fs` chuyen sang import DONG cung ly do
 // (chi tiet: 01-waterfall.mjs).
 if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  // `render-static.mjs` keo ca goi ECharts vao, nen import TINH o dinh file lam
+  // bundle lan `html-song` mat sach tree-shaking va keo ban day du 1,1MB. Import
+  // DONG ngay trong nhanh CLI: duong tinh van chay y het, con trinh duyet khong
+  // bao gio cham toi module nay.
+  const { renderStatic } = await import('./render-static.mjs');
   const { writeFileSync } = await import('node:fs');
   const parBar = { ...MAC_DINH, bienThe: 'bar' };
   const parDot = { ...MAC_DINH, bienThe: 'dot' };

@@ -8,7 +8,6 @@
 // từ 0 làm méo tỷ lệ các thanh; (3) không note đơn vị -> nhầm tỷ với triệu.
 import { baseOption, valueAxis, categoryAxis, tooltipDefault, PALETTE, TYPOGRAPHY } from './theme.mjs';
 import { fmtCompact, fmtDelta } from './fmt.mjs';
-import { renderStatic } from './render-static.mjs';
 
 // MAC_DINH: bo du lieu demo (truoc ban tach option/render day la hang so top-level).
 export const MAC_DINH = {
@@ -79,6 +78,11 @@ export function option(params) {
 // file se bi trinh duyet co gang resolve 'node:fs' ngay ca khi nhanh CLI khong bao gio
 // chay toi, lam ca module load loi.
 if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  // `render-static.mjs` keo ca goi ECharts vao, nen import TINH o dinh file lam
+  // bundle lan `html-song` mat sach tree-shaking va keo ban day du 1,1MB. Import
+  // DONG ngay trong nhanh CLI: duong tinh van chay y het, con trinh duyet khong
+  // bao gio cham toi module nay.
+  const { renderStatic } = await import('./render-static.mjs');
   const { writeFileSync } = await import('node:fs');
   const svg = renderStatic(option, MAC_DINH, { width: 700, height: 400 });
   writeFileSync(new URL('./out-01-waterfall.svg', import.meta.url), svg);

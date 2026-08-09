@@ -10,7 +10,6 @@
 // tooltip/label cho từng ô; (3) sort trục năm/tháng không theo thời gian.
 import { TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
 import { fmtPercent } from './fmt.mjs';
-import { renderStatic } from './render-static.mjs';
 
 export const MAC_DINH = {
   months: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
@@ -69,6 +68,11 @@ export function option(params) {
 // duyet (lan html-song qua mount-live.mjs); `node:fs` chuyen sang import DONG cung ly do
 // (chi tiet: 01-waterfall.mjs).
 if (typeof process !== 'undefined' && import.meta.url === `file://${process.argv[1]}`) {
+  // `render-static.mjs` keo ca goi ECharts vao, nen import TINH o dinh file lam
+  // bundle lan `html-song` mat sach tree-shaking va keo ban day du 1,1MB. Import
+  // DONG ngay trong nhanh CLI: duong tinh van chay y het, con trinh duyet khong
+  // bao gio cham toi module nay.
+  const { renderStatic } = await import('./render-static.mjs');
   const { writeFileSync } = await import('node:fs');
   const svg = renderStatic(option, MAC_DINH, { width: 760, height: 300 });
   writeFileSync(new URL('./out-08-heatmap.svg', import.meta.url), svg);

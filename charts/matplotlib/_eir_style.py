@@ -253,6 +253,18 @@ def setup_fonts():
         "figure.facecolor": PAPER, "savefig.facecolor": PAPER, "axes.facecolor": PAPER,
         "text.color": INK, "axes.labelcolor": INK,
         "xtick.color": MUTED, "ytick.color": MUTED,
+        # Dau am dung dau gach noi ASCII, KHONG dung dau tru toan hoc U+2212.
+        #
+        # Day khong phai khau vi. Mac dinh cua matplotlib la True, tuc tick truc ra
+        # U+2212, trong khi MOI formatter khac cua repo (fmt_value o duoi, fmt.mjs ben
+        # ECharts) sinh dau gach noi ASCII. Ket qua do duoc tren
+        # `catalog/xem-truoc/diverging_bar.svg`: tick truc ra `-2` `-1` bang U+2212 con
+        # nhan gia tri TRONG CUNG MOT HINH ra `-2.0` `-1.1` bang ASCII. Mot hinh hai kieu
+        # dau am, va khong ai thay vi hai ky tu do nhin gan giong nhau.
+        #
+        # Chon ASCII chu khong chon U+2212 vi day la sua CHO LECH: mot dong rcParams thay
+        # cho viec doi hang chuc cho sinh chuoi o ca hai ngon ngu.
+        "axes.unicode_minus": False,
     })
     _FONTS_READY = True
     return sans, mono

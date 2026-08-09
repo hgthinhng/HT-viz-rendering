@@ -142,6 +142,12 @@ COMBINING_DIACRITICS = set(range(0x0300, 0x0370))
 # tap unicode truoc khi subset (khong hai gi, fontTools tu bo qua codepoint
 # font khong co), nhung ket qua se KHONG dong deu giua 3 ho font.
 FINANCIAL_SYMBOLS = {
+    # Dau tru toan hoc. Repo da chot dau am dung ASCII (xem `axes.unicode_minus`
+    # trong _eir_style.py), nen ky tu nay khong con sinh ra tu chart nua. Van dua
+    # vao dac ta vi hai ly do: van xuoi bao cao co the dung that, va glyph nay HIEN
+    # DA CO trong subset chi nho dai `latin` cua Google chu khong do ai yeu cau, tuc
+    # mot lan doi nguon font la no roi ma khong gate nao bat.
+    0x2212,  # dau tru toan hoc
     0x00B1,  # +- dau cong tru, khoang tin cay / bien sai so
     0x2264,  # <=
     0x2265,  # >=

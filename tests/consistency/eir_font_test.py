@@ -235,3 +235,35 @@ def test_font_trong_repo_phu_du_dac_ta_tieng_viet():
     assert not thieu_tong, (
         f"font trong repo thieu codepoint tieng Viet (doi chieu {len(DAC_TA)} codepoint): {thieu_tong}"
     )
+
+
+def test_dau_am_dung_ascii_khong_dung_u2212():
+    """Sau `setup_fonts()`, matplotlib phai sinh dau am bang dau gach noi ASCII.
+
+    Mac dinh cua matplotlib la `axes.unicode_minus = True`, tuc tick truc ra U+2212,
+    trong khi moi formatter khac cua repo sinh ASCII. Do duoc truoc khi vá, tren
+    `catalog/xem-truoc/diverging_bar.svg`: tick ra `-2` `-1` bang U+2212 con nhan gia
+    tri TRONG CUNG MOT HINH ra `-2.0` `-1.1` bang ASCII. Hai ky tu nhin gan giong nhau
+    nen mat khong bao gio bat duoc, chi dem codepoint moi thay.
+    """
+    sys.path.insert(0, str(EIR))
+    import matplotlib
+    matplotlib.use("Agg")
+    import _eir_style
+
+    _eir_style.setup_fonts()
+    import matplotlib.pyplot as plt
+
+    assert plt.rcParams["axes.unicode_minus"] is False, (
+        "axes.unicode_minus dang bat: tick truc se ra U+2212 con nhan gia tri ra dau "
+        "gach noi ASCII, mot hinh hai kieu dau am"
+    )
+
+    # Do THAT tren mot truc co gia tri am, khong chi doc rcParams.
+    fig, ax = plt.subplots(figsize=(3, 2))
+    ax.plot([-2, -1, 0, 1], [1, 2, 3, 4])
+    fig.canvas.draw()
+    nhan = [t.get_text() for t in ax.get_xticklabels()]
+    plt.close(fig)
+    lan = [n for n in nhan if "−" in n]
+    assert not lan, f"tick truc con dung U+2212: {lan}"

@@ -431,6 +431,7 @@ def _sinh_67_ky_tu_thuong_nfc_tieng_viet():
 # day -- xem test_ky_hieu_hy_lap_tam_giac_dat_dung_tran_theo_ho_font ben
 # duoi, kiem rieng theo dung tran da do duoc.
 KY_HIEU_TAI_CHINH_PHO_QUAT = {
+    0x2212: "dau tru toan hoc; da do bang tay la co o ca ba ho font",
     0x00B1: "cong tru, dung cho khoang tin cay va bien sai so",
     0x2264: "nho hon hoac bang, dung cho nguong covenant/kill-switch",
     0x2265: "lon hon hoac bang, dung cho nguong covenant/kill-switch",

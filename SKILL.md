@@ -137,7 +137,7 @@ Hai làn, chọn theo ĐỘC GIẢ MỞ FILE Ở ĐÂU, không chọn theo sở 
 | | `html-song` | `pdf-so` |
 |---|---|---|
 | Là gì | một file HTML tự đủ, mở bằng trình duyệt | PDF đọc trên màn hình, không phải để in |
-| Được phép | animation, tương tác, tooltip, hover, JavaScript lúc chạy, chủ đề tối, co giãn theo màn hình | khổ ngang, màu RGB, siêu liên kết, bookmark |
+| Được phép | animation, tương tác, tooltip, hover, JavaScript lúc chạy, chủ đề tối (`toi-lanh`, xem `doctrine/06-chu-de-toi.md`), co giãn theo màn hình | khổ ngang, màu RGB, siêu liên kết, bookmark |
 | Ràng buộc | một file duy nhất, chạy offline, không tham chiếu ra ngoài, font nhúng | tĩnh hoàn toàn, chữ phải chọn được trong tầng text |
 | Chọn khi | người đọc mở trên máy tính và có thể khám phá; số liệu nhiều tầng cần tooltip | file bị chuyển tiếp qua email, cần đóng dấu bản, cần in dự phòng |
 
@@ -408,7 +408,9 @@ npm run verify                                       # thư viện hình
 | Kiến trúc ấn phẩm, thứ tự phần, bộ khung theo mức cam kết | `doctrine/01-ke-chuyen.md` |
 | Chọn hình theo câu hỏi, danh sách đen kèm lý do | `doctrine/02-chon-hinh.md` |
 | Viết câu chủ đề, nói về bất định, viết chú thích hình | `doctrine/03-viet-chu.md` |
+| Bảng số dày: căn chỉnh, số âm, ô trống, hàng tổng | `doctrine/04-bang-so.md` |
 | Phân biệt bản đắt và bản rẻ trong ba giây | `doctrine/05-anti-slop.md` |
+| Chủ đề tối: hai chủ đề, bốn đường đổi màu | `doctrine/06-chu-de-toi.md` |
 | Chọn hình cho một section | `catalog/CATALOG.md`, đọc đầu tiên |
 | Nhìn cả kho một lượt | `catalog/contact-sheet.pdf` |
 | Bảng tra chọn hình theo tám nhóm câu hỏi | `research/03-chart-doctrine/CHART-SELECTION.md` |

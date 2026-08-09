@@ -56,6 +56,11 @@ export const KHOA_MAU_CHUAN = [
   'accent', 'accent-hi', 'accent-soft',
   'pos', 'neg', 'neg-soft',
   'warn',
+  // Nhom TREN NEN MUC: chu dat tren khoi to bang `var(--ink)`, vi du trang bia.
+  // Phia Python da co ON_INK tu lau ma phia CSS thi khong, nen `.bia-dek` va
+  // `.bia-meta` phai viet cung hex, va chung khong doi theo chu de. O chu de toi,
+  // `--ink` la mau SANG nen nhom nay dao vai tro thanh mau toi.
+  'on-ink', 'on-ink-md', 'on-ink-lo', 'on-ink-line',
 ];
 // Dai ket cau CHIN bac, dam nhat la 1 nhat nhat la 9. Ban dau schema nay khai bon
 // ten (toi/vua/sang/panel) lay tu illustrations/grammar.md muc 4, nhung dem that

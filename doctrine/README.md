@@ -14,7 +14,9 @@ thì đọc research; cần quyết định thì đọc doctrine.
 | `01-ke-chuyen.md` | ấn phẩm này gồm những phần nào, thứ tự ra sao, mỗi phần nói gì | `research/01-editorial`, `02-professional-report`, `08-synthesis` |
 | `02-chon-hinh.md` | câu hỏi này nên vẽ bằng họ hình nào, và không nên vẽ bằng gì | `research/03-chart-doctrine` |
 | `03-viet-chu.md` | viết câu chủ đề, nói về bất định, viết chú thích hình, viết về rủi ro thế nào | `research/01-editorial`, cộng luật văn phong đã chốt |
+| `04-bang-so.md` | căn chỉnh, số âm, ô trống, hàng tổng, ngưỡng bỏ bảng | `research/02-professional-report` mục 4, `research/11-empty-states` |
 | `05-anti-slop.md` | phân biệt bản đắt và bản rẻ trong ba giây, gồm cả bẫy riêng của làn `html-song` | `research/04-wow-layer` |
+| `06-chu-de-toi.md` | hai chủ đề hoạt động thế nào, bốn đường đổi màu, ba chỗ đã cắn | thi công 09-08 |
 
 ## Ba bảng tra vẫn sống ở `research/`, và vì sao
 
@@ -29,11 +31,8 @@ Ba tài liệu dưới đây đã ở dạng thi hành được, chép sang đâ
 
 ## Còn thiếu, nói thẳng thay vì hẹn
 
-- **Chưa có doctrine cho chủ đề tối.** Chart matplotlib và 11 minh hoạ SVG mới chỉ có bản nền
-  sáng, nên file giao khách vẫn khoá sáng. Ràng buộc thật đã biết: một mã màu trong minh hoạ có
-  thể đóng nhiều vai cùng lúc, ví dụ vừa là nền trời vừa là thân kim loại, nên phải tách ở TỪNG
-  HÌNH chứ không tách ở token.
-- **Chưa có doctrine cho bảng số dày.** `research/02-professional-report` mục 4 có nguyên liệu,
-  chưa chưng cất.
+Không còn mục nào trong danh sách này. Hai mục từng đứng đây, doctrine chủ đề tối và doctrine
+bảng số dày, đã viết xong ngày 09-08.
 
-Hai mục này chưa có. Không hẹn mốc, vì một lời hẹn trong tài liệu là thứ không ai quay lại kiểm.
+Khi phát hiện chỗ thiếu mới, ghi vào đây kèm ràng buộc đã biết, và **không hẹn mốc**: một lời
+hẹn trong tài liệu là thứ không ai quay lại kiểm.

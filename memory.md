@@ -306,6 +306,53 @@ không chạy. Ba phép đo mới: mọi đường dẫn phải tồn tại, s�
 còn lời hẹn về phase. Cả ba đã mutation. Những khẳng định KHÔNG kiểm được thì test nói thẳng
 là không kiểm, không giả vờ.
 
+## Chủ đề tối CHẠY THẬT, và tầng doctrine đóng trọn (09-08, đợt 3)
+
+Hai món cuối trong sổ nợ đã đóng. Không còn mục nào trong danh sách "còn thiếu".
+
+### Chủ đề tối: hạ tầng đã sẵn hơn tưởng, chỉ thiếu nối dây
+
+Khảo sát trước khi làm cho thấy ba phần tư đường đã xong từ các đợt trước mà không ai biết:
+minh hoạ SVG chỉ còn **1 hex hardcode** trên 39 (38 cái kia là fallback trong `var()`);
+`hex-token.mjs` đã có sẵn cơ chế bọc hex thành `var(--token, #hex-cũ)`; `generate-tokens.mjs`
+đã sinh `PALETTES` theo tên chủ đề nhưng **chưa ai dùng**. Đợt migrate 300 hex sang `var()`
+ngày 07-08 chính là để chuẩn bị cho việc này.
+
+Thêm `design-system/themes/toi-lanh.json`, chạy generator, và bốn đường đổi màu hoạt động:
+CSS dùng thẳng `var()`, minh hoạ đã `var()`, chart tĩnh bọc chuỗi, chart sống đọc
+`getComputedStyle`.
+
+### Bốn chỗ đã cắn khi nối, cả bốn đều im lặng
+
+1. **`sinh-svg-preset.mjs` đi vòng qua `renderStatic`** nên không được bọc màu. Đây là hồi quy
+   do chính đợt đổi sang render bằng Chromium tạo ra, và nó im lặng vì hình vẫn đúng màu ở chủ
+   đề sáng.
+2. **Chart matplotlib chưa có đường bọc nào.** Phải viết bản Python của `bocMauChuDe`. Đo được:
+   7 trên 8 giá trị hex khác nhau trong một SVG matplotlib thuộc đúng bảng màu, nên bọc được;
+   cái thứ tám là `#BBBBBB` viết cứng trong `_eir_style.py`, nằm ngoài hệ token.
+3. **`_veSauLayout` chạy SAU khi thay màu**, nên bốn nhãn của một chart giữ màu chủ đề sáng
+   trong khi cả phần còn lại đã đổi.
+4. **Nhóm token "trên nền mực" không tồn tại phía CSS.** `.bia-dek` và `.bia-meta` viết cứng ba
+   mã màu sáng, nên ở chủ đề tối chúng thành chữ nhạt trên nền sáng. Phía Python đã có hằng
+   `ON_INK` từ lâu; kiểu lệch này chỉ lộ khi thêm chủ đề thứ hai. Nay có
+   `--on-ink`, `--on-ink-md`, `--on-ink-lo`, `--on-ink-line`.
+
+### Giới hạn đã biết, ghi rõ
+
+Chart sống đọc màu đúng MỘT LẦN lúc mount. Chủ đề khai sẵn trong HTML thì đúng; nếu sau này
+làm nút đổi chủ đề động thì phải mount lại chart. Chưa có cơ chế đó.
+
+### Dải chín bậc của minh hoạ ĐẢO NGƯỢC, không ánh xạ một đối một
+
+Ràng buộc cũ vẫn đúng: một mã màu trong minh hoạ đóng nhiều vai cùng lúc. Thứ giữ được qua hai
+chủ đề là THỨ TỰ BẬC, không phải giá trị. Bậc 1 ở chủ đề sáng là tối nhất, ở chủ đề tối là
+sáng nhất.
+
+### Tầng doctrine nay đủ sáu file
+
+`01-ke-chuyen`, `02-chon-hinh`, `03-viet-chu`, `04-bang-so`, `05-anti-slop`, `06-chu-de-toi`.
+Ba bảng tra khác vẫn sống ở `research/` và README nói rõ vì sao.
+
 ## ĐỌC MỤC NÀY TRƯỚC: tiền đề của repo đã đổi (07-08)
 
 Repo được xây trên tiền đề **"PDF IN ĐƯỢC"**. Người dùng đã phán quyết tiền đề đó sai với thực

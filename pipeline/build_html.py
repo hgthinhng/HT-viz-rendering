@@ -201,6 +201,60 @@ def gioi_han_style_svg(svg: str, ma_hinh: str) -> str:
     return RE_KHOI_STYLE.sub(bo_hep, svg)
 
 
+# Ban Python cua `bocMauChuDe()` trong charts/echarts/hex-token.mjs. Giu CUNG bang khoa.
+#
+# VI SAO CAN CA BAN PYTHON: ban JS chi chay tren duong ECharts. Chart matplotlib sinh tu
+# `hinh/*.py` cua bao cao va di thang vao `nap_svg()` duoi dang hex tho, nen chung KHONG
+# doi mau theo chu de nguoi doc chon. Do duoc: mot SVG matplotlib mau co 60 hex tho, trong
+# do 7 tren 8 gia tri khac nhau thuoc dung bang mau cua repo.
+#
+# Du phong LUON bang hex cu, vi file .svg con duoc mo doc lap ngoai trang HTML khai bien.
+TOKEN_CSS_PY = {
+    "accent": "--accent",
+    "accent_hi": "--accent-hi",
+    "accent_soft": "--accent-soft",
+    "neg": "--neg",
+    "pos": "--pos",
+    "warn": "--warn",
+    "ink": "--ink",
+    "ink_md": "--ink-md",
+    "ink_lo": "--ink-lo",
+    "line": "--line",
+    "paper": "--paper",
+}
+
+
+def boc_mau_chu_de(svg: str) -> str:
+    """Doi moi hex THUOC bang mau thanh `var(--token, #hex-cu)`.
+
+    Bo qua hex da nam trong mot `var(...)` roi, nen ham nay chay lai tren dau ra cua chinh
+    no khong doi gi them. Tinh chat do can thiet vi mot SVG co the di qua ca duong JS lan
+    duong Python.
+    """
+    try:
+        from tokens import COLORS  # design-system/tokens.py, da nam tren sys.path
+    except ImportError:
+        sys.path.insert(0, str(REPO / "design-system"))
+        from tokens import COLORS
+
+    for khoa, bien in TOKEN_CSS_PY.items():
+        hexa = COLORS.get(khoa)
+        if not hexa:
+            continue
+        mau = re.compile(rf"(?<!var\(){re.escape(hexa)}", re.IGNORECASE)
+
+        def thay(m, bien=bien, hexa=hexa):
+            truoc = svg_hien[max(0, m.start() - 60):m.start()]
+            # Da boc roi thi de nguyen: dau hieu la mot `var(--x,` chua dong ngoac.
+            if "var(--" in truoc and truoc.rfind("var(--") > truoc.rfind(")"):
+                return m.group(0)
+            return f"var({bien}, {hexa})"
+
+        svg_hien = svg
+        svg = mau.sub(thay, svg)
+    return svg
+
+
 RE_THE_SVG_MO = re.compile(r"<svg\b")
 
 
@@ -263,7 +317,10 @@ def nap_svg(duong_dan: Path, tien_to: str, cho_phep_raster: bool = False) -> str
             f"phai la vector thuan, neu khong ban PDF se mang anh raster. "
             f"Lan html-song thi dung --lan=html-song de cho phep."
         )
-    return gioi_han_style_svg(doi_tien_to_id(svg.strip(), tien_to), tien_to)
+    # Boc mau THEO CHU DE truoc khi tra ve. Chart matplotlib va mot so SVG khac di vao
+    # day duoi dang hex tho; khong boc thi chung dung yen mot mau du trang doi chu de.
+    # Ham idempotent nen SVG da boc san o duong ECharts khong bi long var() hai lan.
+    return boc_mau_chu_de(gioi_han_style_svg(doi_tien_to_id(svg.strip(), tien_to), tien_to))
 
 
 # --------------------------------------------------------------------------- #

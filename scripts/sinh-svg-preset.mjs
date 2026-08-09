@@ -104,9 +104,19 @@ window.__xong = true;
     });
     // ECharts khong ghi xmlns vao the <svg> khi no song trong DOM HTML, vi HTML parser
     // khong doi. Nhung file .svg roi thi PHAI co, va gate 5 CHART-SONG parse XML that.
-    return ra.includes('xmlns=')
+    const coXmlns = ra.includes('xmlns=')
       ? ra
       : ra.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"');
+
+    // BOC MAU CHU DE, va day la cho da tung tuot mat.
+    //
+    // `renderStatic()` boc hex thanh `var(--token, #hex-cu)` de SVG tinh doi mau theo chu
+    // de nguoi doc chon. Nhanh Chromium nay di VONG qua renderStatic, nen no tra ve SVG
+    // hex tho va chart tinh cua an pham mat kha nang doi chu de. Loi hoi quy do chinh
+    // ban nay tao ra luc doi sang render bang trinh duyet, va no im lang vi hinh van
+    // dung mau o chu de sang.
+    const { bocMauChuDe } = await import('../charts/echarts/hex-token.mjs');
+    return bocMauChuDe(coXmlns);
   } finally {
     await browser.close();
   }

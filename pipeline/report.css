@@ -109,20 +109,20 @@ body.bao-cao {
 .bia-dek {
   font-size: var(--fs-dek);
   font-style: italic;
-  color: #B7C4D1;
+  color: var(--on-ink-md);
   margin: 0 0 var(--space-8) 0;
   max-width: 130mm;
 }
 .bia-meta {
   font-family: var(--font-mono);
   font-size: var(--fs-small);
-  color: #8595A6;
-  border-top: 1px solid #223449;
+  color: var(--on-ink-lo);
+  border-top: 1px solid var(--on-ink-line);
   padding-top: var(--space-4);
 }
 .bia-meta span + span::before {
   content: " · ";
-  color: #5A6E80;
+  color: var(--on-ink-lo);
 }
 
 /* Ba kieu bia, khai bang `bia_kieu` trong front-matter. Chung ton tai de checkpoint 2

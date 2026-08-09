@@ -30,7 +30,11 @@
     "pos": "#008A6D",
     "neg": "#C22F4E",
     "neg-soft": "#E4A1AF",
-    "warn": "#B07A10"
+    "warn": "#B07A10",
+    "on-ink": "#FFFFFF",
+    "on-ink-md": "#B7C4D1",
+    "on-ink-lo": "#8595A6",
+    "on-ink-line": "#223449"
   },
   "_doc_ilus": [
     "DAI KET CAU cua minh hoa SVG, chin bac, dam nhat la 1 nhat nhat la 9.",

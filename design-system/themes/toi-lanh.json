@@ -1,0 +1,49 @@
+{
+  "_doc": [
+    "Chu de TOI, dan xuat tu sang-lanh giu nguyen SAC nhung dao vai tro sang toi.",
+    "Moi gia tri deu da do tuong phan voi nen cua chinh chu de nay, khong go theo cam giac:",
+    "muc chu (ink, ink-md) tu 4,5:1 theo WCAG cho van ban; duong ke va accent tu 3:1 theo",
+    "WCAG 1.4.11 cho yeu to do hoa. Bang do nam trong doctrine/06-chu-de-toi.md."
+  ],
+  "chu_de": "toi-lanh",
+  "dung_cho": "Ban doc tren man hinh o moi truong thieu sang, lan html-song. Ban giao khach van khoa sang, xem doctrine/06-chu-de-toi.md.",
+  "mau": {
+    "paper": "#0A1420",
+    "paper-hi": "#111E2E",
+    "paper-hair": "#16263A",
+    "paper-elev": "#152234",
+    "ink": "#EAF0F6",
+    "ink-md": "#B7C4D1",
+    "ink-lo": "#8FA2B4",
+    "ink-faint": "#5A6E80",
+    "line": "#2A3B4F",
+    "line-lo": "#1B2A3C",
+    "accent": "#6E93FF",
+    "accent-hi": "#9DB6FF",
+    "accent-soft": "#3A5599",
+    "pos": "#3FBFA0",
+    "neg": "#F0748E",
+    "neg-soft": "#7A3644",
+    "warn": "#E0A83C",
+    "on-ink": "#051C2C",
+    "on-ink-md": "#42566A",
+    "on-ink-lo": "#66788C",
+    "on-ink-line": "#C3D0DC"
+  },
+  "_doc_ilus": [
+    "Dai chin bac cua minh hoa DAO NGUOC so voi chu de sang: bac 1 la sang nhat thay vi",
+    "toi nhat. Ly do o doctrine/06-chu-de-toi.md: mot ma mau trong minh hoa dong NHIEU vai",
+    "cung luc, nen khong the anh xa mot doi mot; thu giu duoc qua hai chu de la THU TU BAC."
+  ],
+  "ilus": {
+    "1": "#f8fafc",
+    "2": "#e2e8f0",
+    "3": "#cbd5e1",
+    "4": "#94a3b8",
+    "5": "#64748b",
+    "6": "#475569",
+    "7": "#334155",
+    "8": "#1e293b",
+    "9": "#0f172a"
+  }
+}

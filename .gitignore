@@ -21,6 +21,13 @@ examples/*/ra/
 # worktree tam cua agent, khong phai tai san repo
 .claude/
 
+# Khu tam chua tai san goc chua do, 892 file va 57MB. Go khoi git ngay 09-08
+# vi repo nay PUBLIC: no lam clone nang, mang 203 file font phan phoi lai, va
+# mau `SHOWCASE_exec_dashboard.png` trong do van loi dau tieng Viet nen ai mo
+# repo se gap ban HONG truoc ban dung. File giu nguyen tren dia de con doi
+# chieu, chi khong con nam trong git.
+_harvest/
+
 # An pham that cua khach hang. Repo nay la thu vien PUBLIC, nen ban giao di
 # song trong repo cua chinh du an do, khong song o day. Da tach bo TPB ra
 # `~/tpb-buongmophong/an-pham-vn30-10kb/` ngay 09-08.

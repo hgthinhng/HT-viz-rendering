@@ -106,7 +106,7 @@ python3 -m pytest tests/ -v
 | `scripts/` | Script verify, mỗi cái trả exit code |
 | `tests/` | Smoke test và test chống drift |
 | `research/`, `samples/` | Thư viện tham khảo để lấy ý, không phải khuôn ép |
-| `_harvest/` | Khu tạm chứa tài sản gốc, sẽ dỡ dần |
+| `bao-cao/` | Ấn phẩm thật, đã gitignore. Bản giao cho một dự án sống trong repo của chính dự án đó, không sống ở đây |
 
 ## Dành cho Claude
 

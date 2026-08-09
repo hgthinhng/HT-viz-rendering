@@ -27,7 +27,9 @@ import { fileURLToPath } from 'node:url';
 const GOC = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const GACH_NGANG = /[\u2014\u2013]/g;
 
-// `_harvest/` la khu tam chua tai san goc chua do, giu nguyen ban goc de con doi chieu.
+// `_harvest/` da go khoi git ngay 09-08 nen `git ls-files` khong con tra ve no. Giu mien
+// tru nay lam luoi an toan: file van nam tren dia, va mot lan `git add -f` la 892 file
+// ban goc chua do quay lai lam gate nay do oan.
 // `gate_do_xanh.test.mjs` mang fixture DO cua gate STYLE: no PHAI chua em-dash, neu
 // khong thi khong con bang chung nao rang gate do do duoc.
 const MIEN_TRU = [

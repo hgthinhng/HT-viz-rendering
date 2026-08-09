@@ -30,7 +30,12 @@ export function option(params) {
   return {
     ...baseOption({ title, subtitle }),
     tooltip: tooltipDefault,
-    grid: { left: 170, right: 40, top: 60, bottom: 30 },
+    // `bottom: 64` chu khong phai 30. `baseOption()` dat chu giai o `bottom: 8`, va 30px
+    // khong du cho ca nhan truc lan chu giai nen hai thu do chong len nhau: anh chup ra
+    // `30ải tốt` va `Thực tế 60`. Moi gate cu deu xanh vi chu van duoc ve day du va van
+    // dung chinh ta. Gate nhan chong (tests/consistency/nhan_khong_chong.test.mjs) bat
+    // duoc voi ty le giao 83%.
+    grid: { left: 170, right: 40, top: 60, bottom: 64 },
     xAxis: { type: 'value', max, axisLabel: TYPOGRAPHY.axisLabel, splitLine: { lineStyle: { color: PALETTE.line } } },
     yAxis: { type: 'category', data: categories, axisLine: { show: false }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
     series: [

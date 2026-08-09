@@ -34,14 +34,23 @@ export function option(params) {
   return {
     ...baseOption({ title: 'Phân tích độ nhạy giá trị doanh nghiệp (DCF)', subtitle: `Base case = ${fmtCompact(base, { baseUnit: 'ty', decimals: 0 })}, sắp theo biên độ tác động` }),
     tooltip: tooltipDefault,
-    grid: { left: 200, right: 40, top: 60, bottom: 40 },
+    // `left: 232` chu khong phai 200. Nhan truc y dai nhat la `WACC (±1.5đpt)`, va nhan gia
+    // tri cua thanh dai nhat nam ben TRAI thanh do, nen hai chuoi gap nhau: anh chup ra
+    // `WACC (±1.5đp720 tỷ`. Gate nhan chong bat duoc voi ty le giao 42%. Them 32px la du
+    // cho ca hai, do bang cach do lai chu khong uoc luong.
+    grid: { left: 232, right: 40, top: 60, bottom: 40 },
     xAxis: {
       type: 'value',
       axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => fmtCompact(v + base, { baseUnit: 'ty', decimals: 0 }) },
       splitLine: { lineStyle: { color: PALETTE.line } },
     },
     yAxis: { type: 'category', data: categories, inverse: true, // phễu lốc: biên độ lớn nhất phải ở TRÊN CÙNG; ECharts mac dinh dat index 0 o DAY nen phai dao truc, khong dao thi hinh ra nguoc voi y dinh ghi o dau file
-           axisLine: { show: false }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
+           axisLine: { show: false }, axisTick: { show: false },
+      // `margin: 34` chu khong phai mac dinh 8. Nhan gia tri cua thanh dai nhat nam ben
+      // TRAI thanh do, sat mep grid, nen no gap nhan truc: anh chup ra `WACC (±1.5đp720 tỷ`.
+      // Noi rong grid khong cuu duoc vi nhan truc dich theo grid; phai day rieng nhan truc
+      // ra xa mep. Gate nhan chong bat duoc voi ty le giao 42%.
+      axisLabel: { ...TYPOGRAPHY.axisLabel, margin: 34 } },
     // LOI CO SAN, PHAT HIEN LUC TACH FILE NAY (khong sua o day, xem bao cao ban
     // tach): ban TRUOC ban tach dung `const opt = chart.getOption(); opt.series[0]
     // .markLine = {...}; chart.setOption(opt);` de ve vach base-case tai x=0. Da do

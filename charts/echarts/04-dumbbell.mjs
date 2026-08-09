@@ -56,14 +56,31 @@ export function option(params) {
       {
         name: '2025', type: 'scatter', symbolSize: 14, z: 3,
         itemStyle: { color: PALETTE.inkLo },
-        data: rows.map((r) => r.before),
-        label: { show: true, formatter: (p) => dinhDangSo(p.value, { decimals: 1 }), position: 'top', ...TYPOGRAPHY.dataLabel, color: PALETTE.inkMd },
+        // Nhan HUONG RA NGOAI doan noi, khong phai deu o `top`.
+        //
+        // Ban cu dat ca hai nhan o `position: 'top'`, nen khi hai gia tri gan nhau thi hai
+        // nhan de chong len nhau. Do duoc, khong phai suy doan: voi cap 15,8 va 15,1 hai
+        // hop chu giao nhau 74% dien tich va anh chup ra chuoi `15,85,1%`, khong doc noi.
+        // Moi gate cu deu xanh voi no vi chu VAN duoc ve ra va van dung chinh ta.
+        //
+        // Ben nao la ngoai thi phu thuoc DU LIEU chu khong phu thuoc series: neu 2025 nho
+        // hon 2026 thi nhan 2025 ra ben trai, nguoc lai thi ra ben phai. Nen `position`
+        // phai dat theo TUNG DIEM.
+        data: rows.map((r) => ({
+          value: r.before,
+          label: { position: r.before <= r.after ? 'left' : 'right' },
+        })),
+        label: { show: true, formatter: (p) => dinhDangSo(p.value, { decimals: 1 }), ...TYPOGRAPHY.dataLabel, color: PALETTE.inkMd },
       },
       {
         name: '2026', type: 'scatter', symbolSize: 14, z: 4,
         itemStyle: { color: PALETTE.accent },
-        data: rows.map((r) => r.after),
-        label: { show: true, formatter: (p) => dinhDangSo(p.value, { decimals: 1 }), position: 'top', ...TYPOGRAPHY.dataLabel },
+        // Doi xung voi series 2025 o tren: nhan luon huong RA NGOAI doan noi.
+        data: rows.map((r) => ({
+          value: r.after,
+          label: { position: r.after >= r.before ? 'right' : 'left' },
+        })),
+        label: { show: true, formatter: (p) => dinhDangSo(p.value, { decimals: 1 }), ...TYPOGRAPHY.dataLabel },
       },
     ],
   };

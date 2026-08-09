@@ -253,6 +253,59 @@ từng được viết bằng `getOption()` rồi `setOption()` lại, cách đ�
 ra trong SVG, nên một tính năng nhìn như có trong mã nhưng chưa bao giờ vẽ ra suốt hai
 phase. Khai `markLine` thẳng trong option thì nó hiện.
 
+## SKILL.md nay là DOCTRINE tự đủ, không còn là bảng chỉ đường (09-08)
+
+Người dùng đối chiếu repo với skill `design-taste-frontend` và hỏi thiếu gì. Chẩn đoán:
+`design-taste-frontend` là **doctrine tự đủ** dạy CÁCH QUYẾT ĐỊNH, một file chạy được trên
+máy trắng. `SKILL.md` cũ là **bảng chỉ đường tới repo**, 4,3KB, và nó tự thú ngay dòng 12
+rằng tầng doctrine "sẽ tới ở Phase 3". Phase 3 đã qua từ lâu.
+
+### Phát hiện quan trọng nhất: doctrine ĐÃ CÓ, chỉ chưa được chưng cất
+
+`research/` có 14 thư mục, khoảng 350KB, và trong đó đã nằm sẵn những thứ tưởng là thiếu:
+`03-chart-doctrine/CHART-SELECTION.md` chính là cây quyết định chọn hình theo tám nhóm câu
+hỏi; `04-wow-layer/ANTI-SLOP.md` chính là danh sách dấu hiệu máy làm, có cả cột "phân biệt
+trong ba giây". Chúng chưa bao giờ được `SKILL.md` trỏ tới.
+
+Nhưng research là **ảnh chụp một thời điểm**: bảng tra chọn hình đến nay vẫn ghi "chưa có"
+cho boxplot và fan chart, cả hai đã có từ lâu. Đó là lý do doctrine mới KHÔNG chép danh sách
+tài sản: phần bền là ánh xạ câu hỏi sang họ hình, phần biến động tra ở `catalog/CATALOG.md`
+vốn sinh tự động từ mã nguồn.
+
+### Đã dựng
+
+`SKILL.md` 19,4KB tự đủ, cấu trúc: đọc đề bài và tuyên bố một dòng, ba núm, chọn làn, kiến
+trúc ấn phẩm, chín chỉ thị sửa thiên lệch, chọn hình theo câu hỏi, kỷ luật bằng chứng, ràng
+buộc cứng, dấu hiệu máy viết, kiểm trước khi giao.
+
+**Ba núm, suy từ research chứ không đoán:** `DO_SAU`, `MAT_DO_SO`, `MUC_CAM_KET`, mỗi núm
+1-10, kèm bảng preset cho bảy loại ấn phẩm. Ràng buộc nối chúng với bằng chứng: **mức cam kết
+không được vượt bậc nguồn**, số ước tính nội bộ thì trần của `MUC_CAM_KET` là 6.
+
+`doctrine/` bốn file thật: kể chuyện, chọn hình, viết chữ, anti-slop. Hai file đầu và file
+viết chữ là mảnh CHƯA TỪNG CÓ; anti-slop là bản cập nhật cho hai làn. Ba bảng tra khác vẫn
+sống ở `research/` và README nói rõ vì sao: chúng đã ở dạng thi hành được, chép sang chỉ tạo
+thêm một bản để trôi.
+
+### Luật "SKILL.md phải dưới 12KB" đã BỎ, ghi lại vì sao
+
+Test cũ chặn SKILL.md quá 12KB với lý lẽ "mỗi lần gọi là nuốt hết", và nêu đích danh
+`design-taste-frontend` làm phản ví dụ. Lý lẽ đó **đo chi phí sai**: nó chỉ đếm phần nạp tự
+động mà bỏ qua phần phải đọc thêm. Bản 4,3KB cũ không tự đủ, agent phải mở tiếp `CLAUDE.md`
+26KB và catalog 37KB, tổng thật vượt 60KB. Bản tự đủ 19,4KB rẻ hơn hẳn.
+
+Người dùng chốt bỏ hẳn thay vì nới ngưỡng: độ dài là việc của người viết. Điều kiện đáng đặt
+lại một ngưỡng, ghi trong chính file test: khi SKILL.md bắt đầu mang phần TRA CỨU thay vì
+phần QUYẾT ĐỊNH. Lúc đó vấn đề không phải độ dài mà là sai tầng.
+
+### Gate mới: `skill_khong_lac_hau.test.mjs`
+
+`SKILL.md` từng nói sai về chính repo suốt hai phase (108 tài sản khi thực tế 116, "mười
+gate" khi đã có thêm chín, hẹn một phase đã qua) và không phép đo nào bắt được vì tài liệu
+không chạy. Ba phép đo mới: mọi đường dẫn phải tồn tại, số tài sản phải khớp catalog, không
+còn lời hẹn về phase. Cả ba đã mutation. Những khẳng định KHÔNG kiểm được thì test nói thẳng
+là không kiểm, không giả vờ.
+
 ## ĐỌC MỤC NÀY TRƯỚC: tiền đề của repo đã đổi (07-08)
 
 Repo được xây trên tiền đề **"PDF IN ĐƯỢC"**. Người dùng đã phán quyết tiền đề đó sai với thực

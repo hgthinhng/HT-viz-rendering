@@ -12,32 +12,26 @@ test('SKILL.md co frontmatter dung dinh dang', () => {
   assert.match(s, /^description:\s*.+$/m, 'frontmatter thieu description');
 });
 
-test('SKILL.md ngan, chi dinh tuyen', () => {
-  const s = readFileSync(path.join(ROOT, 'SKILL.md'), 'utf8');
-  assert.ok(
-    s.length < 12000,
-    `SKILL.md dai ${s.length} ky tu. No chi duoc dinh tuyen, khong nhoi noi dung. ` +
-      `design-taste-frontend nhoi 88KB vao mot file va moi lan goi la nuot het.`,
-  );
-});
+// TEST "SKILL.md phai ngan duoi 12KB" DA BO ngay 09-08. Ghi lai day du de nguoi sau
+// khong khoi phuc lai ma khong biet vi sao no bi bo.
+//
+// Ly le cu: SKILL.md nap vao context moi lan goi skill, nen no phai ngan, chi dinh tuyen.
+// Ly le do do CHI PHI SAI vi no chi dem phan nap tu dong ma bo qua phan phai doc them:
+// ban 4,3KB cu khong tu du, agent phai mo tiep CLAUDE.md 26KB va catalog 37KB moi lam duoc
+// mot an pham, tuc tong that vuot 60KB. Ban tu du 19,4KB re hon han.
+//
+// Dieu kien de dat lai mot nguong do dai: khi SKILL.md bat dau mang phan TRA CUU (bang
+// tra, danh sach tai san, vi du dai) thay vi phan QUYET DINH. Luc do van de khong phai
+// do dai ma la sai tang, va cach sua la chuyen sang doctrine/ chu khong phai cat bot chu.
+//
+// Nguoi dung chot bo han thay vi noi nguong: do dai la viec cua nguoi viet, khong phai
+// viec cua gate. Ba phep do con lai trong tests/consistency/skill_khong_lac_hau.test.mjs
+// van giu SKILL.md khoi noi sai ve repo.
 
-test('moi duong dan SKILL.md tro toi deu ton tai', () => {
-  const s = readFileSync(path.join(ROOT, 'SKILL.md'), 'utf8');
-  // Regex mo bang [A-Za-z] chu khong phai [a-z]: ban cu bo qua MOI duong dan
-  // bat dau bang chu hoa, tuc bo qua dung hai file quan trong nhat ma SKILL.md
-  // tro toi la `CLAUDE.md` va `README.md`. Hai cai do chua bao gio duoc kiem,
-  // gate xanh suot Phase 1 ma khong cham vao chung.
-  const refs = [...s.matchAll(/`([A-Za-z][\w./-]+\.(?:md|css|py|mjs|js|json|html))`/g)].map(
-    (m) => m[1],
-  );
-  assert.ok(refs.length > 0, 'khong trich duoc duong dan nao tu SKILL.md, regex hong');
-  assert.ok(
-    refs.includes('CLAUDE.md'),
-    `regex khong bat duoc CLAUDE.md, ma SKILL.md co tro toi no. Bat duoc: ${refs.join(', ')}`,
-  );
-  const missing = refs.filter((r) => !existsSync(path.join(ROOT, r)));
-  assert.deepEqual(missing, [], `SKILL.md tro toi file khong ton tai: ${missing.join(', ')}`);
-});
+// Phep kiem duong dan da chuyen sang tests/consistency/skill_khong_lac_hau.test.mjs, noi
+// no kiem duoc ca duong dan THU MUC chu khong chi file co duoi. Ban o day tung bo qua moi
+// duong dan bat dau bang chu hoa, tuc bo qua dung hai file quan trong nhat la CLAUDE.md va
+// README.md; bay do nay duoc giu lai thanh mot phep do rieng trong file moi.
 
 test('README.md liet ke lenh cai dat va lenh verify', () => {
   const s = readFileSync(path.join(ROOT, 'README.md'), 'utf8');

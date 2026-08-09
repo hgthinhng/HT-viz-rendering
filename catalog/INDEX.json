@@ -4,9 +4,9 @@
     "Sua mo ta thi sua o NGUON: comment dau file preset, docstring component,",
     "muc 'Mo ta / khi nao dung' cua catalog, hoac <desc> cua SVG. Roi chay lai."
   ],
-  "tong": 111,
+  "tong": 116,
   "theo_nhom": {
-    "chart-echarts": 18,
+    "chart-echarts": 23,
     "chart-matplotlib": 53,
     "component": 29,
     "minh-hoa": 11
@@ -210,6 +210,61 @@
       "du_lieu_can": "series schema dùng chung (charts/echarts/schema.mjs) -- mỗi ô ma trận là 1 hàng {entity:{code}, value}, unit/source ở cấp series. waccRows/gCols là 2 trục input, KHÔNG phải entity của series (chúng không có giá trị kết quả riêng, chỉ là chỉ số hàng/ cột), nên đứng ngoài schema.",
       "khong_dung_khi": "KHÔNG dùng khi: 1 biến độ nhạy (dùng 06-tornado, gọn hơn);",
       "xem_truoc": "charts/echarts/out-18-sensitivity-grid.svg"
+    },
+    {
+      "ma": "19-raincloud",
+      "nhom": "chart-echarts",
+      "ten": "Raincloud: hình dạng phân phối đầy đủ, không giấu cỡ mẫu",
+      "tep": "charts/echarts/19-raincloud.mjs",
+      "dinh_dang_giao": "HTML tuong tac",
+      "tra_loi": "cần so HÌNH DẠNG phân phối của một chỉ tiêu giữa 2-5 nhóm và n đủ lớn (~20-200) để hình dạng có nghĩa, vd phân phối biên lợi nhuận của các doanh nghiệp trong ba ngành, hoặc phân phối lợi suất ngày của ba quỹ.",
+      "du_lieu_can": "nhóm {name, values:number[]}. Bẫy: (1) jitter ngẫu nhiên làm mỗi lần render ra một ảnh khác nhau, phá visual regression, nên dùng công thức TẤT ĐỊNH theo chỉ số; (2) bandwidth cố định làm nhóm phương sai nhỏ trông phẳng lì, nên tính theo quy tắc Silverman trên CHÍNH nhóm đó; (3) vẽ đám mây đối xứng hai bên như violin thì mất chỗ cho mưa, nên chỉ vẽ NỬA trên.",
+      "khong_dung_khi": "KHÔNG dùng khi: n dưới 15 mỗi nhóm (đường mật độ thành hình bịa, dùng 16-dot-distribution để thấy từng điểm);",
+      "xem_truoc": "charts/echarts/out-19-raincloud.svg"
+    },
+    {
+      "ma": "20-ridgeline",
+      "nhom": "chart-echarts",
+      "ten": "Ridgeline: phân phối DỊCH CHUYỂN thế nào qua nhiều kỳ liên tiếp",
+      "tep": "charts/echarts/20-ridgeline.mjs",
+      "dinh_dang_giao": "HTML tuong tac",
+      "tra_loi": "cùng một chỉ tiêu đo lặp lại qua 4-12 kỳ và câu hỏi là hình dạng phân phối dịch đi đâu, vd phân phối lợi suất ngày của thị trường theo từng năm, hay phân phối biên lợi nhuận toàn ngành qua các quý.",
+      "du_lieu_can": "{kyNames:string[], kyValues:number[][]}. Bẫy: (1) chuẩn hoá mật độ theo từng kỳ sẽ giấu mất chuyện kỳ nào tập trung hơn kỳ nào, nên preset này chuẩn hoá theo ĐỈNH CHUNG của mọi kỳ; (2) chồng lấn quá 70% làm hàng dưới nuốt hàng trên; (3) vẽ đường mật độ mà không tô nền thì các hàng đan vào nhau không phân biệt được.",
+      "khong_dung_khi": "KHÔNG dùng khi: chỉ có 2-3 kỳ (dùng 19-raincloud, xếp chồng ít hàng thì không thành dãy núi mà chỉ là ba hình rời);",
+      "xem_truoc": "charts/echarts/out-20-ridgeline.svg"
+    },
+    {
+      "ma": "21-upset",
+      "nhom": "chart-echarts",
+      "ten": "UpSet: các tập hợp CHỒNG LẤN nhau ra sao khi có quá 3 tập",
+      "tep": "charts/echarts/21-upset.mjs",
+      "dinh_dang_giao": "HTML tuong tac",
+      "tra_loi": "cần thấy bao nhiêu phần tử thuộc về đúng tổ hợp tập hợp nào, vd bao nhiêu mã cổ phiếu vừa qua bộ lọc giá trị vừa qua bộ lọc đà tăng nhưng trượt bộ lọc chất lượng, hay bao nhiêu khách hàng dùng đúng hai trong bốn sản phẩm.",
+      "du_lieu_can": "{tapNames:string[], toHop:[{tap:number[], soLuong:number}]}. Bẫy: (1) sắp tổ hợp theo thứ tự bảng chữ cái thì mắt không đọc ra gì, phải sắp theo SỐ LƯỢNG giảm dần; (2) quên vẽ chấm mờ cho tập KHÔNG thuộc tổ hợp thì mắt mất lưới neo; (3) để cột tổng của từng tập cùng thang với cột tổ hợp làm cột tổ hợp bị nén phẳng.",
+      "khong_dung_khi": "KHÔNG dùng khi: chỉ có 2-3 tập (biểu đồ Venn đọc nhanh hơn và ai cũng hiểu ngay);",
+      "xem_truoc": "charts/echarts/out-21-upset.svg"
+    },
+    {
+      "ma": "22-alluvial",
+      "nhom": "chart-echarts",
+      "ten": "Alluvial: cùng một tập thực thể ĐỔI NHÓM ra sao qua nhiều mốc",
+      "tep": "charts/echarts/22-alluvial.mjs",
+      "dinh_dang_giao": "HTML tuong tac",
+      "tra_loi": "theo dõi một tập cố định được phân loại lại qua 3-5 mốc thời gian, vd hạng tín nhiệm của cùng nhóm doanh nghiệp qua ba năm, hay nhóm khách hàng chuyển bậc chi tiêu qua từng quý. Câu hỏi nó trả lời là AI CHUYỂN SANG ĐÂU, không phải bao nhiêu.",
+      "du_lieu_can": "{mocNames:string[], nhomNames:string[], chuyen:[{tuMoc, tuNhom, denNhom, soLuong}]}. Bẫy: (1) đặt tên node trùng nhau giữa các mốc thì ECharts gộp chúng làm một và hình thành vòng lặp, nên tên node phải mang tiền tố mốc; (2) vẽ mọi dải cùng một màu thì mất khả năng lần theo một nhóm qua các mốc; (3) quên rằng tổng mỗi mốc phải bằng nhau, lệch tổng là dấu hiệu dữ liệu sai chứ không phải hình sai.",
+      "khong_dung_khi": "KHÔNG dùng khi: đại lượng là dòng chảy bảo toàn qua các công đoạn (dùng 02-sankey, đó mới là sankey đúng nghĩa);",
+      "xem_truoc": "charts/echarts/out-22-alluvial.svg"
+    },
+    {
+      "ma": "23-waffle",
+      "nhom": "chart-echarts",
+      "ten": "Waffle: tỷ trọng đọc bằng cách ĐẾM ô, không phải ước lượng góc",
+      "tep": "charts/echarts/23-waffle.mjs",
+      "dinh_dang_giao": "HTML tuong tac",
+      "tra_loi": "cần người đọc nắm chắc một cơ cấu 2-5 phần và con số phải neo lại trong đầu, vd cơ cấu nguồn vốn, tỷ lệ danh mục theo nhóm tài sản, phần doanh thu đến từ một khách hàng lớn. Một trăm ô vuông là một trăm phần trăm, đếm được từng ô.",
+      "du_lieu_can": "{phan:[{ten, phanTram}]}. Bẫy: (1) tổng không đúng 100 thì lưới thiếu hoặc thừa ô, phải kiểm lúc build; (2) tô ô theo hàng ngang khi cơ cấu lệch làm một phần bị cắt vụn qua nhiều hàng, nên tô theo CỘT; (3) đặt chú giải rời khỏi lưới buộc mắt nhảy qua lại, nên gắn nhãn ngay cạnh khối màu.",
+      "khong_dung_khi": "KHÔNG dùng khi: cần so cơ cấu qua NHIỀU kỳ (dùng 11-stacked-100, waffle nhiều lưới cạnh nhau đọc rất chậm);",
+      "xem_truoc": "charts/echarts/out-23-waffle.svg"
     },
     {
       "ma": "annotated_narrative",

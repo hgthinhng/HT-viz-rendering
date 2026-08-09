@@ -1,4 +1,4 @@
-// registry.mjs, so ghi danh MOT nguon cho toan bo 18 preset ECharts.
+// registry.mjs, so ghi danh MOT nguon cho toan bo 23 preset ECharts.
 //
 // Import moi preset MOT LAN, gom lai theo TEN FILE (khong duoi .mjs) thanh { option,
 // MAC_DINH }. An toan de import o ca hai lan: import chi keo option()/MAC_DINH ra, KHONG
@@ -22,6 +22,11 @@ import * as p15 from './15-quadrant-scatter.mjs';
 import * as p16 from './16-dot-distribution.mjs';
 import * as p17 from './17-football-field.mjs';
 import * as p18 from './18-sensitivity-grid.mjs';
+import * as p19 from './19-raincloud.mjs';
+import * as p20 from './20-ridgeline.mjs';
+import * as p21 from './21-upset.mjs';
+import * as p22 from './22-alluvial.mjs';
+import * as p23 from './23-waffle.mjs';
 
 export const PRESETS = {
   '01-waterfall': { option: p01.option, MAC_DINH: p01.MAC_DINH },
@@ -42,4 +47,9 @@ export const PRESETS = {
   '16-dot-distribution': { option: p16.option, MAC_DINH: p16.MAC_DINH },
   '17-football-field': { option: p17.option, MAC_DINH: p17.MAC_DINH },
   '18-sensitivity-grid': { option: p18.option, MAC_DINH: p18.MAC_DINH },
+  '19-raincloud': { option: p19.option, MAC_DINH: p19.MAC_DINH },
+  '20-ridgeline': { option: p20.option, MAC_DINH: p20.MAC_DINH },
+  '21-upset': { option: p21.option, MAC_DINH: p21.MAC_DINH },
+  '22-alluvial': { option: p22.option, MAC_DINH: p22.MAC_DINH },
+  '23-waffle': { option: p23.option, MAC_DINH: p23.MAC_DINH },
 };

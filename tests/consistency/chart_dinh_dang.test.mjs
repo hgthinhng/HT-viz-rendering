@@ -29,6 +29,7 @@ const PHAN_TRAM_LA_BAN_CHAT = {
   '11-stacked-100': 'ty trong cua mot co cau, LUON cong bang 100%, do la dinh nghia cua preset',
   '15-quadrant-scatter': 'truc tung la ROE, truc hoanh la P/B dung fmtMultiple; ca hai truc co don vi CO DINH theo dinh nghia preset',
   '18-sensitivity-grid': 'hai truc la WACC va tang truong dai han, deu la phan tram theo dinh nghia; gia tri O luoi thi dung don vi rieng',
+  '23-waffle': 'mot o la mot phan tram, tong dung 100 o; preset nay khong ve duoc dai luong nao khac',
 };
 
 test('preset khong dong cung fmtPercent, tru nhung preset phan tram la ban chat', () => {

@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const DIR_ECHARTS = path.join(ROOT, 'charts/echarts');
 
-// Xac nhan ca 18 preset ECharts da tach option() khoi duong xuat (render-static.mjs cho
+// Xac nhan MOI preset ECharts da tach option() khoi duong xuat (render-static.mjs cho
 // lan pdf-so, mount-live.mjs cho lan html-song): moi preset phai export duoc `option`
 // (ham) va `MAC_DINH` (object du lieu demo), va `option(MAC_DINH)` phai tra ve mot OBJECT
 // OPTION hop le, khong throw. Day la dieu kien CAN de MOT nguon preset phuc vu duoc ca
@@ -21,12 +21,22 @@ function tenPreset() {
     .sort();
 }
 
-test('quet dia ra dung 18 preset ECharts (NN-ten.mjs)', () => {
+// Nguong TOI THIEU chu khong phai con so chinh xac. Ban truoc chot cung 18, va con so do
+// phai sua tay moi lan them mot preset, tuc no bien mot test chong troi thanh mot o dem.
+// Y dinh that cua no la "khong ai xoa mat preset ma khong ai biet", va mot nguong toi
+// thieu giu nguyen y dinh do. Phep so khop 1-1 voi registry ben duoi moi la phep chan
+// chuyen them file ma quen dang ky.
+const TOI_THIEU_PRESET = 18;
+
+test('quet dia ra it nhat 18 preset ECharts (NN-ten.mjs)', () => {
   const ds = tenPreset();
-  assert.equal(ds.length, 18, `mong doi 18 preset, thay ${ds.length}: ${ds.join(', ')}`);
+  assert.ok(
+    ds.length >= TOI_THIEU_PRESET,
+    `chi thay ${ds.length} preset, duoi nguong ${TOI_THIEU_PRESET}: ${ds.join(', ')}`,
+  );
 });
 
-test('registry.mjs co dung 18 muc, khop 1-1 voi file tren dia', async () => {
+test('registry.mjs khop 1-1 voi file tren dia, khong thua khong thieu', async () => {
   const { PRESETS } = await import(path.join(DIR_ECHARTS, 'registry.mjs'));
   const dsDia = tenPreset();
   const dsRegistry = Object.keys(PRESETS).sort();

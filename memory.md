@@ -130,6 +130,60 @@ gate chưa được kiểm.** Chín gate làn song đều có cặp fixture đ�
 hai trong chín đo sai thứ, và fixture không thể lộ ra điều đó vì fixture do chính người
 viết gate dựng theo đúng giả định của người viết gate.
 
+## Phổ chart mở lên 23 preset, và hai gate thị giác mới (09-08)
+
+### Năm preset tầng phân phối và tập hợp
+
+`19-raincloud`, `20-ridgeline`, `21-upset`, `22-alluvial`, `23-waffle`. Thư viện lên
+**116 tài sản** (23 chart ECharts, 53 component matplotlib, 29 component, 11 minh hoạ).
+
+**Viết MỘT lần ở ECharts, không viết hai lần.** Đây là thứ đổi so với nợ "hai engine phải
+đồng bộ tay" ghi trong các bản trước: từ khi `sinh-svg-preset.mjs` render qua Chromium,
+một preset ECharts sinh được SVG tĩnh dùng thẳng cho làn `pdf-so`. Nợ đó thu hẹp còn đúng
+53 component matplotlib đã có, không lớn thêm theo mỗi chart mới.
+
+Mỗi preset chọn theo CÂU HỎI nó trả lời, không theo độ lạ mắt:
+
+| Preset | Trả lời câu hỏi | Vì sao không dùng cái sẵn có |
+|---|---|---|
+| `19-raincloud` | phân phối một chỉ tiêu giữa 2-5 nhóm có hình dạng thế nào | boxplot giấu phân phối hai đỉnh: cùng trung vị và cùng quartile vẫn có thể là hai câu chuyện khác hẳn |
+| `20-ridgeline` | phân phối DỊCH đi đâu qua 4-12 kỳ | raincloud không có trục thời gian, chồng lấn là tính năng chứ không phải lỗi bố cục |
+| `21-upset` | từ 4 tập trở lên chồng lấn nhau ra sao | Venn bốn vòng KHÔNG vẽ được đủ 15 vùng giao, mọi bản Venn bốn tập đều bỏ sót vùng |
+| `22-alluvial` | cùng một tập thực thể đổi nhóm ra sao qua các mốc | sankey là dòng chảy BẢO TOÀN qua công đoạn, alluvial là tập thực thể được phân loại LẠI; nhầm hai cái là nhầm bản chất đại lượng |
+| `23-waffle` | một cơ cấu, đọc bằng cách ĐẾM ô | biểu đồ tròn bắt mắt ước lượng góc, việc mắt người làm kém nhất |
+
+Ba điều đã đo và đáng nhớ khi viết tiếp preset dạng này:
+
+- **Bandwidth Silverman hệ số 0,9 xoá mất phân phối hai đỉnh.** Nó tối ưu cho phân phối
+  một đỉnh; với hai cụm nó nối hai bướu thành một cao nguyên phẳng, tức xoá đúng cái mà
+  raincloud sinh ra để cho thấy. Đo trên nhóm demo hai cụm: 0,9 cho một khối gần phẳng,
+  0,55 cho hai bướu tách rời.
+- **Jitter phải TẤT ĐỊNH.** `Math.random()` làm mỗi lần render ra một ảnh khác nhau, phá
+  hẳn visual regression và làm hai bản của cùng một báo cáo hiện hai hình.
+- **Tên node của alluvial phải mang tiền tố mốc.** Trùng tên giữa các mốc thì ECharts gộp
+  chúng làm một node, đồ thị có chu trình, và bố cục sankey vỡ hoàn toàn.
+
+### Hai gate thị giác, và bốn lỗi chúng lôi ra ngay lần chạy đầu
+
+Bộ gate cũ đọc CẤU TRÚC nên mù với lớp lỗi "hình đúng cấu trúc nhưng nhìn đã khác đi".
+
+- **`scripts/anh-moc.mjs` cộng `anh_moc.test.mjs`**, visual regression cho sáu preset đại
+  diện, ảnh mốc 200KB trong `gates/fixtures/anh-moc/`. So pixel bằng canvas TRONG trình
+  duyệt nên không thêm thư viện giải mã PNG nào. Ngưỡng 0,05% đến từ mutation chứ không
+  từ cảm giác: 0,3% ban đầu để lọt một mutation đổi nhãn `120` thành `120,00` (0,242%).
+  Chụp cùng một preset hai lần cho đúng 0 pixel khác, và test khẳng định điều đó bằng số.
+- **`nhan_khong_chong.test.mjs`** đo TUYỆT ĐỐI, không cần mốc: hai hộp chữ giao quá 40%
+  diện tích hình nhỏ hơn là chồng.
+
+Bốn lỗi thật, đều có sẵn trong thư viện và đều đi qua mọi gate cũ: `04-dumbbell` hai nhãn
+cùng `position: top` ra `12,54,1%`; `03-bullet` grid.bottom 30px không đủ cho cả nhãn trục
+lẫn chú giải ra `30ải tốt`; `06-tornado` nhãn giá trị gặp nhãn trục; `05-slope` nhãn hai
+đầu chồng nhau, nay tự vẽ bằng graphic trong `_veSauLayout` và tách theo trục dọc.
+
+Với `05-slope` đã cân và LOẠI hai đường sẵn có của ECharts: `hideOverlap` chạy thật nhưng
+nó ẨN nhãn, tức xoá tên một ngân hàng khỏi biểu đồ so thị phần; `moveOverlap: 'shiftY'`
+đúng ý định nhưng đo thật thì không dịch đủ, vẫn còn giao 40%.
+
 ## ĐỌC MỤC NÀY TRƯỚC: tiền đề của repo đã đổi (07-08)
 
 Repo được xây trên tiền đề **"PDF IN ĐƯỢC"**. Người dùng đã phán quyết tiền đề đó sai với thực

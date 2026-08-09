@@ -4,7 +4,7 @@
 Sửa mô tả thì sửa ở nguồn (comment đầu file preset, docstring component, mục
 `Mô tả / khi nào dùng` của catalog, hoặc `<desc>` của SVG) rồi chạy lại.
 
-Tổng 111 tài sản: 18 chart-echarts, 53 chart-matplotlib, 29 component, 11 minh-hoa.
+Tổng 116 tài sản: 23 chart-echarts, 53 chart-matplotlib, 29 component, 11 minh-hoa.
 
 ## Chart ECharts, cho bản HTML tương tác
 
@@ -30,6 +30,11 @@ Nguồn: `charts/echarts/`
 | `16-dot-distribution` | cần thấy HÌNH DẠNG phân phối 1 chỉ tiêu (vd P/E) của 1-3 nhóm nhỏ (n~5-25), và việc thấy TỪNG ĐIỂM (không phải chỉ quartile tóm tắt) quan trọng vì n nhỏ. | KHÔNG dùng khi: n>30-40 (chồng điểm dù jitter -> histogram matplotlib); |
 | `17-football-field` | tổng hợp nhiều phương pháp định giá (DCF, comps, giao dịch tiền lệ, biên độ 52 tuần) thành kết luận VÙNG, thay vì báo cáo N con số rời rạc. Sức mạnh nằm ở VÙNG HỘI TỤ (nơi các dải NỘI TẠI... | KHÔNG dùng khi: <2 phương pháp (không đủ tạo vùng hội tụ có nghĩa, dùng bảng số); |
 | `18-sensitivity-grid` | 2 biến giả định thay đổi ĐỒNG THỜI (vd WACC x tăng trưởng dài hạn), kết quả là 1 ma trận N x M, cần đánh dấu riêng 1 ô "base case". Khác 06-tornado (1 biến/lúc, dùng khi chỉ cần 1 biến độ... | KHÔNG dùng khi: 1 biến độ nhạy (dùng 06-tornado, gọn hơn); |
+| `19-raincloud` | cần so HÌNH DẠNG phân phối của một chỉ tiêu giữa 2-5 nhóm và n đủ lớn (~20-200) để hình dạng có nghĩa, vd phân phối biên lợi nhuận của các doanh nghiệp trong ba ngành, hoặc phân phối lợi... | KHÔNG dùng khi: n dưới 15 mỗi nhóm (đường mật độ thành hình bịa, dùng 16-dot-distribution để thấy từng điểm); |
+| `20-ridgeline` | cùng một chỉ tiêu đo lặp lại qua 4-12 kỳ và câu hỏi là hình dạng phân phối dịch đi đâu, vd phân phối lợi suất ngày của thị trường theo từng năm, hay phân phối biên lợi nhuận toàn ngành qua... | KHÔNG dùng khi: chỉ có 2-3 kỳ (dùng 19-raincloud, xếp chồng ít hàng thì không thành dãy núi mà chỉ là ba hình rời); |
+| `21-upset` | cần thấy bao nhiêu phần tử thuộc về đúng tổ hợp tập hợp nào, vd bao nhiêu mã cổ phiếu vừa qua bộ lọc giá trị vừa qua bộ lọc đà tăng nhưng trượt bộ lọc chất lượng, hay bao nhiêu khách hàng... | KHÔNG dùng khi: chỉ có 2-3 tập (biểu đồ Venn đọc nhanh hơn và ai cũng hiểu ngay); |
+| `22-alluvial` | theo dõi một tập cố định được phân loại lại qua 3-5 mốc thời gian, vd hạng tín nhiệm của cùng nhóm doanh nghiệp qua ba năm, hay nhóm khách hàng chuyển bậc chi tiêu qua từng quý. Câu hỏi nó... | KHÔNG dùng khi: đại lượng là dòng chảy bảo toàn qua các công đoạn (dùng 02-sankey, đó mới là sankey đúng nghĩa); |
+| `23-waffle` | cần người đọc nắm chắc một cơ cấu 2-5 phần và con số phải neo lại trong đầu, vd cơ cấu nguồn vốn, tỷ lệ danh mục theo nhóm tài sản, phần doanh thu đến từ một khách hàng lớn. Một trăm ô... | KHÔNG dùng khi: cần so cơ cấu qua NHIỀU kỳ (dùng 11-stacked-100, waffle nhiều lưới cạnh nhau đọc rất chậm); |
 
 ## Component matplotlib EIR, cho bản PDF tĩnh
 

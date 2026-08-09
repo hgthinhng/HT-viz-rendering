@@ -13,6 +13,7 @@
 // không có sẵn legend.
 import { baseOption, TYPOGRAPHY, PALETTE, tooltipDefault } from './theme.mjs';
 import { fmtCompact } from './fmt.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 export const MAC_DINH = {
   periods: ['Q1/2026', 'Q2/2026', 'Q3/2026', 'Q4/2026'],
@@ -21,10 +22,21 @@ export const MAC_DINH = {
     'Bất động sản KCN': [30, 28, 33, 31],
     'Vật liệu XD': [15, 17, 16, 19],
   },
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'ty_dong',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 export function option(params) {
-  const { periods, seriesData } = params;
+  const { periods, seriesData, series } = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi ty_dong, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(series);
+  epDonVi(series, ['ty_dong']);
 
   return {
     ...baseOption({ title: 'Doanh thu theo mảng, cộng dồn', subtitle: 'Đơn vị: tỷ đồng, tối đa 4 dải để dải giữa vẫn đọc được' }),

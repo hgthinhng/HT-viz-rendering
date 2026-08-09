@@ -8,6 +8,7 @@
 // thời gian thực (slope chart giả định khoảng cách đều, ghi rõ nếu không đều).
 import { baseOption, TYPOGRAPHY, PALETTE, tooltipDefault, FONT_STACK_MONO } from './theme.mjs';
 import { dinhDangTheoDonVi } from './fmt.mjs';
+import { validateSeries } from './schema.mjs';
 
 export const MAC_DINH = {
   entities: [
@@ -19,13 +20,22 @@ export const MAC_DINH = {
   ],
   title: 'Thị phần tín dụng: Q4/2025 so với Q4/2026',
   subtitle: 'Đơn vị: %, nhấn mạnh TCB (tăng nhanh nhất)',
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'phan_tram',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 export function option(params) {
-  // `donVi`: xem ghi chu cung ten o 04-dumbbell.mjs. Mac dinh `phan_tram` de khong doi
-  // dien mao ban demo.
-  const { entities, title, subtitle, donVi = 'phan_tram' } = params;
-  const dinhDangSo = dinhDangTheoDonVi(donVi);
+  // `series: metaSeries` chu khong phai `series`: ben duoi co mot bien cuc bo ten
+  // `series` la mang series cua ECharts, trung ten thi ca module chet bang SyntaxError.
+  const { entities, title, subtitle, series: metaSeries } = params;
+  // Moi preset deu di qua lop schema: `series` mang don vi va nguon, va do la
+  // dieu kien de mot con so tren hinh truy nguoc duoc ve nguon cua no.
+  validateSeries(metaSeries);
+  const dinhDangSo = dinhDangTheoDonVi(metaSeries.unit);
   const series = entities.map((e) => ({
     name: e.label,
     type: 'line',

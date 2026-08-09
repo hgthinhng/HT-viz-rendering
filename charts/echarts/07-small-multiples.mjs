@@ -9,6 +9,7 @@
 // tham chiếu chung (vd đường 0 hoặc trung bình ngành) khiến so sánh khó.
 import { TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
 import { fmtCompact } from './fmt.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 export const MAC_DINH = {
   quarters: ['Q1/2026', 'Q2/2026', 'Q3/2026', 'Q4/2026'],
@@ -21,6 +22,12 @@ export const MAC_DINH = {
     { name: 'Tài chính tiêu dùng', data: [12, 13, 12, 14] },
   ],
   cols: 3,
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'ty_dong',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 const CELL_W = 220, CELL_H = 150, PAD_TOP = 60, PAD_LEFT = 20, GAP = 10;
@@ -37,7 +44,13 @@ export function kichThuoc(params) {
 }
 
 export function option(params) {
-  const { quarters, segments, cols = MAC_DINH.cols } = params;
+  // `series: metaSeries`, ly do trung ten giong 05-slope.mjs.
+  const { quarters, segments, cols = MAC_DINH.cols, series: metaSeries } = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi ty_dong, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(metaSeries);
+  epDonVi(metaSeries, ['ty_dong']);
   const allValues = segments.flatMap((s) => s.data);
   const sharedMax = Math.ceil(Math.max(...allValues) / 10) * 10; // CHUNG 1 thang đo cho mọi ô, bắt buộc
 

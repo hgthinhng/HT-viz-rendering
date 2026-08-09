@@ -18,6 +18,7 @@
 // mắt nhảy qua lại, nên gắn nhãn ngay cạnh khối màu.
 import { baseOption, TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
 import { fmtPercent } from './fmt.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 export const MAC_DINH = {
   phan: [
@@ -28,6 +29,12 @@ export const MAC_DINH = {
   ],
   title: 'Cơ cấu nguồn vốn, mỗi ô là một phần trăm',
   subtitle: 'Đơn vị: %, tổng 100 ô. Số minh hoạ.',
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'phan_tram',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 const W = 680;
@@ -36,7 +43,12 @@ const COT = 10;
 const HANG = 10;
 
 export function option(params) {
-  const { phan, title, subtitle } = params;
+  const { phan, title, subtitle , series} = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi phan_tram, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(series);
+  epDonVi(series, ['phan_tram']);
   if (phan.length > 5) {
     throw new Error('23-waffle: qua 5 phan, bang mau het cho phan biet');
   }

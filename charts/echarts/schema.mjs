@@ -147,6 +147,33 @@ export function validateSeries(series) {
   return true;
 }
 
+/** Ep mot preset CHI nhan nhung don vi ma no ve dung duoc.
+ *
+ * Sinh ra tu mot the kho xu: nhieu preset dong cung don vi ngay trong ham dinh dang, vi
+ * du waterfall goi `fmtCompact(v, { baseUnit: 'ty' })`. Sau khi bat moi preset phai khai
+ * `series.unit`, ta co hai lua chon te va mot lua chon dung:
+ *   - Khai `unit` roi phot lo no khi dinh dang: khai bao NOI DOI, va no im lang. Doi
+ *     `unit` sang `teu` thi nhan van ra "tỷ", khong ai bao gi.
+ *   - Viet lai moi preset cho nhan duoc moi don vi: dung ve nguyen tac nhung doi dien mao
+ *     cua nhung preset von chi sinh ra cho mot dai luong duy nhat.
+ *   - LUA CHON NAY: preset noi thang no lam duoc gi. Truyen don vi ngoai danh sach thi
+ *     no bao loi ngay luc build thay vi ve ra mot nhan sai.
+ *
+ * @param {object} series khoi meta da qua validateSeries()
+ * @param {string[]} duocPhep danh sach ma don vi preset ve dung duoc
+ */
+export function epDonVi(series, duocPhep) {
+  if (!duocPhep.includes(series.unit)) {
+    throw new LoiSchema(
+      ERR.UNIT_LA,
+      `preset nay chi ve dung duoc don vi ${duocPhep.join(', ')}, nhan duoc "${series.unit}". ` +
+        'Dinh dang so cua no gan chat voi dai luong, doi unit ma khong doi ham dinh dang ' +
+        'se cho mot nhan sai su that.',
+    );
+  }
+  return true;
+}
+
 /** Kiem MOT hang quan sat. Goi rieng duoc khi khong co bao boc series. */
 export function validateRow(row, chiSo = 0) {
   const o = `hang #${chiSo}`;

@@ -36,7 +36,7 @@
 // DÀI, được miễn luật "từ 0" (tiền lệ đã có ở 09-candlestick.mjs cho trục giá OHLC).
 import { baseOption, TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
 import { fmtMultiple, fmtPercent, wrapLabel } from './fmt.mjs';
-import { validateSeries, soThapPhan, nhanDonVi, coCo } from './schema.mjs';
+import { validateSeries, soThapPhan, nhanDonVi, coCo, epDonVi } from './schema.mjs';
 
 const W = 680, H = 660;
 
@@ -55,35 +55,59 @@ export const MAC_DINH = {
   pbValues: [2.8, 1.1, 1.0, 1.5, 1.0, 1.3, 1.4, 0.9, 1.6], // lần, cùng thứ tự entities
   roeValues: [19.8, 14.5, 20.1, 23.0, 11.2, 16.5, 21.5, 14.0, 22.0], // %, cùng thứ tự entities
   trongTamIndex: 0, // chỉ số entity đang phân tích trong bài (VCB); phần còn lại là nhóm so sánh
+  // Khoi meta BAT BUOC. Hai truc, hai don vi, nen hai khoi.
+  meta: {
+    pb: {
+      unit: 'lan',
+      source: { tier: 'uoc-tinh', label: 'Minh hoạ, không phải số thật' },
+      as_of: '2026-08-07',
+      direction: 'trung_tinh', // định giá không có chiều tốt/xấu tự thân, phụ thuộc ROE đi kèm
+      kind: 'ty_le',
+      decimals: 1,
+    },
+    roe: {
+      unit: 'phan_tram',
+      source: { tier: 'uoc-tinh', label: 'Minh hoạ, không phải số thật' },
+      as_of: '2026-08-07',
+      direction: 'cao_tot',
+      kind: 'ty_le',
+      decimals: 1,
+    },
+  },
 };
 
 export function option(params) {
-  const { entities, pbValues, roeValues, trongTamIndex } = params;
+  const { entities, pbValues, roeValues, trongTamIndex , meta} = params;
 
   // entity tai trongTamIndex la ngan hang dang phan tich trong bai, con lai la nhom so sanh.
   const laTrongTam = coCo(trongTamIndex, entities.length);
   const vaiTro = (i) => (laTrongTam(i) ? 'chinh' : 'so_sanh');
 
+  // Meta cua CA HAI truc den tu `params.meta` chu khong con la hang so trong ma.
+  //
+  // Ban truoc viet cung `unit`/`source` ngay tai day roi goi validateSeries len chinh no.
+  // Phep validate do chay that nhung doi tuong no kiem la hang so do chinh preset bia ra,
+  // nen no khong bao gio do voi du lieu NGUOI DUNG truyen vao. Gate rong dung nghia, chi
+  // tinh vi hon vi co mot loi goi validate that.
+  //
+  // Preset nay co HAI don vi vi hai truc do hai dai luong khac nhau, nen meta cung phai
+  // co hai khoi. Do khong pha luat "khong tron don vi trong mot series": day la HAI
+  // series, moi cai mot don vi.
   const pbSeries = {
-    unit: 'lan',
-    source: { tier: 'uoc-tinh', label: 'Minh hoạ, không phải số thật' },
-    as_of: '2026-08-07',
-    direction: 'trung_tinh', // định giá không có chiều tốt/xấu tự thân, phụ thuộc ROE đi kèm
-    kind: 'ty_le',
-    decimals: 1,
+    ...meta.pb,
     rows: entities.map((e, i) => ({ entity: e, value: pbValues[i], role: vaiTro(i) })),
   };
   const roeSeries = {
-    unit: 'phan_tram',
-    source: { tier: 'uoc-tinh', label: 'Minh hoạ, không phải số thật' },
-    as_of: '2026-08-07',
-    direction: 'cao_tot',
-    kind: 'ty_le',
-    decimals: 1,
+    ...meta.roe,
     rows: entities.map((e, i) => ({ entity: e, value: roeValues[i], role: vaiTro(i) })),
   };
   validateSeries(pbSeries); // FAIL ngay nếu unit/tier bịa, entity.code quá dài, hoặc role bịa
   validateSeries(roeSeries);
+  // Hai truc, hai don vi CO DINH: truc hoanh la boi so (P/B) va truc tung la phan tram
+  // (ROE). Ham dinh dang cua tung truc gan chat voi don vi do, nen tu choi don vi khac
+  // thay vi ve ra nhan sai.
+  epDonVi(pbSeries, ['lan']);
+  epDonVi(roeSeries, ['phan_tram']);
 
   const decimalsPb = soThapPhan(pbSeries);
   const decimalsRoe = soThapPhan(roeSeries);

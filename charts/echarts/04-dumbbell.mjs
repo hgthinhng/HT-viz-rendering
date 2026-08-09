@@ -10,6 +10,7 @@
 // (3) không note chiều mũi tên/nhãn -> không biết bên nào là "sau".
 import { baseOption, TYPOGRAPHY, PALETTE, tooltipDefault } from './theme.mjs';
 import { fmtPercent, dinhDangTheoDonVi } from './fmt.mjs';
+import { validateSeries } from './schema.mjs';
 
 export const MAC_DINH = {
   raw: [
@@ -21,15 +22,20 @@ export const MAC_DINH = {
   ],
   title: 'Biên lợi nhuận gộp theo mảng: 2025 so với 2026',
   subtitle: 'Đơn vị: %, sắp theo mức thay đổi',
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'phan_tram',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 export function option(params) {
-  // `donVi` la MA don vi trong charts/schema.vocab.json, mac dinh `phan_tram` de moi loi
-  // goi cu giu nguyen dien mao. Truoc ban nay preset dong cung `fmtPercent`, nen dung no
-  // cho mot dai luong khong phai phan tram se in ra nhan SAI SU THAT chu khong phai xau,
-  // dung loi da bat duoc o `14-bar-ranking` (`5.640.000%` cho mot so dem bang TEU).
-  const { raw, title, subtitle, donVi = 'phan_tram' } = params;
-  const dinhDangSo = dinhDangTheoDonVi(donVi);
+  const { raw, title, subtitle , series} = params;
+  // Moi preset deu di qua lop schema: `series` mang don vi va nguon, va do la
+  // dieu kien de mot con so tren hinh truy nguoc duoc ve nguon cua no.
+  validateSeries(series);
+  const dinhDangSo = dinhDangTheoDonVi(series.unit);
   // sắp theo |chênh lệch| giảm dần (ranking rule)
   const rows = [...raw].sort((a, b) => Math.abs(b.after - b.before) - Math.abs(a.after - a.before));
   const categories = rows.map((r) => r.label);
@@ -38,7 +44,7 @@ export function option(params) {
     ...baseOption({ title, subtitle }),
     tooltip: tooltipDefault,
     grid: { left: 150, right: 60, top: 60, bottom: 40 },
-    xAxis: { type: 'value', name: donVi === 'phan_tram' ? '%' : '', axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => dinhDangSo(v, { decimals: 0 }) }, splitLine: { lineStyle: { color: PALETTE.line } } },
+    xAxis: { type: 'value', name: series.unit === 'phan_tram' ? '%' : '', axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => dinhDangSo(v, { decimals: 0 }) }, splitLine: { lineStyle: { color: PALETTE.line } } },
     yAxis: { type: 'category', data: categories, inverse: true, // sắp theo độ chênh: chênh lớn nhất phải ở TRÊN CÙNG; ECharts mac dinh dat index 0 o DAY nen phai dao truc, khong dao thi hinh ra nguoc voi y dinh ghi o dau file
            axisLine: { show: false }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
     series: [

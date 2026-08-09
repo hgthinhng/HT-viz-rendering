@@ -19,6 +19,7 @@
 // phải bằng nhau, lệch tổng là dấu hiệu dữ liệu sai chứ không phải hình sai.
 import { baseOption, TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
 import { fmtNumber } from './fmt.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 export const MAC_DINH = {
   mocNames: ['2024', '2025', '2026'],
@@ -43,13 +44,24 @@ export const MAC_DINH = {
   ],
   title: 'Hạng tín nhiệm dịch chuyển qua ba năm',
   subtitle: 'Đơn vị: số doanh nghiệp, cùng một tập 100 doanh nghiệp. Số minh hoạ.',
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'so_luong',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 const W = 720;
 const H = 420;
 
 export function option(params) {
-  const { mocNames, nhomNames, chuyen, title, subtitle } = params;
+  const { mocNames, nhomNames, chuyen, title, subtitle , series} = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi so_luong, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(series);
+  epDonVi(series, ['so_luong']);
   if (nhomNames.length > 6) {
     throw new Error('22-alluvial: qua 6 nhom moi moc, dai chay manh toi muc khong lan duoc duong');
   }

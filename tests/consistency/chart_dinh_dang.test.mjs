@@ -53,18 +53,26 @@ test('preset khong dong cung fmtPercent, tru nhung preset phan tram la ban chat'
   );
 });
 
-/** Dat don vi cho MOT preset, theo dung duong ma preset do doc don vi.
+/** Dat don vi cho MOT preset.
  *
- * Hai duong ton tai song song, va do la mot NO chu khong phai thiet ke: chi 6 tren 18
- * preset goi `validateSeries()` nen chi 6 cai do co `series.unit`. Muoi hai cai con lai
- * nhan du lieu tho va phai nhan don vi qua `params.donVi`. CLAUDE.md viet "moi chart phai
- * di qua lop schema dung chung", cau do dung ve y dinh nhung sai ve thuc te.
+ * MOT duong duy nhat: `series.unit`, hoac `meta.unit` voi ba preset tu dung `series` lam
+ * bien cuc bo (xem preset_qua_schema.test.mjs). Duong `params.donVi` da bi go ngay 09-08
+ * cung dot dua ca 23 preset qua schema; truoc do hai duong ton tai song song va do la mot
+ * NO chu khong phai thiet ke, sinh ra tu chuyen chi 6 tren 18 preset goi validateSeries.
  */
 function datDonVi(macDinh, unit) {
   if (macDinh && macDinh.series && macDinh.series.unit) {
     return { ...macDinh, series: { ...macDinh.series, unit } };
   }
-  return { ...macDinh, donVi: unit };
+  if (macDinh && macDinh.meta) {
+    const m = macDinh.meta;
+    if (m.unit) return { ...macDinh, meta: { ...m, unit } };
+    // meta chia nhanh theo truc (15-quadrant-scatter)
+    const ra = {};
+    for (const [k, v] of Object.entries(m)) ra[k] = v && v.unit ? { ...v, unit } : v;
+    return { ...macDinh, meta: ra };
+  }
+  return macDinh;
 }
 
 test('doi don vi thi nhan truc doi theo, do bang gia tri that chu khong doc ma nguon', () => {

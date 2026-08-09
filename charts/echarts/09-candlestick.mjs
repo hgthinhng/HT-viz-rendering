@@ -10,6 +10,7 @@
 // nến vào 1 dải hẹp không đọc được, đây là NGOẠI LỆ có chủ đích của quy tắc
 // "trục phải bắt đầu từ 0", vì OHLC là toạ độ tuyệt đối không phải magnitude.
 import { TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 // quy ước sàn HOSE: tăng = xanh lam (dùng accent), giảm = đỏ (dùng negative), đứng giá = vàng tham chiếu (không dùng ở đây vì không có phiên đứng giá trong mẫu)
 export const MAC_DINH = {
@@ -21,10 +22,21 @@ export const MAC_DINH = {
     [30.6, 32.1, 30.5, 32.3],
   ],
   volume: [1.2, 0.9, 2.1, 1.5, 1.0, 3.2, 1.8, 1.1, 0.8, 2.6], // triệu cp
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'nghin_dong_cp',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 export function option(params) {
-  const { dates, ohlc, volume } = params;
+  const { dates, ohlc, volume , series} = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi nghin_dong_cp, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(series);
+  epDonVi(series, ['nghin_dong_cp']);
   return {
     // File nay tu dung option chu khong qua baseOption(), va KHONG tu khai animation
     // o day -- viec do thuoc renderStatic()/mountLive().

@@ -17,6 +17,7 @@
 // (3) để cột tổng của từng tập cùng thang với cột tổ hợp làm cột tổ hợp bị nén phẳng.
 import { baseOption, TYPOGRAPHY, PALETTE, FONT_STACK_MONO } from './theme.mjs';
 import { fmtNumber } from './fmt.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 export const MAC_DINH = {
   tapNames: ['Định giá rẻ', 'Đà tăng', 'Chất lượng', 'Thanh khoản'],
@@ -32,6 +33,12 @@ export const MAC_DINH = {
   ],
   title: 'Bao nhiêu mã qua được tổ hợp bộ lọc nào',
   subtitle: 'Đơn vị: số mã. Mỗi cột là một tổ hợp loại trừ lẫn nhau. Số minh hoạ.',
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'so_luong',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 const W = 720;
@@ -40,7 +47,12 @@ const H = 440;
 const CAO_MA_TRAN = 132;
 
 export function option(params) {
-  const { tapNames, toHop, title, subtitle } = params;
+  const { tapNames, toHop, title, subtitle , series} = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi so_luong, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(series);
+  epDonVi(series, ['so_luong']);
   if (toHop.length > 15) {
     throw new Error('21-upset: qua 15 to hop, cot thanh rung; cat bot theo nguong truoc khi ve');
   }

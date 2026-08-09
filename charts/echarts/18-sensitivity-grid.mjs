@@ -19,7 +19,7 @@
 // lặng nếu 2 ô trùng giá trị, PHẢI dùng coCo() theo CHỈ SỐ NGUYÊN.
 import { baseOption, PALETTE, TYPOGRAPHY, FONT_STACK_MONO, sequentialScale } from './theme.mjs';
 import { fmtNumber, fmtPercent } from './fmt.mjs';
-import { validateSeries, soThapPhan, nhanDonVi, coCo } from './schema.mjs';
+import { validateSeries, soThapPhan, nhanDonVi, coCo, epDonVi } from './schema.mjs';
 
 const W = 700, H = 460;
 const GRID = { left: 76, right: 24, top: 96, bottom: 84 };
@@ -36,23 +36,31 @@ export const MAC_DINH = {
     [680, 693, 708, 725, 745],
   ], // giá trị doanh nghiệp, tỷ đồng, minh hoạ (khớp base case 850 của 06-tornado.mjs để nhất quán bối cảnh minh hoạ, không phải trùng hợp số thật)
   baseRow: 2, baseCol: 2, // WACC 10,0% / g 3,0% = 850, base case CỦA MÔ HÌNH, không suy từ giá trị
+  // Khoi meta BAT BUOC: don vi va nguon cua GIA TRI trong luoi.
+  meta: {
+    unit: 'ty_dong',
+    source: { tier: 'uoc-tinh', label: 'Mô hình DCF nội bộ, minh hoạ' },
+    as_of: '2026-08-07',
+  },
 };
 
 /** Tra ve OBJECT OPTION thuan, cong 1 truong noi bo `_veSauLayout(chart)` cho khung base
  * case -- can toa do PIXEL THAT cua tam o (qua chart.convertToPixel() tren truc category)
  * sau khi truc da layout. Xem render-static.mjs de biet co che chung voi 13/17. */
 export function option(params) {
-  const { waccRows, gCols, matrix, baseRow, baseCol } = params;
+  const { waccRows, gCols, matrix, baseRow, baseCol , meta} = params;
 
   // series schema dùng chung: mỗi ô ma trận là 1 hàng, unit/source/decimals ở cấp series
   // (đúng chỗ, không lặp lại trên từng ô). entity.code chỉ để thoả ràng buộc "mỗi hàng có 1
   // nhãn ngắn", không dùng để hiển thị (nhãn thật trên lưới là header WACC/g riêng).
-  const series = {
-    unit: 'ty_dong',
-    source: { tier: 'uoc-tinh', label: 'Mô hình DCF nội bộ, minh hoạ' },
-    as_of: '2026-08-07',
-    rows: [],
-  };
+    // Meta den tu `params.meta` chu khong con la hang so trong ma.
+  //
+  // Ban truoc dung `unit`/`source` viet cung ngay tai day roi goi validateSeries len
+  // chinh no. Phep validate do chay that nhung doi tuong no kiem la mot hang so do
+  // chinh preset bia ra, nen no khong bao gio do voi du lieu NGUOI DUNG truyen vao:
+  // mot bao cao that co the dua vao mot bo so khong nguon ma preset van xanh. Do la
+  // gate rong dung nghia, chi tinh vi hon vi co mot loi goi validate that.
+  const series = { ...meta, rows: [] };
   waccRows.forEach((w, ri) => gCols.forEach((g, ci) => {
     series.rows.push({
       entity: { code: `WACC ${fmtPercent(w, { decimals: 1 })} / g ${fmtPercent(g, { decimals: 1 })}` },
@@ -60,6 +68,9 @@ export function option(params) {
     });
   }));
   validateSeries(series); // FAIL ngay nếu thiếu unit/source hoặc entity.code vượt 24 ký tự
+  // Ham dinh dang cua preset nay gan chat voi don vi ty_dong, nen no TU CHOI don vi
+  // khac thay vi nhan roi ve ra nhan sai. Xem epDonVi() trong schema.mjs.
+  epDonVi(series, ['ty_dong']);
   const decimals = soThapPhan(series);
   const donVi = nhanDonVi(series.unit);
 

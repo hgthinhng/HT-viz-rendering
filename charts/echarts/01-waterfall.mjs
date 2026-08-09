@@ -8,6 +8,7 @@
 // từ 0 làm méo tỷ lệ các thanh; (3) không note đơn vị -> nhầm tỷ với triệu.
 import { baseOption, valueAxis, categoryAxis, tooltipDefault, PALETTE, TYPOGRAPHY } from './theme.mjs';
 import { fmtCompact, fmtDelta } from './fmt.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 // MAC_DINH: bo du lieu demo (truoc ban tach option/render day la hang so top-level).
 export const MAC_DINH = {
@@ -15,12 +16,23 @@ export const MAC_DINH = {
   values: [120, -45, -20, -8, 47], // đơn vị: tỷ đồng
   title: 'Cầu nối P&L: Từ doanh thu đến lợi nhuận ròng',
   subtitle: 'Đơn vị: tỷ đồng, Q4/2026',
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'ty_dong',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 /** Tra ve OBJECT OPTION thuan (khong echarts.init, khong ghi file, khong tu khai
  * animation -- viec do thuoc renderStatic()/mountLive()). */
 export function option(params) {
-  const { categories, values, title, subtitle } = params;
+  const { categories, values, title, subtitle , series} = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi ty_dong, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(series);
+  epDonVi(series, ['ty_dong']);
   const isEdge = (i) => i === 0 || i === values.length - 1;
 
   let cum = 0;

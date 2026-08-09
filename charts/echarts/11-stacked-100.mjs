@@ -9,6 +9,7 @@
 // tự category xuyên suốt mọi cột.
 import { baseOption, TYPOGRAPHY, PALETTE, tooltipDefault } from './theme.mjs';
 import { fmtPercent } from './fmt.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 export const MAC_DINH = {
   periods: ['2023', '2024', '2025', '2026'],
@@ -20,12 +21,23 @@ export const MAC_DINH = {
   },
   title: 'Cơ cấu nguồn vốn, 2023-2026',
   subtitle: 'Đơn vị: % tổng nguồn vốn, thứ tự xếp chồng cố định',
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'phan_tram',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 /** Tra ve OBJECT OPTION thuan. FAIL ngay (throw) neu 1 cot khong cong dung 100 sau
  * lam tron -- kiem TRONG option() de fail-fast luc goi voi du lieu that. */
 export function option(params) {
-  const { periods, rows, title, subtitle } = params;
+  const { periods, rows, title, subtitle , series} = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi phan_tram, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(series);
+  epDonVi(series, ['phan_tram']);
   // kiểm tổng mỗi cột phải = 100 sau làm tròn
   periods.forEach((_, i) => {
     const total = Object.values(rows).reduce((s, arr) => s + arr[i], 0);

@@ -18,7 +18,7 @@
 // vạch trung vị mỗi strip -> mắt không có mốc neo để so 2 nhóm.
 import { baseOption, TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
 import { fmtMultiple } from './fmt.mjs';
-import { validateSeries, soThapPhan, nhanDonVi, coCo } from './schema.mjs';
+import { validateSeries, soThapPhan, nhanDonVi, coCo, epDonVi } from './schema.mjs';
 
 export const MAC_DINH = {
   groupNames: ['Thép', 'Xi măng', 'VLXD khác'],
@@ -28,6 +28,15 @@ export const MAC_DINH = {
     [11.2, 12.5, 10.8, 13.1, 11.9, 12.0, 34.6, 11.5],
   ], // P/E minh hoạ theo phân ngành, KHÔNG phải số thật. 22.4/15.9/34.6 CỐ Ý là ngoại lệ để thử
   trongTamIndex: 0, // chỉ số nhóm đang phân tích trong bài ('Thép'); còn lại là nhóm so sánh
+  // Khoi meta BAT BUOC: don vi, nguon, va cac thuoc tinh cap series.
+  meta: {
+    unit: 'lan',
+    source: { tier: 'uoc-tinh', label: 'Minh hoạ, không phải số thật' },
+    as_of: '2026-08-07',
+    direction: 'trung_tinh', // P/E không có chiều tốt/xấu tự thân, phụ thuộc tăng trưởng đi kèm
+    kind: 'ty_le',
+    decimals: 1,
+  },
 };
 
 function tinhKichThuoc(params) {
@@ -59,26 +68,31 @@ function jitter(i, band) {
 }
 
 export function option(params) {
-  const { groupNames, groupValues, trongTamIndex } = params;
+  const { groupNames, groupValues, trongTamIndex , meta} = params;
   const { width: W, height: H } = tinhKichThuoc(params);
 
   // nhóm tai trongTamIndex la nhom dang phan tich trong bai, con lai la nhom so sanh,
   // danh dau bang coCo() theo CHI SO NGUYEN chu khong so gia tri.
   const laTrongTam = coCo(trongTamIndex, groupNames.length);
 
+    // Meta den tu `params.meta` chu khong con la hang so trong ma.
+  //
+  // Ban truoc dung `unit`/`source` viet cung ngay tai day roi goi validateSeries len
+  // chinh no. Phep validate do chay that nhung doi tuong no kiem la mot hang so do
+  // chinh preset bia ra, nen no khong bao gio do voi du lieu NGUOI DUNG truyen vao:
+  // mot bao cao that co the dua vao mot bo so khong nguon ma preset van xanh. Do la
+  // gate rong dung nghia, chi tinh vi hon vi co mot loi goi validate that.
   const series = {
-    unit: 'lan',
-    source: { tier: 'uoc-tinh', label: 'Minh hoạ, không phải số thật' },
-    as_of: '2026-08-07',
-    direction: 'trung_tinh', // P/E không có chiều tốt/xấu tự thân, phụ thuộc tăng trưởng đi kèm
-    kind: 'ty_le',
-    decimals: 1,
+    ...meta,
     rows: groupValues.flatMap((values, gi) => values.map((value) => ({
       value,
       role: laTrongTam(gi) ? 'chinh' : 'so_sanh',
     }))),
   };
   validateSeries(series); // FAIL ngay nếu unit/tier bịa hoặc role bịa
+  // Ham dinh dang cua preset nay gan chat voi don vi lan, nen no TU CHOI don vi
+  // khac thay vi nhan roi ve ra nhan sai. Xem epDonVi() trong schema.mjs.
+  epDonVi(series, ['lan']);
   const decimals = soThapPhan(series);
 
   const bandHeight = 60;

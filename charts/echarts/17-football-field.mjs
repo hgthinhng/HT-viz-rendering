@@ -19,7 +19,7 @@
 // mở SVG nhìn thật (gate chỉ đếm phần tử, không đo va chạm hình học).
 import { baseOption, PALETTE, FONT_STACK, FONT_STACK_MONO, TYPOGRAPHY } from './theme.mjs';
 import { fmtNumber } from './fmt.mjs';
-import { validateSeries, soThapPhan, nhanDonVi } from './schema.mjs';
+import { validateSeries, soThapPhan, nhanDonVi, epDonVi } from './schema.mjs';
 
 const W = 780, H = 450;
 const GRID = { left: 195, right: 56, top: 96, bottom: 64 };
@@ -58,6 +58,9 @@ export function option(params) {
   const rows = seriesGoc.rows.map((r) => ({ ...r, value: Math.round((r.low + r.high) / 2) }));
   const series = { ...seriesGoc, rows };
   validateSeries(series); // FAIL ngay nếu entity.code quá dài hoặc thiếu unit/source
+  // Ham dinh dang gan chat voi don vi nghin_dong_cp (gia mot co phieu), nen preset tu
+  // choi don vi khac thay vi ve ra nhan sai. Xem epDonVi() trong schema.mjs.
+  epDonVi(series, ['nghin_dong_cp']);
   const decimals = soThapPhan(series);
   const donVi = nhanDonVi(series.unit);
 

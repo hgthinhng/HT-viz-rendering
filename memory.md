@@ -184,6 +184,75 @@ Với `05-slope` đã cân và LOẠI hai đường sẵn có của ECharts: `hi
 nó ẨN nhãn, tức xoá tên một ngân hàng khỏi biểu đồ so thị phần; `moveOverlap: 'shiftY'`
 đúng ý định nhưng đo thật thì không dịch đủ, vẫn còn giao 40%.
 
+## 23/23 preset qua schema, và một gate rỗng tinh vi bị lộ (09-08)
+
+CLAUDE.md viết "mọi chart phải đi qua lớp schema dùng chung" từ Phase 1. Đếm thật thì chỉ
+**6 trên 18** preset gọi `validateSeries`. Một luật không ai kiểm thì không phải luật, nó
+là một câu văn, và câu văn đó đã sai suốt hai phase.
+
+### Vì sao đây là nợ thật chứ không phải chuyện hình thức
+
+Preset không đi qua schema thì không có `series.unit`, tức **không có cách nào biết đơn vị
+của chính đại lượng nó vẽ**, nên nó đoán. Đó là gốc của lỗi `5.640.000%`. Sửa từng preset
+như đợt trước là chữa triệu chứng.
+
+### Ba hình dạng khai meta, cả ba đều có lý do
+
+`validateSeries` hoá ra **không bắt buộc `rows`** (`series.rows || []`), nên nó áp được cho
+mọi preset chỉ với `unit` và `source`. Không phải tách schema thành hai tầng như phương án
+đầu tiên đã cân.
+
+| Khai ở | Preset | Vì sao |
+|---|---|---|
+| `MAC_DINH.series` | 19 preset | mặc định |
+| `MAC_DINH.meta` | 15, 16, 18 | chúng dùng `series` làm biến cục bộ để dựng `rows`; trùng tên thì module chết bằng SyntaxError, đã cắn thật ở 05 và 07 |
+| từng hàng | 03-bullet | N chỉ tiêu độc lập, ba cái tỷ đồng và một cái lần. Ép cả bốn vào một `series.unit` là nói dối, vì chính `validateSeries` đã chốt "không trộn đơn vị trong một series" |
+
+### `epDonVi`: cho preset nói thật về giới hạn của nó
+
+Nhiều preset đóng cứng đơn vị trong hàm định dạng (`fmtCompact(v, { baseUnit: 'ty' })`).
+Sau khi bắt mọi preset khai `unit`, có ba đường:
+
+- Khai `unit` rồi phớt lờ khi định dạng: **khai báo nói dối**, và nó im lặng. Đổi `unit`
+  sang `teu` thì nhãn vẫn ra "tỷ".
+- Viết lại mọi preset cho nhận được mọi đơn vị: đúng nguyên tắc nhưng đổi diện mạo của
+  những preset vốn sinh ra cho một đại lượng duy nhất.
+- **Đường đã chọn:** preset nói thẳng nó làm được gì, `epDonVi(series, ['ty_dong'])`, và
+  ném lỗi lúc build thay vì vẽ ra một nhãn sai sự thật.
+
+### Gate rỗng tinh vi: validate chính hằng số mình bịa ra
+
+`15-quadrant-scatter`, `16-dot-distribution`, `18-sensitivity-grid` **có** gọi
+`validateSeries` từ trước, nhưng đối tượng chúng validate là một object `unit`/`source`
+viết cứng ngay trong `option()`. Phép validate chạy thật, nhưng nó kiểm một hằng số do
+chính preset bịa ra, nên **không bao giờ đỏ với dữ liệu người dùng truyền vào**: một báo
+cáo thật có thể đưa vào bộ số không nguồn mà preset vẫn xanh.
+
+Đây là biến thể nguy hiểm nhất của gate rỗng đã gặp: nó có một lời gọi validate thật, nên
+đọc mã nguồn thấy đủ. Chỉ phép đo hành vi (bỏ `source` khỏi `MAC_DINH`, đòi `option()` phải
+ném lỗi) mới lộ ra.
+
+### Và chính test mới cũng dính một lỗ hổng cùng loại
+
+Phép đo "preset đóng cứng đơn vị phải gọi `epDonVi`" bản đầu **bỏ qua preset nào không chứa
+chuỗi `epDonVi` trong mã nguồn**, với lý lẽ "preset đó nhận đơn vị tự do". Tức test tự miễn
+trừ đúng cái nó cần kiểm: gỡ `epDonVi` khỏi một preset là nó ngưng kiểm preset đó. Mutation
+xác nhận, và bản sau không đọc mã nguồn nữa mà so DẤU VÂN TAY định dạng: đổi `unit` rồi hỏi
+cách hiện số có đổi theo không. Dấu vân tay phải với cả nhãn vẽ bằng `graphic` trong
+`_veSauLayout`, nếu không `05-slope` bị kết luận nhầm là nói dối.
+
+### Nghiệm thu
+
+Diện mạo **không đổi một pixel** trên cả sáu ảnh mốc, đúng mục tiêu của một đợt refactor.
+Gate ảnh mốc dựng hôm trước chứng minh giá trị ngay ở lần dùng đầu tiên. `npm test` 175
+pass, pytest 43 pass, ấn phẩm làn song vẫn 8 PASS.
+
+Cộng hai việc nhỏ đóng cùng đợt: thêm `so_luong` vào từ vựng (upset và alluvial đếm số phần
+tử, vocab chưa có đơn vị đếm), và **vạch base-case của `06-tornado` nay vẽ THẬT**. Vạch đó
+từng được viết bằng `getOption()` rồi `setOption()` lại, cách đó không làm `markLine` hiện
+ra trong SVG, nên một tính năng nhìn như có trong mã nhưng chưa bao giờ vẽ ra suốt hai
+phase. Khai `markLine` thẳng trong option thì nó hiện.
+
 ## ĐỌC MỤC NÀY TRƯỚC: tiền đề của repo đã đổi (07-08)
 
 Repo được xây trên tiền đề **"PDF IN ĐƯỢC"**. Người dùng đã phán quyết tiền đề đó sai với thực

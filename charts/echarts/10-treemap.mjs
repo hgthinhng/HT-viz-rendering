@@ -10,6 +10,7 @@
 // bảng màu categorical vượt ngưỡng an toàn CVD.
 import { TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
 import { fmtCompact } from './fmt.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 // nhóm cha = ngành (categorical, tối đa 4 để an toàn CVD all-pairs theo dataviz skill)
 export const MAC_DINH = {
@@ -27,10 +28,21 @@ export const MAC_DINH = {
       { name: 'GAS', value: 150 }, { name: 'POW', value: 55 },
     ]},
   ],
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'nghin_ty_dong',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 export function option(params) {
-  const { data } = params;
+  const { data , series} = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi nghin_ty_dong, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(series);
+  epDonVi(series, ['nghin_ty_dong']);
   const groupColor = { 'Ngân hàng': PALETTE.accent, 'Bất động sản': PALETTE.ink, 'Tiêu dùng': PALETTE.inkLo, 'Năng lượng': PALETTE.accentHi };
   const data2 = data.map((g) => ({ ...g, itemStyle: { color: groupColor[g.name] } }));
 

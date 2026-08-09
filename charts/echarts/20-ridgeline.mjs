@@ -16,6 +16,7 @@
 // đường mật độ mà không tô nền thì các hàng đan vào nhau không phân biệt được.
 import { baseOption, TYPOGRAPHY, PALETTE, FONT_STACK_MONO } from './theme.mjs';
 import { dinhDangTheoDonVi } from './fmt.mjs';
+import { validateSeries } from './schema.mjs';
 
 export const MAC_DINH = {
   kyNames: ['2021', '2022', '2023', '2024', '2025', '2026'],
@@ -32,7 +33,12 @@ export const MAC_DINH = {
   trongTamIndex: 5,
   title: 'Phân phối lợi suất ngày dịch dần sang phải',
   subtitle: 'Đơn vị: %, mỗi hàng là một năm. Số minh hoạ.',
-  donVi: 'phan_tram',
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'phan_tram',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 const W = 700;
@@ -61,11 +67,14 @@ function matDo(values, luoi) {
 }
 
 export function option(params) {
-  const { kyNames, kyValues, trongTamIndex, title, subtitle, donVi = 'phan_tram' } = params;
+  const { kyNames, kyValues, trongTamIndex, title, subtitle , series} = params;
+  // Moi preset deu di qua lop schema: `series` mang don vi va nguon, va do la
+  // dieu kien de mot con so tren hinh truy nguoc duoc ve nguon cua no.
+  validateSeries(series);
+  const dinhDangSo = dinhDangTheoDonVi(series.unit);
   if (kyNames.length < 4) {
     throw new Error('20-ridgeline: duoi 4 ky thi khong thanh day nui, dung 19-raincloud');
   }
-  const dinhDangSo = dinhDangTheoDonVi(donVi);
   const tatCa = kyValues.flat();
   const min = Math.min(...tatCa);
   const max = Math.max(...tatCa);

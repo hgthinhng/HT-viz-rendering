@@ -125,6 +125,21 @@ def validate_series(series) -> bool:
     return True
 
 
+def ep_don_vi(series, duoc_phep):
+    """Ban Python cua epDonVi() ben JS. Giu CUNG ma loi UNIT_LA.
+
+    Xem chu thich day du o charts/echarts/schema.mjs. Tom tat: mot preset dong cung don vi
+    trong ham dinh dang thi phai noi thang no lam duoc gi, thay vi khai `unit` roi phot lo.
+    """
+    if series.get("unit") not in duoc_phep:
+        raise LoiSchema(
+            ERR["UNIT_LA"],
+            f'preset nay chi ve dung duoc don vi {", ".join(duoc_phep)}, '
+            f'nhan duoc "{series.get("unit")}"',
+        )
+    return True
+
+
 def validate_row(row, chi_so: int = 0) -> bool:
     """Kiem MOT hang quan sat."""
     o = f"hang #{chi_so}"

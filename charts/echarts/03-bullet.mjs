@@ -8,14 +8,25 @@
 // không phải 1 thanh; (3) trục không bắt đầu từ 0 làm méo % hoàn thành.
 import { baseOption, TYPOGRAPHY, PALETTE, tooltipDefault } from './theme.mjs';
 import { fmtCompact } from './fmt.mjs';
+import { validateSeries } from './schema.mjs';
 
 // 3 dải định tính là 3 sắc độ xám (KHÔNG traffic-light), actual = accent
 export const MAC_DINH = {
+  // MOI HANG mang `unit` RIENG, va day la khac biet co that so voi moi preset khac.
+  //
+  // Bullet khong phai mot series: no la N chi tieu doc lap xep canh nhau, va chung
+  // khong nhat thiet cung don vi. Ban demo nay co ba chi tieu tinh bang ty dong va mot
+  // chi tieu tinh bang lan. Ep ca bon vao mot `series.unit` duy nhat la khai bao noi
+  // doi, vi chinh ham `validateSeries` cua repo da chot "khong tron don vi trong mot
+  // series" -- neu tron don vi la loi, thi day khong phai mot series.
+  //
+  // Nen moi hang tu khai don vi va nguon cua no, va `option()` validate TUNG hang nhu
+  // mot series mot dong.
   rows: [
-    { label: 'Doanh thu thuần', actual: 118, target: 125, bands: [70, 105, 140] },
-    { label: 'EBITDA', actual: 46, target: 40, bands: [20, 35, 55] },
-    { label: 'Dòng tiền HĐKD', actual: 32, target: 38, bands: [15, 30, 48] },
-    { label: 'Vòng quay hàng tồn kho', actual: 6.2, target: 6.0, bands: [3, 5, 8] },
+    { label: 'Doanh thu thuần', actual: 118, target: 125, bands: [70, 105, 140], unit: 'ty_dong', source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' } },
+    { label: 'EBITDA', actual: 46, target: 40, bands: [20, 35, 55], unit: 'ty_dong', source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' } },
+    { label: 'Dòng tiền HĐKD', actual: 32, target: 38, bands: [15, 30, 48], unit: 'ty_dong', source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' } },
+    { label: 'Vòng quay hàng tồn kho', actual: 6.2, target: 6.0, bands: [3, 5, 8], unit: 'lan', source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' } },
   ],
   title: 'Bullet: Thực tế vs kế hoạch theo KPI',
   subtitle: 'Đơn vị: tỷ đồng (riêng vòng quay HTK: lần)',
@@ -23,6 +34,15 @@ export const MAC_DINH = {
 
 export function option(params) {
   const { rows, title, subtitle } = params;
+  // Validate TUNG hang nhu mot series mot dong, vi bullet la N chi tieu doc lap chu
+  // khong phai mot series. Xem ghi chu o MAC_DINH.
+  rows.forEach((r, i) => {
+    try {
+      validateSeries({ unit: r.unit, source: r.source });
+    } catch (e) {
+      throw new Error(`03-bullet, hang ${i} "${r.label}": ${e.message}`);
+    }
+  });
   const categories = rows.map((r) => r.label);
   const max = Math.max(...rows.map((r) => r.bands[2]));
   const bandColors = [PALETTE.bandLo, PALETTE.bandMid, PALETTE.bandHi]; // 3 sắc xám LẠNH cùng ramp (theme.mjs), KHÔNG traffic-light

@@ -14,6 +14,7 @@
 // lợi, dạng traffic-light bị cấm dù đội lốt "chỉ là tô theo chiều tăng/giảm".
 import { baseOption, TYPOGRAPHY, PALETTE, tooltipDefault } from './theme.mjs';
 import { fmtCompact } from './fmt.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 export const MAC_DINH = {
   base: 850, // tỷ đồng, giá trị doanh nghiệp base case
@@ -24,10 +25,21 @@ export const MAC_DINH = {
     { variable: 'Vốn đầu tư/DThu (±1đpt)', low: 830, high: 875 },
     { variable: 'Thuế suất hiệu dụng (±2đpt)', low: 838, high: 862 },
   ],
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'ty_dong',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 export function option(params) {
-  const { base, raw } = params;
+  const { base, raw , series} = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi ty_dong, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(series);
+  epDonVi(series, ['ty_dong']);
   const rows = [...raw].sort((a, b) => (b.high - b.low) - (a.high - a.low)); // sắp theo biên độ giảm dần
   const categories = rows.map((r) => r.variable);
 
@@ -51,24 +63,32 @@ export function option(params) {
       // Noi rong grid khong cuu duoc vi nhan truc dich theo grid; phai day rieng nhan truc
       // ra xa mep. Gate nhan chong bat duoc voi ty le giao 42%.
       axisLabel: { ...TYPOGRAPHY.axisLabel, margin: 34 } },
-    // LOI CO SAN, PHAT HIEN LUC TACH FILE NAY (khong sua o day, xem bao cao ban
-    // tach): ban TRUOC ban tach dung `const opt = chart.getOption(); opt.series[0]
-    // .markLine = {...}; chart.setOption(opt);` de ve vach base-case tai x=0. Da do
-    // bang thuc nghiem: chart.getOption() roi setOption() lai KHONG lam markLine
-    // hien ra trong SVG that (dem phan tu 2 ban giong/khac markLine deu ra dung 50
-    // phan tu cho file nay, "Base" chi xuat hien 1 lan trong subtitle, khong co lan
-    // thu 2 tren chart). Tuc vach base-case CHUA BAO GIO ve duoc tren SVG that, du
-    // code nhin nhu co. Ban tach nay GIU DUNG hanh vi hien tai (khong markLine) de
-    // thoa dieu kien "khong doi dien mao" cua viec tach option/render; sua lai vach
-    // base-case la mot viec KHAC, ngoai pham vi tach nay.
+    // VACH BASE-CASE, nay ve THAT (09-08).
+    //
+    // Lich su cua no dang ghi lai vi no la mot ca mau: ban truoc ve vach nay bang
+    // `const opt = chart.getOption(); opt.series[0].markLine = {...}; chart.setOption(opt)`.
+    // Do bang thuc nghiem thi cach do KHONG lam markLine hien ra trong SVG: dem phan tu
+    // hai ban co va khong co markLine ra dung 50 nhu nhau, va chuoi "Base" chi xuat hien
+    // mot lan trong phu de. Tuc mot tinh nang nhin nhu co trong ma nhung CHUA BAO GIO ve
+    // ra, va no song duoc ca hai phase vi khong phep do nao hoi "vach do co that khong".
+    //
+    // Cach dung la khai `markLine` THANG trong option, khong di duong getOption roi
+    // setOption lai. Vach dat tai x=0 vi truc x cua tornado la do LECH so voi base, nen
+    // goc toa do chinh la kich ban co so. Khong gan nhan cho vach: phu de da ghi base
+    // case bang so, them mot nhan nua chi lam dong chu canh truc.
     series: [
       {
         name: 'Kịch bản bi quan', type: 'bar', stack: 'range', barWidth: 22,
         itemStyle: { color: PALETTE.negative },
         data: rows.map((r) => r.low - base),
         label: { show: true, position: 'left', formatter: (p) => fmtCompact(p.value + base, { baseUnit: 'ty', decimals: 0 }), ...TYPOGRAPHY.dataLabel },
-        // KHONG khai markLine o day -- xem ghi chu ngay duoi day, day la DUNG hanh vi
-        // hien tai, khong phai thieu sot cua ban tach nay.
+        markLine: {
+          silent: true,
+          symbol: 'none',
+          data: [{ xAxis: 0 }],
+          lineStyle: { color: PALETTE.ink, width: 1.5, type: 'solid' },
+          label: { show: false },
+        },
       },
       {
         name: 'Kịch bản lạc quan', type: 'bar', stack: 'range', barWidth: 22,

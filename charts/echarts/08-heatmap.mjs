@@ -10,6 +10,7 @@
 // tooltip/label cho từng ô; (3) sort trục năm/tháng không theo thời gian.
 import { TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
 import { dinhDangTheoDonVi } from './fmt.mjs';
+import { validateSeries } from './schema.mjs';
 
 export const MAC_DINH = {
   months: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
@@ -21,12 +22,20 @@ export const MAC_DINH = {
     [3.1, 1.0, -0.5, -4.2, 2.0, 1.5, -1.6, 0.3, 1.8, -0.7, 2.4, -1.0],
     [0.4, -1.5, 2.9, 1.1, -0.3, 3.6, -2.0, 1.7, 0.6, -1.1, 1.3, 0.0],
   ],
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'phan_tram',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 export function option(params) {
-  // `donVi`: xem ghi chu cung ten o 04-dumbbell.mjs. Mac dinh `phan_tram`.
-  const { months, years, matrix, donVi = 'phan_tram' } = params;
-  const dinhDangSo = dinhDangTheoDonVi(donVi);
+  const { months, years, matrix , series} = params;
+  // Moi preset deu di qua lop schema: `series` mang don vi va nguon, va do la
+  // dieu kien de mot con so tren hinh truy nguoc duoc ve nguon cua no.
+  validateSeries(series);
+  const dinhDangSo = dinhDangTheoDonVi(series.unit);
   const data = [];
   years.forEach((y, yi) => months.forEach((m, mi) => data.push([mi, yi, matrix[yi][mi]])));
   const maxAbs = Math.ceil(Math.max(...data.map((d) => Math.abs(d[2]))) * 10) / 10;

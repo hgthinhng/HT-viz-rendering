@@ -8,6 +8,7 @@
 // sai bảo toàn, phải kiểm tổng trước khi vẽ; (2) quá nhiều node (>10-12) làm
 // rối; (3) dùng màu ngẫu nhiên cho từng luồng thay vì tô theo node nguồn.
 import { baseOption, TYPOGRAPHY, PALETTE } from './theme.mjs';
+import { validateSeries, epDonVi } from './schema.mjs';
 
 export const MAC_DINH = {
   nodes: [
@@ -33,6 +34,12 @@ export const MAC_DINH = {
   ],
   title: 'Dòng phân bổ doanh thu qua các tầng chi phí',
   subtitle: 'Đơn vị: tỷ đồng, FY2026',
+  // Khoi meta BAT BUOC cua moi preset: don vi va nguon. Xem charts/echarts/schema.mjs.
+  series: {
+    unit: 'ty_dong',
+    source: { tier: 'uoc-tinh', label: 'Số minh hoạ, không phải số công bố' },
+    as_of: '2026-08-09',
+  },
 };
 
 function checkConservation(nodes, links) {
@@ -55,7 +62,12 @@ function checkConservation(nodes, links) {
 /** Tra ve OBJECT OPTION thuan. FAIL ngay (throw) neu du lieu vi pham bao toan --
  * kiem TRONG option() de fail-fast luc goi voi du lieu that, khong chi voi MAC_DINH. */
 export function option(params) {
-  const { nodes, links, title, subtitle } = params;
+  const { nodes, links, title, subtitle , series} = params;
+  // Moi preset deu di qua lop schema. `epDonVi` la loi khai THAT THA cua preset
+  // nay: ham dinh dang cua no gan chat voi don vi ty_dong, nen truyen don vi
+  // khac se cho mot nhan sai su that. Bao loi luc build con hon ve ra nhan sai.
+  validateSeries(series);
+  epDonVi(series, ['ty_dong']);
   const problems = checkConservation(nodes, links);
   if (problems.length) {
     throw new Error(`02-sankey: canh bao bao toan sankey: ${problems.join('; ')}`);

@@ -140,8 +140,28 @@ Bốn file, một hợp đồng:
 | `charts/matplotlib/schema.py` | Validator phía Python, giữ CÙNG tên trường và CÙNG mã lỗi |
 | `charts/fixtures/schema-cases.json` | 28 ca vàng, cả hai phía cùng chạy. Đổi luật thì thêm ca vào đây TRƯỚC |
 
-Mỗi preset gọi `validateSeries()` hoặc `validate_series()` ngay đầu file, fail-fast lúc build. Một
-chart sai đơn vị trong bản PDF không gọi lại được.
+Mỗi preset gọi `validateSeries()` hoặc `validate_series()` ngay đầu `option()`, fail-fast lúc
+build. Một chart sai đơn vị trong bản PDF không gọi lại được.
+
+**Câu trên từng SAI suốt hai phase.** Đếm ngày 09-08: chỉ 6 trên 18 preset thật sự gọi
+`validateSeries`, mười hai cái còn lại nhận dữ liệu thô và không có cách nào biết đơn vị của
+chính đại lượng chúng vẽ. Đó là lý do gốc của lỗi `5.640.000%`: preset không được cho biết đơn vị
+thì nó đoán. Nay cả 23 preset đều đi qua, và `tests/consistency/preset_qua_schema.test.mjs` giữ
+cho câu này không sai lần nữa: nó đo bằng HÀNH VI, bỏ `unit` hay `source` khỏi `MAC_DINH` thì
+`option()` phải ném lỗi.
+
+Ba hình dạng khai meta, cả ba đều hợp lệ và đều có lý do:
+
+| Khai ở | Preset | Vì sao |
+|---|---|---|
+| `MAC_DINH.series` | 19 preset | mặc định |
+| `MAC_DINH.meta` | 15, 16, 18 | chúng dùng `series` làm biến cục bộ để dựng `rows`, trùng tên thì module chết bằng SyntaxError. `15` có hai khối vì hai trục đo hai đại lượng |
+| từng hàng | 03-bullet | N chỉ tiêu độc lập, ba cái tính bằng tỷ đồng và một cái bằng lần. Ép cả bốn vào một `series.unit` là khai báo nói dối, vì chính `validateSeries` đã chốt "không trộn đơn vị trong một series" |
+
+**Preset đóng cứng đơn vị trong hàm định dạng phải gọi `epDonVi(series, [...])`.** Ví dụ waterfall
+gọi `fmtCompact(v, { baseUnit: 'ty' })`, nên nó chỉ vẽ đúng `ty_dong`. Khai `unit` rồi phớt lờ khi
+định dạng là khai báo nói dối và nó im lặng: đổi `unit` sang `teu` thì nhãn vẫn ra "tỷ". `epDonVi`
+bắt preset nói thẳng nó làm được gì, và ném lỗi lúc build thay vì vẽ ra một nhãn sai sự thật.
 
 Bốn điều dễ làm sai, đã có lý do cụ thể:
 

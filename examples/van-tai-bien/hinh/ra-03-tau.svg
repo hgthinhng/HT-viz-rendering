@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="ship-svg" viewBox="0 0 1100 520" role="img" style="--accent:#2563eb">
+  <title>Tàu container - minh hoạ có chú thích</title>
+  <desc>Tàu container với bảy chú thích neo vào bảy bộ phận: ống khói, container, cabin, mớn nước, khoang máy, cột cờ, mũi tàu.</desc>
+  <!-- Khung 1100x520 RỘNG HƠN silhouette tàu (đặt lệch giữa qua translate) một
+       cách CÓ CHỦ ĐÍCH: chừa ~270-280px trống mỗi bên cho hộp nhãn, bài học
+       rút ra từ vòng lặp trước (canvas 800x500 khít với tàu khiến hộp nhãn
+       phải đè lên rìa vật thể mới đủ chỗ chứa chữ). Quy tắc chung: MỌI hình
+       dự kiến gắn callout cần viewBox rộng hơn silhouette ít nhất 20-25% mỗi
+       bên, không chỉ dựa vào thuật toán né vật thể của leader-line. -->
+  <g class="scene" transform="translate(130,10)">
+    <g class="sea">
+      <rect x="0" y="410" width="800" height="90" fill="#93c5fd"/>
+      <rect x="0" y="368" width="800" height="42" fill="#bfdbfe"/>
+      <path d="M0 368 Q 30 360 60 368 T 120 368 T 180 368 T 240 368 T 300 368 T 360 368 T 420 368 T 480 368 T 540 368 T 600 368 T 660 368 T 720 368 T 780 368 T 800 368" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.6"/>
+    </g>
+    <g class="hull">
+      <path d="M150,300 L650,300 C667.5,300 692.5,255 700,255 L620,398 L150,398 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+      <path d="M150,300 L650,300 C667.5,300 692.5,255 700,255 L652.4,340 L150,340 Z" fill="#475569"/>
+      <path d="M683,268 L633,378" stroke="#64748b" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+      <path d="M150,368 L636.8,368 L620,398 L150,398 Z" fill="#1d4ed8" fill-opacity="0.16"/>
+      <g class="portholes">
+        <circle cx="163" cy="322" r="4" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+        <circle cx="163" cy="340" r="4" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+      </g>
+      <g class="engine-hatch">
+        <rect x="470" y="355" width="60" height="34" fill="none" stroke="#64748b" stroke-width="1.6" stroke-dasharray="5 3"/>
+      </g>
+      <g class="draft-marks" font-family="'IBM Plex Mono', Menlo, Consolas, monospace" font-size="8" fill="#e2e8f0">
+        <line x1="585" y1="345" x2="600" y2="345" stroke="#e2e8f0" stroke-width="1.6"/><text x="604" y="348" font-family="'IBM Plex Mono', Menlo, Consolas, monospace">16M</text>
+        <line x1="585" y1="357" x2="600" y2="357" stroke="#e2e8f0" stroke-width="1.6"/><text x="604" y="360" font-family="'IBM Plex Mono', Menlo, Consolas, monospace">14M</text>
+        <line x1="585" y1="369" x2="600" y2="369" stroke="#e2e8f0" stroke-width="1.6"/><text x="604" y="372" font-family="'IBM Plex Mono', Menlo, Consolas, monospace">12M</text>
+        <line x1="585" y1="381" x2="600" y2="381" stroke="#e2e8f0" stroke-width="1.6"/><text x="604" y="384" font-family="'IBM Plex Mono', Menlo, Consolas, monospace">10M</text>
+        <line x1="585" y1="393" x2="600" y2="393" stroke="#e2e8f0" stroke-width="1.6"/><text x="604" y="396" font-family="'IBM Plex Mono', Menlo, Consolas, monospace">8M</text>
+      </g>
+    </g>
+    <g class="containers" stroke="#f8fafc" stroke-width="1.2">
+      <rect x="290" y="263" width="50" height="34" fill="#2563eb"/>
+      <rect x="290" y="226" width="50" height="34" fill="#0d9488"/>
+      <rect x="348" y="263" width="50" height="34" fill="#f59e0b"/>
+      <rect x="348" y="226" width="50" height="34" fill="#64748b"/>
+      <rect x="348" y="189" width="50" height="34" fill="#2563eb"/>
+      <rect x="406" y="263" width="50" height="34" fill="#0d9488"/>
+      <rect x="464" y="263" width="50" height="34" fill="#64748b"/>
+      <rect x="464" y="226" width="50" height="34" fill="#f59e0b"/>
+      <rect x="464" y="189" width="50" height="34" fill="#0d9488"/>
+      <rect x="522" y="263" width="50" height="34" fill="#2563eb"/>
+      <rect x="522" y="226" width="50" height="34" fill="#64748b"/>
+      <rect x="580" y="263" width="50" height="34" fill="#f59e0b"/>
+    </g>
+    <g class="bridge">
+      <rect x="165" y="210" width="95" height="90" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5"/>
+      <rect x="170" y="228" width="85" height="8" fill="#0f172a"/>
+      <rect x="170" y="250" width="85" height="8" fill="#0f172a"/>
+      <g class="windows" fill="#0f172a">
+        <rect x="175" y="270" width="14" height="14"/>
+        <rect x="200" y="270" width="14" height="14"/>
+        <rect x="225" y="270" width="14" height="14"/>
+        <rect x="250" y="270" width="10" height="14"/>
+      </g>
+    </g>
+    <g class="funnel">
+      <path d="M215,90 Q205,108 215,124 T197,152" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+      <rect x="200" y="150" width="30" height="62" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+      <rect x="200" y="150" width="30" height="16" fill="rgb(37, 99, 235)"/>
+    </g>
+    <g class="mast">
+      <line x1="170" y1="210" x2="170" y2="175" stroke="#0f172a" stroke-width="2"/>
+      <path d="M170,175 L200,182 L170,189 Z" fill="rgb(37, 99, 235)"/>
+    </g>
+  </g>
+<g class="annotations"><g class="callout" cursor="default"><circle cx="345" cy="120" r="3.2" fill="rgb(37, 99, 235)"/><circle cx="345" cy="120" r="6" fill="none" stroke="rgb(37, 99, 235)" stroke-width="1" stroke-opacity="0.4"/><path class="anno-leader" d="M 345 120 L 345 80 Q 345 70 335 70 L 249.92000000000002 70" fill="none" stroke="rgb(37, 99, 235)" stroke-width="1.3" stroke-opacity="0.85"/><rect class="anno-box" x="30" y="42" width="219.92000000000002" height="56" rx="5" fill="color(srgb 0.922902 0.944863 0.984235)" stroke="rgb(37, 99, 235)" stroke-width="1.1"/><rect class="anno-bar" x="246.92000000000002" y="42" width="3" height="56" fill="rgb(37, 99, 235)"/><text x="40" y="58" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="13" font-weight="700" fill="#0f172a" text-anchor="start">38% chi phí vận hành</text><text x="40" y="72" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">Nhiên liệu đốt, khoản chi lớn nhất</text><text x="40" y="86" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">của một chuyến</text></g><g class="callout" cursor="default"><circle cx="470" cy="210" r="3.2" fill="#334155"/><circle cx="470" cy="210" r="6" fill="none" stroke="#334155" stroke-width="1" stroke-opacity="0.4"/><path class="anno-leader" d="M 470 210 L 470 150 Q 470 140 460 140 L 238.16000000000003 140" fill="none" stroke="#334155" stroke-width="1.3" stroke-opacity="0.85"/><rect class="anno-box" x="30" y="112" width="208.16000000000003" height="56" rx="5" fill="#f8fafc" stroke="#334155" stroke-width="1.1"/><rect class="anno-bar" x="235.16000000000003" y="112" width="3" height="56" fill="#334155"/><text x="40" y="128" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="13" font-weight="700" fill="#0f172a" text-anchor="start">2.185 điểm</text><text x="40" y="142" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">Cước tuyến Á Âu quý II/2026, gấp</text><text x="40" y="156" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">1,85 lần đáy chu kỳ</text></g><g class="callout" cursor="default"><circle cx="342" cy="280" r="3.2" fill="#334155"/><circle cx="342" cy="280" r="6" fill="none" stroke="#334155" stroke-width="1" stroke-opacity="0.4"/><path class="anno-leader" d="M 342 280 L 342 414 Q 342 424 332 424 L 238.16000000000003 424" fill="none" stroke="#334155" stroke-width="1.3" stroke-opacity="0.85"/><rect class="anno-box" x="30" y="396" width="208.16000000000003" height="56" rx="5" fill="#f8fafc" stroke="#334155" stroke-width="1.1"/><rect class="anno-bar" x="235.16000000000003" y="396" width="3" height="56" fill="#334155"/><text x="40" y="412" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="13" font-weight="700" fill="#0f172a" text-anchor="start">22 người mỗi tàu</text><text x="40" y="426" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">Chi phí thuỷ thủ đoàn gần như cố</text><text x="40" y="440" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">định theo chuyến</text></g><g class="callout" cursor="default"><circle cx="725" cy="375" r="3.2" fill="#334155"/><circle cx="725" cy="375" r="6" fill="none" stroke="#334155" stroke-width="1" stroke-opacity="0.4"/><path class="anno-leader" d="M 725 375 L 725 89 Q 725 79 735 79 L 867.72 79" fill="none" stroke="#334155" stroke-width="1.3" stroke-opacity="0.85"/><rect class="anno-box" x="867.72" y="51" width="202.28000000000003" height="56" rx="5" fill="#f8fafc" stroke="#334155" stroke-width="1.1"/><rect class="anno-bar" x="867.72" y="51" width="3" height="56" fill="#334155"/><text x="877.72" y="67" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="13" font-weight="700" fill="#0f172a" text-anchor="start">Mớn nước 14 mét</text><text x="877.72" y="81" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">Chỉ ba cụm cảng trong nước nhận</text><text x="877.72" y="95" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">được tàu cỡ này</text></g><g class="callout" cursor="default"><circle cx="630" cy="382" r="3.2" fill="#dc2626"/><circle cx="630" cy="382" r="6" fill="none" stroke="#dc2626" stroke-width="1" stroke-opacity="0.4"/><path class="anno-leader" d="M 630 382 L 630 414 Q 630 424 640 424 L 867.72 424" fill="none" stroke="#dc2626" stroke-width="1.3" stroke-opacity="0.85"/><rect class="anno-box" x="867.72" y="396" width="202.28000000000003" height="56" rx="5" fill="#fef2f2" stroke="#dc2626" stroke-width="1.1"/><rect class="anno-bar" x="867.72" y="396" width="3" height="56" fill="#dc2626"/><text x="877.72" y="412" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="13" font-weight="700" fill="#7c2d12" text-anchor="start">14,2 năm tuổi tàu</text><text x="877.72" y="426" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">Chi phí bảo trì khoang máy tăng</text><text x="877.72" y="440" font-family="'IBM Plex Sans', 'Noto Sans', sans-serif" font-size="10.5" font-weight="400" fill="#475569" text-anchor="start">theo tuổi, không tuyến tính</text></g></g></svg>

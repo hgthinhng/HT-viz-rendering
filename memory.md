@@ -27,6 +27,81 @@ Số file trong git rớt từ khoảng 1.194 xuống 302.
 có 9 gate làn song. Một người xem ngoài đã review đúng bản đó và kết luận repo thiếu những thứ
 nhánh làm việc đã có (ecdf, calendar heatmap, fan, bump đều đang có trong 111 tài sản).
 
+## Làn `html-song` nay CHẠY THẬT, và bản mẫu đầu tiên đã có (09-08)
+
+Handoff cũ ghi "hạ tầng đã đủ, chưa có trang nào dùng". Câu đó lạc quan. Tầng preset và
+tầng gate đã sẵn, nhưng **tầng lắp ráp thì chưa tồn tại**: `build_html.py` có hằng
+`CAC_LAN` mà làn A chỉ khác đúng một điểm là cho phép raster, không chỗ nào nhúng ECharts,
+không directive đặt chart sống, `orchestrator.py` không có cờ `--lan`. Đợt này dựng nốt.
+
+### Đường sống, bốn mảnh ghép
+
+- `schema.mjs` bỏ `fs.readFileSync`, dùng import attribute JSON. Đây là thứ chặn preset
+  15-18 mount sống suốt Phase 4. `schema.vocab.json` vẫn là nguồn duy nhất.
+- Cả 18 preset chuyển `renderStatic` sang import ĐỘNG trong nhánh CLI. Import tĩnh kéo
+  `render-static.mjs`, mà module đó kéo `echarts` đầy đủ: **đo được, bundle ra 1.197KB,
+  tức còn nặng hơn bản đầy đủ**. Trần dung lượng trong `build-bundle-song.mjs` sinh ra
+  chính để bắt ca này.
+- `echarts-song.mjs`, cửa ECharts riêng, chỉ SVGRenderer. Đổi hướng so với ý ban đầu của
+  `mount-live.mjs` là dùng canvas mặc định, lý do: gate THEME-MATCH quét thẻ `<svg>` nên
+  chart canvas nằm NGOÀI tầm gate. Bundle 786,8KB, giảm 33%.
+- `esbuild` vào devDependencies. Không phải để tiết kiệm 371KB, mà vì một ấn phẩm làn A
+  là MỘT file mở bằng `file://` còn 18 preset là 18 module ESM import lẫn nhau.
+
+### Nâng cấp dần, không phải thay thế
+
+Chart sống KHÔNG đứng một mình. Mỗi khối mang SVG tĩnh nhúng sẵn, JS gỡ nó ra sau khi
+mount xong. Bắt buộc chứ không phải để đẹp: gate 7 NO-JS-CONTENT đòi mọi chuỗi số hiện
+khi JS bật phải hiện cả khi JS tắt, và tỷ lệ text tắt trên bật từ 85%. Chart sống thuần
+làm gate đó đỏ chắc chắn.
+
+**Và hai bản phải render bằng CÙNG một engine.** `sinh-svg-preset.mjs` render qua Chromium
+chứ không SSR trên Node, vì ECharts chọn số khoảng chia của trục theo BỀ RỘNG CHỮ: cùng dữ
+liệu, cùng khung 624x400, bản SSR ra nhãn lớn nhất 5.000.000 còn bản trình duyệt ra
+6.000.000. Hai bản của cùng một hình hiện hai con số khác nhau tuỳ JavaScript có chạy hay
+không.
+
+### Bốn lỗi THẬT mà bản mẫu đầu tiên lôi ra
+
+Không lỗi nào bắt được bằng test đơn vị, cả bốn chỉ lộ khi dựng một ấn phẩm hoàn chỉnh.
+
+1. **`RE_DIRECTIVE` dùng `(\w+)=` mà `\w` không khớp dấu gạch ngang**, nên `du-lieu=...`
+   bị đọc thành khoá `lieu`. Hậu quả đúng kiểu tệ nhất: chart sống im lặng rơi về dữ liệu
+   demo của preset trong khi SVG tĩnh cạnh nó dùng dữ liệu thật. Nay `du-lieu` là BẮT BUỘC,
+   không có đường lui về `MAC_DINH`.
+2. **`14-bar-ranking` đóng cứng `fmtPercent` ở năm chỗ**, nên một lượt xếp hạng tính bằng
+   TEU ra nhãn `5.640.000%` trên ấn phẩm thật. Sai sự thật chứ không phải xấu. Đã sửa để
+   theo `series.unit`. **Nợ: 04, 05, 08, 15, 18 vẫn đóng cứng y hệt, chưa rà.** Với
+   `11-stacked-100` thì đóng cứng là đúng vì nó luôn là tỷ trọng cộng 100%.
+3. **`.bia` có margin âm theo `--space-7/6` nhưng breakpoint 700px đổi padding body sang
+   `--space-5/4` mà không sửa margin.** Bìa rộng hơn body đúng phần chênh, tràn 12px ở
+   360px. Lưu ý cách đọc gate 8: nó báo thủ phạm là thẻ `<g>` trong chart, vì nó liệt kê
+   phần tử tràn CUỐI CÙNG chứ không phải phần tử GÂY tràn.
+4. **`mountLive` chỉ gắn `data-theme` cho thẻ `<svg>` đầu tiên**, mà ECharts với SVGRenderer
+   đặt HAI thẻ `<svg>` cạnh nhau. Gate THEME-MATCH duyệt từng thẻ nên đỏ đúng một nửa số
+   chart. Cộng thêm: SVG TĨNH nhúng vào trang chưa từng có ai gắn `data-theme`, nay
+   `khai_chu_de_svg()` trong `build_html.py` lo.
+
+### Bản mẫu vận tải biển: 6 PASS, 2 FAIL, 1 SKIP
+
+`examples/van-tai-bien/`, hai chart sống cộng một minh hoạ bake. Chạy bằng:
+
+    python3 pipeline/orchestrator.py examples/van-tai-bien/noi-dung.md --lan=html-song
+
+Hai gate còn đỏ, và **cả hai đều là câu hỏi về LUẬT chứ không phải lỗi của ấn phẩm**, nên
+để nguyên chờ người dùng phán:
+
+- **Gate 5 CONTRAST-ALL-THEMES.** Hai phần khác nhau. Phần `light` là lỗi thật ở tầng
+  token: `--ink-lo` (#8595A6) cho 3,07:1 trên nền giấy, dưới ngưỡng 4,5:1, mà **41 chỗ
+  trong `report.css` và `components.css` dùng nó làm màu CHỮ**. Sửa `.v-nguon` xong thì
+  `.hinh-nguon` lộ ra ngay, vì bệnh nằm ở token. Phần `dark` thì là xung đột luật: repo
+  bắt file giao khách khoá `data-theme="light"`, còn gate tự bật chủ đề tối để đo một
+  trạng thái người đọc không bao giờ thấy.
+- **Gate 9 THEME-MATCH lớp 2** đo tương phản giữa NỀN SVG và NỀN TRANG, đòi từ 3:1. Chart
+  nền trắng trên trang nền trắng cho đúng 1:1, nên lớp này đỏ với MỌI ấn phẩm đúng chuẩn
+  thiết kế của repo. Ý định gate là bắt "SVG chìm vào nền", nhưng thứ cần đo là NÉT VẼ với
+  nền chứ không phải nền với nền.
+
 ## ĐỌC MỤC NÀY TRƯỚC: tiền đề của repo đã đổi (07-08)
 
 Repo được xây trên tiền đề **"PDF IN ĐƯỢC"**. Người dùng đã phán quyết tiền đề đó sai với thực

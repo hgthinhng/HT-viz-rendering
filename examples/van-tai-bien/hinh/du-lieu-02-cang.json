@@ -1,0 +1,58 @@
+{
+ "series": {
+  "unit": "teu",
+  "source": {
+   "tier": "uoc-tinh",
+   "label": "Số minh hoạ, không phải số công bố của cảng"
+  },
+  "as_of": "2026-08-01",
+  "direction": "cao_tot",
+  "kind": "luy_ke_ky",
+  "rows": [
+   {
+    "entity": {
+     "code": "Cái Mép",
+     "name": "Cụm cảng Cái Mép Thị Vải"
+    },
+    "value": 5640000
+   },
+   {
+    "entity": {
+     "code": "Hải Phòng",
+     "name": "Cụm cảng Hải Phòng"
+    },
+    "value": 4180000
+   },
+   {
+    "entity": {
+     "code": "Cát Lái",
+     "name": "Cảng Cát Lái"
+    },
+    "value": 3950000
+   },
+   {
+    "entity": {
+     "code": "Quy Nhơn",
+     "name": "Cảng Quy Nhơn"
+    },
+    "value": 1120000
+   },
+   {
+    "entity": {
+     "code": "Đà Nẵng",
+     "name": "Cảng Đà Nẵng"
+    },
+    "value": 780000
+   },
+   {
+    "entity": {
+     "code": "Cần Thơ",
+     "name": "Cảng Cần Thơ"
+    },
+    "value": 210000
+   }
+  ]
+ },
+ "title": "Sản lượng container thông qua theo cụm cảng",
+ "subtitle": "Đơn vị: TEU, luỹ kế 2025. Số minh hoạ."
+}

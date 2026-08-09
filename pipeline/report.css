@@ -263,7 +263,12 @@ body.bao-cao {
 .v-nguon {
   font-family: var(--font-mono);
   font-size: 0.72em;
-  color: var(--ink-lo);
+  /* `--ink-md` chu khong phai `--ink-lo`. Nhan nguon co y nhat de khong cuop mach doc,
+     nhung `--ink-lo` (#8595A6) tren nen giay cho tuong phan 3,07:1, duoi nguong WCAG
+     4,5:1 cho van ban. Gate 5 CONTRAST-ALL-THEMES do duoc dieu do tren an pham that.
+     Nhan nguon la THONG TIN chu khong phai trang tri: mot con so khong doc noi nguon
+     thi bang khong co nguon. Do 7,2:1 sau khi doi. */
+  color: var(--ink-md);
   vertical-align: super;
   margin-left: 1px;
   white-space: nowrap;
@@ -393,7 +398,28 @@ body.bao-cao {
   body.bao-cao {
     padding: var(--space-5) var(--space-4);
   }
+  /* Margin am cua `.bia` phai doi THEO padding moi cua body. Bia tran ra sat vien bang
+     cach an mot khoang am dung bang padding cua body; khoi tren khai theo space-7/6, con
+     khoi nay doi padding sang space-5/4 ma khong ai sua margin, nen bia rong hon body
+     dung phan chenh. Do duoc o 360px: scrollWidth 372 tren clientWidth 360, tran 12px,
+     va gate 8 RESPONSIVE-WIDTH bao thu pham la mot the <g> trong chart vi no liet ke
+     phan tu tran CUOI CUNG chu khong phai phan tu GAY tran. */
+  .bia {
+    margin: calc(-1 * var(--space-5)) calc(-1 * var(--space-4)) var(--space-7);
+  }
   .bia-ten {
     font-size: 26pt;
   }
 }
+
+/* Khoi chart SONG cua lan `html-song`. Ba dong, moi dong mot ly do do duoc:
+   - `overflow: hidden` tren the <svg>: ECharts ve nhan su kien BEN NGOAI viewBox khi
+     khung hep, va mot nhan dai 380px trong khung 360px keo scrollWidth cua CA TRANG
+     ra 372px. Gate 8 RESPONSIVE-WIDTH bat dung ca do. SVG mac dinh khong cat con,
+     nen phai noi ro.
+   - `min-height`: truoc khi JavaScript chay, khoi phai giu san cho SVG tinh, neu
+     khong trang giat mot nhip khi chart mount xong.
+   - `position: relative`: ECharts dat lop phu tuong tac bang absolute, thieu moc neo
+     thi lop do bam vao body. */
+.hinh-khung.chart-song { position: relative; min-height: 200px; }
+.hinh-khung.chart-song svg { overflow: hidden; }

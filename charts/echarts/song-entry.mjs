@@ -35,6 +35,15 @@ function mount(maPreset, duLieu, container) {
  * Du lieu doc tu the <script type="application/json"> dat NGAY BEN TRONG container, nen
  * du lieu cua tung hinh nam canh chinh hinh do trong ma nguon trang thay vi gom thanh
  * mot khoi roi o dau trang. Khong co the do thi dung MAC_DINH cua preset.
+ *
+ * NANG CAP DAN, khong phai thay the: container da mang san mot SVG tinh dung
+ * `data-svg-tinh`, sinh luc build tu DUNG file du lieu nay. Ham chi go SVG do RA sau
+ * khi chart song da mount xong. Hai ly do, ly do thu hai moi la ly do bat buoc:
+ *   1. Nguoi tat JavaScript, hoac may mo file truoc khi script chay xong, van thay hinh.
+ *   2. Gate 7 NO-JS-CONTENT doi MOI chuoi so hien khi JS bat phai hien ca khi JS tat,
+ *      va ty le do dai text tat tren bat phai tu 85%. Mot chart song thuan tuy lam gate
+ *      do do chac chan. Vi ban tinh va ban song sinh tu cung mot `option()` va cung mot
+ *      file du lieu nen so tren hai ban khong the lech nhau.
  */
 function mountTatCa(goc) {
   const root = goc || document;
@@ -49,7 +58,13 @@ function mountTatCa(goc) {
         throw new Error(`HTViz: du lieu JSON hong o "${el.id || el.dataset.preset}": ${e.message}`);
       }
     }
-    daMount.push(mount(el.dataset.preset, duLieu, el));
+    const svgTinh = el.querySelector('[data-svg-tinh]');
+    // Khung phai co kich thuoc THAT truoc khi init, neu khong ECharts do ra 0x0 va ve
+    // vao hu khong. SVG tinh dang giu chieu cao do, nen do lai truoc khi go no ra.
+    if (svgTinh && !el.style.height) el.style.height = `${el.clientHeight}px`;
+    const chart = mount(el.dataset.preset, duLieu, el);
+    if (svgTinh) svgTinh.remove();
+    daMount.push(chart);
   });
   let hen = null;
   window.addEventListener('resize', () => {

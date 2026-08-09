@@ -47,6 +47,9 @@ export function mountLive(optionFn, params, container) {
 function ganChuDe(container) {
   const chuDe = document.documentElement.getAttribute('data-theme');
   if (!chuDe) return;
-  const svg = container.querySelector('svg');
-  if (svg) svg.setAttribute('data-theme', chuDe);
+  // querySelectorAll chu khong phai querySelector: ECharts voi SVGRenderer dat HAI the
+  // <svg> canh nhau trong container (mot cho noi dung, mot cho lop phu tuong tac), va
+  // gate THEME-MATCH duyet TUNG the <svg> tren trang chu khong duyet tung chart. Ban
+  // dau tien cua ham nay chi gan cho the thu nhat, va gate do dung mot nua so chart.
+  container.querySelectorAll('svg').forEach((svg) => svg.setAttribute('data-theme', chuDe));
 }

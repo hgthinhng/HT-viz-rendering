@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Tàu container: năm con số neo vào năm bộ phận</title>
+<style>
+  /* Font nap tu design-system/fonts/fonts-embedded.css (base64 nhung san,
+     xem thẻ link ben duoi). Ban truoc tro toi file:///home/hgthinhng/.fonts/
+     nen tren bat ky may nao khac font im lang rot ve mac dinh trinh duyet,
+     dung kieu hong ma khong ai thay. */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1000px; background:#f8fafc; padding:32px; font-family:"IBM Plex Sans","Noto Sans",-apple-system,"Segoe UI",sans-serif; }
+  h2 { font-size:19px; font-weight:700; color:#0f172a; margin-bottom:6px; }
+  p.hint { font-size:12px; color:#64748b; margin-bottom:18px; }
+  #ship-svg { width:100%; height:auto; display:block; background:#ffffff; border:1px solid #e2e8f0; }
+</style>
+<link rel="stylesheet" href="../../../design-system/fonts/fonts-embedded.css">
+<link rel="stylesheet" href="../../../illustrations/annotate.css">
+</head>
+<body>
+
+<svg id="ship-svg" viewBox="0 0 1100 520" role="img" style="--accent:#2563eb">
+  <title>Tàu container - minh hoạ có chú thích</title>
+  <desc>Tàu container với bảy chú thích neo vào bảy bộ phận: ống khói, container, cabin, mớn nước, khoang máy, cột cờ, mũi tàu.</desc>
+  <!-- Khung 1100x520 RỘNG HƠN silhouette tàu (đặt lệch giữa qua translate) một
+       cách CÓ CHỦ ĐÍCH: chừa ~270-280px trống mỗi bên cho hộp nhãn, bài học
+       rút ra từ vòng lặp trước (canvas 800x500 khít với tàu khiến hộp nhãn
+       phải đè lên rìa vật thể mới đủ chỗ chứa chữ). Quy tắc chung: MỌI hình
+       dự kiến gắn callout cần viewBox rộng hơn silhouette ít nhất 20-25% mỗi
+       bên, không chỉ dựa vào thuật toán né vật thể của leader-line. -->
+  <g class="scene" transform="translate(130,10)">
+    <g class="sea">
+      <rect x="0" y="410" width="800" height="90" fill="#93c5fd"/>
+      <rect x="0" y="368" width="800" height="42" fill="#bfdbfe"/>
+      <path d="M0 368 Q 30 360 60 368 T 120 368 T 180 368 T 240 368 T 300 368 T 360 368 T 420 368 T 480 368 T 540 368 T 600 368 T 660 368 T 720 368 T 780 368 T 800 368"
+            fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.6"/>
+    </g>
+    <g class="hull">
+      <path d="M150,300 L650,300 C667.5,300 692.5,255 700,255 L620,398 L150,398 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+      <path d="M150,300 L650,300 C667.5,300 692.5,255 700,255 L652.4,340 L150,340 Z" fill="#475569"/>
+      <path d="M683,268 L633,378" stroke="#64748b" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+      <path d="M150,368 L636.8,368 L620,398 L150,398 Z" fill="#1d4ed8" fill-opacity="0.16"/>
+      <g class="portholes">
+        <circle cx="163" cy="322" r="4" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+        <circle cx="163" cy="340" r="4" fill="none" stroke="#94a3b8" stroke-width="1.4"/>
+      </g>
+      <g class="engine-hatch">
+        <rect x="470" y="355" width="60" height="34" fill="none" stroke="#64748b" stroke-width="1.6" stroke-dasharray="5 3"/>
+      </g>
+      <g class="draft-marks" font-family="'IBM Plex Mono', Menlo, Consolas, monospace" font-size="8" fill="#e2e8f0">
+        <line x1="585" y1="345" x2="600" y2="345" stroke="#e2e8f0" stroke-width="1.6"/><text x="604" y="348">16M</text>
+        <line x1="585" y1="357" x2="600" y2="357" stroke="#e2e8f0" stroke-width="1.6"/><text x="604" y="360">14M</text>
+        <line x1="585" y1="369" x2="600" y2="369" stroke="#e2e8f0" stroke-width="1.6"/><text x="604" y="372">12M</text>
+        <line x1="585" y1="381" x2="600" y2="381" stroke="#e2e8f0" stroke-width="1.6"/><text x="604" y="384">10M</text>
+        <line x1="585" y1="393" x2="600" y2="393" stroke="#e2e8f0" stroke-width="1.6"/><text x="604" y="396">8M</text>
+      </g>
+    </g>
+    <g class="containers" stroke="#f8fafc" stroke-width="1.2">
+      <rect x="290" y="263" width="50" height="34" fill="#2563eb"/>
+      <rect x="290" y="226" width="50" height="34" fill="#0d9488"/>
+      <rect x="348" y="263" width="50" height="34" fill="#f59e0b"/>
+      <rect x="348" y="226" width="50" height="34" fill="#64748b"/>
+      <rect x="348" y="189" width="50" height="34" fill="#2563eb"/>
+      <rect x="406" y="263" width="50" height="34" fill="#0d9488"/>
+      <rect x="464" y="263" width="50" height="34" fill="#64748b"/>
+      <rect x="464" y="226" width="50" height="34" fill="#f59e0b"/>
+      <rect x="464" y="189" width="50" height="34" fill="#0d9488"/>
+      <rect x="522" y="263" width="50" height="34" fill="#2563eb"/>
+      <rect x="522" y="226" width="50" height="34" fill="#64748b"/>
+      <rect x="580" y="263" width="50" height="34" fill="#f59e0b"/>
+    </g>
+    <g class="bridge">
+      <rect x="165" y="210" width="95" height="90" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5"/>
+      <rect x="170" y="228" width="85" height="8" fill="#0f172a"/>
+      <rect x="170" y="250" width="85" height="8" fill="#0f172a"/>
+      <g class="windows" fill="#0f172a">
+        <rect x="175" y="270" width="14" height="14"/>
+        <rect x="200" y="270" width="14" height="14"/>
+        <rect x="225" y="270" width="14" height="14"/>
+        <rect x="250" y="270" width="10" height="14"/>
+      </g>
+    </g>
+    <g class="funnel">
+      <path d="M215,90 Q205,108 215,124 T197,152" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+      <rect x="200" y="150" width="30" height="62" fill="#1e293b" stroke="#0f172a" stroke-width="1.2"/>
+      <rect x="200" y="150" width="30" height="16" fill="var(--accent)"/>
+    </g>
+    <g class="mast">
+      <line x1="170" y1="210" x2="170" y2="175" stroke="#0f172a" stroke-width="2"/>
+      <path d="M170,175 L200,182 L170,189 Z" fill="var(--accent)"/>
+    </g>
+  </g>
+</svg>
+
+<script src="../../../illustrations/annotate.js"></script>
+<script>
+  const svg = document.getElementById('ship-svg');
+  // Toạ độ neo phải cộng thêm offset translate(130,10) của <g class="scene">
+  // vì lớp annotation được vẽ là SIBLING của scene (không nằm trong nhóm bị
+  // transform), nên phải tự quy đổi sang hệ toạ độ gốc của <svg>.
+  const OX = 130, OY = 10;
+  const shift = ([x, y]) => [x + OX, y + OY];
+  // avoidBox = bbox thật của vật thể SAU khi cộng offset, leader-line sẽ đi
+  // vòng qua vùng trống trên/dưới bbox này thay vì cắt ngang giữa tàu.
+  const AVOID = { x: 150 + OX, y: 85 + OY, width: 550, height: 313 };
+  Annotate.annotate(svg, [
+    // Moi con so neo vao dung bo phan lam ra no. Con so nao khong co cho ngoi ngu nghia
+    // thi de trong van xuoi, khong treo bua canh hinh: illustrations/grammar.md.
+    { anchor: shift([215, 110]), label: { x: 30, y: 70 }, head: '38% chi phí vận hành', sub: 'Nhiên liệu đốt, khoản chi lớn nhất của một chuyến',
+      tone: 'accent' },
+    { anchor: shift([340, 200]), label: { x: 30, y: 210 }, head: '2.185 điểm', sub: 'Cước tuyến Á Âu quý II/2026, gấp 1,85 lần đáy chu kỳ',
+      tone: 'neutral' },
+    { anchor: shift([212, 270]), label: { x: 30, y: 350 }, head: '22 người mỗi tàu', sub: 'Chi phí thuỷ thủ đoàn gần như cố định theo chuyến',
+      tone: 'neutral' },
+    { anchor: shift([595, 365]), label: { x: 1070, y: 120 }, head: 'Mớn nước 14 mét', sub: 'Chỉ ba cụm cảng trong nước nhận được tàu cỡ này',
+      tone: 'neutral' },
+    { anchor: shift([500, 372]), label: { x: 1070, y: 300 }, head: '14,2 năm tuổi tàu', sub: 'Chi phí bảo trì khoang máy tăng theo tuổi, không tuyến tính',
+      tone: 'negative' },
+  ], { avoidBox: AVOID });
+</script>
+</body>
+</html>

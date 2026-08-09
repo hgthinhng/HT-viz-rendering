@@ -1,0 +1,147 @@
+{
+  "version": "1.0",
+  "generated_date": "2026-08-09",
+  "_doc": [
+    "So nguon cua ban mau lan `html-song`. MOI SO TRONG FILE NAY LA SO MINH HOA, dung de",
+    "nghiem thu duong ong chart song, khong phai so cong bo cua bat ky cang, hang tau hay",
+    "co quan nao. Ghi ro dieu do ngay trong truong `org` de khong ai trich nham."
+  ],
+  "sources": [
+    {
+      "id": "V1",
+      "org": "Số liệu minh hoạ cho bản mẫu kỹ thuật, không phải số công bố",
+      "tier": "T5_derived",
+      "sensitivity": "public",
+      "published_date": "2026-08-01",
+      "cite": "Bộ số minh hoạ dựng cho bản mẫu làn html-song của HT-viz-rendering, 2026-08-01"
+    },
+    {
+      "id": "V2",
+      "org": "Số liệu minh hoạ cho bản mẫu kỹ thuật, không phải số công bố",
+      "tier": "T5_derived",
+      "sensitivity": "public",
+      "published_date": "2026-08-01",
+      "cite": "Chỉ số giá cước minh hoạ dựng cho bản mẫu làn html-song, 2026-08-01"
+    },
+    {
+      "id": "V3",
+      "org": "Số liệu minh hoạ cho bản mẫu kỹ thuật, không phải số công bố",
+      "tier": "T5_derived",
+      "sensitivity": "public",
+      "published_date": "2026-08-01",
+      "cite": "Sản lượng thông qua minh hoạ dựng cho bản mẫu làn html-song, 2026-08-01"
+    }
+  ],
+  "values": [
+    {
+      "id": "v_cuoc_dinh",
+      "display": "2.340 điểm",
+      "value": 2340,
+      "unit": "diem",
+      "period": "Q1/2026",
+      "source_id": "V2",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cuoc_a_au"
+    },
+    {
+      "id": "v_cuoc_day",
+      "display": "1.180 điểm",
+      "value": 1180,
+      "unit": "diem",
+      "period": "Q3/2025",
+      "source_id": "V2",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cuoc_a_au"
+    },
+    {
+      "id": "v_cuoc_hien_tai",
+      "display": "2.185 điểm",
+      "value": 2185,
+      "unit": "diem",
+      "period": "Q2/2026",
+      "source_id": "V2",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cuoc_a_au"
+    },
+    {
+      "id": "v_vong_mui",
+      "display": "9 ngày",
+      "value": 9,
+      "unit": "ngay",
+      "period": "2026",
+      "source_id": "V1",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cuoc_a_au"
+    },
+    {
+      "id": "v_cai_mep",
+      "display": "5,64 triệu TEU",
+      "value": 5640000,
+      "unit": "TEU",
+      "period": "2025",
+      "source_id": "V3",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cang_thong_qua"
+    },
+    {
+      "id": "v_can_tho",
+      "display": "0,21 triệu TEU",
+      "value": 210000,
+      "unit": "TEU",
+      "period": "2025",
+      "source_id": "V3",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cang_thong_qua"
+    },
+    {
+      "id": "v_ba_cum_dau",
+      "display": "83%",
+      "value": 83,
+      "unit": "phan tram",
+      "period": "2025",
+      "source_id": "V3",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "cang_thong_qua"
+    },
+    {
+      "id": "v_nhien_lieu",
+      "display": "38%",
+      "value": 38,
+      "unit": "phan tram",
+      "period": "2026",
+      "source_id": "V1",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "tau_container"
+    },
+    {
+      "id": "v_tuoi_tau",
+      "display": "14,2 năm",
+      "value": 14.2,
+      "unit": "nam",
+      "period": "2026",
+      "source_id": "V1",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "tau_container"
+    },
+    {
+      "id": "v_mon_nuoc",
+      "display": "14 mét",
+      "value": 14,
+      "unit": "met",
+      "period": "2026",
+      "source_id": "V1",
+      "retrieved_date": "2026-08-01",
+      "tier": "T5_derived",
+      "chart_id": "tau_container"
+    }
+  ]
+}

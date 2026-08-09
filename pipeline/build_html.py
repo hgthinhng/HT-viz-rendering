@@ -201,6 +201,38 @@ def gioi_han_style_svg(svg: str, ma_hinh: str) -> str:
     return RE_KHOI_STYLE.sub(bo_hep, svg)
 
 
+RE_THE_SVG_MO = re.compile(r"<svg\b")
+
+
+def khai_chu_de_svg(svg: str, chu_de: str) -> str:
+    """Ghi `data-theme` len MOI the <svg> mo trong chuoi, tru the da co san.
+
+    Gate 9 THEME-MATCH cua lan `html-song` duyet tung the <svg> tren trang va coi thieu
+    `data-theme` la FAIL chu khong phai SKIP. Ly do gate lam vay hop ly: mot SVG khong
+    khai gi thi khong co cach nao biet no da sinh theo dung chu de cua trang hay chua.
+    Nhung khong ai gan thuoc tinh do cho SVG TINH nhung vao trang, nen truoc ban nay moi
+    an pham lan song deu do gate 9 ngay tu hinh dau tien. Chart SONG thi da tu gan luc
+    mount (xem mount-live.mjs), day la nua con lai cua cung mot viec.
+    """
+    if not chu_de:
+        return svg
+    ra = []
+    vi_tri = 0
+    for m in RE_THE_SVG_MO.finditer(svg):
+        het_the = svg.find(">", m.end())
+        if het_the == -1:
+            break
+        the = svg[m.start():het_the]
+        ra.append(svg[vi_tri:m.start()])
+        if "data-theme" in the:
+            ra.append(the)
+        else:
+            ra.append(f'<svg data-theme="{html_mod.escape(chu_de)}"' + the[len("<svg"):])
+        vi_tri = het_the
+    ra.append(svg[vi_tri:])
+    return "".join(ra)
+
+
 def nap_svg(duong_dan: Path, tien_to: str, cho_phep_raster: bool = False) -> str:
     if not duong_dan.exists():
         raise LoiDung(f"khong tim thay file hinh: {duong_dan}")
@@ -372,7 +404,13 @@ def dung_bang(khoi: list[str], so_nguon: SoNguon, chu_thich: str = "") -> str:
     return "\n".join(ra)
 
 
-RE_DIRECTIVE = re.compile(r'(\w+)=("([^"]*)"|\S+)')
+# `[\w-]` chu khong phai `\w`: `\w` KHONG khop dau gach ngang, nen `du-lieu=...` bi doc
+# thanh khoa `lieu`. Da can that va can theo dung kieu te nhat: chart song im lang roi ve
+# du lieu demo cua preset trong khi SVG tinh canh no dung du lieu that cua bao cao, tuc
+# hai ban cua CUNG mot hinh noi hai dieu khac nhau ma khong ai bao gi. Ten directive cua
+# repo von dung dau gach (`ngat-trang`, `chart-song`) nen ten thuoc tinh cung phai dung
+# duoc.
+RE_DIRECTIVE = re.compile(r'([\w-]+)=("([^"]*)"|\S+)')
 
 
 def doc_directive(dong: str) -> tuple[str, dict]:
@@ -387,12 +425,22 @@ def doc_directive(dong: str) -> tuple[str, dict]:
 
 
 class BoDung:
-    def __init__(self, so_nguon: SoNguon, goc: Path, lan: str = LAN_MAC_DINH):
+    def __init__(
+        self,
+        so_nguon: SoNguon,
+        goc: Path,
+        lan: str = LAN_MAC_DINH,
+        chu_de: str = CHU_DE_MAC_DINH,
+    ):
         self.lan = lan
+        self.chu_de = chu_de
         self.so_nguon = so_nguon
         self.goc = goc
         self.so_hinh = 0
         self.so_h2 = 0
+        # Bat khi gap directive `chart-song`. Trang chi nhung bundle 787KB khi THAT SU
+        # co chart song: mot ban lan html-song thuan chu va SVG tinh khong phai ganh no.
+        self.co_chart_song = False
 
     def hinh(self, loai: str, tt: dict) -> str:
         src = tt.get("src")
@@ -401,7 +449,9 @@ class BoDung:
         duong = (self.goc / src) if not os.path.isabs(src) else Path(src)
         self.so_hinh += 1
         ma_hinh = tt.get("id") or f"hinh-{self.so_hinh}"
-        svg = nap_svg(duong, ma_hinh, cho_phep_raster=(self.lan == "html-song"))
+        svg = khai_chu_de_svg(
+            nap_svg(duong, ma_hinh, cho_phep_raster=(self.lan == "html-song")), self.chu_de
+        )
 
         chu = tt.get("chu", "")
         dong_nguon = ""
@@ -419,17 +469,107 @@ class BoDung:
             f"</figure>"
         )
 
+    def chart_song(self, tt: dict) -> str:
+        """Hinh CO HAI BAN trong cung mot khoi: SVG tinh nhung san, va chart ECharts
+        song do bundle mount de len khi JavaScript chay.
+
+        Chi lan `html-song` dung duoc. Lan `pdf-so` di qua WeasyPrint, ma WeasyPrint
+        khong chay JavaScript, nen o do directive nay chi con lai ban tinh: dung thi
+        khong sai gi ca nhung nguoi viet bao cao tuong minh dang dat mot hinh tuong tac
+        vao ban PDF. Bao loi thang con hon de hieu nham do keo dai.
+
+        Hai ban sinh tu CUNG mot file du lieu (`du-lieu=`) qua CUNG mot `option()`, nen
+        so tren hai ban khong the lech. Xem `scripts/sinh-svg-preset.mjs`.
+        """
+        if self.lan != "html-song":
+            raise LoiDung(
+                "directive `chart-song` chi dung duoc o lan html-song. "
+                f"Lan hien tai la `{self.lan}`, ma WeasyPrint khong chay JavaScript nen "
+                "chart song se khong bao gio mount. Dung `::: chart` voi mot SVG tinh, "
+                "hoac dung `--lan=html-song`."
+            )
+        preset = tt.get("preset")
+        if not preset:
+            raise LoiDung("directive chart-song thieu preset")
+        src = tt.get("src")
+        if not src:
+            raise LoiDung(
+                f"directive chart-song ({preset}) thieu src. `src` tro toi SVG tinh sinh "
+                "san bang scripts/sinh-svg-preset.mjs, va no la thu nguoi tat JavaScript "
+                "nhin thay, cung la thu giu gate NO-JS-CONTENT khong do."
+            )
+        self.so_hinh += 1
+        ma_hinh = tt.get("id") or f"hinh-{self.so_hinh}"
+        cao = tt.get("cao", "380")
+        if not str(cao).isdigit():
+            raise LoiDung(f"chart-song {ma_hinh}: `cao` phai la so pixel, dang la {cao!r}")
+
+        duong_svg = (self.goc / src) if not os.path.isabs(src) else Path(src)
+        svg = khai_chu_de_svg(nap_svg(duong_svg, ma_hinh, cho_phep_raster=True), self.chu_de)
+
+        # `du-lieu` BAT BUOC, khong co duong lui ve MAC_DINH cua preset. Thieu no thi ban
+        # song ve du lieu demo con ban tinh canh no ve du lieu that, va nguoi doc thay ban
+        # nao la tuy vao JavaScript co chay hay khong. Da xay ra that mot lan, chinh o ban
+        # mau nay, vi RE_DIRECTIVE khong doc noi khoa co dau gach.
+        if not tt.get("du-lieu"):
+            raise LoiDung(
+                f"chart-song {ma_hinh} ({preset}) thieu `du-lieu`. Ban song va ban tinh phai "
+                "sinh tu CUNG mot file du lieu, neu khong hai ban se noi hai dieu khac nhau."
+            )
+        khoi_du_lieu = ""
+        if tt.get("du-lieu"):
+            duong_dl = self.goc / tt["du-lieu"]
+            if not duong_dl.exists():
+                raise LoiDung(f"chart-song {ma_hinh}: khong thay file du lieu {duong_dl}")
+            tho = duong_dl.read_text(encoding="utf-8")
+            try:
+                json.loads(tho)
+            except json.JSONDecodeError as e:
+                raise LoiDung(f"chart-song {ma_hinh}: du lieu khong phai JSON hop le, {e}") from e
+            # `</script>` trong chuoi JSON se dong som the script va lam vo ca trang.
+            an_toan = tho.replace("</", "<\\/")
+            khoi_du_lieu = f'<script type="application/json">{an_toan}</script>'
+
+        chu = tt.get("chu", "")
+        dong_nguon = ""
+        if tt.get("nguon"):
+            cac_ma = [x.strip() for x in tt["nguon"].split(",") if x.strip()]
+            ten = ", ".join(self.so_nguon.nhan_nguon(m) for m in cac_ma)
+            dong_nguon = f'<span class="hinh-nguon">Nguồn: {html_mod.escape(ten)}</span>'
+
+        self.co_chart_song = True
+        return (
+            f'<figure class="hinh" id="{html_mod.escape(ma_hinh)}">\n'
+            f'<div class="hinh-khung chart-song" data-preset="{html_mod.escape(preset)}" '
+            f'style="height:{cao}px">'
+            f'<div data-svg-tinh>{svg}</div>{khoi_du_lieu}</div>\n'
+            f'<figcaption class="hinh-chu">'
+            f'<span class="hinh-so">Hình {self.so_hinh}</span>'
+            f"{dung_inline(chu, self.so_nguon)}{dong_nguon}</figcaption>\n"
+            f"</figure>"
+        )
+
     def directive(self, dong: str) -> str:
         loai, tt = doc_directive(dong)
         if loai in ("chart", "minh-hoa"):
             return self.hinh(loai, tt)
+        if loai == "chart-song":
+            return self.chart_song(tt)
         if loai == "ngat-trang":
             return '<div class="ngat-trang"></div>'
         raise LoiDung(f"directive khong biet: {loai}")
 
 
-def dung_than(van_ban: str, so_nguon: SoNguon, goc: Path, lan: str = LAN_MAC_DINH) -> str:
-    bo = BoDung(so_nguon, goc, lan)
+def dung_than(
+    van_ban: str,
+    so_nguon: SoNguon,
+    goc: Path,
+    lan: str = LAN_MAC_DINH,
+    chu_de: str = CHU_DE_MAC_DINH,
+) -> tuple[str, bool]:
+    """Tra ve (than_html, co_chart_song). Co ca co `co_chart_song` vi trang chi nen
+    nhung bundle 787KB khi tren trang that su co chart song."""
+    bo = BoDung(so_nguon, goc, lan, chu_de)
     ra: list[str] = []
     chu_thich_bang = ""
     dong = van_ban.split("\n")
@@ -535,7 +675,7 @@ def dung_than(van_ban: str, so_nguon: SoNguon, goc: Path, lan: str = LAN_MAC_DIN
             noi = noi.strip("_").strip()
         ra.append(f"<p{lop}>{dung_inline(noi, so_nguon)}</p>")
 
-    return "\n".join(ra)
+    return "\n".join(ra), bo.co_chart_song
 
 
 # --------------------------------------------------------------------------- #
@@ -633,7 +773,42 @@ body.bao-cao > * { margin-left: auto; margin-right: auto; }
 KHO_TRANG_HOP_LE = ("doc", "ngang")
 
 
-def lap_trang(meta: dict, than: str, so_nguon: SoNguon, chu_de: str = CHU_DE_MAC_DINH) -> str:
+DUONG_BUNDLE_SONG = REPO / "charts" / "echarts" / "ra-song" / "bundle-song.js"
+
+
+def khoi_script_song() -> str:
+    """Bundle lan `html-song` nhung thang vao trang, cong loi goi mount.
+
+    `<script type="module">` chu khong phai script thuong: bundle o dinh dang ESM vi
+    nhanh CLI cua 18 preset dung top-level await (xem scripts/build-bundle-song.mjs).
+    Module INLINE khong phat sinh request nao nen van chay qua `file://`.
+
+    KHONG bọc `try/catch` quanh loi goi mount, va do la co y chu khong phai thieu sot.
+    Gate 2 JS-SILENT-FAIL sinh ra de bat dung kieu loi bi nuot. Neu mount hong thi
+    SVG tinh van con nguyen tren trang (song-entry.mjs chi go no RA sau khi mount xong),
+    nen trang khong vo, ma loi van noi to du de gate nghe thay.
+    """
+    if not DUONG_BUNDLE_SONG.exists():
+        raise LoiDung(
+            f"lan html-song can bundle {DUONG_BUNDLE_SONG.relative_to(REPO)} nhung chua co. "
+            "Chay: npm run bundle:song"
+        )
+    bundle = DUONG_BUNDLE_SONG.read_text(encoding="utf-8")
+    return (
+        '<script type="module">\n'
+        + bundle
+        + "\nwindow.HTViz.mountTatCa();\n"
+        + "</script>"
+    )
+
+
+def lap_trang(
+    meta: dict,
+    than: str,
+    so_nguon: SoNguon,
+    chu_de: str = CHU_DE_MAC_DINH,
+    khoi_script: str = "",
+) -> str:
     css = "\n".join(
         (REPO / p).read_text(encoding="utf-8")
         for p in (
@@ -671,6 +846,7 @@ def lap_trang(meta: dict, than: str, so_nguon: SoNguon, chu_de: str = CHU_DE_MAC
 {than}
 {dung_danh_muc_nguon(so_nguon)}
 {the_ledger}
+{khoi_script}
 </body>
 </html>
 """
@@ -702,8 +878,9 @@ def dung(
     if lan not in CAC_LAN:
         raise LoiDung(f"lan khong biet: {lan}. Chi nhan mot trong {CAC_LAN}")
 
-    than = dung_than(than_md, so_nguon, nguon_md.parent, lan)
-    trang = lap_trang(meta, than, so_nguon, chu_de)
+    than, co_chart_song = dung_than(than_md, so_nguon, nguon_md.parent, lan, chu_de)
+    khoi_script = khoi_script_song() if co_chart_song else ""
+    trang = lap_trang(meta, than, so_nguon, chu_de, khoi_script)
 
     ra_html.parent.mkdir(parents=True, exist_ok=True)
     ra_html.write_text(trang, encoding="utf-8")

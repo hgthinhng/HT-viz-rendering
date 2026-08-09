@@ -24,7 +24,7 @@
 // da-bien-the. CLI tail goi option() HAI LAN voi bienThe khac nhau de giu nguyen ca hai
 // file ra out-14-bar-ranking.svg va out-14-bar-ranking-dot.svg nhu truoc khi tach.
 import { baseOption, TYPOGRAPHY, PALETTE, FONT_STACK, tooltipDefault } from './theme.mjs';
-import { fmtPercent } from './fmt.mjs';
+import { fmtPercent, fmtNumber } from './fmt.mjs';
 import { validateSeries, soThapPhan, nhanDonVi } from './schema.mjs';
 
 // % biên lợi nhuận gộp minh hoạ theo phân khúc, KHÔNG phải số thật. entity.code là
@@ -97,6 +97,15 @@ export function option(params) {
   const rows = [...series.rows].sort((a, b) => b.value - a.value); // sort giảm dần: hạng 1 ở index 0
   const decimals = soThapPhan(series); // 1 cho 'phan_tram', không tự chọn ở đây
   const donVi = nhanDonVi(series.unit);
+// Dinh dang phai theo `series.unit`, khong duoc dong cung `%`. Ban truoc goi fmtPercent
+// o ca nam cho, nen mot lat xep hang tinh bang TEU ra nhan "5.640.000%" tren an pham
+// that: sai su that chu khong phai xau. Bat duoc luc dung ban mau van tai bien dau
+// tien, sau khi preset nay da nam trong catalog hai phase.
+// NO CON LAI: 04, 05, 08, 11, 15, 18 van dong cung fmtPercent y het. Voi 11-stacked-100
+// thi dung (no luon la ty trong cong 100%), sau cai kia thi chua ra soat.
+const dinhDangSo = series.unit === 'phan_tram'
+  ? fmtPercent
+  : (v, o) => fmtNumber(v, o);
 
   // dòng chú giải "mã = tên", vì bản PDF không có hover -- annotation-first, không dựa
   // hover. Tổng chuỗi có thể vượt bề rộng canvas nên PHẢI gói dòng theo TỪNG CẶP mã=tên
@@ -110,7 +119,7 @@ export function option(params) {
   function buildValueAxis({ axisDecimals = decimals, splitNumber } = {}) {
     return {
       type: 'value', min: 0, splitNumber,
-      axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => fmtPercent(v, { decimals: axisDecimals }) },
+      axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => dinhDangSo(v, { decimals: axisDecimals }) },
       splitLine: { lineStyle: { color: PALETTE.line } },
     };
   }
@@ -123,7 +132,7 @@ export function option(params) {
     const legendH = legendLines.length * 12 + 8;
     return {
       ...baseOption({ title: 'Xếp hạng biên lợi nhuận gộp', subtitle: `${donVi}, khổ hẹp`, width: W, height: H }),
-      tooltip: { ...tooltipDefault, formatter: (p) => `${rows[p.dataIndex].entity.name}: ${fmtPercent(p.value, { decimals })}` },
+      tooltip: { ...tooltipDefault, formatter: (p) => `${rows[p.dataIndex].entity.name}: ${dinhDangSo(p.value, { decimals })}` },
       legend: { show: false },
       grid: { left: 96, right: 40, top: 60, bottom: 30 + legendH },
       // khổ hẹp 380px: full decimals + 8 mốc dính chữ liền nhau không đọc được (đã bắt
@@ -145,7 +154,7 @@ export function option(params) {
           name: 'Giá trị', type: 'scatter', symbolSize: 11, z: 3,
           itemStyle: { color: PALETTE.accent },
           data: rows.map((r) => r.value),
-          label: { show: true, position: 'right', formatter: (p) => fmtPercent(p.value, { decimals }), ...TYPOGRAPHY.dataLabel },
+          label: { show: true, position: 'right', formatter: (p) => dinhDangSo(p.value, { decimals }), ...TYPOGRAPHY.dataLabel },
         },
       ],
       graphic: legendGraphic(legendLines, { left: 16, top: H - legendH - 4 }),
@@ -157,7 +166,7 @@ export function option(params) {
   const legendH = legendLines.length * 12 + 8;
   return {
     ...baseOption({ title: 'Xếp hạng biên lợi nhuận gộp theo phân khúc', subtitle: `Đơn vị: ${donVi}, sắp giảm dần, minh hoạ FY2026, không phải số thật`, width: W, height: H }),
-    tooltip: { ...tooltipDefault, formatter: (p) => `${rows[p.dataIndex].entity.name}: ${fmtPercent(p.value, { decimals })}` },
+    tooltip: { ...tooltipDefault, formatter: (p) => `${rows[p.dataIndex].entity.name}: ${dinhDangSo(p.value, { decimals })}` },
     legend: { show: false },
     grid: { left: 96, right: 50, top: 60, bottom: 40 + legendH },
     xAxis: buildValueAxis(),
@@ -166,7 +175,7 @@ export function option(params) {
     series: [{
       type: 'bar', barWidth: 20, itemStyle: { color: PALETTE.accent, borderRadius: [0, 3, 3, 0] },
       data: rows.map((r) => r.value),
-      label: { show: true, position: 'right', formatter: (p) => fmtPercent(p.value, { decimals }), ...TYPOGRAPHY.dataLabel },
+      label: { show: true, position: 'right', formatter: (p) => dinhDangSo(p.value, { decimals }), ...TYPOGRAPHY.dataLabel },
     }],
     graphic: legendGraphic(legendLines, { left: 16, top: H - legendH - 4 }),
   };

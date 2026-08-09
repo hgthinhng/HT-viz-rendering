@@ -1,9 +1,12 @@
 # Tầng phong-cách: thư viện hướng nghệ thuật có exemplar
 
-Ngày: 2026-08-09. Trạng thái: đã duyệt hướng, chờ implementation plan.
+Ngày: 2026-08-09. Trạng thái: v2 sau phản biện 3 worker, chờ implementation plan.
 Quyết định operator đã chốt: đủ 4 style + 4 exemplar trong arc này; nhung-toi dùng bảng
 tối làm bộ mặt mặc định có khoá; nghi thức 3 bìa chỉ áp cho ấn phẩm mới; mở thêm luồng
 deep research để tìm style thứ 5 trở đi.
+
+Lịch sử bản: v1 commit 79e55d0. v2 hấp thụ phản biện broadcast (agy, codex, kimi),
+danh sách sửa đổi ở mục 12.
 
 ## 0. Vấn đề
 
@@ -27,7 +30,8 @@ Tầng phong-cách sinh ra để lấy cái hay thứ nhất mà không lặp c�
   sinh ba đích qua `generate-tokens.mjs`.
 - `phong-cach` (mới): bản khai báo GHÉP đứng trên chủ đề. Một phong cách gồm: chủ đề màu
   mặc định (bắt buộc) và chủ đề dẫn xuất (tuỳ chọn), font kit, override token khối và
-  nhịp, một lớp CSS component, khí chất chart, tính cách motion cho làn html-song.
+  nhịp, một lớp CSS component. Khí chất chart và tính cách motion là NỘI DUNG THIẾT KẾ,
+  sống trong design.md của style, không nằm trong schema JSON (xem mục 2.2).
 - Hai trục độc lập: thep-xanh có sang-lanh làm mặc định và toi-lanh cho trang nội bộ;
   nhung-toi có bảng tối làm mặc định và không cần bản dẫn xuất.
 
@@ -36,73 +40,45 @@ phình themes JSON thành style object (generator phình, ma trận style nhân 
 kiểu frontend-slides mỗi style một design.md tự đủ để model tự ráp CSS (không nguồn
 duy nhất, trôi fidelity, chính là điểm yếu đã điều tra ra).
 
-## 2. Cấu trúc thư mục và hệ chọn ba tầng
+## 2. Cấu trúc thư mục và hệ chọn hai tầng
 
 ```
 phong-cach/
-  INDEX.json          tầng 1: metadata chọn style, đọc mọi lúc
+  INDEX.json          SINH TỰ ĐỘNG từ các phong-cach.json, cấm sửa tay
+  sinh-index.mjs      script sinh INDEX, chạy lại sau mỗi lần sửa phong-cach.json
   README.md           luật của tầng, gồm luật exemplar
   thep-xanh/
-    phong-cach.json   khai báo ghép
-    preview.md        tầng 2: thẻ chọn ngắn, đọc khi shortlist
-    design.md         tầng 3: spec đầy đủ, chỉ đọc sau khi chốt style
-    lop.css           override component, đắp sau report.css
+    phong-cach.json   nguồn sự thật DUY NHẤT của style: khai báo ghép + metadata chọn
+    design.md         spec đầy đủ, chỉ đọc sau khi chốt style
+    lop.css           override component, đắp sau report.css, theo contract mục 3.1
   giay-am/
   nhung-toi/
   poster-dac/
 ```
 
-Progressive disclosure học từ frontend-slides: INDEX nhẹ để lọc, preview để so trong
-shortlist, design.md chỉ nạp khi đã chốt. Cấm đọc design.md hàng loạt, ghi rõ trong
-README của tầng.
+Hai tầng thay vì ba: INDEX nhẹ để lọc và shortlist, design.md chỉ nạp khi đã chốt.
+`preview.md` của bản v1 đã cắt (đồng thuận 2/3 worker): với quy mô dưới 10 style,
+tagline cộng mood cộng best_for trong INDEX là đủ để chọn, thêm một file trung gian
+chỉ thêm một nơi để trôi. Cấm đọc design.md hàng loạt, ghi rõ trong README của tầng.
 
-### 2.1 Schema INDEX.json (ví dụ đầy đủ, không rút gọn)
+INDEX.json là BẢN SINH: `sinh-index.mjs` gom metadata từ các `phong-cach.json` cộng
+kết quả đọc `nghiem-thu.json` của exemplar. Test drift ép INDEX khớp nguồn, cùng kiểu
+kỷ luật với `generate-tokens.mjs`. Hết đường trùng nguồn sự thật giữa hai file.
 
-```json
-{
-  "phien_ban": 1,
-  "danh_sach": [
-    {
-      "slug": "thep-xanh",
-      "tagline": "Blue editorial nghiêm, giọng báo cáo tổ chức, tin ở mật độ lập luận",
-      "mood": ["nghiem-tuc", "to-chuc", "lanh"],
-      "formality": "cao",
-      "density": "cao",
-      "chu_de_mac_dinh": "sang-lanh",
-      "chu_de_dan_xuat": "toi-lanh",
-      "best_for": ["bao-cao-nganh", "bao-cao-khoi-tao-ma", "cap-nhat-kqkd"],
-      "avoid_for": ["thu-nha-dau-tu-giong-am"],
-      "trang_thai": "chinh-thuc",
-      "exemplar": "examples/van-tai-bien"
-    },
-    {
-      "slug": "giay-am",
-      "tagline": "Giấy kem ấm, serif chất văn, accent cam đất, giọng thư gửi người thật",
-      "mood": ["am", "van-chuong", "gan-gui"],
-      "formality": "trung-cao",
-      "density": "trung",
-      "chu_de_mac_dinh": "giay-am",
-      "chu_de_dan_xuat": null,
-      "best_for": ["tom-tat-dieu-hanh", "thu-nha-dau-tu"],
-      "avoid_for": ["deep-dive-mat-do-cao"],
-      "trang_thai": "vuon-uom",
-      "exemplar": null
-    }
-  ]
-}
-```
-
-Hai trạng thái: `chinh-thuc` (được SKILL chọn) và `vuon-uom` (đang dựng, cấm chọn).
-Giá trị `best_for` và `avoid_for` lấy từ đúng bộ 7 loại ấn phẩm trong SKILL.md, viết
-slug không dấu, test sẽ ép khớp từ vựng.
-
-### 2.2 Schema phong-cach.json (ví dụ đầy đủ)
+### 2.1 Schema phong-cach.json (nguồn duy nhất, ví dụ đầy đủ)
 
 ```json
 {
   "slug": "giay-am",
+  "tagline": "Giấy kem ấm, serif chất văn, accent cam đất, giọng thư gửi người thật",
+  "mood": ["am", "van-chuong", "gan-gui"],
+  "formality": "trung-cao",
+  "density": "trung",
+  "best_for": ["tom-tat-dieu-hanh", "thu-nha-dau-tu"],
+  "avoid_for": ["deep-dive-mat-do-cao"],
   "chu_de_mac_dinh": "giay-am",
   "chu_de_dan_xuat": null,
+  "gioi_han_loai_hinh": [],
   "font": {
     "kit": "giay-am",
     "hien_thi": "Fraunces",
@@ -113,86 +89,165 @@ slug không dấu, test sẽ ép khớp từ vựng.
     "--radius-khoi": "2px",
     "--space-nhip-doan": "var(--space-6)"
   },
-  "chart": {
-    "palette": "giay-am",
-    "khi_chat": "duong-net-thanh, luoi-nhat, nhan-serif"
-  },
-  "motion": {
-    "tinh_cach": "cham-va-am",
-    "thoi_luong_goc_ms": 600
-  }
+  "chart_palette": "giay-am",
+  "exemplar": "examples/tom-tat-dieu-hanh-mau",
+  "trang_thai": "vuon-uom"
 }
 ```
 
-Luật cứng của schema: KHÔNG chứa mã hex nào. Hex chỉ sống trong
-`design-system/themes/*.json`. Font kit trỏ vào `design-system/fonts/` theo đúng quy
-trình nhúng woff2 và trích ttf hiện có.
+Ghi chú schema, mỗi dòng một luật có lý do:
+
+- `best_for`, `avoid_for` lấy từ đúng bộ 7 loại ấn phẩm trong SKILL.md, slug không
+  dấu, test ép khớp từ vựng.
+- `gioi_han_loai_hinh`: mảng loại hình bị CẤM trong style này. Style có
+  `chu_de_mac_dinh` là chủ đề tối BẮT BUỘC khai `["matplotlib"]` trở lên, test ép
+  (phản biện kimi: điều kiện hết hiệu lực của luật khoá phải có gate ép, không chỉ
+  ghi lại). `build_html.py` gặp directive dùng loại hình bị cấm thì DỪNG build.
+- `token_override`: cơ chế tiêu thụ tường minh: `build_html.py` sinh một block
+  `<style data-token-phong-cach>` đặt SAU tokens.css và TRƯỚC lop.css. Giá trị chỉ
+  được là `var()` reference hoặc literal PHI MÀU; cấm hex, `rgb()`, `hsl()`,
+  `oklch()`, `color-mix()` với literal (phản biện codex: đường lách luật một nguồn
+  hex). Test quét cả token_override lẫn lop.css lẫn design.md.
+- KHÔNG có khối `motion` và `khi_chat` trong JSON (đồng thuận 3/3: dữ liệu chết,
+  không consumer nào trong pipeline). Hai thứ đó là hướng dẫn thiết kế, sống trong
+  design.md mục 5 và 4; thời lượng motion nếu style cần thì khai thẳng biến CSS
+  trong lop.css.
+- `trang_thai` và `exemplar` nằm ở đây để INDEX sinh được toàn phần; `sinh-index.mjs`
+  hạ cấp `chinh-thuc` xuống `vuon-uom` trong INDEX nếu nghiem-thu.json thiếu hoặc
+  không hợp lệ, và ghi thêm trường dẫn xuất `lan_da_chung_minh` (mục 6).
+
+### 2.2 INDEX.json sinh ra (ví dụ đầy đủ một entry)
+
+```json
+{
+  "phien_ban": 2,
+  "sinh_boi": "phong-cach/sinh-index.mjs",
+  "danh_sach": [
+    {
+      "slug": "thep-xanh",
+      "tagline": "Blue editorial nghiêm, giọng báo cáo tổ chức, tin ở mật độ lập luận",
+      "mood": ["nghiem-tuc", "to-chuc", "lanh"],
+      "formality": "cao",
+      "density": "cao",
+      "best_for": ["bao-cao-nganh", "bao-cao-khoi-tao-ma", "cap-nhat-kqkd"],
+      "avoid_for": ["thu-nha-dau-tu-giong-am"],
+      "chu_de_mac_dinh": "sang-lanh",
+      "trang_thai": "chinh-thuc",
+      "exemplar": "examples/van-tai-bien",
+      "lan_da_chung_minh": ["html-song"]
+    }
+  ]
+}
+```
+
+`lan_da_chung_minh` đọc từ trường `lan` của nghiem-thu.json (phản biện kimi: mỗi
+exemplar chỉ chứng minh một làn; SKILL không được chọn style cho làn chưa có bằng
+chứng). Một style muốn chứng minh làn thứ hai thì exemplar thứ hai hoặc chạy lại
+orchestrator với làn thứ hai trên cùng exemplar, sinh nghiem-thu bổ sung.
 
 ## 3. Đấu nối pipeline
 
-- Front-matter `noi-dung.md` thêm khoá `phong-cach: <slug>`. Vắng khoá thì mặc định
-  `thep-xanh`, mọi ấn phẩm cũ dựng lại ra kết quả cũ, không phá gì.
-- `build_html.py` đọc `phong-cach.json` của style được chọn rồi làm bốn việc:
+- Front-matter `noi-dung.md` BẮT BUỘC có khoá `phong-cach: <slug>`. Vắng khoá thì
+  build DỪNG với thông báo chỉ cách chạy nghi thức chọn hướng (mục 5). Không có
+  default im lặng (đồng thuận 3/3: default im lặng cộng nhận diện ấn phẩm mới bằng
+  vắng khoá là mâu thuẫn tự thân). Hai ấn phẩm hiện có backfill ngay trong arc:
+  `examples/mau-phase2` và `examples/van-tai-bien` thêm dòng `phong-cach: thep-xanh`.
+- `build_html.py` đọc `phong-cach.json` của style được khai rồi làm năm việc:
   1. khoá `data-theme` theo `chu_de_mac_dinh` của style (xem mục 4),
-  2. nhúng font kit tương ứng thay cho kit mặc định,
-  3. đắp `lop.css` SAU `report.css` trong cùng bản dựng tự đủ,
-  4. truyền tên palette chart cho bước sinh hình.
+  2. gắn `data-phong-cach="<slug>"` lên thẻ html để lop.css scope vào,
+  3. nhúng font kit tương ứng thay cho kit mặc định,
+  4. sinh block token_override rồi đắp `lop.css` theo thứ tự cascade ở mục 3.1,
+  5. truyền `chart_palette` cho bước sinh hình, và DỪNG nếu gặp loại hình nằm trong
+     `gioi_han_loai_hinh`.
 - Chart ECharts lấy palette qua registry `PALETTES` theo tên chủ đề trong
-  `charts/echarts/theme.mjs` (đã có sẵn từ 09-08). Chart matplotlib lấy qua `THEMES`
-  trong `tokens.py`. Không thêm đường truyền màu mới nào.
-- Gate không cần sửa cho việc đấu nối: FONT-HTML, FONT-PDF, DIACRITICS, THEME-MATCH
-  đo trên file dựng ra nên tự áp cho mọi style. Chỗ duy nhất phải sửa gate là mục 4.
+  `charts/echarts/theme.mjs`. Chart matplotlib lấy qua `THEMES` trong `tokens.py`.
+  ĐƯỜNG ỐNG có sẵn nhưng DỮ LIỆU thì chưa: PALETTES và THEMES hiện chỉ có sang-lanh
+  và toi-lanh (kimi đã kiểm tận file). Thêm ba chủ đề mới là BƯỚC LỚN RIÊNG của arc:
+  ba file JSON mới, chạy generator, kiểm contrast từng chủ đề theo đúng chuẩn WCAG đã
+  ghi trong themes JSON hiện có, không phải việc đấu nối vặt.
+- Gate FONT-HTML, FONT-PDF, DIACRITICS đo trên file dựng ra nên tự áp cho mọi style.
+  Gate khoá chủ đề sửa theo mục 4.
 
-## 4. Luật khoá sáng tổng quát hoá
+### 3.1 Contract của lop.css
+
+Phản biện codex: đắp CSS tự do sau report.css là mở cửa cho style phá component và
+lách luật màu mà gate không thấy. Contract bốn điều, có test:
+
+1. Mọi selector trong lop.css phải nằm dưới scope `[data-phong-cach="<slug>"]` của
+   chính style đó. Cấm selector trần.
+2. Cấm hex và hàm màu literal; màu chỉ qua `var(--token)`. Cùng phép quét với
+   token_override.
+3. Thứ tự cascade cố định và được test: tokens.css, rồi block token_override, rồi
+   components.css và report.css, rồi lop.css. Lop.css thắng là CHỦ Ý; thứ nó không
+   được phép làm là định nghĩa lại giá trị token màu (điều 2 chặn).
+4. Style có exemplar làn pdf-so: lop.css phải qua lint WeasyPrint-safe, cấm các thuộc
+   tính đã biết WeasyPrint bỏ qua hoặc phá (danh sách trong CLAUDE.md: aspect-ratio,
+   overflow trên table, writing-mode, cộng blur và backdrop-filter vốn cấm toàn cục).
+   Style cần CSS màn hình riêng cho làn song thì tách phần đó vào media screen.
+
+## 4. Luật khoá chủ đề tổng quát hoá
 
 Luật cũ: file giao khách phải khai `data-theme="light"`. Lý do gốc ghi trong CLAUDE.md:
 chart matplotlib và minh hoạ chỉ có bảng sáng, cộng WeasyPrint vứt khối
 prefers-color-scheme.
 
 Luật mới: file giao khách phải KHOÁ MỘT CHỦ ĐỀ TƯỜNG MINH bằng `data-theme` trên thẻ
-html, không để máy khách quyết. Chủ đề bị khoá là `chu_de_mac_dinh` của phong cách.
-Với thep-xanh, giay-am, poster-dac thì đó vẫn là chủ đề sáng, hành vi y như cũ. Với
-nhung-toi, bộ mặt mặc định là bảng tối và bị khoá đúng như vậy: người đọc nào cũng
-thấy đúng một bộ mặt.
+html, và chủ đề bị khoá phải KHỚP `chu_de_mac_dinh` của phong cách khai trong
+front-matter. Với thep-xanh, giay-am, poster-dac thì đó vẫn là chủ đề sáng, hành vi y
+như cũ. Với nhung-toi, bộ mặt mặc định là bảng tối và bị khoá đúng như vậy: người đọc
+nào cũng thấy đúng một bộ mặt.
 
-Điều kiện hết hiệu lực của luật cũ, ghi lại theo đúng kỷ luật của repo: luật "phải là
-light" hết lý do khi một phong cách tự mang bảng màu đủ cho MỌI loại hình nó dùng.
-Nhung-toi đáp ứng bằng cách giới hạn loại hình (mục 8), không phải bằng cách vá bảng
-màu cho toàn hệ.
+Vị trí phép đo, sửa theo phản biện kimi (đã kiểm code thật): phép đo hiện nằm trong
+`scripts/verify-components.mjs` và đo trên gallery, nơi KHÔNG có front-matter. Vậy:
 
-Việc phải sửa kèm: mục luật cứng trong CLAUDE.md, doctrine/06-chu-de-toi.md, và gate
-khoá chủ đề trong verify-components.mjs đổi phép đo từ "phải là light" sang "phải khai
-tường minh và khớp chu_de_mac_dinh của phong cách trong front-matter".
+- Gate mới "KHOA-CHU-DE" đặt ở tầng gate ấn phẩm: `gates/gates.mjs` (làn pdf-so) và
+  `gates/gates_song.mjs` (làn html-song), so `data-theme` của file dựng ra với
+  `chu_de_mac_dinh` của style trong front-matter. Có cặp fixture đỏ xanh.
+- `verify-components.mjs` GIỮ NGUYÊN luật light cho gallery: gallery không phải ấn
+  phẩm, không có front-matter, và bảng màu tối của gallery đã có đường kiểm riêng.
+
+Điều kiện hết hiệu lực của luật cũ, nay có gate ép chứ không chỉ ghi lại: style có
+chủ đề mặc định tối bắt buộc khai `gioi_han_loai_hinh` chứa ít nhất matplotlib, test
+schema ép, build dừng khi vi phạm (mục 2.1).
+
+Việc phải sửa kèm: mục luật cứng trong CLAUDE.md, doctrine/06-chu-de-toi.md.
 
 ## 5. Nghi thức 3 bìa 3 phong cách
 
-Học từ cổng cứng của huashu-design nhưng thu phạm vi để chịu được chi phí định kỳ:
+Học từ cổng cứng của huashu-design nhưng thu phạm vi để chịu được chi phí định kỳ.
+Kích hoạt TƯỜNG MINH, không suy diễn từ trạng thái front-matter (đồng thuận 3/3):
 
-- Chỉ áp cho ấn phẩm MỚI, nhận diện bằng front-matter chưa có khoá `phong-cach:`.
-- Checkpoint CK2 của orchestrator (hiện dựng 3 bìa cùng một giọng) mở rộng thành: dựng
-  bìa cộng MỘT section mẫu bằng 3 style ứng viên, lọc từ INDEX theo loại ấn phẩm và
-  formality. Ghi artifact ra thư mục, in đường dẫn, không hỏi y/n trên terminal, đúng
-  quy ước checkpoint hiện hành.
-- Operator chọn một, ghi `phong-cach:` vào front-matter. Các kỳ sau của cùng ấn phẩm
-  giữ style, bỏ qua nghi thức.
-- Ấn phẩm định kỳ đổi style là quyết định tay, không có đường tự động.
+- Lệnh: `python3 pipeline/orchestrator.py <bao-cao>/noi-dung.md --nghi-thuc-huong`.
+  Chạy khi khởi tạo ấn phẩm mới, hoặc bất cứ khi nào operator muốn xem lại hướng.
+- Nghi thức dựng bìa cộng MỘT section mẫu bằng 3 style ứng viên: lọc entry
+  `chinh-thuc` trong INDEX theo loại ấn phẩm (best_for, avoid_for), formality, và
+  `lan_da_chung_minh` phải chứa làn của ấn phẩm. Ghi artifact ra thư mục, in đường
+  dẫn, không hỏi y/n trên terminal, đúng quy ước checkpoint hiện hành.
+- Operator chọn một, ghi `phong-cach:` vào front-matter. Từ đó build chạy thẳng.
+- Build thường không có khoá `phong-cach:` thì DỪNG và chỉ sang lệnh nghi thức. Ấn
+  phẩm cũ đã backfill nên không bao giờ rơi vào nhánh này.
 
-## 6. Luật exemplar, phiên bản đo được
+## 6. Luật exemplar, phiên bản máy sinh
 
 Nguyên tắc: spec không có exemplar thì style chưa tồn tại trong catalog.
 
 - Style chỉ được `trang_thai: "chinh-thuc"` khi có `examples/<exemplar>/` mà
-  front-matter của nó tham chiếu đúng slug style, và có `nghiem-thu.json` commit ở GỐC
-  thư mục ấn phẩm. Không đặt trong `ra/` vì `ra/` đã gitignore.
-- `nghiem-thu.json` ghi: ngày chạy, git sha lúc chạy, lệnh tái tạo nguyên văn, kết quả
-  từng gate. Ví dụ đầy đủ:
+  front-matter tham chiếu đúng slug style, và có `nghiem-thu.json` hợp lệ ở GỐC thư
+  mục ấn phẩm. Không đặt trong `ra/` vì `ra/` đã gitignore.
+- `nghiem-thu.json` do MÁY SINH, không viết tay: `gates/run.mjs` thêm cờ
+  `--ghi-nghiem-thu=<đường-dẫn>` ghi thẳng kết quả từng gate cộng ngày, git sha, lệnh
+  tái tạo nguyên văn, làn. Sửa theo phản biện codex cộng bài học sẵn có của memory:
+  gate đòi bằng chứng viết tay là tạo động cơ bịa bằng chứng; cho máy ghi thì hết
+  chỗ bịa. Ví dụ đầy đủ:
 
 ```json
 {
+  "sinh_boi": "gates/run.mjs --ghi-nghiem-thu",
   "ngay": "2026-08-09",
   "sha": "cd69e3f",
   "lenh_tai_tao": "python3 pipeline/orchestrator.py examples/van-tai-bien/noi-dung.md --lan=html-song",
   "lan": "html-song",
+  "phien_ban_bo_gate": "song-9",
   "gate": [
     { "ten": "OFFLINE", "ket_qua": "PASS" },
     { "ten": "JS-SILENT-FAIL", "ket_qua": "PASS" },
@@ -207,53 +262,73 @@ Nguyên tắc: spec không có exemplar thì style chưa tồn tại trong catal
 }
 ```
 
-- Test mới `tests/consistency/phong_cach.test.mjs` ép: INDEX đúng schema và đúng từ
-  vựng 7 loại ấn phẩm; entry chinh-thuc có exemplar tồn tại, front-matter khớp slug,
-  nghiem-thu.json hợp lệ và không có gate FAIL; SKIP phải kèm ly_do; entry vuon-uom
-  không có exemplar thì không sao nhưng cấm SKILL chọn. Test có cặp fixture đỏ xanh
-  theo đúng luật gate của repo.
-- Giới hạn nói thẳng: nghiem-thu.json là BẢN GHI tại một sha, không phải bằng chứng
-  sống. Tái kiểm bằng cách chạy lại lệnh trong `lenh_tai_tao`. Test consistency chỉ ép
-  tính hợp lệ của bản ghi, không chạy lại orchestrator trong npm test để giữ suite
-  nhanh.
+- Test mới `tests/consistency/phong_cach.test.mjs` ép:
+  1. mọi phong-cach.json đúng schema, đúng từ vựng 7 loại ấn phẩm, chu_de trỏ theme
+     có thật;
+  2. INDEX.json khớp bản sinh lại từ nguồn (drift test);
+  3. entry chinh-thuc: exemplar tồn tại, front-matter khớp slug, nghiem-thu.json hợp
+     lệ, không gate FAIL, SKIP phải kèm ly_do;
+  4. TẬP TÊN GATE trong nghiem-thu phải khớp registry gate hiện hành của làn đó
+     (phản biện kimi cộng codex: thêm gate thứ 10 mà exemplar cũ vẫn xanh là lỗ
+     hổng; trường phien_ban_bo_gate cộng phép so tập tên chặn nó, exemplar cũ tự đỏ
+     và phải chạy lại nghiệm thu);
+  5. token_override, lop.css, design.md không chứa hex và hàm màu literal;
+  6. style chủ đề tối có gioi_han_loai_hinh hợp lệ;
+  7. blueprint trong design.md: mọi tài sản nhắc tới bằng backtick slug phải tồn tại
+     thật trong components/, charts/, illustrations/ (phản biện codex).
+  Test có cặp fixture đỏ xanh theo đúng luật gate của repo.
+- Smoke tái nghiệm thu, NGOÀI npm test để giữ suite nhanh: script
+  `npm run nghiem-thu` chạy lại orchestrator cộng gate cho MỌI exemplar chinh-thuc
+  rồi ghi đè nghiem-thu.json. Chạy trước mỗi lần merge nhánh lớn và mỗi lần đổi
+  gate, token, font.
+- Giới hạn nói thẳng: nghiem-thu.json vẫn là BẢN GHI tại một sha. Phép so tập gate
+  làm nó tự đỏ khi bộ gate đổi, npm run nghiem-thu là đường tái tạo một lệnh.
 
 ## 7. Spec format design.md của từng style
 
 Các phần bắt buộc, theo thứ tự:
 
 1. Khí chất và mood: ấn phẩm mặc giọng này thì người nhận cảm thấy gì, ba câu.
-2. Nguồn màu: chỉ TÊN chủ đề và tên token, cấm lặp hex. Nói quan hệ vai trò
-   (accent dùng cho gì, pos neg dùng ở đâu) chứ không nói giá trị.
+2. Nguồn màu: chỉ TÊN chủ đề và tên token, cấm lặp hex (test mục 6 quét). Nói quan
+   hệ vai trò chứ không nói giá trị.
 3. Chữ: cặp font, thang chữ, quan hệ với thang mặc định, quy tắc riêng nếu lệch
    doctrine/03-viet-chu.md. Không lặp quy tắc tiếng Việt chung.
-4. Blueprint theo 7 loại ấn phẩm: mỗi loại nói bố cục vào bài, component nào trong
-   `components/` hợp giọng, preset chart nào trong `charts/` hợp khí chất, cái nào
-   TRÁNH. Đây là chỗ map tài sản sẵn có vào style, không vẽ lại tài sản.
-5. Motion (làn html-song): tính cách, thời lượng gốc, easing, cái gì không bao giờ
-   animate.
+4. Blueprint theo 7 loại ấn phẩm: dạng bảng gọn, mỗi loại một hàng: bố cục vào bài,
+   component hợp giọng, preset chart hợp khí chất, cái nào TRÁNH. Tài sản nhắc bằng
+   backtick slug để test tham chiếu được (mục 6.7). Phần văn xuôi chỉ dành cho
+   rationale, không lặp lại bảng (phản biện codex: blueprint 7 loại dạng prose là
+   khối tài liệu phình không kiểm được).
+5. Motion cho làn html-song: tính cách, easing, cái gì không bao giờ animate. Thời
+   lượng khai bằng biến CSS trong lop.css nếu style cần.
 6. Anti-pattern riêng của style: tối đa 10 dòng, mỗi dòng một thứ cấm và một câu lý do.
-7. Known Gaps: giới hạn thành thật, kèm điều kiện gỡ. Học trực tiếp từ frontend-slides
-   và khớp bài học "gate đòi bằng chứng tạo động cơ bịa bằng chứng": cho spec được nói
-   thật về chỗ nó chưa chứng minh.
+7. Known Gaps: giới hạn thành thật, kèm điều kiện gỡ. Style chủ đề tối bắt buộc có
+   dòng về matplotlib và làn pdf-so.
 
 ## 8. Bốn style và bốn exemplar của arc này
 
-| Style | Khí chất | Chủ đề màu | Exemplar | Làn |
+| Style | Khí chất | Chủ đề màu | Exemplar | Làn chứng minh |
 |---|---|---|---|---|
 | thep-xanh | blue editorial tổ chức, hiện trạng | sang-lanh, dẫn xuất toi-lanh | van-tai-bien, đã 8 PASS 0 FAIL 1 SKIP | html-song |
 | giay-am | giấy kem ấm, serif chất văn, accent cam đất | giay-am (mới) | tóm tắt điều hành, số mock khai rõ | pdf-so |
 | nhung-toi | navy than sâu, accent vàng đồng, deal pack | nhung-toi (mới, tối mặc định) | deal pack chào vốn hư cấu | html-song |
 | poster-dac | mật độ cao kiểu poster dữ liệu, chữ hiển thị lớn | poster-dac (mới) | deep-dive ngành mật độ cao | html-song |
 
+Trạng thái cuối arc: cả bốn entry chinh-thuc trong INDEX. Trong lúc thi công, ba
+style mới đứng ở vuon-uom; mọi ví dụ JSON trong spec này minh hoạ trạng thái GIỮA
+arc, không phải trạng thái đích (làm rõ theo phản biện codex).
+
 Ràng buộc thi công theo style:
 
-- thep-xanh: harvest giọng hiện tại thành design.md, thêm front-matter và
-  nghiem-thu.json cho van-tai-bien. Không đổi một giá trị thị giác nào.
-- giay-am: exemplar đi làn pdf-so vì tóm tắt điều hành là loại hay bị chuyển tiếp
-  nhất; ăn trọn 10 gate làn pdf, gồm FONT-PDF với font kit mới.
-- nhung-toi: exemplar CHỈ dùng ECharts và minh hoạ SVG (hai loại đã đổi màu qua var),
-  TRÁNH matplotlib EIR cho tới khi có bảng tối cho nó. Ghi thành Known Gap trong
-  design.md của style.
+- thep-xanh: harvest giọng hiện tại thành design.md, backfill front-matter, chạy
+  `gates/run.mjs --ghi-nghiem-thu` trên van-tai-bien. Tiêu chí số một: bản dựng lại
+  TRÙNG bản hiện tại từng byte của phần nội dung, chứng minh tầng compose không đổi
+  hiện trạng.
+- giay-am: exemplar đi làn pdf-so, ăn trọn 10 gate pdf với font kit mới. Quyết định
+  tường minh theo phản biện kimi: nếu exemplar dùng chart matplotlib thì font kit
+  giay-am PHẢI có bản ttf trích qua extract-ttf.py cho matplotlib, cùng bước với
+  nhúng woff2, không để chart mang font kit cũ.
+- nhung-toi: exemplar CHỈ dùng ECharts và minh hoạ SVG; `gioi_han_loai_hinh` chứa
+  matplotlib, build dừng nếu vi phạm.
 - poster-dac: chọn deep-dive mật độ cao làm exemplar một cách cố ý, vì style này dễ
   đụng PAGEBREAK và RESPONSIVE-WIDTH nhất; exemplar phải chứng minh đúng chỗ khó.
 
@@ -262,33 +337,65 @@ ngay đầu ấn phẩm theo tiền lệ van-tai-bien, không mượn số công
 
 ## 9. Deep research style thứ 5 trở đi
 
-Lập `research/12-style-directions/` theo đúng quan hệ research sang doctrine của repo:
+Track SONG SONG, không nằm trên đường găng của 4 style (làm rõ theo phản biện codex
+và kimi; operator giữ quyết định mở luồng này trong arc):
 
+- Lập `research/12-style-directions/` theo đúng quan hệ research sang doctrine.
 - Khảo nguồn local: 40 style của huashu-design, 34 template của frontend-slides,
   catalog html-ppt, đã nằm sẵn trên máy.
 - Khảo web: giải thưởng thiết kế annual report, ngôn ngữ đồ hoạ FT, Economist,
   Bloomberg, deck ngân hàng đầu tư.
 - Soi mặt bằng báo cáo CTCK Việt Nam để định vị khác biệt.
 - Đầu ra: shortlist xếp hạng theo ba tiêu chí: khác biệt thật với 4 style đã có, khả
-  thi với hệ gate hiện hành, phủ được loại ấn phẩm đang thiếu giọng. Ứng viên tốt vào
-  INDEX ở trạng thái vuon-uom, chờ arc sau dựng exemplar.
+  thi với hệ gate hiện hành, phủ được loại ấn phẩm đang thiếu giọng. Ứng viên tốt
+  thành thư mục style ở trạng thái vuon-uom, chờ arc sau dựng exemplar.
 
 ## 10. Rủi ro chính và cách trả
 
 | Rủi ro | Cách trả |
 |---|---|
-| Font kit mới cho 3 style: nhúng woff2, trích ttf, phủ dấu tiếng Việt | đi đúng quy trình extract-ttf.py hiện có; gate FONT-HTML, FONT-PDF, DIACRITICS đã canh sẵn; nhớ bẫy IBM Plex SemiBold đổi nameID |
-| Bảng tối nhung-toi cho chart tĩnh | chỉ dùng đường var() đã có; THEME-MATCH canh; cấm matplotlib trong exemplar |
-| poster-dac tràn trang, tràn khung hẹp | chính exemplar được chọn để thử; PAGEBREAK và RESPONSIVE-WIDTH là tiêu chí nghiệm thu số một của style này |
-| design.md lặp hex rồi trôi so với themes JSON | luật cấm hex trong phong-cach.json và design.md, soát khi review; nguồn hex duy nhất vẫn là themes JSON |
-| Tầng mới làm SKILL.md phình | SKILL chỉ thêm một bước định tuyến đọc INDEX; nội dung sâu nằm ở design.md từng style, nạp theo nhu cầu |
+| Ba chủ đề màu mới nhân ba đích sinh cộng palette chart: khối việc lớn nhất arc | tách thành bước riêng trong plan; mỗi chủ đề qua generator, kiểm contrast theo chuẩn WCAG ghi trong themes JSON; CONTRAST-ALL-THEMES đo trên exemplar |
+| Font kit mới cho 3 style: nhúng woff2, trích ttf, phủ dấu tiếng Việt | quy trình extract-ttf.py hiện có; gate FONT-HTML, FONT-PDF, DIACRITICS canh; bẫy IBM Plex SemiBold đổi nameID đã ghi trong CLAUDE.md |
+| lop.css phá component hoặc lách luật màu | contract mục 3.1 cộng test quét; scope theo slug |
+| Bảng tối nhung-toi cho chart tĩnh | chỉ dùng đường var() đã có; THEME-MATCH canh; gioi_han_loai_hinh chặn matplotlib từ build |
+| poster-dac tràn trang, tràn khung hẹp | chính exemplar được chọn để thử; PAGEBREAK và RESPONSIVE-WIDTH là tiêu chí nghiệm thu số một |
+| Bộ gate đổi làm nghiem-thu cũ thành bằng chứng mốc | phép so tập tên gate với registry theo làn làm exemplar cũ tự đỏ; npm run nghiem-thu tái tạo một lệnh |
 
 ## 11. Ngoài phạm vi arc này
 
 - Không rename sang-lanh, toi-lanh (41 chỗ dùng, đổi tên không mua được gì).
-- Không làm nút đổi chủ đề động trong trang (giới hạn mount một lần đã ghi ở
-  doctrine/06, giữ nguyên).
+- Không làm nút đổi chủ đề động trong trang.
 - Không làm bảng tối cho matplotlib EIR.
 - Không làm làn slide trình chiếu; nếu tương lai cần, cân nhắc mượn runtime
   presenter-mode của html-ppt, đã ghi nhận trong điều tra 09-08.
 - Không dựng exemplar cho style vườn ươm ra từ luồng research.
+
+## 12. Nhật ký phản biện v1 sang v2
+
+Broadcast 09-08 tới ba worker (agy, codex, kimi), prompt giống hệt nhau. Phán quyết:
+agy và kimi DUYET-CO-DIEU-KIEN, codex LAM-LAI. Sửa đổi đã hấp thụ:
+
+1. Bỏ default im lặng thep-xanh; front-matter bắt buộc khai, backfill hai ấn phẩm cũ;
+   nghi thức 3 bìa kích hoạt bằng cờ CLI (3/3 worker bắt cùng một mâu thuẫn).
+2. INDEX.json thành bản sinh từ phong-cach.json, hết trùng nguồn (agy).
+3. Cắt preview.md (agy, kimi).
+4. Cắt motion và khi_chat khỏi schema JSON; token_override có cơ chế tiêu thụ và
+   allowlist giá trị (3/3).
+5. Contract lop.css bốn điều, gồm lint WeasyPrint-safe cho style làn pdf (agy, codex).
+6. Gate khoá chủ đề đặt đúng tầng gates.mjs và gates_song.mjs, verify-components giữ
+   nguyên cho gallery (kimi, đã kiểm code thật).
+7. Thêm lan_da_chung_minh; SKILL và nghi thức chỉ chọn style cho làn có bằng chứng
+   (kimi).
+8. nghiem-thu.json máy sinh qua cờ mới của gates/run.mjs; phép so tập gate với
+   registry; npm run nghiem-thu (codex, kimi).
+9. Ghi nhận đúng cỡ khối việc ba chủ đề màu mới (kimi, đã kiểm PALETTES và THEMES
+   chỉ có hai entry).
+10. Blueprint dạng bảng, tài sản backtick slug có test tham chiếu (codex).
+11. gioi_han_loai_hinh cho style tối, có test và build dừng (kimi).
+12. Research ghi rõ là track song song không chặn đường găng (codex, kimi; giữ trong
+    arc theo quyết định operator).
+
+Phát hiện KHÔNG nhận và lý do: codex đề nghị manifest palette theo từng asset cộng
+gate đối chiếu; với quy mô hiện tại, KHOA-CHU-DE cộng THEME-MATCH cộng gioi_han đã
+phủ các đường lệch thật, manifest per-asset là hạ tầng thêm một tầng đồng bộ chưa trả
+được giá; ghi lại đây để mở lại nếu xuất hiện ca lệch palette mà hai gate kia mù.

@@ -2,6 +2,31 @@
 
 Đọc file này trước tiên. Nó cho biết đang ở đâu và làm gì tiếp.
 
+## Repo này PUBLIC trên GitHub, và điều đó đổi cách chứa file (09-08)
+
+`gh repo view` trả `visibility: PUBLIC`. Bản ghi cũ trong repo và trong memory toàn cục đều
+viết PRIVATE, cả hai đều SAI. Người dùng đã chốt giữ public, nên repo là thư viện mở và mọi
+thứ nằm trong git đều là mặt tiền.
+
+Hai thứ đã tách ra ngày 09-08, cả hai đều đã gitignore:
+
+- **`bao-cao/`, ấn phẩm thật của khách.** Bốn commit chưa push mang bộ TPB VN30 gồm bản nội
+  bộ, sổ nguồn và dữ liệu thô. Đã chuyển sang `~/tpb-buongmophong/an-pham-vn30-10kb/` và gỡ
+  khỏi lịch sử bốn commit đó bằng `filter-branch` TRƯỚC khi push. Luật từ nay: bản giao cho
+  một dự án sống trong repo của chính dự án đó. Repo này giữ `examples/` là mẫu chạy được,
+  không giữ hàng giao đi.
+- **`_harvest/`, 892 file và 57MB.** Gỡ khỏi git, giữ nguyên trên đĩa để còn đối chiếu. Lý do
+  không phải dung lượng: mẫu `SHOWCASE_exec_dashboard.png` trong đó vẫn lỗi dấu tiếng Việt,
+  nên người mở repo gặp bản HỎNG trước bản đúng. Cộng 203 file font phân phối lại.
+
+Số file trong git rớt từ khoảng 1.194 xuống 302.
+
+**Còn một việc chưa làm và nó đang gây hiểu nhầm thật.** Default branch trên GitHub vẫn là
+`master`, đứng sau `feat/digital-only-buoc-1-2` **30 commit** và vẫn mang đủ 892 file
+`_harvest/`. Người ngoài mở repo thấy bản trước cú bẻ lái: 108 tài sản, một làn in giấy, chưa
+có 9 gate làn song. Một người xem ngoài đã review đúng bản đó và kết luận repo thiếu những thứ
+nhánh làm việc đã có (ecdf, calendar heatmap, fan, bump đều đang có trong 111 tài sản).
+
 ## ĐỌC MỤC NÀY TRƯỚC: tiền đề của repo đã đổi (07-08)
 
 Repo được xây trên tiền đề **"PDF IN ĐƯỢC"**. Người dùng đã phán quyết tiền đề đó sai với thực
@@ -129,6 +154,18 @@ Sửa nó cần thiết kế riêng vì file đó dùng chung với `schema.py`.
   hoạ có thể đóng NHIỀU vai (vừa là nền trời vừa là thân kim loại), và ánh xạ một đối một không
   tách hai vai đó ra được. Phải tách ở TỪNG HÌNH chứ không tách ở token.
 - `_eir_style.py: draw_masthead()` chưa tự xuống dòng, phụ đề quá ~110 ký tự vẫn tràn lề phải.
+- **Dấu âm trong chart matplotlib chưa ai chốt, và một chart đang dùng hai kiểu.** Đo được trên
+  `catalog/xem-truoc/diverging_bar.svg`: tick trục ra `−2`, `−1` bằng U+2212, còn nhãn giá trị
+  trong cùng hình đó ra `-2.0`, `-1.1` bằng dấu gạch nối ASCII. Nguyên nhân là `axes.unicode_minus`
+  của matplotlib mặc định bật và repo chưa đặt lại ở đâu cả. Phải chọn một kiểu rồi ép bằng test.
+  Kèm theo là một lỗ hổng đặc tả: `FINANCIAL_SYMBOLS` trong `build-fonts.py` liệt kê 13 codepoint
+  và `KY_HIEU_TAI_CHINH_PHO_QUAT` trong `fonts_test.py` liệt kê 6, **không danh sách nào có
+  0x2212**. Font subset hiện CÓ glyph đó, nhưng có nhờ dải `latin` của Google chứ không do ai
+  yêu cầu, nên một lần đổi nguồn font là rớt mà không gate nào bắt. Thêm 0x2212 vào cả hai danh
+  sách bất kể chọn kiểu dấu âm nào.
+- SVG trong `catalog/xem-truoc/` chỉ khai `font-family` chứ không nhúng font. Trên máy không có
+  IBM Plex, chúng rơi về font hệ thống và trông xấu hoặc ra ô vuông. Đó là ảnh xem trước nên
+  chấp nhận được, nhưng phải biết trước khi ai đó báo "chart lỗi dấu" từ ảnh xem trước.
 
 ### Bẫy XML: `var()` bọc vào một hex nằm trong COMMENT làm hỏng CẢ FILE
 

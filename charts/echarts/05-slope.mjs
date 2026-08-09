@@ -7,7 +7,7 @@
 // thể (emphasis) và làm mờ phần còn lại; (2) 2 trục x không đều khoảng cách
 // thời gian thực (slope chart giả định khoảng cách đều, ghi rõ nếu không đều).
 import { baseOption, TYPOGRAPHY, PALETTE, tooltipDefault } from './theme.mjs';
-import { fmtPercent } from './fmt.mjs';
+import { dinhDangTheoDonVi } from './fmt.mjs';
 
 export const MAC_DINH = {
   entities: [
@@ -22,7 +22,10 @@ export const MAC_DINH = {
 };
 
 export function option(params) {
-  const { entities, title, subtitle } = params;
+  // `donVi`: xem ghi chu cung ten o 04-dumbbell.mjs. Mac dinh `phan_tram` de khong doi
+  // dien mao ban demo.
+  const { entities, title, subtitle, donVi = 'phan_tram' } = params;
+  const dinhDangSo = dinhDangTheoDonVi(donVi);
   const series = entities.map((e) => ({
     name: e.label,
     type: 'line',
@@ -32,7 +35,7 @@ export function option(params) {
     itemStyle: { color: e.highlight ? PALETTE.accent : PALETTE.inkLo },
     label: {
       show: true,
-      formatter: (p) => `${e.label} ${fmtPercent(p.value, { decimals: 1 })}`,
+      formatter: (p) => `${e.label} ${dinhDangSo(p.value, { decimals: 1 })}`,
       color: e.highlight ? PALETTE.ink : PALETTE.inkLo,
       fontWeight: e.highlight ? 'bold' : 'normal',
       position: (p) => (p.dataIndex === 0 ? 'left' : 'right'),

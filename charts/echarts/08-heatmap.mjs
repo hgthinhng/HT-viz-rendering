@@ -9,7 +9,7 @@
 // (2) ô >2 chữ số không có label -> phải lướt mắt đoán màu, luôn nên có
 // tooltip/label cho từng ô; (3) sort trục năm/tháng không theo thời gian.
 import { TYPOGRAPHY, PALETTE, FONT_STACK } from './theme.mjs';
-import { fmtPercent } from './fmt.mjs';
+import { dinhDangTheoDonVi } from './fmt.mjs';
 
 export const MAC_DINH = {
   months: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
@@ -24,7 +24,9 @@ export const MAC_DINH = {
 };
 
 export function option(params) {
-  const { months, years, matrix } = params;
+  // `donVi`: xem ghi chu cung ten o 04-dumbbell.mjs. Mac dinh `phan_tram`.
+  const { months, years, matrix, donVi = 'phan_tram' } = params;
+  const dinhDangSo = dinhDangTheoDonVi(donVi);
   const data = [];
   years.forEach((y, yi) => months.forEach((m, mi) => data.push([mi, yi, matrix[yi][mi]])));
   const maxAbs = Math.ceil(Math.max(...data.map((d) => Math.abs(d[2]))) * 10) / 10;
@@ -41,7 +43,7 @@ export function option(params) {
     },
     tooltip: {
       position: 'top',
-      formatter: (p) => `${months[p.data[0]]}/${years[p.data[1]]}: ${fmtPercent(p.data[2], { decimals: 1, showPlus: true })}`,
+      formatter: (p) => `${months[p.data[0]]}/${years[p.data[1]]}: ${dinhDangSo(p.data[2], { decimals: 1, showPlus: true })}`,
       textStyle: { fontSize: 12 },
     },
     grid: { left: 60, right: 24, top: 70, bottom: 30 },
@@ -56,7 +58,7 @@ export function option(params) {
     series: [
       {
         type: 'heatmap', data,
-        label: { show: true, formatter: (p) => fmtPercent(p.data[2], { decimals: 1 }), fontSize: 9, fontFamily: FONT_STACK },
+        label: { show: true, formatter: (p) => dinhDangSo(p.data[2], { decimals: 1 }), fontSize: 9, fontFamily: FONT_STACK },
         itemStyle: { borderColor: PALETTE.paper, borderWidth: 2 }, // surface gap giữa các ô
       },
     ],

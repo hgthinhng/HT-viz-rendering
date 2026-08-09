@@ -105,6 +105,23 @@ export function fmtMultiple(value, opts = {}) {
   return prose ? `${s} lần` : `${s}x`;
 }
 
+/** Chon ham dinh dang theo MA DON VI trong charts/schema.vocab.json.
+ *
+ * Sinh ra tu mot loi that: `14-bar-ranking` dong cung `fmtPercent` o nam cho, nen mot
+ * luot xep hang tinh bang TEU ra nhan `5.640.000%` tren an pham that. Sai su that chu
+ * khong phai xau, va khong test don vi nao bat duoc vi preset van chay dung.
+ *
+ * Preset nao BAN CHAT luon la phan tram thi cu goi thang `fmtPercent`, dung goi ham nay:
+ * `11-stacked-100` la ty trong luon cong 100%, con truc ROE cua `15-quadrant-scatter` va
+ * hai truc WACC/g cua `18-sensitivity-grid` deu la phan tram theo dinh nghia. Ham nay
+ * danh cho preset nhan duoc dai luong BAT KY.
+ */
+export function dinhDangTheoDonVi(unit) {
+  if (unit === 'lan') return fmtMultiple;
+  if (unit === 'phan_tram' || unit === undefined || unit === null) return fmtPercent;
+  return fmtNumber;
+}
+
 /** fmtDelta(-45, {unit:'tỷ'}) -> "-45,0 tỷ"; dấu +/- luôn hiện tường minh */
 export function fmtDelta(value, opts = {}) {
   const { decimals = 1, unit = '', locale = 'vi' } = opts;

@@ -188,3 +188,17 @@ test('gate 10 KHOA-CHU-DE SKIP khi trang khong khai meta phong-cach, dung truoc 
   });
   assert.equal(kq.trang_thai, 'SKIP');
 });
+
+test('gate 10 KHOA-CHU-DE do khi meta khai mot style khong ton tai trong repo', () => {
+  // Nhanh FAIL rieng, khac voi nhanh lech/thieu data-theme o test tren: metaPC tro
+  // toi mot thu muc phong-cach/<slug> khong co that, nen fs.existsSync(pcPath) sai
+  // truoc ca khi kip doc chu_de_mac_dinh de so sanh. Gate nay dung chung logic voi
+  // lan pdf-so (import lai tu gates.mjs) nen phu ca hai lan cho dung nguyen tac
+  // repo: gate khong do duoc voi fixture do cua chinh no thi nhanh do chua ton tai.
+  const html = '<html lang="vi" data-theme="light">' +
+    '<head><meta name="phong-cach" content="khong-ton-tai">' +
+    '<meta name="chu-de-khoa" content="light"></head><body></body></html>';
+  const kq = gateKhoaChuDe({ html, soThuTu: 10 });
+  assert.equal(kq.trang_thai, 'FAIL');
+  assert.match(kq.ly_do.join(' '), /khong ton tai/);
+});

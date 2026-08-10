@@ -216,6 +216,18 @@ test('gate 11 KHOA-CHU-DE SKIP khi trang khong khai meta phong-cach, dung truoc 
   assert.equal(kq.trang_thai, 'SKIP');
 });
 
+test('gate 11 KHOA-CHU-DE do khi meta khai mot style khong ton tai trong repo', () => {
+  // Nhanh FAIL rieng, khac voi nhanh lech/thieu data-theme o test tren: metaPC tro
+  // toi mot thu muc phong-cach/<slug> khong co that, nen fs.existsSync(pcPath) sai
+  // truoc ca khi kip doc chu_de_mac_dinh de so sanh.
+  const html = '<html lang="vi" data-theme="light">' +
+    '<head><meta name="phong-cach" content="khong-ton-tai">' +
+    '<meta name="chu-de-khoa" content="light"></head><body></body></html>';
+  const kq = gateKhoaChuDe({ html, soThuTu: 11 });
+  assert.equal(kq.trang_thai, 'FAIL');
+  assert.match(kq.ly_do.join(' '), /khong ton tai/);
+});
+
 // --------------------------------------------------------------------------- //
 test('tachSvg lay dung ma hinh va khong bo sot SVG ngoai figure', () => {
   const html = boc(SVG_HOP_LE, 'hinh-a') + '<svg xmlns="http://www.w3.org/2000/svg"><text>logo</text></svg>';

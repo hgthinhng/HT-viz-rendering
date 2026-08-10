@@ -823,19 +823,31 @@ export async function gateThemeMatch({ duongDanHtml, browser }) {
 // --------------------------------------------------------------------------- //
 // Ten gate DUNG NHU code that o duoi, dung thu tu chay. Dung boi gates/run.mjs de
 // sinh nghiem-thu.json va boi test doi chieu o tests/consistency/phong_cach.test.mjs.
-// Assert cuoi chayTatCaSong ep registry nay khong bao gio troi khoi hanh vi that.
 export const TEN_GATES_SONG = [
   '1. OFFLINE-INTACT', '2. JS-SILENT-FAIL', '3. REDUCED-MOTION', '4. KEYBOARD-PATH',
   '5. CONTRAST-ALL-THEMES', '6. SIZE-BUDGET', '7. NO-JS-CONTENT', '8. RESPONSIVE-WIDTH',
   '9. THEME-MATCH',
 ];
 
+/**
+ * Ham THUAN, khong throw: so ten thuc te chay ra voi registry, tra ve null neu
+ * khop hoac chuoi mo ta lech neu khong. Tach rieng khoi chayTatCaSong vi mot
+ * lan throw NGAY TRONG chayTatCaSong se nem loi TRUOC khi run.mjs kip in bang
+ * ket qua, lam mat sach chan doan cua ca luot chay (ke ca khi da mo Chromium
+ * va chay xong ca 9 gate). Goi ham nay o phia goi SAU KHI da in xong bang.
+ */
+export function kiemKhopRegistry(ketQua, registry = TEN_GATES_SONG) {
+  const ten = ketQua.map((g) => g.ten);
+  if (JSON.stringify(ten) === JSON.stringify(registry)) return null;
+  return `Registry TEN_GATES_SONG lech ket qua that: ${ten.join(', ')}`;
+}
+
 export async function chayTatCaSong({ duongDanHtml }) {
   const html = fs.readFileSync(duongDanHtml, 'utf-8');
   const browser = await launchChromium();
   try {
     const goi = { html, duongDanHtml, browser };
-    const ketQua = [
+    return [
       await gateOffline(goi),
       await gateJsSilentFail(goi),
       await gateReducedMotion(goi),
@@ -846,11 +858,6 @@ export async function chayTatCaSong({ duongDanHtml }) {
       await gateResponsiveWidth(goi),
       await gateThemeMatch(goi),
     ];
-    const ten = ketQua.map((g) => g.ten);
-    if (JSON.stringify(ten) !== JSON.stringify(TEN_GATES_SONG)) {
-      throw new Error(`Registry TEN_GATES_SONG lech ket qua that: ${ten.join(', ')}`);
-    }
-    return ketQua;
   } finally {
     await browser.close();
   }

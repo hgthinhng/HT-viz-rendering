@@ -453,17 +453,29 @@ export function docPdf(duongDanPdf) {
 
 // Ten gate DUNG NHU code that o duoi, dung thu tu chay. Dung boi gates/run.mjs de
 // sinh nghiem-thu.json va boi test doi chieu o tests/consistency/phong_cach.test.mjs.
-// Assert cuoi chayTatCa ep registry nay khong bao gio troi khoi hanh vi that.
 export const TEN_GATES_PDF = [
   '1. FONT-HTML', '2. FONT-PDF', '3. RASTER', '4. DIACRITICS', '5. CHART-SONG',
   '6. CALLOUT-BAKED', '7. STYLE', '8. PAGEBREAK', '9. SOURCE-LEAK', '10. LEDGER',
 ];
 
+/**
+ * Ham THUAN, khong throw: so ten thuc te chay ra voi registry, tra ve null neu
+ * khop hoac chuoi mo ta lech neu khong. Tach rieng khoi chayTatCa vi mot lan
+ * throw NGAY TRONG chayTatCa se ném lỗi TRUOC khi run.mjs kip in bang ket qua,
+ * lam mat sach chan doan cua ca luot chay (ke ca khi ca 10 gate da chay xong).
+ * Goi ham nay o phia goi SAU KHI da in xong bang.
+ */
+export function kiemKhopRegistry(ketQua, registry = TEN_GATES_PDF) {
+  const ten = ketQua.map((g) => g.ten);
+  if (JSON.stringify(ten) === JSON.stringify(registry)) return null;
+  return `Registry TEN_GATES_PDF lech ket qua that: ${ten.join(', ')}`;
+}
+
 export function chayTatCa({ duongDanHtml, duongDanPdf, cheDo = 'noi-bo', choPhepAnh = 0 }) {
   const html = fs.readFileSync(duongDanHtml, 'utf-8');
   const pdf = docPdf(duongDanPdf);
   const goi = { html, pdf, duongDanHtml, cheDo, choPhepAnh };
-  const ketQua = [
+  return [
     gateFontHtml(goi),
     gateFontPdf(goi),
     gateRaster(goi),
@@ -475,9 +487,4 @@ export function chayTatCa({ duongDanHtml, duongDanPdf, cheDo = 'noi-bo', choPhep
     gateRoRiNguon(goi),
     gateSoNguon(goi),
   ];
-  const ten = ketQua.map((g) => g.ten);
-  if (JSON.stringify(ten) !== JSON.stringify(TEN_GATES_PDF)) {
-    throw new Error(`Registry TEN_GATES_PDF lech ket qua that: ${ten.join(', ')}`);
-  }
-  return ketQua;
 }

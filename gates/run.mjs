@@ -23,10 +23,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
-import { chayTatCa, TEN_GATES_PDF } from './gates.mjs';
-import { chayTatCaSong, TEN_GATES_SONG } from './gates_song.mjs';
+import { fileURLToPath } from 'node:url';
+import { chayTatCa, TEN_GATES_PDF, kiemKhopRegistry as kiemKhopRegistryPdf } from './gates.mjs';
+import { chayTatCaSong, TEN_GATES_SONG, kiemKhopRegistry as kiemKhopRegistrySong } from './gates_song.mjs';
 
 const NGANG = '='.repeat(78);
+// Dung de chay `git rev-parse` VOI CWD CO DINH la thu muc chua file nay, khong
+// phai cwd cua tien trinh goi run.mjs. Thieu cwd nay thi chay CLI tu mot thu
+// muc ngoai repo (vi du /tmp) se crash "fatal: not a git repository" SAU khi
+// gate da chay xong, va nghiem-thu.json khong duoc ghi. Dung pattern da co san
+// trong gates.mjs (THU_MUC = path.dirname(fileURLToPath(import.meta.url))).
+const THU_MUC_GATES = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Ghi bang chung MAY SINH ra dia, khong phai bang chung viet tay. Registry ten
@@ -38,7 +45,7 @@ const NGANG = '='.repeat(78);
  */
 function ghiNghiemThuJson(duongDan, ketQua, lan, lenhTaiTao) {
   const registry = lan === 'html-song' ? TEN_GATES_SONG : TEN_GATES_PDF;
-  const sha = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+  const sha = execSync('git rev-parse --short HEAD', { encoding: 'utf8', cwd: THU_MUC_GATES }).trim();
   const ho_so = {
     sinh_boi: 'gates/run.mjs --ghi-nghiem-thu',
     ngay: new Date().toISOString().slice(0, 10),
@@ -69,6 +76,17 @@ function inKetQuaVaThoat(ketQua, { lan, ghiNghiemThu, lenhTaiTao } = {}) {
   console.log(NGANG);
   console.log(`TONG: ${dem.PASS} PASS, ${dem.WARN} WARN, ${dem.FAIL} FAIL, ${dem.SKIP} SKIP`);
   console.log(coFail ? 'KET QUA: FAIL, khong duoc giao file' : 'KET QUA: PASS (van doc ky phan WARN truoc khi giao)');
+
+  // Kiem khop registry CHI SAU KHI da in tron bang o tren: kiemKhopRegistry la ham
+  // thuan, khong throw, nen mot lan lech khong con nuot sach chan doan cua ca luot
+  // chay (truoc day assert nam trong chayTatCa/chayTatCaSong nem loi TRUOC khi
+  // bang nay kip in, mat ca chan doan ke ca khi 9-10 gate da chay xong that su).
+  const lech = (lan === 'html-song' ? kiemKhopRegistrySong : kiemKhopRegistryPdf)(ketQua);
+  if (lech) {
+    console.error(lech);
+    coFail = true;
+  }
+
   if (ghiNghiemThu) ghiNghiemThuJson(ghiNghiemThu, ketQua, lan, lenhTaiTao);
   process.exit(coFail ? 1 : 0);
 }

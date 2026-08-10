@@ -70,3 +70,19 @@ test('BAY_LOAI_AN_PHAM co dung 7 slug khong dau', () => {
   assert.equal(BAY_LOAI_AN_PHAM.length, 7);
   for (const s of BAY_LOAI_AN_PHAM) assert.match(s, /^[a-z0-9-]+$/);
 });
+
+test('INDEX.json la ban sinh, khop nguon', async () => {
+  const { tinhIndex } = await import('../../phong-cach/sinh-index.mjs');
+  const tren_dia = docJson(path.join(PC, 'INDEX.json'));
+  assert.deepEqual(tren_dia, tinhIndex(REPO), 'INDEX.json lech: chay node phong-cach/sinh-index.mjs');
+});
+
+test('entry chinh-thuc phai co lan_da_chung_minh', () => {
+  const idx = docJson(path.join(PC, 'INDEX.json'));
+  for (const e of idx.danh_sach) {
+    if (e.trang_thai === 'chinh-thuc') {
+      assert.ok(e.lan_da_chung_minh.length >= 1, `${e.slug} chinh-thuc ma khong co lan chung minh`);
+      assert.ok(e.exemplar, `${e.slug} chinh-thuc ma khong co exemplar`);
+    }
+  }
+});

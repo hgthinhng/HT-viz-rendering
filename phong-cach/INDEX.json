@@ -1,0 +1,30 @@
+{
+  "phien_ban": 2,
+  "sinh_boi": "phong-cach/sinh-index.mjs",
+  "danh_sach": [
+    {
+      "slug": "thep-xanh",
+      "tagline": "Blue editorial nghiem, giong bao cao to chuc, tin o mat do lap luan",
+      "mood": [
+        "nghiem-tuc",
+        "to-chuc",
+        "lanh"
+      ],
+      "formality": "cao",
+      "density": "cao",
+      "best_for": [
+        "bao-cao-nganh",
+        "bao-cao-khoi-tao-ma",
+        "cap-nhat-kqkd",
+        "ban-tin-thi-truong"
+      ],
+      "avoid_for": [
+        "tom-tat-dieu-hanh"
+      ],
+      "chu_de_mac_dinh": "sang-lanh",
+      "trang_thai": "vuon-uom",
+      "exemplar": "examples/van-tai-bien",
+      "lan_da_chung_minh": []
+    }
+  ]
+}

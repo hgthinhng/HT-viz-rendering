@@ -18,9 +18,11 @@ chế màu chứ không phải xa cách.
 Chủ đề mặc định là `sang-lanh`, chủ đề dẫn xuất tối là `toi-lanh` khi ấn
 phẩm cần bản màn hình tối; thep-xanh không tự pha thêm bảng nào khác ngoài
 hai chủ đề đó. `--accent` chỉ đứng ở đường nhấn, kicker và liên kết, không
-bao giờ làm nền một khối lớn. `--pos` và `--neg` CHỈ xuất hiện trong chart
-và bảng số, đúng ràng buộc ba nơi đã duyệt ghi trong `tokens.css`; không tô
-hai token này lên nền hay chữ của thân bài. `--ink` mang toàn bộ trọng
+bao giờ làm nền một khối lớn. `--pos` và `--neg` mang ngữ nghĩa tốt/xấu,
+sống trong chart, bảng so sánh, và các component trạng thái đã duyệt (nguồn
+xét duyệt đầy đủ nằm trong comment gốc của `tokens.css`, không chép lại
+danh sách ở đây vì sẽ trôi); cấm dùng hai token này làm màu trang trí hay
+màu nhấn tuỳ hứng ngoài phạm vi ngữ nghĩa đó. `--ink` mang toàn bộ trọng
 lượng chữ thân bài, `--ink-md` và `--ink-lo` hạ bậc cho chú thích và nhãn kỹ
 thuật, không hạ thấp hơn mức đã sửa để giữ tương phản. Nền dùng `--paper`
 cho thân trang, `--paper-hi` cho khối cần tách nhẹ; không dùng `--paper-elev`
@@ -60,14 +62,27 @@ thu, xem mục 7.
 
 ## 5. Motion cho làn html-song
 
-Reveal theo cuộn nhẹ: mỗi khối vào khung nhìn đúng một lần, dưới 300ms,
-dùng easing mặc định của `mount-live.mjs`, thep-xanh không tự chế easing
-riêng. Không animate số liệu; con số hiện ngay ở giá trị cuối cùng, animate
-value là bản rẻ đầu tiên theo `doctrine/05-anti-slop.md` mục 2. Chart sống
-giữ animation mặc định của ECharts lúc mount, không tắt, nhưng không thêm
-animation CSS lặp lại mỗi lần cuộn qua cuộn lại, đúng phép thử ba giây của
-anti-slop. Không cần khai thời lượng riêng bằng biến CSS trong `lop.css`,
-vì thep-xanh dùng đúng mặc định của tầng mount, không override.
+Thep-xanh hiện KHÔNG có motion ở tầng trang: không `@keyframes` reveal theo
+cuộn nào trong `report.css` hay `components.css`, không `IntersectionObserver`
+nào gắn vào exemplar đã dựng. Đây là chủ ý của giọng tổ chức tĩnh, không
+phải một chỗ còn thiếu: một ấn phẩm mang giọng này đọc đúng y hệt nhau dù
+cuộn nhanh hay cuộn chậm.
+
+Motion duy nhất đang chạy thật nằm ở tầng chart, không phải tầng trang.
+Chart sống mount qua `mount-live.mjs` GIỮ animation mặc định của ECharts,
+đúng comment nguồn của chính file đó: đây là năng lực riêng của làn
+html-song mà làn pdf-so không có, vì đường SSR (`render-static.mjs`) bắt
+buộc `animation: false` theo luật CLAUDE.md để tránh lỗi marker bị kéo về
+gốc toạ độ. Nói cách khác, chart SỐNG có animation nội tại của ECharts,
+chart TĨNH thì không, và thep-xanh không thêm hành vi nào ngoài hai mặc
+định đó.
+
+Hệ quả đo được: gate `3. REDUCED-MOTION` trong nghiệm thu của van-tai-bien
+đang SKIP, không PASS, đúng vì trang không có phần tử nào animate ở tầng
+CSS nên gate tự nhận nó chưa chứng minh được khả năng phân biệt hai trạng
+thái. Nếu một bản sau của thep-xanh thêm motion tầng trang thật, gate đó
+phải sống dậy thành PASS đo được chứ không phải giữ nguyên SKIP; điều kiện
+này ghi trong mục 7.
 
 ## 6. Anti-pattern
 
@@ -76,13 +91,19 @@ vì thep-xanh dùng đúng mặc định của tầng mount, không override.
 3. Cấm icon emoji thay cho nhãn chữ: trạng thái đã có mã màu và nhãn mono, thêm icon là trùng lặp không kiểm được.
 4. Cấm dùng `--accent` làm màu chữ cho một đoạn dài quá một dòng: accent chỉ đứng ở điểm nhấn, kéo dài nó làm mất chính vai trò nhấn.
 5. Cấm gauge và radar: luật cấp repo, nhắc lại vì blue editorial rất dễ bị đề xuất gauge cho KPI.
-6. Cấm tô `--pos`/`--neg` lên nền hay chữ của khối văn bản: hai token này chỉ sống trong chart và bảng.
+6. Cấm dùng `--pos`/`--neg` làm màu trang trí hay màu nhấn tuỳ hứng ngoài phạm vi ngữ nghĩa tốt/xấu đã duyệt: hai token này mang nghĩa, không mang thẩm mỹ.
 7. Cấm mở bài bằng bối cảnh khi MUC_CAM_KET từ 7 trở lên: trang đầu phải là verdict có số, không phải recap.
 8. Cấm hoạ tiết trang trí không neo vào một con số nào trên chính trang đó, theo bốn dấu hiệu gộp của anti-slop.
 9. Cấm chuyển động lặp lại mỗi lần cuộn qua cuộn lại một khối đã hiện: hiệu ứng chỉ chạy một lần khi vào khung nhìn.
 10. Cấm thẻ số bo tròn kèm icon mũi tên thay cho cỡ chữ áp đảo: cách làm nổi một con số của giọng này là cỡ chữ, không phải khung trang trí.
 
 ## 7. Known Gaps
+
+Thep-xanh chưa có motion ở tầng trang, xem mục 5. Điều kiện gỡ nếu sau này
+muốn thêm reveal theo cuộn: phần tử animate phải khiến gate
+`3. REDUCED-MOTION` chuyển từ SKIP sang PASS đo được thật, không phải giữ
+nguyên SKIP, vì SKIP hiện tại là gate tự nhận chưa có gì để phân biệt chứ
+không phải một xác nhận an toàn.
 
 Chưa có bằng chứng làn `pdf-so` cho thep-xanh, dù hạ tầng PDF vẫn là mặc
 định của repo: mọi dòng trong file này về bản in màn hình là suy diễn từ

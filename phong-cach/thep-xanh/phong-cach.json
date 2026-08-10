@@ -1,0 +1,22 @@
+{
+  "slug": "thep-xanh",
+  "tagline": "Blue editorial nghiem, giong bao cao to chuc, tin o mat do lap luan",
+  "mood": ["nghiem-tuc", "to-chuc", "lanh"],
+  "formality": "cao",
+  "density": "cao",
+  "best_for": ["bao-cao-nganh", "bao-cao-khoi-tao-ma", "cap-nhat-kqkd", "ban-tin-thi-truong"],
+  "avoid_for": ["tom-tat-dieu-hanh"],
+  "chu_de_mac_dinh": "sang-lanh",
+  "chu_de_dan_xuat": "toi-lanh",
+  "gioi_han_loai_hinh": [],
+  "font": {
+    "kit": "mac-dinh",
+    "hien_thi": "Spectral",
+    "van_ban": "Spectral",
+    "so_va_nhan": "IBM Plex Mono"
+  },
+  "token_override": {},
+  "chart_palette": "sang-lanh",
+  "exemplar": "examples/van-tai-bien",
+  "trang_thai": "vuon-uom"
+}

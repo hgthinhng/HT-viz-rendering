@@ -9,6 +9,7 @@ import { validatePhongCach, validateGioiHanChoChuDeToi, BAY_LOAI_AN_PHAM, RE_MAU
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const PC = path.join(REPO, 'phong-cach');
 const FX = path.join(REPO, 'tests', 'fixtures', 'phong-cach');
+const CAM_PDF = ['aspect-ratio', 'writing-mode', 'backdrop-filter', 'filter:'];
 
 function docJson(p) { return JSON.parse(fs.readFileSync(p, 'utf8')); }
 function danhSachChuDe() {
@@ -154,5 +155,44 @@ test('tinhIndex ha cap chinh-thuc thanh vuon-uom khi exemplar thieu nghiem-thu.j
     assert.deepEqual(entryX3.lan_da_chung_minh, [], 'lan_da_chung_minh phai rong khi co FAIL');
   } finally {
     fs.rmSync(sandbox, { recursive: true });
+  }
+});
+
+test('lop.css theo contract: scope dung slug, khong mau literal', () => {
+  for (const slug of cacStyle()) {
+    const p = path.join(PC, slug, 'lop.css');
+    if (!fs.existsSync(p)) continue;
+    const css = fs.readFileSync(p, 'utf8');
+    // Bo comment truoc khi quet
+    const sach = css.replace(/\/\*[\s\S]*?\*\//g, '');
+    assert.equal(RE_MAU_LITERAL.test(sach), false, `${slug}/lop.css chua mau literal`);
+    // Moi selector ngoai cung phai mang scope [data-phong-cach="slug"]
+    const selectors = [...sach.matchAll(/(^|\})\s*([^@{}]+)\{/g)].map((m) => m[2].trim()).filter(Boolean);
+    for (const sel of selectors) {
+      assert.ok(sel.includes(`[data-phong-cach="${slug}"]`),
+        `${slug}/lop.css selector khong scope: ${sel}`);
+    }
+  }
+});
+
+test('style co exemplar lan pdf-so: lop.css khong dung thuoc tinh WeasyPrint bo qua', () => {
+  const idx = docJson(path.join(PC, 'INDEX.json'));
+  for (const e of idx.danh_sach) {
+    if (!e.lan_da_chung_minh.includes('pdf-so')) continue;
+    const p = path.join(PC, e.slug, 'lop.css');
+    if (!fs.existsSync(p)) continue;
+    const sach = fs.readFileSync(p, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+    for (const cam of CAM_PDF) {
+      assert.ok(!sach.includes(cam), `${e.slug}/lop.css dung ${cam}, WeasyPrint bo qua hoac pha`);
+    }
+  }
+});
+
+test('design.md khong lap hex', () => {
+  for (const slug of cacStyle()) {
+    const p = path.join(PC, slug, 'design.md');
+    if (!fs.existsSync(p)) continue;
+    const md = fs.readFileSync(p, 'utf8');
+    assert.equal(/#[0-9a-fA-F]{6}\b/.test(md), false, `${slug}/design.md chua hex, mau chi noi bang ten token`);
   }
 });

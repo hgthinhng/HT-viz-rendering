@@ -53,7 +53,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "pipeline"))
 
-from build_html import LoiDung, SoNguon, dung, tach_front_matter  # noqa: E402
+from build_html import LoiDung, SoNguon, doc_phong_cach, dung, tach_front_matter  # noqa: E402
 
 BUOC = ["hinh", "ck1", "ck2", "dung", "ck3", "gate"]
 
@@ -71,11 +71,22 @@ def chay(lenh: list[str], mo_ta: str) -> None:
 # --------------------------------------------------------------------------- #
 # Buoc 1: sinh hinh
 # --------------------------------------------------------------------------- #
-def sinh_hinh(thu_muc_bao_cao: Path) -> int:
+def sinh_hinh(nguon_md: Path, thu_muc_bao_cao: Path) -> int:
     thu_muc = thu_muc_bao_cao / "hinh"
     if not thu_muc.exists():
         print("  bo qua: bao cao khong co thu muc hinh/")
         return 0
+
+    # Chan loai hinh TRUOC khi chay bat cu script nao trong hinh/: phong-cach chu de
+    # toi cam matplotlib (schema.mjs ep dieu do), nen mot bao cao khai phong-cach nhu
+    # vay ma van con hinh/*.py la loi cau hinh, khong phai loi du lieu, va phai dung
+    # o day chu khong phai o gate cuoi cung.
+    meta, _ = tach_front_matter(nguon_md.read_text(encoding="utf-8"))
+    pc = doc_phong_cach(meta)
+    if "matplotlib" in pc.get("gioi_han_loai_hinh", []) and list(thu_muc.glob("*.py")):
+        print(f"DUNG: phong-cach `{pc['slug']}` cam matplotlib (gioi_han_loai_hinh), "
+              f"ma hinh/ co script .py. Doi hinh sang preset ECharts hoac minh hoa SVG.")
+        sys.exit(1)
 
     so = 0
     for f in sorted(thu_muc.glob("*.mjs")):
@@ -216,7 +227,7 @@ def main() -> int:
     try:
         if "hinh" in can_chay:
             print("[1/6] HINH")
-            so = sinh_hinh(thu_muc_bao_cao)
+            so = sinh_hinh(nguon, thu_muc_bao_cao)
             print(f"  {so} hinh da sinh")
 
         if "ck1" in can_chay:

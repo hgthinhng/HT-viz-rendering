@@ -35,7 +35,7 @@ const SO_NGUON = {
 function dung(thanMd) {
   const tam = fs.mkdtempSync(path.join(os.tmpdir(), 'htviz-bang-'));
   fs.writeFileSync(path.join(tam, 'so-nguon.json'), JSON.stringify(SO_NGUON), 'utf-8');
-  const md = `---\ntieu_de: Test bảng\nso_nguon: so-nguon.json\n---\n\n## Mục\n\n${thanMd}\n`;
+  const md = `---\ntieu_de: Test bảng\nphong-cach: thep-xanh\nso_nguon: so-nguon.json\n---\n\n## Mục\n\n${thanMd}\n`;
   fs.writeFileSync(path.join(tam, 'noi-dung.md'), md, 'utf-8');
   const ra = path.join(tam, 'ra.html');
   execFileSync('python3', [path.join(GOC, 'pipeline/build_html.py'), path.join(tam, 'noi-dung.md'), ra], {

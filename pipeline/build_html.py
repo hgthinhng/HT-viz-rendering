@@ -80,6 +80,49 @@ CAC_LAN = ("pdf-so", "html-song")
 # hardcode va bat dark mode la HAI viec, day moi la viec thu nhat.
 CHU_DE_MAC_DINH = "light"
 
+# Tang phong-cach: moi an pham khai `phong-cach: <slug>` bat buoc trong front-matter,
+# tro toi mot thu muc con cua PHONG_CACH_DIR mang phong-cach.json (Task 1) va lop.css
+# (Task 3). Alias giu bit-compat: sang-lanh/toi-lanh la ten chu de cu, ra doi TRUOC
+# he phong-cach, con gia tri data-theme legacy la light/dark.
+PHONG_CACH_DIR = REPO / "phong-cach"
+_ALIAS_CHU_DE = json.loads((PHONG_CACH_DIR / "alias.json").read_text(encoding="utf-8"))
+
+
+def doc_phong_cach(meta: dict) -> dict:
+    """Doc va kiem phong-cach tu front-matter. Fail-fast: vang khoa la dung ngay,
+    khong co default im lang (spec v2 muc 3, dong thuan 3/3 worker phan bien)."""
+    slug = meta.get("phong-cach")
+    if not slug:
+        raise LoiDung(
+            "front-matter thieu khoa `phong-cach`. An pham moi thi chay nghi thuc chon huong:\n"
+            "  python3 pipeline/orchestrator.py <bao-cao>/noi-dung.md --nghi-thuc-huong\n"
+            "roi ghi `phong-cach: <slug>` vao front-matter."
+        )
+    duong_dan = PHONG_CACH_DIR / slug / "phong-cach.json"
+    if not duong_dan.exists():
+        co_san = sorted(p.name for p in PHONG_CACH_DIR.iterdir() if (p / "phong-cach.json").exists())
+        raise LoiDung(f"phong-cach `{slug}` khong ton tai. Co san: {', '.join(co_san)}")
+    pc = json.loads(duong_dan.read_text(encoding="utf-8"))
+    if pc.get("slug") != slug:
+        raise LoiDung(f"phong-cach/{slug}/phong-cach.json khai slug `{pc.get('slug')}`, lech ten thu muc")
+    return pc
+
+
+def data_theme_cua(pc: dict) -> str:
+    """Gia tri data-theme sau alias: chu de cu giu ten legacy de thep-xanh
+    khong doi mot byte; chu de moi dung thang ten."""
+    chu_de = pc["chu_de_mac_dinh"]
+    return _ALIAS_CHU_DE.get(chu_de, chu_de)
+
+
+def khoi_token_override(pc: dict) -> str:
+    """Sinh block CSS cho token_override. Dat SAU tokens.css, TRUOC components.css."""
+    if not pc.get("token_override"):
+        return ""
+    dong = "\n".join(f"  {k}: {v};" for k, v in pc["token_override"].items())
+    return f'/* token_override cua phong-cach {pc["slug"]} */\n[data-phong-cach="{pc["slug"]}"] {{\n{dong}\n}}\n'
+
+
 # Chuoi HIEN THI cho nguoi doc, nen phai co day du dau tieng Viet. Comment va ten bien
 # trong repo viet khong dau, nhung do la ma nguon chu khong phai thu in ra giay.
 BAC_BANG_CHUNG = {
@@ -865,16 +908,27 @@ def lap_trang(
     so_nguon: SoNguon,
     chu_de: str = CHU_DE_MAC_DINH,
     khoi_script: str = "",
+    phong_cach: dict | None = None,
 ) -> str:
-    css = "\n".join(
-        (REPO / p).read_text(encoding="utf-8")
-        for p in (
-            "design-system/fonts/fonts-embedded.css",
-            "design-system/tokens.css",
-            "components/components.css",
-            "pipeline/report.css",
-        )
-    )
+    # Thu tu CSS theo spec tang phong-cach muc 3.1: fonts, tokens, KHOI TOKEN_OVERRIDE,
+    # components, report, roi LOP.CSS sau cung. token_override phai dat TRUOC
+    # components.css/report.css de cac lop do dung dung gia tri da ghi de; lop.css dat
+    # SAU CUNG vi no la lop tuy bien rieng cua tung phong-cach, phai thang ca hai.
+    cac_phan_css = [
+        (REPO / "design-system/fonts/fonts-embedded.css").read_text(encoding="utf-8"),
+        (REPO / "design-system/tokens.css").read_text(encoding="utf-8"),
+    ]
+    if phong_cach:
+        cac_phan_css.append(khoi_token_override(phong_cach))
+    cac_phan_css.append((REPO / "components/components.css").read_text(encoding="utf-8"))
+    cac_phan_css.append((REPO / "pipeline/report.css").read_text(encoding="utf-8"))
+    if phong_cach:
+        duong_lop = PHONG_CACH_DIR / phong_cach["slug"] / "lop.css"
+        # Thieu file la hop le: lop.css rong dung nghia la khong co override nao.
+        if duong_lop.exists():
+            cac_phan_css.append(duong_lop.read_text(encoding="utf-8"))
+    css = "\n".join(cac_phan_css)
+
     kho_trang = str(meta.get("kho_trang", "doc")).strip().lower()
     if kho_trang not in KHO_TRANG_HOP_LE:
         raise LoiDung(f"kho_trang khong biet: {kho_trang!r}. Chi nhan {KHO_TRANG_HOP_LE}")
@@ -888,12 +942,19 @@ def lap_trang(
             + "</script>"
         )
     tieu_de = html_mod.escape(meta.get("tieu_de", "Báo cáo"))
+    the_phong_cach = f' data-phong-cach="{html_mod.escape(phong_cach["slug"])}"' if phong_cach else ""
+    meta_phong_cach = ""
+    if phong_cach:
+        meta_phong_cach = (
+            f'<meta name="phong-cach" content="{html_mod.escape(phong_cach["slug"])}">\n'
+            f'<meta name="chu-de-khoa" content="{html_mod.escape(chu_de)}">\n'
+        )
     return f"""<!DOCTYPE html>
-<html lang="vi" data-theme="{html_mod.escape(chu_de)}">
+<html lang="vi" data-theme="{html_mod.escape(chu_de)}"{the_phong_cach}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{tieu_de}</title>
+{meta_phong_cach}<title>{tieu_de}</title>
 <style>
 {css}
 </style>
@@ -914,10 +975,16 @@ def dung(
     ra_html: Path,
     che_do: str,
     lan: str = LAN_MAC_DINH,
-    chu_de: str = CHU_DE_MAC_DINH,
+    chu_de: str | None = None,
 ) -> Path:
     van_ban = nguon_md.read_text(encoding="utf-8")
     meta, than_md = tach_front_matter(van_ban)
+
+    pc = doc_phong_cach(meta)
+    # `chu_de` la override tay: khac None thi thang, phuc vu trang noi bo can chu de
+    # khac chu_de_mac_dinh cua phong-cach (vi du toi-lanh). Mac dinh None thi lay
+    # thang tu phong-cach.
+    chu_de_hieu_luc = chu_de if chu_de is not None else data_theme_cua(pc)
 
     duong_ledger = meta.get("so_nguon") or meta.get("ledger")
     if not duong_ledger:
@@ -935,9 +1002,9 @@ def dung(
     if lan not in CAC_LAN:
         raise LoiDung(f"lan khong biet: {lan}. Chi nhan mot trong {CAC_LAN}")
 
-    than, co_chart_song = dung_than(than_md, so_nguon, nguon_md.parent, lan, chu_de)
+    than, co_chart_song = dung_than(than_md, so_nguon, nguon_md.parent, lan, chu_de_hieu_luc)
     khoi_script = khoi_script_song() if co_chart_song else ""
-    trang = lap_trang(meta, than, so_nguon, chu_de, khoi_script)
+    trang = lap_trang(meta, than, so_nguon, chu_de_hieu_luc, khoi_script, phong_cach=pc)
 
     ra_html.parent.mkdir(parents=True, exist_ok=True)
     ra_html.write_text(trang, encoding="utf-8")
@@ -950,7 +1017,10 @@ def main() -> int:
     ap.add_argument("ra", type=Path)
     ap.add_argument("--che-do", dest="che_do", default="noi-bo", choices=["noi-bo", "gui-di"])
     ap.add_argument("--lan", dest="lan", default=LAN_MAC_DINH, choices=list(CAC_LAN))
-    ap.add_argument("--chu-de", dest="chu_de", default=CHU_DE_MAC_DINH)
+    # Mac dinh None: khong ep chu de "light" nua, de doc_phong_cach()/data_theme_cua()
+    # trong dung() tu quyet dinh theo phong-cach cua an pham. Truyen co --chu-de la
+    # override tay, cho trang noi bo can chu de khac chu_de_mac_dinh cua phong-cach.
+    ap.add_argument("--chu-de", dest="chu_de", default=None)
     tham_so = ap.parse_args()
 
     try:
@@ -960,9 +1030,10 @@ def main() -> int:
         return 1
 
     kich_thuoc = duong.stat().st_size
+    mo_ta_chu_de = tham_so.chu_de or "tu phong-cach"
     print(
         f"build_html OK -> {duong} ({kich_thuoc / 1024:.0f}KB, "
-        f"che do {tham_so.che_do}, lan {tham_so.lan}, chu de {tham_so.chu_de})"
+        f"che do {tham_so.che_do}, lan {tham_so.lan}, chu de {mo_ta_chu_de})"
     )
     return 0
 

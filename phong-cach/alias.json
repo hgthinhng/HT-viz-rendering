@@ -1,0 +1,5 @@
+{
+  "_doc": "Anh xa ten chu de sang gia tri data-theme legacy. sang-lanh va toi-lanh ra doi TRUOC he phong-cach voi gia tri light/dark ghi o 41 cho; alias giu bit-compat cho thep-xanh. Chu de moi khong co alias: data-theme dung ten chu de.",
+  "sang-lanh": "light",
+  "toi-lanh": "dark"
+}

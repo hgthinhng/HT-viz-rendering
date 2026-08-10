@@ -1,5 +1,6 @@
 ---
 tieu_de: Vận tải biển 2026: cước phục hồi nhưng hạ tầng cảng quyết định ai hưởng
+phong-cach: thep-xanh
 kicker: Báo cáo ngành, bản mẫu làn html-song
 dek: Toàn bộ số liệu trong bản này là số minh hoạ dựng để nghiệm thu đường ống, không phải số công bố của bất kỳ cảng hay hãng tàu nào.
 ngay: 09/08/2026

@@ -1,5 +1,6 @@
 ---
 tieu_de: Xi măng 2026: chi phí năng lượng quyết định ai còn lãi
+phong-cach: thep-xanh
 kicker: Báo cáo ngành, bản mẫu kỹ thuật
 dek: Toàn bộ số liệu trong bản này là số minh hoạ dựng để nghiệm thu đường ống, không phải số công bố của bất kỳ doanh nghiệp nào.
 ngay: 07/08/2026

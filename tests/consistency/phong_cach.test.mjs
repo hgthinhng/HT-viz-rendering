@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { validatePhongCach, validateGioiHanChoChuDeToi, BAY_LOAI_AN_PHAM, RE_MAU_LITERAL } from '../../phong-cach/schema.mjs';
 
@@ -84,5 +85,74 @@ test('entry chinh-thuc phai co lan_da_chung_minh', () => {
       assert.ok(e.lan_da_chung_minh.length >= 1, `${e.slug} chinh-thuc ma khong co lan chung minh`);
       assert.ok(e.exemplar, `${e.slug} chinh-thuc ma khong co exemplar`);
     }
+  }
+});
+
+test('tinhIndex ha cap chinh-thuc thanh vuon-uom khi exemplar thieu nghiem-thu.json', async () => {
+  const { tinhIndex } = await import('../../phong-cach/sinh-index.mjs');
+  const sandbox = fs.mkdtempSync(path.join(os.tmpdir(), 'phong-cach-test-'));
+  try {
+    // Dung sandbox: design-system/themes/sang-lanh.json, phong-cach/x/, examples/x/
+    const themesDir = path.join(sandbox, 'design-system', 'themes');
+    fs.mkdirSync(themesDir, { recursive: true });
+    const sangLanhThuc = docJson(path.join(REPO, 'design-system', 'themes', 'sang-lanh.json'));
+    fs.writeFileSync(path.join(themesDir, 'sang-lanh.json'), JSON.stringify(sangLanhThuc, null, 2) + '\n');
+
+    const stylePath = path.join(sandbox, 'phong-cach', 'x', 'phong-cach.json');
+    fs.mkdirSync(path.dirname(stylePath), { recursive: true });
+    const stylePhongCach = {
+      slug: 'x',
+      tagline: 'Test style co trang thai chinh-thuc',
+      mood: ['test'],
+      formality: 'cao',
+      density: 'cao',
+      best_for: [],
+      avoid_for: [],
+      chu_de_mac_dinh: 'sang-lanh',
+      gioi_han_loai_hinh: [],
+      font: { kit: 'mac-dinh', hien_thi: 'Spectral', van_ban: 'Spectral', so_va_nhan: 'IBM Plex Mono' },
+      token_override: {},
+      chart_palette: 'sang-lanh',
+      exemplar: 'examples/x',
+      trang_thai: 'chinh-thuc',
+    };
+    fs.writeFileSync(stylePath, JSON.stringify(stylePhongCach, null, 2) + '\n');
+    fs.mkdirSync(path.join(sandbox, 'examples', 'x'), { recursive: true });
+
+    // Case do: exemplar thieu nghiem-thu.json, ha cap thanh vuon-uom
+    let idx = tinhIndex(sandbox);
+    const entryX = idx.danh_sach.find((e) => e.slug === 'x');
+    assert.equal(entryX.trang_thai, 'vuon-uom', 'chinh-thuc phai ha cap khi thieu nghiem-thu.json');
+    assert.deepEqual(entryX.lan_da_chung_minh, [], 'lan_da_chung_minh phai rong khi vo');
+
+    // Case xanh: them nghiem-thu.json hop le, giu chinh-thuc
+    const nghiemThu = {
+      lan: 'html-song',
+      gate: [
+        { ten: 'FONT', ket_qua: 'PASS' },
+        { ten: 'CHART', ket_qua: 'PASS' },
+      ],
+    };
+    fs.writeFileSync(path.join(sandbox, 'examples', 'x', 'nghiem-thu.json'), JSON.stringify(nghiemThu, null, 2) + '\n');
+    idx = tinhIndex(sandbox);
+    const entryX2 = idx.danh_sach.find((e) => e.slug === 'x');
+    assert.equal(entryX2.trang_thai, 'chinh-thuc', 'giu chinh-thuc khi co nghiem-thu.json hophanle');
+    assert.deepEqual(entryX2.lan_da_chung_minh, ['html-song'], 'lan_da_chung_minh phai la ["html-song"]');
+
+    // Case do thu ba: nghiem-thu.json co FAIL, ha cap lai
+    const nghiemThuFail = {
+      lan: 'html-song',
+      gate: [
+        { ten: 'FONT', ket_qua: 'PASS' },
+        { ten: 'CHART', ket_qua: 'FAIL' },
+      ],
+    };
+    fs.writeFileSync(path.join(sandbox, 'examples', 'x', 'nghiem-thu.json'), JSON.stringify(nghiemThuFail, null, 2) + '\n');
+    idx = tinhIndex(sandbox);
+    const entryX3 = idx.danh_sach.find((e) => e.slug === 'x');
+    assert.equal(entryX3.trang_thai, 'vuon-uom', 'ha cap khi co FAIL trong gate');
+    assert.deepEqual(entryX3.lan_da_chung_minh, [], 'lan_da_chung_minh phai rong khi co FAIL');
+  } finally {
+    fs.rmSync(sandbox, { recursive: true });
   }
 });

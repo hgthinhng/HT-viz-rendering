@@ -215,6 +215,33 @@ test('style co exemplar lan pdf-so: lop.css khong dung thuoc tinh WeasyPrint bo 
   }
 });
 
+test('nghiem-thu.json cua exemplar khop registry gate hien hanh', async () => {
+  const { TEN_GATES_PDF } = await import('../../gates/gates.mjs');
+  const { TEN_GATES_SONG } = await import('../../gates/gates_song.mjs');
+
+  // Neu vong lap ben duoi khong tim thay entry chinh-thuc nao (hien tai la vay,
+  // xem phong-cach/INDEX.json), test se PASS RONG va khong chung minh gi. Ep hai
+  // assert tinh o day de test luon kiem duoc mot dieu gi do that su, dung bai hoc
+  // pass-rong da dinh o Task 2 va Task 3.
+  assert.ok(TEN_GATES_PDF.length >= 10, `TEN_GATES_PDF phai co it nhat 10 gate, hien co ${TEN_GATES_PDF.length}`);
+  assert.ok(TEN_GATES_SONG.length >= 9, `TEN_GATES_SONG phai co it nhat 9 gate, hien co ${TEN_GATES_SONG.length}`);
+  assert.equal(new Set(TEN_GATES_PDF).size, TEN_GATES_PDF.length, 'TEN_GATES_PDF co ten trung nhau');
+  assert.equal(new Set(TEN_GATES_SONG).size, TEN_GATES_SONG.length, 'TEN_GATES_SONG co ten trung nhau');
+
+  const idx = docJson(path.join(PC, 'INDEX.json'));
+  for (const e of idx.danh_sach) {
+    if (e.trang_thai !== 'chinh-thuc') continue;
+    const nt = docJson(path.join(REPO, e.exemplar, 'nghiem-thu.json'));
+    const registry = nt.lan === 'html-song' ? TEN_GATES_SONG : TEN_GATES_PDF;
+    assert.deepEqual(nt.gate.map((g) => g.ten), registry,
+      `${e.slug}: tap gate trong nghiem-thu lech registry ${nt.lan}; chay lai npm run nghiem-thu`);
+    for (const g of nt.gate) {
+      assert.notEqual(g.ket_qua, 'FAIL', `${e.slug}: gate ${g.ten} FAIL trong nghiem-thu`);
+      if (g.ket_qua === 'SKIP') assert.ok(g.ly_do, `${e.slug}: gate ${g.ten} SKIP khong ly do`);
+    }
+  }
+});
+
 test('design.md khong lap hex', () => {
   for (const slug of cacStyle()) {
     const p = path.join(PC, slug, 'design.md');

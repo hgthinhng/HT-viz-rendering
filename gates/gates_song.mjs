@@ -821,12 +821,21 @@ export async function gateThemeMatch({ duongDanHtml, browser }) {
 // --------------------------------------------------------------------------- //
 // Chay ca bo
 // --------------------------------------------------------------------------- //
+// Ten gate DUNG NHU code that o duoi, dung thu tu chay. Dung boi gates/run.mjs de
+// sinh nghiem-thu.json va boi test doi chieu o tests/consistency/phong_cach.test.mjs.
+// Assert cuoi chayTatCaSong ep registry nay khong bao gio troi khoi hanh vi that.
+export const TEN_GATES_SONG = [
+  '1. OFFLINE-INTACT', '2. JS-SILENT-FAIL', '3. REDUCED-MOTION', '4. KEYBOARD-PATH',
+  '5. CONTRAST-ALL-THEMES', '6. SIZE-BUDGET', '7. NO-JS-CONTENT', '8. RESPONSIVE-WIDTH',
+  '9. THEME-MATCH',
+];
+
 export async function chayTatCaSong({ duongDanHtml }) {
   const html = fs.readFileSync(duongDanHtml, 'utf-8');
   const browser = await launchChromium();
   try {
     const goi = { html, duongDanHtml, browser };
-    return [
+    const ketQua = [
       await gateOffline(goi),
       await gateJsSilentFail(goi),
       await gateReducedMotion(goi),
@@ -837,6 +846,11 @@ export async function chayTatCaSong({ duongDanHtml }) {
       await gateResponsiveWidth(goi),
       await gateThemeMatch(goi),
     ];
+    const ten = ketQua.map((g) => g.ten);
+    if (JSON.stringify(ten) !== JSON.stringify(TEN_GATES_SONG)) {
+      throw new Error(`Registry TEN_GATES_SONG lech ket qua that: ${ten.join(', ')}`);
+    }
+    return ketQua;
   } finally {
     await browser.close();
   }

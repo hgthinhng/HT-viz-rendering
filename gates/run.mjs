@@ -14,15 +14,50 @@
  *
  * Lan html-song KHONG can file PDF: dac ta cu doi ca hai duong dan nen lan nay
  * khong chay duoc tren nhanh mac dinh, day la ly do co --lan rieng.
+ *
+ * Co --ghi-nghiem-thu=<path> (ca hai lan): ghi ket qua thanh nghiem-thu.json MAY
+ * SINH dung schema spec muc 6, dung de dua mot exemplar len trang thai chinh-thuc.
+ * Co --lenh-tai-tao="<cmd>" di kem de ghi de lenh tai tao mac dinh (vi lenh chua dau
+ * bang va khoang trang nen phai parse bang slice, khong dung split('=')).
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { chayTatCa } from './gates.mjs';
-import { chayTatCaSong } from './gates_song.mjs';
+import { execSync } from 'node:child_process';
+import { chayTatCa, TEN_GATES_PDF } from './gates.mjs';
+import { chayTatCaSong, TEN_GATES_SONG } from './gates_song.mjs';
 
 const NGANG = '='.repeat(78);
 
-function inKetQuaVaThoat(ketQua) {
+/**
+ * Ghi bang chung MAY SINH ra dia, khong phai bang chung viet tay. Registry ten
+ * gate lay tu chinh gates.mjs / gates_song.mjs (xem TEN_GATES_PDF/TEN_GATES_SONG),
+ * nen phien_ban_bo_gate troi theo so gate that ngay khi co gate moi.
+ *
+ * WARN duoc anh xa thanh PASS kem truong canh_bao: WARN khong chan giao file,
+ * nen nghiem-thu.json coi no la dat nhung khong duoc giau canh bao.
+ */
+function ghiNghiemThuJson(duongDan, ketQua, lan, lenhTaiTao) {
+  const registry = lan === 'html-song' ? TEN_GATES_SONG : TEN_GATES_PDF;
+  const sha = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+  const ho_so = {
+    sinh_boi: 'gates/run.mjs --ghi-nghiem-thu',
+    ngay: new Date().toISOString().slice(0, 10),
+    sha,
+    lenh_tai_tao: lenhTaiTao || `node gates/run.mjs ${process.argv.slice(2).filter((a) => !a.startsWith('--ghi-nghiem-thu')).join(' ')}`,
+    lan,
+    phien_ban_bo_gate: `${lan === 'html-song' ? 'song' : 'pdf'}-${registry.length}`,
+    gate: ketQua.map((g) => {
+      const muc = { ten: g.ten, ket_qua: g.trang_thai === 'WARN' ? 'PASS' : g.trang_thai };
+      if (g.trang_thai === 'SKIP') muc.ly_do = g.ly_do.join('; ') || 'khong ghi ly do';
+      if (g.trang_thai === 'WARN') muc.canh_bao = g.ly_do.join('; ');
+      return muc;
+    }),
+  };
+  fs.writeFileSync(duongDan, JSON.stringify(ho_so, null, 2) + '\n');
+  console.log(`Da ghi nghiem thu: ${duongDan}`);
+}
+
+function inKetQuaVaThoat(ketQua, { lan, ghiNghiemThu, lenhTaiTao } = {}) {
   let coFail = false;
   const dem = { PASS: 0, WARN: 0, FAIL: 0, SKIP: 0 };
   for (const g of ketQua) {
@@ -34,12 +69,16 @@ function inKetQuaVaThoat(ketQua) {
   console.log(NGANG);
   console.log(`TONG: ${dem.PASS} PASS, ${dem.WARN} WARN, ${dem.FAIL} FAIL, ${dem.SKIP} SKIP`);
   console.log(coFail ? 'KET QUA: FAIL, khong duoc giao file' : 'KET QUA: PASS (van doc ky phan WARN truoc khi giao)');
+  if (ghiNghiemThu) ghiNghiemThuJson(ghiNghiemThu, ketQua, lan, lenhTaiTao);
   process.exit(coFail ? 1 : 0);
 }
 
 const args = process.argv.slice(2);
 const viTri = args.filter((a) => !a.startsWith('--'));
 const lan = (args.find((a) => a.startsWith('--lan=')) || '--lan=pdf-so').split('=')[1];
+const ghiNT = (args.find((a) => a.startsWith('--ghi-nghiem-thu=')) || '').split('=')[1] || null;
+const ltIdx = args.findIndex((a) => a.startsWith('--lenh-tai-tao='));
+const lenhTaiTao = ltIdx >= 0 ? args[ltIdx].slice('--lenh-tai-tao='.length) : null;
 
 if (lan === 'html-song') {
   const [duongDanHtml] = viTri;
@@ -57,7 +96,7 @@ if (lan === 'html-song') {
   console.log(NGANG);
   console.log(`BO GATE NGHIEM THU (lan html-song)  ${duongDanHtml}`);
   console.log(NGANG);
-  inKetQuaVaThoat(ketQua);
+  inKetQuaVaThoat(ketQua, { lan, ghiNghiemThu: ghiNT, lenhTaiTao });
 } else {
   const [duongDanHtml, duongDanPdf] = viTri;
   const cheDo = (args.find((a) => a.startsWith('--che-do=')) || '--che-do=noi-bo').split('=')[1];
@@ -79,5 +118,5 @@ if (lan === 'html-song') {
   console.log(NGANG);
   console.log(`BO GATE NGHIEM THU  ${duongDanHtml}  +  ${duongDanPdf}   (che do ${cheDo})`);
   console.log(NGANG);
-  inKetQuaVaThoat(ketQua);
+  inKetQuaVaThoat(ketQua, { lan, ghiNghiemThu: ghiNT, lenhTaiTao });
 }

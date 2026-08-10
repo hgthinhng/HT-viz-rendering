@@ -28,6 +28,25 @@ function cacStyle() {
     .filter((d) => d.isDirectory() && !d.name.startsWith('.') && d.name !== 'fixtures')
     .map((d) => d.name);
 }
+function tachSelectors(css) {
+  const sach = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const selectors = [];
+  let buf = '';
+  let depth = 0;
+  for (let i = 0; i < sach.length; i++) {
+    const ch = sach[i];
+    if (ch === '{') {
+      const dau = buf.trim();
+      if (!dau.startsWith('@') && dau) {
+        for (const s of dau.split(',')) { const t = s.trim(); if (t) selectors.push(t); }
+      }
+      depth += 1; buf = '';
+    } else if (ch === '}') { depth -= 1; buf = ''; }
+    else if (ch === ';') { buf = ''; }
+    else { buf += ch; }
+  }
+  return selectors;
+}
 
 test('moi phong-cach.json qua schema', () => {
   const themes = danhSachChuDe();
@@ -163,16 +182,24 @@ test('lop.css theo contract: scope dung slug, khong mau literal', () => {
     const p = path.join(PC, slug, 'lop.css');
     if (!fs.existsSync(p)) continue;
     const css = fs.readFileSync(p, 'utf8');
-    // Bo comment truoc khi quet
-    const sach = css.replace(/\/\*[\s\S]*?\*\//g, '');
-    assert.equal(RE_MAU_LITERAL.test(sach), false, `${slug}/lop.css chua mau literal`);
-    // Moi selector ngoai cung phai mang scope [data-phong-cach="slug"]
-    const selectors = [...sach.matchAll(/(^|\})\s*([^@{}]+)\{/g)].map((m) => m[2].trim()).filter(Boolean);
+    assert.equal(RE_MAU_LITERAL.test(css.replace(/\/\*[\s\S]*?\*\//g, '')), false, `${slug}/lop.css chua mau literal`);
+    // Moi selector (ke ca trong @media) phai mang scope [data-phong-cach="slug"]
+    const selectors = tachSelectors(css);
     for (const sel of selectors) {
       assert.ok(sel.includes(`[data-phong-cach="${slug}"]`),
         `${slug}/lop.css selector khong scope: ${sel}`);
     }
   }
+});
+
+test('tachSelectors bat duoc selector tran trong @media va nhanh phay khong scope', () => {
+  const css = '@media screen and (max-width: 600px) { .naked { color: var(--ink); } }\n' +
+    '[data-phong-cach="x"] .a, .b { margin: 0; }';
+  const ket = tachSelectors(css);
+  assert.ok(ket.includes('.naked'), 'phai thay selector trong @media');
+  assert.ok(ket.includes('.b'), 'phai tach rieng nhanh phay');
+  const viPham = ket.filter((s) => !s.includes('[data-phong-cach="x"]'));
+  assert.deepEqual(viPham.sort(), ['.b', '.naked'], 'hai vi pham phai bi bat');
 });
 
 test('style co exemplar lan pdf-so: lop.css khong dung thuoc tinh WeasyPrint bo qua', () => {

@@ -26,10 +26,14 @@ import {
   gateNoJsContent,
   gateResponsiveWidth,
   gateThemeMatch,
+  gateKhoaChuDe,
 } from '../../gates/gates_song.mjs';
 
 const GOC = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const FIX = path.join(GOC, 'gates/fixtures/song');
+// KHOA-CHU-DE la gate CHUNG cho ca hai lan (viet mot lan trong gates.mjs), nen
+// fixture cua no nam o gates/fixtures/ chung, khong phai gates/fixtures/song/.
+const FIX_CHUNG = path.join(GOC, 'gates/fixtures');
 
 const browser = await launchChromium();
 after(async () => {
@@ -157,4 +161,30 @@ test('gate 9 THEME-MATCH phan biet SVG khai dung chu de voi SVG thieu khai bao h
   const noiDung = do_.ly_do.join(' | ');
   assert.match(noiDung, /data-theme khai "\(THIEU\)".*THIEU tinh la FAIL chu khong SKIP/);
   assert.match(noiDung, /hinh-2.*duoi nguong 3:1/);
+});
+
+// --------------------------------------------------------------------------- //
+test('gate 10 KHOA-CHU-DE phan biet trang khoa dung chu de style voi trang lech hoac thieu data-theme', () => {
+  const htmlXanh = fs.readFileSync(path.join(FIX_CHUNG, 'khoa-chu-de-xanh.html'), 'utf-8');
+  const htmlDoLech = fs.readFileSync(path.join(FIX_CHUNG, 'khoa-chu-de-do-lech.html'), 'utf-8');
+  const htmlDoThieu = fs.readFileSync(path.join(FIX_CHUNG, 'khoa-chu-de-do-thieu.html'), 'utf-8');
+
+  const xanh = gateKhoaChuDe({ html: htmlXanh, soThuTu: 10 });
+  assert.equal(xanh.trang_thai, 'PASS');
+
+  const doLech = gateKhoaChuDe({ html: htmlDoLech, soThuTu: 10 });
+  assert.equal(doLech.trang_thai, 'FAIL');
+  assert.match(doLech.ly_do.join(' '), /data-theme="dark" lech chu de cua style/);
+
+  const doThieu = gateKhoaChuDe({ html: htmlDoThieu, soThuTu: 10 });
+  assert.equal(doThieu.trang_thai, 'FAIL');
+  assert.match(doThieu.ly_do.join(' '), /khong co data-theme tuong minh/);
+});
+
+test('gate 10 KHOA-CHU-DE SKIP khi trang khong khai meta phong-cach, dung truoc tang style', () => {
+  const kq = gateKhoaChuDe({
+    html: '<html lang="vi"><body>Trang cu, dung truoc khi co tang phong-cach</body></html>',
+    soThuTu: 10,
+  });
+  assert.equal(kq.trang_thai, 'SKIP');
 });

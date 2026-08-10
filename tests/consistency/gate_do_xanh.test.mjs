@@ -25,6 +25,7 @@ import {
   gateNgatTrang,
   gateRoRiNguon,
   gateSoNguon,
+  gateKhoaChuDe,
   boTrang,
   tachSvg,
 } from '../../gates/gates.mjs';
@@ -188,6 +189,31 @@ test('gate 10 LEDGER do khi ban noi bo thieu han so nguon', () => {
   const html = '<p>Không có sổ nguồn</p>';
   assert.equal(gateSoNguon({ html, duongDanHtml: 'khong-can-doc', cheDo: 'noi-bo' }).trang_thai, 'FAIL');
   assert.equal(gateSoNguon({ html, duongDanHtml: 'khong-can-doc', cheDo: 'gui-di' }).trang_thai, 'SKIP');
+});
+
+test('gate 11 KHOA-CHU-DE phan biet trang khoa dung chu de style voi trang lech hoac thieu data-theme', () => {
+  const htmlXanh = fs.readFileSync(path.join(FIX, 'khoa-chu-de-xanh.html'), 'utf-8');
+  const htmlDoLech = fs.readFileSync(path.join(FIX, 'khoa-chu-de-do-lech.html'), 'utf-8');
+  const htmlDoThieu = fs.readFileSync(path.join(FIX, 'khoa-chu-de-do-thieu.html'), 'utf-8');
+
+  const xanh = gateKhoaChuDe({ html: htmlXanh, soThuTu: 11 });
+  assert.equal(xanh.trang_thai, 'PASS');
+
+  const doLech = gateKhoaChuDe({ html: htmlDoLech, soThuTu: 11 });
+  assert.equal(doLech.trang_thai, 'FAIL');
+  assert.match(doLech.ly_do.join(' '), /data-theme="dark" lech chu de cua style/);
+
+  const doThieu = gateKhoaChuDe({ html: htmlDoThieu, soThuTu: 11 });
+  assert.equal(doThieu.trang_thai, 'FAIL');
+  assert.match(doThieu.ly_do.join(' '), /khong co data-theme tuong minh/);
+});
+
+test('gate 11 KHOA-CHU-DE SKIP khi trang khong khai meta phong-cach, dung truoc tang style', () => {
+  const kq = gateKhoaChuDe({
+    html: '<html lang="vi"><body>Trang cu, dung truoc khi co tang phong-cach</body></html>',
+    soThuTu: 11,
+  });
+  assert.equal(kq.trang_thai, 'SKIP');
 });
 
 // --------------------------------------------------------------------------- //

@@ -19,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { kiemTraXml } from './lib/xml.mjs';
 
 const THU_MUC = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(THU_MUC, '..');
 
 // --------------------------------------------------------------------------- //
 // Tien ich dung chung
@@ -442,6 +443,60 @@ export function gateSoNguon({ html, duongDanHtml, cheDo = 'noi-bo' }) {
 }
 
 // --------------------------------------------------------------------------- //
+// Gate 11 (pdf-so) / Gate 10 (html-song), KHOA-CHU-DE
+// --------------------------------------------------------------------------- //
+/**
+ * Gate CHUNG cho ca hai lan, viet mot lan o day va gates_song.mjs import lai.
+ * Nguyen ly hai vi tri khac nhau trong hai registry (11 o pdf-so vi no dung sau
+ * LEDGER, 10 o html-song vi no dung sau THEME-MATCH) buoc ten gate phai tham so
+ * hoa qua `soThuTu` thay vi dong cung.
+ *
+ * Kiem tang phong-cach (Task 4) khong tu lech khoi chinh no: the <html> khoa
+ * `data-theme` va meta `chu-de-khoa` phai cung mot gia tri, va gia tri do phai
+ * dung `chu_de_mac_dinh` cua chinh style duoc khai trong meta `phong-cach` (qua
+ * `phong-cach/alias.json` neu style dung ten chu de kieu cu nhu "sang-lanh").
+ *
+ * SKIP cho trang KHONG khai meta phong-cach: day la trang dung truoc tang style
+ * (vi du fixture cu cua nhung gate khac trong repo nay), gate khong co gi de
+ * chung minh nen khong duoc phep bao PASS hay FAIL.
+ */
+export function gateKhoaChuDe({ html, soThuTu }) {
+  const ten = `${soThuTu}. KHOA-CHU-DE`;
+  const ly_do = [];
+  const themeAttr = (html.match(/<html[^>]*\bdata-theme="([^"]*)"/) || [])[1];
+  const metaPC = (html.match(/<meta name="phong-cach" content="([^"]*)"/) || [])[1];
+  const metaKhoa = (html.match(/<meta name="chu-de-khoa" content="([^"]*)"/) || [])[1];
+
+  if (!metaPC) {
+    return ghi(ten, 'SKIP', [
+      'trang khong khai meta phong-cach, dung truoc tang phong-cach (vi du fixture cu ' +
+      'cua gate khac); gate khong chung minh duoc gi',
+    ]);
+  }
+
+  const pcPath = path.join(REPO_ROOT, 'phong-cach', metaPC, 'phong-cach.json');
+  if (!fs.existsSync(pcPath)) {
+    return ghi(ten, 'FAIL', [`meta khai phong-cach "${metaPC}" khong ton tai trong repo (${pcPath})`]);
+  }
+
+  const pc = JSON.parse(fs.readFileSync(pcPath, 'utf8'));
+  const alias = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'phong-cach', 'alias.json'), 'utf8'));
+  const mongDoi = alias[pc.chu_de_mac_dinh] ?? pc.chu_de_mac_dinh;
+
+  if (!themeAttr) {
+    ly_do.push('the html khong co data-theme tuong minh');
+  } else if (themeAttr !== mongDoi) {
+    ly_do.push(`data-theme="${themeAttr}" lech chu de cua style: mong doi "${mongDoi}"`);
+  }
+  if (metaKhoa !== mongDoi) {
+    ly_do.push(`meta chu-de-khoa="${metaKhoa || '(THIEU)'}" lech "${mongDoi}"`);
+  }
+
+  if (ly_do.length) return ghi(ten, 'FAIL', ly_do);
+  return ghi(ten, 'PASS', [`data-theme va meta chu-de-khoa deu khop "${mongDoi}", chu de mac dinh cua style "${metaPC}"`]);
+}
+
+// --------------------------------------------------------------------------- //
 // Chay ca bo
 // --------------------------------------------------------------------------- //
 export function docPdf(duongDanPdf) {
@@ -456,6 +511,7 @@ export function docPdf(duongDanPdf) {
 export const TEN_GATES_PDF = [
   '1. FONT-HTML', '2. FONT-PDF', '3. RASTER', '4. DIACRITICS', '5. CHART-SONG',
   '6. CALLOUT-BAKED', '7. STYLE', '8. PAGEBREAK', '9. SOURCE-LEAK', '10. LEDGER',
+  '11. KHOA-CHU-DE',
 ];
 
 /**
@@ -486,5 +542,6 @@ export function chayTatCa({ duongDanHtml, duongDanPdf, cheDo = 'noi-bo', choPhep
     gateNgatTrang(goi),
     gateRoRiNguon(goi),
     gateSoNguon(goi),
+    gateKhoaChuDe({ html, soThuTu: 11 }),
   ];
 }

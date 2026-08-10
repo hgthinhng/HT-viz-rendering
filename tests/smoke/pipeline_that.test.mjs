@@ -37,11 +37,11 @@ function dungBanThat(cheDo) {
   return { tam, html, pdf };
 }
 
-test('duong ong that: ban noi bo qua duoc ca muoi gate', () => {
+test('duong ong that: ban noi bo qua duoc ca muoi mot gate', () => {
   const { tam, html, pdf } = dungBanThat('noi-bo');
   try {
     const ketQua = chayTatCa({ duongDanHtml: html, duongDanPdf: pdf, cheDo: 'noi-bo' });
-    assert.equal(ketQua.length, 10, 'phai co du muoi gate');
+    assert.equal(ketQua.length, 11, 'phai co du muoi mot gate');
     const fail = ketQua.filter((g) => g.trang_thai === 'FAIL');
     assert.deepEqual(
       fail.map((g) => `${g.ten}: ${g.ly_do[0]}`),

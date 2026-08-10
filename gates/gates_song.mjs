@@ -43,6 +43,9 @@
  */
 import fs from 'node:fs';
 import { launchChromium } from '../scripts/lib/chromium.mjs';
+import { gateKhoaChuDe } from './gates.mjs';
+
+export { gateKhoaChuDe };
 
 function ghi(ten, trang_thai, ly_do) {
   return { ten, trang_thai, ly_do: ly_do || [] };
@@ -826,7 +829,7 @@ export async function gateThemeMatch({ duongDanHtml, browser }) {
 export const TEN_GATES_SONG = [
   '1. OFFLINE-INTACT', '2. JS-SILENT-FAIL', '3. REDUCED-MOTION', '4. KEYBOARD-PATH',
   '5. CONTRAST-ALL-THEMES', '6. SIZE-BUDGET', '7. NO-JS-CONTENT', '8. RESPONSIVE-WIDTH',
-  '9. THEME-MATCH',
+  '9. THEME-MATCH', '10. KHOA-CHU-DE',
 ];
 
 /**
@@ -857,6 +860,7 @@ export async function chayTatCaSong({ duongDanHtml }) {
       await gateNoJsContent(goi),
       await gateResponsiveWidth(goi),
       await gateThemeMatch(goi),
+      gateKhoaChuDe({ html, soThuTu: 10 }),
     ];
   } finally {
     await browser.close();

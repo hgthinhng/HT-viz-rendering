@@ -1,0 +1,51 @@
+{
+  "sinh_boi": "gates/run.mjs --ghi-nghiem-thu",
+  "ngay": "2026-08-10",
+  "sha": "dbafb50",
+  "lenh_tai_tao": "python3 pipeline/orchestrator.py examples/van-tai-bien/noi-dung.md --lan=html-song",
+  "lan": "html-song",
+  "phien_ban_bo_gate": "song-10",
+  "gate": [
+    {
+      "ten": "1. OFFLINE-INTACT",
+      "ket_qua": "PASS"
+    },
+    {
+      "ten": "2. JS-SILENT-FAIL",
+      "ket_qua": "PASS"
+    },
+    {
+      "ten": "3. REDUCED-MOTION",
+      "ket_qua": "SKIP",
+      "ly_do": "lop tinh: 1 khai bao animation khac none/0 trong CSS (khong phan biet co duoc bao ve boi @media hay khong, chi lop thuc nghiem duoi day moi ket luan); trang khong co phan tu nao dang animation o che do thuong, khong chung minh duoc gate nay phan biet duoc hai trang thai, khong tinh la PASS"
+    },
+    {
+      "ten": "4. KEYBOARD-PATH",
+      "ket_qua": "PASS"
+    },
+    {
+      "ten": "5. CONTRAST-ALL-THEMES",
+      "ket_qua": "PASS"
+    },
+    {
+      "ten": "6. SIZE-BUDGET",
+      "ket_qua": "PASS"
+    },
+    {
+      "ten": "7. NO-JS-CONTENT",
+      "ket_qua": "PASS"
+    },
+    {
+      "ten": "8. RESPONSIVE-WIDTH",
+      "ket_qua": "PASS"
+    },
+    {
+      "ten": "9. THEME-MATCH",
+      "ket_qua": "PASS"
+    },
+    {
+      "ten": "10. KHOA-CHU-DE",
+      "ket_qua": "PASS"
+    }
+  ]
+}

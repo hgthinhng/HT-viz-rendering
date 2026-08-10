@@ -11,6 +11,7 @@
     "mau": "python3 pipeline/orchestrator.py examples/mau-phase2/noi-dung.md",
     "bundle:song": "node scripts/build-bundle-song.mjs",
     "gate": "node gates/run.mjs",
+    "nghiem-thu": "node scripts/nghiem-thu-exemplars.mjs",
     "verify:components": "node scripts/verify-components.mjs",
     "verify:illustrations": "node scripts/verify-illustrations.mjs",
     "verify:charts": "node scripts/verify-charts.mjs"

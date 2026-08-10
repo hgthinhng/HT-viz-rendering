@@ -22,9 +22,11 @@
         "tom-tat-dieu-hanh"
       ],
       "chu_de_mac_dinh": "sang-lanh",
-      "trang_thai": "vuon-uom",
+      "trang_thai": "chinh-thuc",
       "exemplar": "examples/van-tai-bien",
-      "lan_da_chung_minh": []
+      "lan_da_chung_minh": [
+        "html-song"
+      ]
     }
   ]
 }

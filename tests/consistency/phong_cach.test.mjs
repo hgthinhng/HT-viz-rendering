@@ -250,3 +250,27 @@ test('design.md khong lap hex', () => {
     assert.equal(/#[0-9a-fA-F]{6}\b/.test(md), false, `${slug}/design.md chua hex, mau chi noi bang ten token`);
   }
 });
+
+test('design.md: tai san nhac bang backtick slug phai ton tai', () => {
+  // catalog/INDEX.json hinh dang that (kiem truoc khi viet test nay): object voi
+  // khoa `muc`, moi phan tu la { ma, nhom, ten, ... }. `ma` la slug that su, vi du
+  // '01-waterfall' hay '13-line-annotated'. Khong phai mang tran, khong phai
+  // `tai_san`/`danh_sach`.
+  const catalog = docJson(path.join(REPO, 'catalog', 'INDEX.json'));
+  const coThat = new Set(
+    (Array.isArray(catalog) ? catalog : catalog.muc || catalog.tai_san || catalog.danh_sach || [])
+      .map((t) => t.ma || t.slug || t.id).filter(Boolean),
+  );
+  // San chan parse rong gia: catalog that co 116 tai san, ngo qua 50 la an toan.
+  assert.ok(coThat.size > 50, `catalog/INDEX.json ve chi ${coThat.size} slug, co the parse sai hinh dang`);
+  for (const slug of cacStyle()) {
+    const p = path.join(PC, slug, 'design.md');
+    if (!fs.existsSync(p)) continue;
+    const md = fs.readFileSync(p, 'utf8');
+    // Chi soat cac backtick co dang slug tai san (bat dau bang so)
+    const refs = [...md.matchAll(/`([0-9][0-9a-z-]+)`/g)].map((m) => m[1]);
+    for (const r of refs) {
+      assert.ok(coThat.has(r), `${slug}/design.md nhac tai san khong ton tai: ${r}`);
+    }
+  }
+});

@@ -67,12 +67,12 @@ export function option(params) {
   const donVi = nhanDonVi(series.unit);
 
   return {
-    ...baseOption({ title: 'Doanh thu thuần theo quý, có chú thích sự kiện', subtitle: `Đơn vị: ${donVi}, minh hoạ 2025-2026, không phải số thật`, width: W, height: H }),
+    ...baseOption({ title: params.title ?? 'Doanh thu thuần theo quý, có chú thích sự kiện', subtitle: params.subtitle ?? `Đơn vị: ${donVi}, minh hoạ 2025-2026, không phải số thật`, width: W, height: H }),
     tooltip: { ...tooltipDefault, valueFormatter: (v) => fmtCompact(v, { baseUnit: 'ty', decimals }) },
     legend: { show: false },
     grid: { left: 60, right: 24, top: 108, bottom: 50 }, // top nới rộng để chừa chỗ nhãn sự kiện phía trên đường
     xAxis: { type: 'category', data: categories, boundaryGap: false, axisLine: { lineStyle: { color: PALETTE.inkMd } }, axisTick: { show: false }, axisLabel: TYPOGRAPHY.axisLabel },
-    yAxis: { type: 'value', min: 0, axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => fmtCompact(v, { baseUnit: 'ty', decimals }) }, splitLine: { lineStyle: { color: PALETTE.line } } },
+    yAxis: { type: 'value', min: values.some((v) => v < 0) ? null : 0, axisLabel: { ...TYPOGRAPHY.axisLabel, formatter: (v) => fmtCompact(v, { baseUnit: 'ty', decimals: Math.abs(v) >= 1000 && v % 1000 !== 0 ? 1 : decimals }) }, splitLine: { lineStyle: { color: PALETTE.line } } },
     series: [{
       name: 'Doanh thu thuần', type: 'line', data: values, symbol: 'circle', symbolSize: 6,
       lineStyle: { width: 2, color: PALETTE.accent }, itemStyle: { color: PALETTE.accent },

@@ -42,7 +42,7 @@ export function option(params) {
     // o day -- viec do thuoc renderStatic()/mountLive().
     backgroundColor: PALETTE.paper,
     textStyle: { fontFamily: FONT_STACK },
-    title: { text: 'Giá và khối lượng giao dịch, mã minh hoạ VNM', subtext: 'Đơn vị: nghìn đồng/cp; khối lượng: triệu cp; quy ước màu sàn HOSE (tăng=lam, giảm=đỏ)', left: 16, top: 8, textStyle: TYPOGRAPHY.title, subtextStyle: TYPOGRAPHY.subtitle },
+    title: { text: params.title ?? 'Giá và khối lượng giao dịch, mã minh hoạ VNM', subtext: params.subtitle ?? 'Đơn vị: nghìn đồng/cp; khối lượng: triệu cp; quy ước màu sàn HOSE (tăng=lam, giảm=đỏ)', left: 16, top: 8, textStyle: TYPOGRAPHY.title, subtextStyle: TYPOGRAPHY.subtitle },
     axisPointer: { link: [{ xAxisIndex: 'all' }] },
     grid: [
       { left: 60, right: 24, top: 64, height: 220 },

@@ -131,7 +131,7 @@ const dinhDangSo = series.unit === 'phan_tram'
     const legendLines = chunkEntries(legendEntries, 40);
     const legendH = legendLines.length * 12 + 8;
     return {
-      ...baseOption({ title: 'Xếp hạng biên lợi nhuận gộp', subtitle: `${donVi}, khổ hẹp`, width: W, height: H }),
+      ...baseOption({ title: params.title ?? 'Xếp hạng biên lợi nhuận gộp', subtitle: params.subtitle ?? `${donVi}, khổ hẹp`, width: W, height: H }),
       tooltip: { ...tooltipDefault, formatter: (p) => `${rows[p.dataIndex].entity.name}: ${dinhDangSo(p.value, { decimals })}` },
       legend: { show: false },
       grid: { left: 96, right: 40, top: 60, bottom: 30 + legendH },
@@ -165,7 +165,7 @@ const dinhDangSo = series.unit === 'phan_tram'
   const legendLines = chunkEntries(legendEntries, 92);
   const legendH = legendLines.length * 12 + 8;
   return {
-    ...baseOption({ title: 'Xếp hạng biên lợi nhuận gộp theo phân khúc', subtitle: `Đơn vị: ${donVi}, sắp giảm dần, minh hoạ FY2026, không phải số thật`, width: W, height: H }),
+    ...baseOption({ title: params.title ?? 'Xếp hạng biên lợi nhuận gộp theo phân khúc', subtitle: params.subtitle ?? `Đơn vị: ${donVi}, sắp giảm dần, minh hoạ FY2026, không phải số thật`, width: W, height: H }),
     tooltip: { ...tooltipDefault, formatter: (p) => `${rows[p.dataIndex].entity.name}: ${dinhDangSo(p.value, { decimals })}` },
     legend: { show: false },
     grid: { left: 96, right: 50, top: 60, bottom: 40 + legendH },

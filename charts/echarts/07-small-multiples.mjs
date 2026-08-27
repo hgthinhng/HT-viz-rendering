@@ -74,8 +74,8 @@ export function option(params) {
     backgroundColor: PALETTE.paper,
     textStyle: { fontFamily: FONT_STACK },
     title: {
-      text: 'Doanh thu theo mảng kinh doanh, 2026 (small multiples)',
-      subtext: `Đơn vị: tỷ đồng, CÙNG thang trục 0-${sharedMax} cho mọi ô`,
+      text: params.title ?? 'Doanh thu theo mảng kinh doanh, 2026 (small multiples)',
+      subtext: params.subtitle ?? `Đơn vị: tỷ đồng, CÙNG thang trục 0-${sharedMax} cho mọi ô`,
       left: 16, top: 8, textStyle: TYPOGRAPHY.title, subtextStyle: TYPOGRAPHY.subtitle,
     },
     grid: grids,
@@ -86,7 +86,7 @@ export function option(params) {
       const col = i % cols, row = Math.floor(i / cols);
       const left = PAD_LEFT + col * (CELL_W + GAP);
       const top = PAD_TOP + row * (CELL_H + GAP) - 4;
-      return { type: 'text', left, top, style: { text: `${seg.name}  ·  ${fmtCompact(seg.data[seg.data.length - 1], { baseUnit: 'ty', decimals: 0 })} (Q4)`, font: `bold 11px ${FONT_STACK}`, fill: PALETTE.ink } };
+      return { type: 'text', left, top, style: { text: `${seg.name}  ·  ${fmtCompact(seg.data[seg.data.length - 1], { baseUnit: 'ty', decimals: 0 })} (${quarters[quarters.length - 1]})`, font: `bold 11px ${FONT_STACK}`, fill: PALETTE.ink } };
     }),
   };
 }

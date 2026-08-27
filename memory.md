@@ -2,6 +2,47 @@
 
 Đọc file này trước tiên. Nó cho biết đang ở đâu và làm gì tiếp.
 
+## 27-08: ấn phẩm html-song THẬT đầu tiên (PDR) lôi ra lỗi tiêu đề đóng cứng ở 4 preset
+
+Ấn phẩm `bao-cao/pdr-2026-08-27/` (báo cáo cổ phiếu PDR từ engine HLPP + news engine, 5 chart
+sống, 9 gate PASS, đã chép ra Desktop Windows) là bản html-song đầu tiên dùng số THẬT. Nó lộ
+ra thứ bản mẫu vận tải biển không lộ vì bản mẫu vốn là số minh hoạ: preset 09, 07, 13, 14
+ĐÓNG CỨNG tiêu đề và phụ đề trong `option()`, kể cả chuỗi "mã minh hoạ VNM" và "minh hoạ
+FY2026, không phải số thật", nên hình giao khách in nguyên câu đó lên số thật. Vá tối thiểu:
+cả bốn nay đọc `params.title ?? <mặc định cũ>` và `params.subtitle ?? ...`, cùng kiểu preset 11
+đã làm từ đầu; MAC_DINH không đổi nên catalog và test giữ nguyên (`npm test` 197 pass).
+Hai vá kèm: 13-line-annotated mở trục âm (`min: null` khi có giá trị âm, dòng tiền kinh doanh
+âm 11 quý bị cắt sạch trước đó) và formatter trục thêm 1 chữ số khi mốc là nghìn tỷ lẻ (trước
+đó in hai nhãn "-2 nghìn tỷ" liền nhau cho -1.500 và -2.000); 07-small-multiples nhãn ô lấy
+quý cuối từ dữ liệu thay vì chuỗi "(Q4)" cứng. Bốn file preset đang SỬA CHƯA COMMIT.
+
+**Nợ còn lại đo được trên ấn phẩm này:** (a) preset 07 với 3 cột ở khổ 680 làm nhãn ô cuối
+tràn mép nếu tên dài, phải rút tên; (b) 11-stacked-100 chỉ có 3 màu, nhóm thứ tư trùng màu
+nhóm một, phải gộp về 3 nhóm; (c) chưa có gate nào bắt "chuỗi minh hoạ" lọt vào hình của ấn
+phẩm số thật, nên thêm gate quét `minh hoạ|không phải số thật` trong SVG của thư mục
+`bao-cao/` là việc rẻ và đáng làm.
+
+## Regression làn pdf-so bắt bằng mắt và vá 11-08: var() trong thuộc tính SVG làm chart ĐEN TRÙM
+
+Ấn phẩm pdf-so ĐẦU TIÊN build sau 09-08 (bản trình TPB `bao-cao/tpb-congbo-chudong/`, gitignore
+theo luật bao-cao) cho chart thành khối đen đặc 714x334pt trong PDF trong khi CẢ 10 GATE XANH.
+Nguyên nhân: `boc_mau_chu_de` (thêm 09-08 cho làn html-song đổi chủ đề) bọc mọi hex thành
+`fill="var(--token, #hex)"`; trình duyệt hiểu var() trong thuộc tính trình bày, WeasyPrint thì
+không, giá trị coi là hỏng và fill rơi về mặc định SVG là ĐEN, rect nền 940x440 tô đen trùm hết.
+Bản mẫu `examples/mau-phase2` không dính vì PDF của nó build 08-08, TRƯỚC commit đó, và chưa ai
+build lại làn pdf-so từ ngày ấy. Vá tối thiểu: `render_pdf.py` thêm `nuong_var_trong_svg()`,
+thay var bằng chính fallback CHỈ trong các đoạn `<svg>` của chuỗi HTML đưa cho WeasyPrint; file
+`.html` giữ nguyên var() cho đổi chủ đề. Bảng bẫy WeasyPrint trong CLAUDE.md đã thêm dòng này.
+`npm test` 197 pass 0 fail sau vá.
+
+**NỢ GATE (việc kế tiếp khi mở repo):** chưa có gate nào nhìn MÀU của nét vẽ trong PDF nên lỗi
+này chui qua cả 10 gate; nên thêm phép đo "không có fill đen diện tích lớn bất thường trong vùng
+chart" hoặc so màu nét vẽ PDF với bảng màu style, kèm cặp fixture đỏ xanh theo đúng luật gate.
+Hai bài học nhỏ cùng phiên: ECharts tự sinh legend từ `series.name` khi không khai `legend`
+(lộ mã kỹ thuật `so_du` lên hình giao khách, phải `legend: {show:false}` khi chỉ một chuỗi);
+tiêu đề TRONG hình lặp nguyên văn H2 của section là dòng rỗng, tiêu đề hình phải nói thêm ý
+khác (áp luật 4.4 cho cả cấp tiêu đề, không riêng chú thích).
+
 ## Repo này PUBLIC trên GitHub, và điều đó đổi cách chứa file (09-08)
 
 `gh repo view` trả `visibility: PUBLIC`. Bản ghi cũ trong repo và trong memory toàn cục đều
